@@ -339,18 +339,6 @@
       height: auto;
     }
 
-    .debug-info {
-      background: rgba(255, 0, 0, 0.1);
-      border: 1px solid rgba(255, 0, 0, 0.3);
-      border-radius: 8px;
-      padding: 1rem;
-      margin: 1rem 0;
-      font-family: monospace;
-      font-size: 0.9rem;
-      color: #333;
-      white-space: pre-wrap;
-    }
-
     @media (max-width: 768px) {
   .nav-container {
     flex-direction: column;
@@ -425,92 +413,54 @@
      <div id="people-like-widget" style="text-align:center; margin: 3rem 0; font-family: sans-serif;">
   <h2 style="margin-bottom:1rem;">People like</h2>
   <div id="plw-content">Loading...</div>
-  <div id="debug-info" class="debug-info" style="display: none;"></div>
 </div>
 
 <script>
   const mdxUrl = 'https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/main/src/community.mdx';
-  const debugElement = document.getElementById('debug-info');
-
-  function showDebug(message) {
-    debugElement.style.display = 'block';
-    debugElement.textContent += message + '\n';
-  }
 
   fetch(mdxUrl)
-    .then(res => {
-      showDebug(`Fetch response status: ${res.status}`);
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-      }
-      return res.text();
-    })
+    .then(res => res.text())
     .then(text => {
-      showDebug(`MDX content length: ${text.length} characters`);
-      showDebug(`First 500 chars: ${text.substring(0, 500)}`);
+      // Parse all community members from FallbackImageList data array
+      const fallbackImageListMatch = text.match(/data=\{(\[[\s\S]*?\])\}/);
+      let communityMembers = [];
       
-      // Try multiple regex patterns to match different possible formats
-      const patterns = [
-        /x="([^"]+)"[^>]*ref="([^"]+)"/g,
-        /ref="([^"]+)"[^>]*x="([^"]+)"/g,
-        /<CommunityMember[^>]*x="([^"]+)"[^>]*ref="([^"]+)"[^>]*\/>/g,
-        /<CommunityMember[^>]*ref="([^"]+)"[^>]*x="([^"]+)"[^>]*\/>/g,
-        /x\s*=\s*"([^"]+)"[^>]*ref\s*=\s*"([^"]+)"/g,
-        /ref\s*=\s*"([^"]+)"[^>]*x\s*=\s*"([^"]+)"/g
-      ];
-
-      let matches = [];
-      let patternUsed = -1;
-      
-      for (let i = 0; i < patterns.length; i++) {
-        const pattern = patterns[i];
-        const testMatches = [...text.matchAll(pattern)];
-        showDebug(`Pattern ${i + 1} found ${testMatches.length} matches`);
-        if (testMatches.length > 0) {
-          matches = testMatches;
-          patternUsed = i;
-          break;
+      if (fallbackImageListMatch) {
+        try {
+          // Extract the array content and clean it up for JSON parsing
+          let dataArrayString = fallbackImageListMatch[1];
+          
+          // Replace JavaScript object syntax with JSON syntax
+          dataArrayString = dataArrayString
+            .replace(/(\w+):/g, '"$1":')  // Quote property names
+            .replace(/,\s*}/g, '}');      // Remove trailing commas
+          
+          const membersArray = JSON.parse(dataArrayString);
+          communityMembers = membersArray;
+        } catch (e) {
+          console.error('Error parsing FallbackImageList data:', e);
         }
       }
-
-      if (matches.length === 0) {
-        showDebug("No matches found with any pattern. Looking for any CommunityMember tags...");
-        const communityMemberMatches = text.match(/<CommunityMember[^>]*>/g);
-        if (communityMemberMatches) {
-          showDebug(`Found ${communityMemberMatches.length} CommunityMember tags:`);
-          communityMemberMatches.slice(0, 3).forEach((match, idx) => {
-            showDebug(`  ${idx + 1}: ${match}`);
-          });
-        } else {
-          showDebug("No CommunityMember tags found in the content");
-        }
+      
+      // Also parse individual FallbackImage components as backup
+      if (communityMembers.length === 0) {
+        const fallbackImageMatches = [...text.matchAll(/<FallbackImage[^>]*data="([^"]+)"[^>]*refc="([^"]+)"[^>]*\/>/g)];
         
+        communityMembers = fallbackImageMatches.map(match => ({
+          name: match[1],
+          ref: match[2]
+        }));
+      }
+
+      if (communityMembers.length === 0) {
         document.getElementById('plw-content').textContent = "No community members found.";
         return;
       }
 
-      showDebug(`Using pattern ${patternUsed + 1}, found ${matches.length} matches`);
-      
-      // Log first few matches for debugging
-      matches.slice(0, 3).forEach((match, idx) => {
-        showDebug(`Match ${idx + 1}: ${JSON.stringify(match)}`);
-      });
-
-      const randomMatch = matches[Math.floor(Math.random() * matches.length)];
-      showDebug(`Selected random match: ${JSON.stringify(randomMatch)}`);
-      
-      let username, referral;
-      
-      // Handle different pattern match groups
-      if (patternUsed === 1 || patternUsed === 3 || patternUsed === 5) {
-        // Patterns where ref comes first
-        [, referral, username] = randomMatch;
-      } else {
-        // Patterns where x comes first
-        [, username, referral] = randomMatch;
-      }
-
-      showDebug(`Extracted - Username: ${username}, Referral: ${referral}`);
+      // Select a random community member
+      const randomMember = communityMembers[Math.floor(Math.random() * communityMembers.length)];
+      const username = randomMember.name;
+      const referral = randomMember.ref;
 
       const avatar = `https://unavatar.io/x.com/${username}`;
       const profile = `https://x.com/${username}`;
@@ -525,12 +475,9 @@
           </a>
         </div>
       `;
-      
-      showDebug("Widget rendered successfully!");
     })
     .catch(err => {
       console.error('Error loading community data:', err);
-      showDebug(`Error: ${err.message}`);
       document.getElementById('plw-content').textContent = "Couldn't load community.";
     });
 </script>
