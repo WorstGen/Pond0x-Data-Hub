@@ -542,19 +542,18 @@
         });
     </script>
 
-    <script>
+   <script>
 window.addEventListener('DOMContentLoaded', () => {
-  // Find the container section (The Pond)
+  // Find relevant contributor images
   const allImgs = [...document.querySelectorAll('img')];
   const pondImgs = allImgs.filter(img => {
     const src = img.getAttribute('src');
     return src && src.includes('/community/') && /\d+\.png$/.test(src);
   });
 
-  // Construct contributor objects
   const contributors = pondImgs.map(img => {
     const filename = img.getAttribute('src').split('/').pop();
-    const username = filename.split('.')[0]; // e.g. "43"
+    const username = filename.split('.')[0];
     return {
       handle: username,
       image: img.src,
@@ -564,10 +563,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
   if (!contributors.length) return;
 
-  // Pick a random contributor
   const entry = contributors[Math.floor(Math.random() * contributors.length)];
 
-  // Create the display block
   const container = document.createElement('div');
   Object.assign(container.style, {
     textAlign: 'center',
@@ -608,8 +605,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   container.append(img, text, btn);
 
-  // Append AFTER the footer
-  const footer = document.querySelector('footer');
+  const footer = document.querySelector('.footer');
   if (footer && footer.parentNode) {
     footer.parentNode.insertBefore(container, footer.nextSibling);
   } else {
@@ -618,12 +614,13 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+<!-- OTHER SCRIPTS -->
+<script>
+  function toggleNav() {
+    const navLinks = document.getElementById('navLinks');
+    navLinks.classList.toggle('show');
+  }
+</script>
 
-  <script>
-    function toggleNav() {
-      const navLinks = document.getElementById('navLinks');
-      navLinks.classList.toggle('show');
-    }
-  </script>
 </body>
 </html>
