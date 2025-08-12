@@ -442,34 +442,7 @@
         }
       }
       
-      // Fallback: try to find FallbackImageList only within The Pond section
-      if (communityMembers.length === 0) {
-        // Extract just "The Pond" section first
-        const pondSectionTextMatch = text.match(/## The Pond([\s\S]*?)(?=##|$)/);
-        if (pondSectionTextMatch) {
-          const pondSectionText = pondSectionTextMatch[1];
-          const fallbackImageListMatch = pondSectionText.match(/data=\{(\[[\s\S]*?\])\}/);
-          if (fallbackImageListMatch) {
-            try {
-              let dataArrayString = fallbackImageListMatch[1];
-              dataArrayString = dataArrayString
-                .replace(/(\w+):/g, '"$1":')
-                .replace(/,\s*}/g, '}')
-                .replace(/,\s*]/g, ']');
-              
-              const membersArray = JSON.parse(dataArrayString);
-              communityMembers = membersArray;
-              console.log(`Found ${communityMembers.length} members from The Pond section fallback parsing`);
-            } catch (e) {
-              console.error('Error parsing The Pond fallback FallbackImageList:', e);
-            }
-          }
-        }
-      }
-      
-      // Final fallback: parse individual FallbackImage components only within The Pond section
-      if (communityMembers.length === 0) {
-        const pondSectionTextMatch = text.match(/## The Pond([\s\S]*?)(?=##|$)/);
+TextMatch = text.match(/## The Pond([\s\S]*?)(?=##|$)/);
         const searchText = pondSectionTextMatch ? pondSectionTextMatch[1] : text;
         const fallbackImageMatches = [...searchText.matchAll(/<FallbackImage[^>]*data="([^"]+)"[^>]*refc="([^"]+)"[^>]*\/>/g)];
         communityMembers = fallbackImageMatches.map(match => ({
