@@ -221,8 +221,14 @@
             margin-top: 2rem;
             padding: 1rem;
             color: #7b3aad;
-            opacity: 0.7;
             font-size: 0.9rem;
+        }
+
+        .footer-subtitle {
+            margin: 0.5rem 0 1rem 0; 
+            font-size: 0.9rem; 
+            color: #7b3aad; 
+            opacity: 0.8;
         }
 
         @media (max-width: 768px) {
@@ -409,39 +415,149 @@
             </div>
            <div class="footer">
             <p><b>Built for <a href="https://cary0x.github.io/community/" target="_blank" class="link-url">the POND🤝X community</a> ❤️</b></p>
+            <p class="footer-subtitle"><b>People like</b></p>
+            <div id="plw-content" style="display:flex; gap:2rem; justify-content:center; flex-wrap:wrap;">Loading...</div>
             </div>
-     <!-- PEOPLE LIKE WIDGET WITH SCRIM -->
-<div id="people-like-scrim-wrapper" style="position: relative; text-align: center; margin: 3rem auto; padding: 2rem; max-width: 960px; border-radius: 12px; overflow: hidden;">
-  <div id="people-like" style="position: relative; z-index: 1;">
-    <h3 style="color: white; margin-bottom: 1.5rem;">People like</h3>
-    <div id="plw-content" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem;"></div>
-  </div>
-  <div style="position: absolute; inset: 0; background: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0)); z-index: 0;"></div>
-</div>
 
 <script>
-  fetch('/data/community.json')
-    .then(res => res.json())
-    .then(users => {
-      if (!users.length) throw new Error("No users found");
+  const mdxUrl = 'https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/main/src/community.mdx';
 
-      const shuffled = users.sort(() => 0.5 - Math.random());
-      const selected = shuffled.slice(0, 3);
+  fetch(mdxUrl)
+    .then(res => res.text())
+    .then(text => {
+      let communityMembers = [];
+      
+      // Parse "The Pond" section which has the large FallbackImageList
+      const pondSectionMatch = text.match(/## The Pond[\s\S]*?<FallbackImageList[^>]*data=\{(\[[\s\S]*?\])\}[^>]*\/>/);
+      
+      if (pondSectionMatch) {
+        try {
+          let dataArrayString = pondSectionMatch[1];
+          
+          // Clean up the JavaScript object syntax for JSON parsing
+          dataArrayString = dataArrayString
+            .replace(/(\w+):/g, '"$1":')     // Quote property names
+            .replace(/,\s*}/g, '}')          // Remove trailing commas from objects
+            .replace(/,\s*]/g, ']');         // Remove trailing commas from arrays
+          
+          const membersArray = JSON.parse(dataArrayString);
+          communityMembers = membersArray;
+          console.log(`Found ${communityMembers.length} members from The Pond section`);
+        } catch (e) {
+          console.error('Error parsing The Pond FallbackImageList:', e);
+        }
+      }
+      
+      // Fallback: parse individual FallbackImage components from Community Members section
+      if (communityMembers.length === 0) {
+        const communityMembersMatch = text.match(/## Community Members([\s\S]*?)(?=##|$)/);
+        if (communityMembersMatch) {
+          const fallbackImageMatches = [...communityMembersMatch[1].matchAll(/<FallbackImage[^>]*data="([^"]+)"[^>]*refc="([^"]+)"[^>]*\/>/g)];
+          communityMembers = fallbackImageMatches.map(match => ({
+            name: match[1],
+            ref: match[2]
+          }));
+          console.log(`Found ${communityMembers.length} members from Community Members section`);
+        }
+      }
+      if (!communityMembers || communityMembers.length === 0) {
+        document.getElementById('plw-content').textContent = "No community members found.";
+        return;
+      }
 
-      const html = selected.map(({ x, ref }) => `
-        <div style="display: flex; flex-direction: column; align-items: center; background: rgba(255,255,255,0.85); padding: 1rem; border-radius: 8px; width: 160px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); backdrop-filter: blur(4px);">
-          <img src="https://unavatar.io/x.com/${x}" alt="@${x}" style="width: 72px; height: 72px; border-radius: 50%; margin-bottom: 0.5rem;" onerror="this.src='https://unavatar.io/github/ghost'">
-          <a href="https://x.com/${x}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: #1DA1F2; margin-bottom: 0.5rem; font-weight: bold;">@${x}</a>
-          <a href="https://pond0x.com/referral/${ref}" target="_blank" rel="noopener noreferrer" style="background-color: #1DA1F2; color: white; padding: 0.4rem 0.8rem; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 0.85rem;">
-            Support
-          </a>
-        </div>
-      `).join('');
+      // Select 3 random community members with better randomization
+      const selectedMembers = [];
+      const totalMembers = communityMembers.length;
+      const usedIndices = new Set();
+      
+      // Add timestamp to ensure different results each time
+      const seed = Date.now();
+      
+      while (selectedMembers.length < 3 && selectedMembers.length < totalMembers) {
+        // Better randomization using timestamp and loop counter
+        const randomIndex = Math.floor((Math.random() + seed * selectedMembers.length) % 1 * totalMembers);
+        if (!usedIndices.has(randomIndex)) {
+          usedIndices.add(randomIndex);
+          selectedMembers.push(communityMembers[randomIndex]);
+        }
+      }
 
-      document.getElementById('plw-content').innerHTML = html;
-    })
-    .catch(err => {
-      console.error(err);
+    const container = document.getElementById('plw-content');
+    container.innerHTML = '';
+    container.style.cssText = 'display:flex; gap:2rem; justify-content:center; flex-wrap:wrap; align-items:flex-start;';
+
+    selectedMembers.forEach(member => {
+      const username = member.name;
+      const referral = member.ref;
+      const profile = `https://x.com/${username}`;
+      const referralLink = `https://pond0x.com/referral/${referral}`;
+
+      // Create individual member container
+      const memberContainer = document.createElement('div');
+      memberContainer.style.cssText = 'display:flex; flex-direction:column; align-items:center; min-width:120px; max-width:150px;';
+      
+      // Create loading placeholder first
+      const loadingDiv = document.createElement('div');
+      loadingDiv.style.cssText = 'width:64px; height:64px; border-radius:50%; margin-bottom:0.75rem; background:linear-gradient(135deg,#7b3aad,#FF13F0); display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; font-size:18px;';
+      loadingDiv.textContent = username.substring(0, 2).toUpperCase();
+      
+      // Try to load a real avatar
+      const avatar = document.createElement('img');
+      avatar.style.cssText = 'width:64px; height:64px; border-radius:50%; margin-bottom:0.75rem; object-fit:cover;';
+      avatar.alt = `@${username}`;
+      
+      // Avatar sources to try
+      const avatarSources = [
+        `https://unavatar.io/twitter/${username}?fallback=false`,
+        `https://github.com/${username}.png?size=64`,
+        `https://avatars.dicebear.com/api/initials/${username}.svg?background=%237b3aad&color=fff`,
+        `https://ui-avatars.com/api/?name=${username}&size=64&background=7b3aad&color=fff&rounded=true`
+      ];
+      
+      let currentSourceIndex = 0;
+      let avatarLoaded = false;
+      
+      const tryNextAvatar = () => {
+        if (currentSourceIndex < avatarSources.length && !avatarLoaded) {
+          avatar.src = avatarSources[currentSourceIndex];
+          currentSourceIndex++;
+        }
+      };
+      
+      avatar.onload = () => {
+        if (!avatarLoaded) {
+          avatarLoaded = true;
+          loadingDiv.replaceWith(avatar);
+        }
+      };
+      
+      avatar.onerror = tryNextAvatar;
+      
+      // Start loading the first avatar source
+      tryNextAvatar();
+
+      const profileLink = document.createElement('a');
+      profileLink.href = profile;
+      profileLink.target = '_blank';
+      profileLink.rel = 'noopener noreferrer';
+      profileLink.style.cssText = 'font-size:0.9rem; color:#1DA1F2; text-decoration:none; margin-bottom:0.5rem; text-align:center; word-break:break-word; line-height:1.2;';
+      profileLink.textContent = `@${username}`;
+
+      const referralButton = document.createElement('a');
+      referralButton.href = referralLink;
+      referralButton.target = '_blank';
+      referralButton.rel = 'noopener noreferrer';
+      referralButton.style.cssText = 'padding:0.4rem 0.8rem; background:linear-gradient(135deg, #f19cfd 0%, #FF13F0 100%); color:white; border-radius:6px; text-decoration:none; font-weight:bold; font-size:0.8rem; text-align:center; white-space:nowrap; box-shadow: 0 2px 8px rgba(241, 156, 253, 0.3); transition: all 0.3s ease;';
+      referralButton.textContent = 'Referral';
+
+      memberContainer.appendChild(loadingDiv); // Start with the text avatar
+      memberContainer.appendChild(profileLink);
+      memberContainer.appendChild(referralButton);
+
+      container.appendChild(memberContainer);
+    });
+    }).catch(err => {
+      console.error('Error loading community data:', err);
       document.getElementById('plw-content').textContent = "Couldn't load community.";
     });
 </script>
