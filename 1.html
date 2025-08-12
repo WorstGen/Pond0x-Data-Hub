@@ -421,15 +421,14 @@
   fetch(mdxUrl)
     .then(res => res.text())
     .then(text => {
-      // Match <CommunityMember name="..." x="USERNAME" ref="..."/>
-      const matches = [...text.matchAll(/<CommunityMember[^>]*x="([^"]+)"[^>]*ref="([^"]+)"[^>]*\/>/g)];
-
+      // Match lines like: <CommunityMember ... x="username" ... ref="ref" ... />
+      const matches = [...text.matchAll(/x="([^"]+)"[^>]*ref="([^"]+)"/g)];
       if (matches.length === 0) {
         document.getElementById('plw-content').textContent = "No community members found.";
         return;
       }
 
-      const [ , username, referral ] = matches[Math.floor(Math.random() * matches.length)];
+      const [_, username, referral] = matches[Math.floor(Math.random() * matches.length)];
       const avatar = `https://unavatar.io/x.com/${username}`;
       const profile = `https://x.com/${username}`;
       const referralLink = `https://pond0x.com/referral/${referral}`;
