@@ -16,10 +16,7 @@
       background: linear-gradient(90deg, #089c00 0%, #16a305 15%, #13FF22 35%, #13FF22 65%, #16a305 85%, #089c00 100%);
       color: #7b3aad;
       min-height: 100vh;
-      padding-top: 50px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      padding-top: 60px;
     }
 
     .navbar {
@@ -70,12 +67,14 @@
       font-size: 1.5rem;
       color: white;
       cursor: pointer;
+      margin-right: auto;
     }
 
     .container {
       max-width: 900px;
       width: 100%;
-      padding: 0 1rem;
+      margin: 0 auto;
+      padding: 1rem;
     }
 
     .header {
@@ -95,34 +94,60 @@
       padding: 2rem;
       border: 2px solid rgba(241, 156, 253, 0.3);
       box-shadow: 0 12px 40px rgba(123, 58, 173, 0.2);
+      margin-bottom: 2rem;
     }
 
-    .card h2 {
-      text-align: center;
-      margin-bottom: 1rem;
+    .input-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1rem;
+      justify-content: center;
     }
 
-    .card input,
-    .card button {
-      display: block;
-      margin: 0.5rem auto;
-      padding: 0.5rem;
-      width: 90%;
-      font-size: 1rem;
-      border-radius: 5px;
+    .input-section input {
+      flex: 1;
+      min-width: 250px;
+      padding: 0.6rem;
+      border-radius: 6px;
       border: 1px solid #ccc;
     }
 
-    .card button {
-      background-color: #13FF22;
-      color: black;
-      font-weight: bold;
-      cursor: pointer;
+    .btn {
+      background-color: #7b3aad;
+      color: white;
       border: none;
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
     }
 
-    .card button:hover {
-      background-color: #0cd01b;
+    .btn:hover {
+      background-color: #5c288c;
+    }
+
+    .links-section {
+      margin-top: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+
+    .link-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .link-item a {
+      color: #0077cc;
+      font-weight: bold;
+      text-decoration: underline;
     }
 
     .footer {
@@ -134,26 +159,14 @@
       font-size: 0.9rem;
     }
 
-    .mirrored {
-      display: inline-block;
-      transform: scaleX(-1);
-    }
-
     @media (max-width: 768px) {
-      .navbar {
-        padding: 0.2rem 0;
-      }
-
       .nav-container {
         flex-direction: column;
         align-items: flex-start;
-        padding: 0.2rem 1rem;
       }
 
       .nav-toggle {
         display: block;
-        align-self: flex-start;
-        margin-bottom: 0.3rem;
       }
 
       .nav-links {
@@ -161,8 +174,8 @@
         flex-direction: column;
         width: 100%;
         background-color: #FF13F0;
-        padding: 0.25rem 0;
-        margin-top: 0.3rem;
+        padding: 0.5rem 0;
+        margin-top: 0.5rem;
       }
 
       .nav-links.show {
@@ -180,7 +193,6 @@
 </head>
 <body>
 
-  <!-- Responsive Navigation -->
   <nav class="navbar">
     <div class="nav-container">
       <button class="nav-toggle" onclick="toggleNav()">☰</button>
@@ -200,10 +212,17 @@
     </div>
 
     <div class="card">
-      <h2>Link Generator</h2>
-      <input type="text" id="walletInput" placeholder="Enter wallet address">
-      <button onclick="generateLinks()">Generate Links</button>
-      <div id="generatedLinks"></div>
+      <h2>PERSONAL POND🤝X HISTORY LINK GENERATOR</h2>
+
+      <div class="input-section">
+        <input type="text" id="walletInput" placeholder="Enter your Solana wallet address (e.g., 7xKXt9WGD...)" />
+        <button class="btn" onclick="generateLinks()">Generate Links</button>
+      </div>
+
+      <div id="links-section" class="links-section">
+        <div class="section-title">👨‍🍳 Your Personal History Links:</div>
+        <div id="links-container"></div>
+      </div>
     </div>
 
     <div class="footer">
@@ -219,23 +238,28 @@
 
     function generateLinks() {
       const wallet = document.getElementById('walletInput').value.trim();
-      const output = document.getElementById('generatedLinks');
+      const container = document.getElementById('links-container');
+      container.innerHTML = '';
+
       if (!wallet || wallet.length < 10) {
-        output.innerHTML = "<p style='color:red;'>Please enter a valid wallet address.</p>";
+        container.innerHTML = '<p style="color:red;">Please enter a valid Solana wallet address.</p>';
         return;
       }
 
-      const base = "https://worstgen.github.io/Pond0x-Data-Hub/";
-      const links = [
-        { name: "Personal", url: `${base}?address=${wallet}` },
-        { name: "Mining Claims", url: `${base}MiningClaims.html?address=${wallet}` },
-        { name: "Hash Boosts", url: `${base}HashBoosts.html?address=${wallet}` },
-        { name: "wPOND Received", url: `${base}wPONDReceived.html?address=${wallet}` },
-        { name: "Rig Activations", url: `${base}RigActivations.html?address=${wallet}` }
+      const base = 'https://worstgen.github.io/Pond0x-Data-Hub/';
+      const pages = [
+        { name: 'Mining Claims', url: `MiningClaims.html?wallet=${wallet}` },
+        { name: 'Hash Boosts', url: `HashBoosts.html?wallet=${wallet}` },
+        { name: 'wPOND Received', url: `wPONDReceived.html?wallet=${wallet}` },
+        { name: 'Rig Activations', url: `RigActivations.html?wallet=${wallet}` },
       ];
 
-      const html = links.map(link => `<p><a href="${link.url}" target="_blank">${link.name}</a></p>`).join('');
-      output.innerHTML = html;
+      pages.forEach(page => {
+        const div = document.createElement('div');
+        div.className = 'link-item';
+        div.innerHTML = `<a href="${base + page.url}" target="_blank">${page.name}</a>`;
+        container.appendChild(div);
+      });
     }
   </script>
 
