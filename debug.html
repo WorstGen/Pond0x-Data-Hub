@@ -409,11 +409,9 @@
             </div>
            <div class="footer">
             <p><b>Built for <a href="https://cary0x.github.io/community/" target="_blank" class="link-url">the POND🤝X community</a> ❤️</b></p>
+            <p style="margin: 0.5rem 0 1rem 0; font-size: 0.9rem; color: #7b3aad; opacity: 0.7;"><b>People like</b></p>
+            <div id="plw-content" style="display:flex; gap:2rem; justify-content:center; flex-wrap:wrap;">Loading...</div>
             </div>
-     <div id="people-like-widget" style="text-align:center; margin: 3rem 0; font-family: sans-serif;">
-  <h2 style="margin-bottom:1rem;">People like</h2>
-  <div id="plw-content">Loading...</div>
-</div>
 
 <script>
   const mdxUrl = 'https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/main/src/community.mdx';
@@ -479,78 +477,92 @@
         return;
       }
 
-      // Select a random community member
-      const randomMember = communityMembers[Math.floor(Math.random() * communityMembers.length)];
-      const username = randomMember.name;
-      const referral = randomMember.ref;
-
-      const profile = `https://x.com/${username}`;
-      const referralLink = `https://pond0x.com/referral/${referral}`;
-
-      // Create avatar with better fallback and loading
-      const avatarContainer = document.createElement('div');
-      avatarContainer.style.cssText = 'display:flex;flex-direction:column;align-items:center;';
+      // Select 3 random community members
+      const selectedMembers = [];
+      const usedIndices = new Set();
       
-      // Create a loading placeholder first
-      const loadingDiv = document.createElement('div');
-      loadingDiv.style.cssText = 'width:72px;height:72px;border-radius:50%;margin-bottom:0.5rem;background:linear-gradient(135deg,#7b3aad,#FF13F0);display:flex;align-items:center;justify-content:center;color:white;font-weight:bold;font-size:24px;';
-      loadingDiv.textContent = username.substring(0, 2).toUpperCase();
-      
-      // Try to load a real avatar
-      const avatar = document.createElement('img');
-      avatar.style.cssText = 'width:72px;height:72px;border-radius:50%;margin-bottom:0.5rem;object-fit:cover;';
-      avatar.alt = `@${username}`;
-      
-      // Avatar sources to try
-      const avatarSources = [
-        `https://unavatar.io/twitter/${username}?fallback=false`,
-        `https://github.com/${username}.png?size=72`,
-        `https://avatars.dicebear.com/api/initials/${username}.svg?background=%237b3aad&color=fff`,
-        `https://ui-avatars.com/api/?name=${username}&size=72&background=7b3aad&color=fff&rounded=true`
-      ];
-      
-      let currentSourceIndex = 0;
-      let avatarLoaded = false;
-      
-      const tryNextAvatar = () => {
-        if (currentSourceIndex < avatarSources.length && !avatarLoaded) {
-          avatar.src = avatarSources[currentSourceIndex];
-          currentSourceIndex++;
+      while (selectedMembers.length < 3 && selectedMembers.length < communityMembers.length) {
+        const randomIndex = Math.floor(Math.random() * communityMembers.length);
+        if (!usedIndices.has(randomIndex)) {
+          usedIndices.add(randomIndex);
+          selectedMembers.push(communityMembers[randomIndex]);
         }
-      };
-      
-      avatar.onload = () => {
-        if (!avatarLoaded) {
-          avatarLoaded = true;
-          loadingDiv.replaceWith(avatar);
-        }
-      };
-      
-      avatar.onerror = tryNextAvatar;
-      
-      // Start loading the first avatar source
-      tryNextAvatar();
+      }
 
-      const profileLink = document.createElement('a');
-      profileLink.href = profile;
-      profileLink.target = '_blank';
-      profileLink.rel = 'noopener noreferrer';
-      profileLink.style.cssText = 'font-size:1rem;color:#1DA1F2;text-decoration:none;margin-bottom:0.5rem;';
-      profileLink.textContent = `@${username}`;
+      const container = document.getElementById('plw-content');
+      container.innerHTML = '';
+      container.style.cssText = 'display:flex; gap:2rem; justify-content:center; flex-wrap:wrap; align-items:flex-start;';
 
-      const referralButton = document.createElement('a');
-      referralButton.href = referralLink;
-      referralButton.target = '_blank';
-      referralButton.rel = 'noopener noreferrer';
-      referralButton.style.cssText = 'padding:0.5rem 1rem;background-color:#1DA1F2;color:white;border-radius:4px;text-decoration:none;font-weight:bold;';
-      referralButton.textContent = 'Support on Pond0x';
+      selectedMembers.forEach(member => {
+        const username = member.name;
+        const referral = member.ref;
+        const profile = `https://x.com/${username}`;
+        const referralLink = `https://pond0x.com/referral/${referral}`;
 
-      avatarContainer.appendChild(loadingDiv); // Start with the text avatar
-      avatarContainer.appendChild(profileLink);
-      avatarContainer.appendChild(referralButton);
+        // Create individual member container
+        const memberContainer = document.createElement('div');
+        memberContainer.style.cssText = 'display:flex; flex-direction:column; align-items:center; min-width:120px; max-width:150px;';
+        
+        // Create loading placeholder first
+        const loadingDiv = document.createElement('div');
+        loadingDiv.style.cssText = 'width:64px; height:64px; border-radius:50%; margin-bottom:0.75rem; background:linear-gradient(135deg,#7b3aad,#FF13F0); display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; font-size:18px;';
+        loadingDiv.textContent = username.substring(0, 2).toUpperCase();
+        
+        // Try to load a real avatar
+        const avatar = document.createElement('img');
+        avatar.style.cssText = 'width:64px; height:64px; border-radius:50%; margin-bottom:0.75rem; object-fit:cover;';
+        avatar.alt = `@${username}`;
+        
+        // Avatar sources to try
+        const avatarSources = [
+          `https://unavatar.io/twitter/${username}?fallback=false`,
+          `https://github.com/${username}.png?size=64`,
+          `https://avatars.dicebear.com/api/initials/${username}.svg?background=%237b3aad&color=fff`,
+          `https://ui-avatars.com/api/?name=${username}&size=64&background=7b3aad&color=fff&rounded=true`
+        ];
+        
+        let currentSourceIndex = 0;
+        let avatarLoaded = false;
+        
+        const tryNextAvatar = () => {
+          if (currentSourceIndex < avatarSources.length && !avatarLoaded) {
+            avatar.src = avatarSources[currentSourceIndex];
+            currentSourceIndex++;
+          }
+        };
+        
+        avatar.onload = () => {
+          if (!avatarLoaded) {
+            avatarLoaded = true;
+            loadingDiv.replaceWith(avatar);
+          }
+        };
+        
+        avatar.onerror = tryNextAvatar;
+        
+        // Start loading the first avatar source
+        tryNextAvatar();
 
-      document.getElementById('plw-content').innerHTML = '';
-      document.getElementById('plw-content').appendChild(avatarContainer);
+        const profileLink = document.createElement('a');
+        profileLink.href = profile;
+        profileLink.target = '_blank';
+        profileLink.rel = 'noopener noreferrer';
+        profileLink.style.cssText = 'font-size:0.9rem; color:#1DA1F2; text-decoration:none; margin-bottom:0.5rem; text-align:center; word-break:break-word; line-height:1.2;';
+        profileLink.textContent = `@${username}`;
+
+        const referralButton = document.createElement('a');
+        referralButton.href = referralLink;
+        referralButton.target = '_blank';
+        referralButton.rel = 'noopener noreferrer';
+        referralButton.style.cssText = 'padding:0.4rem 0.8rem; background-color:#1DA1F2; color:white; border-radius:6px; text-decoration:none; font-weight:bold; font-size:0.8rem; text-align:center; white-space:nowrap;';
+        referralButton.textContent = 'Support';
+
+        memberContainer.appendChild(loadingDiv); // Start with the text avatar
+        memberContainer.appendChild(profileLink);
+        memberContainer.appendChild(referralButton);
+
+        container.appendChild(memberContainer);
+      });
     })
     .catch(err => {
       console.error('Error loading community data:', err);
