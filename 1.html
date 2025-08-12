@@ -542,85 +542,15 @@
         });
     </script>
 
-   <script>
-window.addEventListener('DOMContentLoaded', () => {
-  // Find relevant contributor images
-  const allImgs = [...document.querySelectorAll('img')];
-  const pondImgs = allImgs.filter(img => {
-    const src = img.getAttribute('src');
-    return src && src.includes('/community/') && /\d+\.png$/.test(src);
-  });
-
-  const contributors = pondImgs.map(img => {
-    const filename = img.getAttribute('src').split('/').pop();
-    const username = filename.split('.')[0];
-    return {
-      handle: username,
-      image: img.src,
-      referral: `https://pond0x.com/swap/solana?ref=${encodeURIComponent(username)}`
-    };
-  });
-
-  if (!contributors.length) return;
-
-  const entry = contributors[Math.floor(Math.random() * contributors.length)];
-
-  const container = document.createElement('div');
-  Object.assign(container.style, {
-    textAlign: 'center',
-    margin: '2em 0',
-    paddingTop: '1em',
-    borderTop: '1px solid #ccc'
-  });
-
-  const img = document.createElement('img');
-  img.src = entry.image;
-  img.alt = entry.handle;
-  Object.assign(img.style, {
-    width: '80px',
-    height: '80px',
-    borderRadius: '50%',
-    objectFit: 'cover',
-    marginRight: '10px'
-  });
-
-  const text = document.createElement('span');
-  text.style.fontSize = '1.1em';
-  text.innerHTML = `People like <a href="https://twitter.com/${entry.handle}" target="_blank">@${entry.handle}</a>`;
-
-  const btn = document.createElement('a');
-  btn.href = entry.referral;
-  btn.target = '_blank';
-  btn.textContent = 'Referral Link';
-  Object.assign(btn.style, {
-    marginLeft: '10px',
-    padding: '0.4em 0.8em',
-    fontSize: '0.9em',
-    backgroundColor: '#4CAF50',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '4px',
-    textDecoration: 'none'
-  });
-
-  container.append(img, text, btn);
-
-  const footer = document.querySelector('.footer');
-  if (footer && footer.parentNode) {
-    footer.parentNode.insertBefore(container, footer.nextSibling);
-  } else {
-    document.body.appendChild(container);
-  }
-});
-</script>
-
-<!-- OTHER SCRIPTS -->
-<script>
+  <script>
   function toggleNav() {
     const navLinks = document.getElementById('navLinks');
     navLinks.classList.toggle('show');
   }
-</script>
+  </script>
+
+  <div id="people-like-widget">Loading...</div>
+<script src="/assets/js/people-like-widget.js"></script>
 
 </body>
 </html>
