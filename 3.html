@@ -421,7 +421,7 @@
     .then(text => {
       let communityMembers = [];
       
-      // First, try to parse "The Pond" section specifically
+      // First, try to parse "The Pond" section which has the large FallbackImageList
       const pondSectionMatch = text.match(/## The Pond[\s\S]*?<FallbackImageList[^>]*data=\{(\[[\s\S]*?\])\}[^>]*\/>/);
       
       if (pondSectionMatch) {
@@ -439,23 +439,37 @@
           console.log(`Found ${communityMembers.length} members from The Pond section`);
         } catch (e) {
           console.error('Error parsing The Pond FallbackImageList:', e);
-          console.log('Raw data string was:', pondSectionMatch[1]);
         }
       }
       
-      // Only if we couldn't find "The Pond" section, fall back to individual FallbackImage parsing
-      // But try to exclude other sections first
+      // Fallback: try to find any FallbackImageList (including Contributors section)
       if (communityMembers.length === 0) {
-        // Try to extract just "The Pond" section text first
-        const pondSectionTextMatch = text.match(/## The Pond([\s\S]*?)(?=##|$)/);
-        let searchText = pondSectionTextMatch ? pondSectionTextMatch[1] : text;
-        
-        const fallbackImageMatches = [...searchText.matchAll(/<FallbackImage[^>]*data="([^"]+)"[^>]*refc="([^"]+)"[^>]*\/>/g)];
+        const fallbackImageListMatch = text.match(/data=\{(\[[\s\S]*?\])\}/);
+        if (fallbackImageListMatch) {
+          try {
+            let dataArrayString = fallbackImageListMatch[1];
+            dataArrayString = dataArrayString
+              .replace(/(\w+):/g, '"$1":')
+              .replace(/,\s*}/g, '}')
+              .replace(/,\s*]/g, ']');
+            
+            const membersArray = JSON.parse(dataArrayString);
+            communityMembers = membersArray;
+            console.log(`Found ${communityMembers.length} members from fallback parsing`);
+          } catch (e) {
+            console.error('Error parsing fallback FallbackImageList:', e);
+          }
+        }
+      }
+      
+      // Final fallback: parse individual FallbackImage components
+      if (communityMembers.length === 0) {
+        const fallbackImageMatches = [...text.matchAll(/<FallbackImage[^>]*data="([^"]+)"[^>]*refc="([^"]+)"[^>]*\/>/g)];
         communityMembers = fallbackImageMatches.map(match => ({
           name: match[1],
           ref: match[2]
         }));
-        console.log(`Found ${communityMembers.length} members from individual FallbackImage parsing in The Pond section`);
+        console.log(`Found ${communityMembers.length} members from individual FallbackImage parsing`);
       }
 
       if (!communityMembers || communityMembers.length === 0) {
