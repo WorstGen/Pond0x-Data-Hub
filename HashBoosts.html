@@ -16,7 +16,7 @@
       background: linear-gradient(90deg, #089c00 0%, #16a305 15%, #13FF22 35%, #13FF22 65%, #16a305 85%, #089c00 100%);
       color: #7b3aad;
       min-height: 100vh;
-      padding-top: 70px; /* Reserve space for fixed navbar */
+      padding-top: 50px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -29,27 +29,46 @@
       width: 100%;
       background-color: #FF13F0;
       z-index: 1000;
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      padding: 1rem 2rem;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0.3rem 1rem;
       flex-wrap: wrap;
     }
 
-    .navbar a {
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
       color: #13FF22;
       text-decoration: none;
       font-weight: bold;
       font-size: 1rem;
-      transition: color 0.3s, background-color 0.3s;
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
+      padding: 0.5rem;
+      border-radius: 5px;
     }
 
-    .navbar a:hover {
+    .nav-links a:hover {
       background-color: rgba(19, 255, 34, 0.15);
       color: white;
+    }
+
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: white;
+      cursor: pointer;
     }
 
     .container {
@@ -58,7 +77,6 @@
       padding: 0 1rem;
     }
 
-    /* Responsive header image */
     .header {
       text-align: center;
       margin-bottom: 2rem;
@@ -102,36 +120,65 @@
     }
 
     @media (max-width: 768px) {
-      .header img {
-        max-width: 90%;
-      }
-      iframe {
-        height: 500px;
-      }
       .navbar {
-        flex-direction: column;
-        align-items: center;
+        padding: 0.2rem 0;
       }
-      .navbar a {
-        font-size: 1.1rem;
-        padding: 0.75rem 1.25rem;
+
+      .nav-container {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0.2rem 1rem;
+      }
+
+      .nav-toggle {
+        display: block;
+        align-self: flex-start;
+        margin-bottom: 0.3rem;
+      }
+
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background-color: #FF13F0;
+        padding: 0.25rem 0;
+        margin-top: 0.3rem;
+      }
+
+      .nav-links.show {
+        display: flex;
+      }
+
+      .nav-links a {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+        width: 100%;
+        text-align: center;
+      }
+
+      iframe {
+        height: 450px;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Sticky Nav -->
+  <!-- Responsive Navigation -->
   <nav class="navbar">
-    <a href="https://worstgen.github.io/Pond0x-Data-Hub/">PERSONAL LINKS</a>
-    <a href="https://worstgen.github.io/Pond0x-Data-Hub/MiningClaims.html">MINING CLAIMS</a>
-    <a href="https://worstgen.github.io/Pond0x-Data-Hub/HashBoosts.html">HASH BOOSTS</a>
-    <a href="https://worstgen.github.io/Pond0x-Data-Hub/wPONDReceived.html">wPOND RECEIVED</a>
-    <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigActivations.html">RIG ACTIVATIONS</a>
+    <div class="nav-container">
+      <button class="nav-toggle" onclick="toggleNav()">☰</button>
+      <div class="nav-links" id="navLinks">
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/">PERSONAL LINKS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/MiningClaims.html">MINING CLAIMS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/HashBoosts.html">HASH BOOSTS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/wPONDReceived.html">wPOND RECEIVED</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigActivations.html">RIG ACTIVATIONS</a>
+      </div>
+    </div>
   </nav>
 
   <div class="container">
-    <!-- Header Image -->
     <div class="header">
       <img src="https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/refs/heads/main/pond0xdatahub.png" alt="POND0X Data Hub Logo">
     </div>
@@ -145,6 +192,13 @@
       <p><b>Built for <a href="https://cary0x.github.io/community/" target="_blank" class="link-url">the POND🤝X community</a> ❤️</b></p>
     </div>
   </div>
+
+  <script>
+    function toggleNav() {
+      const links = document.getElementById('navLinks');
+      links.classList.toggle('show');
+    }
+  </script>
 
 </body>
 </html>
