@@ -1,7 +1,7 @@
 <!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8" /> <meta name="viewport" content="width=device-width, initial-scale=1.0"/> <title>POND🤝X DATA HUB</title> <style> * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: linear-gradient(90deg, #16a305 0%, #13FF22 25%, #13FF22 50%, #13FF22 75%, #16a305 100%);
+  background: linear-gradient(90deg, #089c00 0% #16a305 20%, #13FF22 50%, #16a305 80%, #089c00 100%);
   color: #7b3aad;
   min-height: 100vh;
   display: flex;
@@ -36,6 +36,15 @@ body {
   box-shadow: 0 12px 40px rgba(123, 58, 173, 0.2);
 }
 
+iframe {
+  width: 100%;
+  height: 600px;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(123, 58, 173, 0.2);
+  background: white;
+}
+
 .footer {
   text-align: center;
   margin-top: 2rem;
@@ -45,65 +54,22 @@ body {
   font-size: 0.9rem;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1rem;
-}
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 2.2rem;
+  }
 
-th, td {
-  border: 1px solid rgba(123, 58, 173, 0.2);
-  padding: 10px;
-  text-align: left;
-}
-
-th {
-  background-color: rgba(123, 58, 173, 0.2);
-  color: #FF13F0;
-}
-
-td {
-  color: #7b3aad;
-}
-
-.pagination {
-  text-align: center;
-  margin-top: 1rem;
-}
-
-.pagination button {
-  background-color: #FF13F0;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  margin: 0 5px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.pagination button:disabled {
-  background-color: #ccc;
-  cursor: default;
-}
-
-#search-bar {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid rgba(123, 58, 173, 0.3);
-  border-radius: 10px;
-  font-size: 1rem;
-  margin-bottom: 1rem;
-  color: #7b3aad;
+  iframe {
+    height: 500px;
+  }
 }
 </style> </head> <body> <div class="container"> <header class="header"> <h1><b>POND🤝X<br>DATA HUB</b></h1> </header>
 <div class="card">
-  <h2>Latest Dune Query Results</h2>
-  <input type="text" id="search-bar" placeholder="🔍 Search in table..." oninput="searchTable()" />
-  <div id="dune-data">Loading Dune data...</div>
-  <div class="pagination" id="pagination-controls"></div>
+  <h2 style="text-align:center; margin-bottom: 1rem;">📊 Live Dune Analytics Dashboard</h2>
+  <iframe src="https://dune.com/embeds/5592171/9098468" title="Dune Dashboard Embed" loading="lazy"></iframe>
 </div>
 
 <div class="footer">
   <p><b>Built for <a href="https://cary0x.github.io/community/" target="_blank" class="link-url">the POND🤝X community</a> ❤️</b></p>
 </div>
-</div> <script> const API_KEY = 'Q1f2FBwdxrJVwDwLR51gvhbUE90mVRKL'; const QUERY_ID = '5592171'; const duneDiv = document.getElementById("dune-data"); const searchInput = document.getElementById("search-bar"); const paginationDiv = document.getElementById("pagination-controls"); let allRows = []; let filteredRows = []; let currentPage = 1; const rowsPerPage = 25; async function fetchLastResults() { try { const latestExecRes = await fetch(`https://api.dune.com/api/v1/query/${QUERY_ID}/executions`, { headers: { 'X-Dune-Api-Key': API_KEY } }); const execJson = await latestExecRes.json(); const latestExecutionId = execJson.execution_id; const resultRes = await fetch(`https://api.dune.com/api/v1/execution/${latestExecutionId}/results`, { headers: { 'X-Dune-Api-Key': API_KEY } }); const data = await resultRes.json(); if (data.state !== 'QUERY_STATE_COMPLETED') { duneDiv.innerHTML = 'Latest query has not completed yet.'; return; } allRows = data.result.rows; filteredRows = [...allRows]; renderTable(); renderPagination(); } catch (error) { console.error(error); duneDiv.innerHTML = 'Error fetching results.'; } } function renderTable() { if (filteredRows.length === 0) { duneDiv.innerHTML = "No matching results."; paginationDiv.innerHTML = ''; return; } const start = (currentPage - 1) * rowsPerPage; const end = start + rowsPerPage; const rowsToDisplay = filteredRows.slice(start, end); const headers = Object.keys(rowsToDisplay[0]); let table = '<table><thead><tr>'; headers.forEach(h => table += `<th>${h}</th>`); table += '</tr></thead><tbody>'; rowsToDisplay.forEach(row => { table += '<tr>'; headers.forEach(h => table += `<td>${row[h]}</td>`); table += '</tr>'; }); table += '</tbody></table>'; duneDiv.innerHTML = table; } function renderPagination() { const totalPages = Math.ceil(filteredRows.length / rowsPerPage); paginationDiv.innerHTML = ''; if (totalPages <= 1) return; for (let i = 1; i <= totalPages; i++) { const btn = document.createElement("button"); btn.textContent = i; btn.disabled = i === currentPage; btn.onclick = () => { currentPage = i; renderTable(); renderPagination(); }; paginationDiv.appendChild(btn); } } function searchTable() { const query = searchInput.value.toLowerCase(); filteredRows = allRows.filter(row => Object.values(row).some(val => String(val).toLowerCase().includes(query) ) ); currentPage = 1; renderTable(); renderPagination(); } fetchLastResults(); </script> </body> </html>
+</div> </body> </html>
