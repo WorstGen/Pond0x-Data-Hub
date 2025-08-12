@@ -442,34 +442,41 @@
         }
       }
       
-      // Fallback: try to find any FallbackImageList (including Contributors section)
+      // Fallback: try to find FallbackImageList only within The Pond section
       if (communityMembers.length === 0) {
-        const fallbackImageListMatch = text.match(/data=\{(\[[\s\S]*?\])\}/);
-        if (fallbackImageListMatch) {
-          try {
-            let dataArrayString = fallbackImageListMatch[1];
-            dataArrayString = dataArrayString
-              .replace(/(\w+):/g, '"$1":')
-              .replace(/,\s*}/g, '}')
-              .replace(/,\s*]/g, ']');
-            
-            const membersArray = JSON.parse(dataArrayString);
-            communityMembers = membersArray;
-            console.log(`Found ${communityMembers.length} members from fallback parsing`);
-          } catch (e) {
-            console.error('Error parsing fallback FallbackImageList:', e);
+        // Extract just "The Pond" section first
+        const pondSectionTextMatch = text.match(/## The Pond([\s\S]*?)(?=##|$)/);
+        if (pondSectionTextMatch) {
+          const pondSectionText = pondSectionTextMatch[1];
+          const fallbackImageListMatch = pondSectionText.match(/data=\{(\[[\s\S]*?\])\}/);
+          if (fallbackImageListMatch) {
+            try {
+              let dataArrayString = fallbackImageListMatch[1];
+              dataArrayString = dataArrayString
+                .replace(/(\w+):/g, '"$1":')
+                .replace(/,\s*}/g, '}')
+                .replace(/,\s*]/g, ']');
+              
+              const membersArray = JSON.parse(dataArrayString);
+              communityMembers = membersArray;
+              console.log(`Found ${communityMembers.length} members from The Pond section fallback parsing`);
+            } catch (e) {
+              console.error('Error parsing The Pond fallback FallbackImageList:', e);
+            }
           }
         }
       }
       
-      // Final fallback: parse individual FallbackImage components
+      // Final fallback: parse individual FallbackImage components only within The Pond section
       if (communityMembers.length === 0) {
-        const fallbackImageMatches = [...text.matchAll(/<FallbackImage[^>]*data="([^"]+)"[^>]*refc="([^"]+)"[^>]*\/>/g)];
+        const pondSectionTextMatch = text.match(/## The Pond([\s\S]*?)(?=##|$)/);
+        const searchText = pondSectionTextMatch ? pondSectionTextMatch[1] : text;
+        const fallbackImageMatches = [...searchText.matchAll(/<FallbackImage[^>]*data="([^"]+)"[^>]*refc="([^"]+)"[^>]*\/>/g)];
         communityMembers = fallbackImageMatches.map(match => ({
           name: match[1],
           ref: match[2]
         }));
-        console.log(`Found ${communityMembers.length} members from individual FallbackImage parsing`);
+        console.log(`Found ${communityMembers.length} members from individual FallbackImage parsing in The Pond section`);
       }
 
       if (!communityMembers || communityMembers.length === 0) {
@@ -554,8 +561,8 @@
         referralButton.href = referralLink;
         referralButton.target = '_blank';
         referralButton.rel = 'noopener noreferrer';
-        referralButton.style.cssText = 'padding:0.4rem 0.8rem; background-color:#1DA1F2; color:white; border-radius:6px; text-decoration:none; font-weight:bold; font-size:0.8rem; text-align:center; white-space:nowrap;';
-        referralButton.textContent = 'Support';
+        referralButton.style.cssText = 'padding:0.4rem 0.8rem; background:linear-gradient(135deg, #f19cfd 0%, #FF13F0 100%); color:white; border-radius:6px; text-decoration:none; font-weight:bold; font-size:0.8rem; text-align:center; white-space:nowrap; box-shadow: 0 2px 8px rgba(241, 156, 253, 0.3); transition: all 0.3s ease;';
+        referralButton.textContent = 'Referral';
 
         memberContainer.appendChild(loadingDiv); // Start with the text avatar
         memberContainer.appendChild(profileLink);
