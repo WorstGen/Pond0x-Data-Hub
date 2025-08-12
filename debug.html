@@ -421,35 +421,57 @@
   fetch(mdxUrl)
     .then(res => res.text())
     .then(text => {
-      // Parse all community members from FallbackImageList data array
-      const fallbackImageListMatch = text.match(/data=\{(\[[\s\S]*?\])\}/);
       let communityMembers = [];
       
-      if (fallbackImageListMatch) {
+      // First, try to parse "The Pond" section which has the large FallbackImageList
+      const pondSectionMatch = text.match(/## The Pond[\s\S]*?<FallbackImageList[^>]*data=\{(\[[\s\S]*?\])\}[^>]*\/>/);
+      
+      if (pondSectionMatch) {
         try {
-          // Extract the array content and clean it up for JSON parsing
-          let dataArrayString = fallbackImageListMatch[1];
+          let dataArrayString = pondSectionMatch[1];
           
-          // Replace JavaScript object syntax with JSON syntax
+          // Clean up the JavaScript object syntax for JSON parsing
           dataArrayString = dataArrayString
-            .replace(/(\w+):/g, '"$1":')  // Quote property names
-            .replace(/,\s*}/g, '}');      // Remove trailing commas
+            .replace(/(\w+):/g, '"$1":')     // Quote property names
+            .replace(/,\s*}/g, '}')          // Remove trailing commas from objects
+            .replace(/,\s*]/g, ']');         // Remove trailing commas from arrays
           
           const membersArray = JSON.parse(dataArrayString);
           communityMembers = membersArray;
+          console.log(`Found ${communityMembers.length} members from The Pond section`);
         } catch (e) {
-          console.error('Error parsing FallbackImageList data:', e);
+          console.error('Error parsing The Pond FallbackImageList:', e);
         }
       }
       
-      // Also parse individual FallbackImage components as backup
+      // Fallback: try to find any FallbackImageList (including Contributors section)
+      if (communityMembers.length === 0) {
+        const fallbackImageListMatch = text.match(/data=\{(\[[\s\S]*?\])\}/);
+        if (fallbackImageListMatch) {
+          try {
+            let dataArrayString = fallbackImageListMatch[1];
+            dataArrayString = dataArrayString
+              .replace(/(\w+):/g, '"$1":')
+              .replace(/,\s*}/g, '}')
+              .replace(/,\s*]/g, ']');
+            
+            const membersArray = JSON.parse(dataArrayString);
+            communityMembers = membersArray;
+            console.log(`Found ${communityMembers.length} members from fallback parsing`);
+          } catch (e) {
+            console.error('Error parsing fallback FallbackImageList:', e);
+          }
+        }
+      }
+      
+      // Final fallback: parse individual FallbackImage components
       if (communityMembers.length === 0) {
         const fallbackImageMatches = [...text.matchAll(/<FallbackImage[^>]*data="([^"]+)"[^>]*refc="([^"]+)"[^>]*\/>/g)];
-        
         communityMembers = fallbackImageMatches.map(match => ({
           name: match[1],
           ref: match[2]
         }));
+        console.log(`Found ${communityMembers.length} members from individual FallbackImage parsing`);
       }
 
       if (communityMembers.length === 0) {
@@ -465,41 +487,49 @@
       const profile = `https://x.com/${username}`;
       const referralLink = `https://pond0x.com/referral/${referral}`;
 
-      // Create avatar with multiple fallback options
+      // Create avatar with better fallback and loading
       const avatarContainer = document.createElement('div');
       avatarContainer.style.cssText = 'display:flex;flex-direction:column;align-items:center;';
       
+      // Create a loading placeholder first
+      const loadingDiv = document.createElement('div');
+      loadingDiv.style.cssText = 'width:72px;height:72px;border-radius:50%;margin-bottom:0.5rem;background:linear-gradient(135deg,#7b3aad,#FF13F0);display:flex;align-items:center;justify-content:center;color:white;font-weight:bold;font-size:24px;';
+      loadingDiv.textContent = username.substring(0, 2).toUpperCase();
+      
+      // Try to load a real avatar
       const avatar = document.createElement('img');
-      avatar.style.cssText = 'width:72px;height:72px;border-radius:50%;margin-bottom:0.5rem;background:#7b3aad;display:flex;align-items:center;justify-content:center;';
+      avatar.style.cssText = 'width:72px;height:72px;border-radius:50%;margin-bottom:0.5rem;object-fit:cover;';
       avatar.alt = `@${username}`;
       
-      // Try multiple avatar services in order
+      // Avatar sources to try
       const avatarSources = [
-        `https://unavatar.io/twitter/${username}`,
-        `https://unavatar.io/x/${username}`,
-        `https://github.com/${username}.png`,
-        `https://api.dicebear.com/7.x/initials/svg?seed=${username}&backgroundColor=7b3aad&textColor=ffffff`
+        `https://unavatar.io/twitter/${username}?fallback=false`,
+        `https://github.com/${username}.png?size=72`,
+        `https://avatars.dicebear.com/api/initials/${username}.svg?background=%237b3aad&color=fff`,
+        `https://ui-avatars.com/api/?name=${username}&size=72&background=7b3aad&color=fff&rounded=true`
       ];
       
       let currentSourceIndex = 0;
+      let avatarLoaded = false;
       
       const tryNextAvatar = () => {
-        if (currentSourceIndex < avatarSources.length) {
+        if (currentSourceIndex < avatarSources.length && !avatarLoaded) {
           avatar.src = avatarSources[currentSourceIndex];
           currentSourceIndex++;
-        } else {
-          // Final fallback: create a text-based avatar
-          avatar.style.display = 'none';
-          const textAvatar = document.createElement('div');
-          textAvatar.style.cssText = 'width:72px;height:72px;border-radius:50%;margin-bottom:0.5rem;background:linear-gradient(135deg,#7b3aad,#FF13F0);display:flex;align-items:center;justify-content:center;color:white;font-weight:bold;font-size:24px;';
-          textAvatar.textContent = username.substring(0, 2).toUpperCase();
-          avatarContainer.appendChild(textAvatar);
+        }
+      };
+      
+      avatar.onload = () => {
+        if (!avatarLoaded) {
+          avatarLoaded = true;
+          loadingDiv.replaceWith(avatar);
         }
       };
       
       avatar.onerror = tryNextAvatar;
-      avatar.src = avatarSources[0];
-      currentSourceIndex = 1;
+      
+      // Start loading the first avatar source
+      tryNextAvatar();
 
       const profileLink = document.createElement('a');
       profileLink.href = profile;
@@ -515,7 +545,7 @@
       referralButton.style.cssText = 'padding:0.5rem 1rem;background-color:#1DA1F2;color:white;border-radius:4px;text-decoration:none;font-weight:bold;';
       referralButton.textContent = 'Support on Pond0x';
 
-      avatarContainer.appendChild(avatar);
+      avatarContainer.appendChild(loadingDiv); // Start with the text avatar
       avatarContainer.appendChild(profileLink);
       avatarContainer.appendChild(referralButton);
 
