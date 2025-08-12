@@ -410,7 +410,7 @@
            <div class="footer">
             <p><b>Built for <a href="https://cary0x.github.io/community/" target="_blank" class="link-url">the POND🤝X community</a> ❤️</b></p>
             </div>
-      <div id="people-like-widget" style="text-align:center; margin: 3rem 0; font-family: sans-serif;">
+     <div id="people-like-widget" style="text-align:center; margin: 3rem 0; font-family: sans-serif;">
   <h2 style="margin-bottom:1rem;">People like</h2>
   <div id="plw-content">Loading...</div>
 </div>
@@ -421,30 +421,24 @@
   fetch(mdxUrl)
     .then(res => res.text())
     .then(text => {
-      // Match lines like: - [@SomeUser](https://x.com/SomeUser)
-      const lines = text.split('\n');
-      const usernames = lines
-        .map(line => {
-          const match = line.match(/\[@([A-Za-z0-9_]+)\]\(https:\/\/x\.com\/[^\)]+\)/);
-          return match ? match[1] : null;
-        })
-        .filter(Boolean);
+      // Match <CommunityMember name="..." x="USERNAME" ref="..."/>
+      const matches = [...text.matchAll(/<CommunityMember[^>]*x="([^"]+)"[^>]*ref="([^"]+)"[^>]*\/>/g)];
 
-      if (usernames.length === 0) {
+      if (matches.length === 0) {
         document.getElementById('plw-content').textContent = "No community members found.";
         return;
       }
 
-      const user = usernames[Math.floor(Math.random() * usernames.length)];
-      const avatar = `https://unavatar.io/x.com/${user}`;
-      const profile = `https://x.com/${user}`;
-      const referral = `https://pond0x.com/referral/${user}`;
+      const [ , username, referral ] = matches[Math.floor(Math.random() * matches.length)];
+      const avatar = `https://unavatar.io/x.com/${username}`;
+      const profile = `https://x.com/${username}`;
+      const referralLink = `https://pond0x.com/referral/${referral}`;
 
       document.getElementById('plw-content').innerHTML = `
         <div style="display:flex;flex-direction:column;align-items:center;">
-          <img src="${avatar}" alt="@${user}" onerror="this.src='https://unavatar.io/github/ghost'" style="width:72px;height:72px;border-radius:50%;margin-bottom:0.5rem;">
-          <a href="${profile}" target="_blank" rel="noopener noreferrer" style="font-size:1rem;color:#1DA1F2;text-decoration:none;margin-bottom:0.5rem;">@${user}</a>
-          <a href="${referral}" target="_blank" rel="noopener noreferrer" style="padding:0.5rem 1rem;background-color:#1DA1F2;color:white;border-radius:4px;text-decoration:none;font-weight:bold;">
+          <img src="${avatar}" alt="@${username}" onerror="this.src='https://unavatar.io/github/ghost'" style="width:72px;height:72px;border-radius:50%;margin-bottom:0.5rem;">
+          <a href="${profile}" target="_blank" rel="noopener noreferrer" style="font-size:1rem;color:#1DA1F2;text-decoration:none;margin-bottom:0.5rem;">@${username}</a>
+          <a href="${referralLink}" target="_blank" rel="noopener noreferrer" style="padding:0.5rem 1rem;background-color:#1DA1F2;color:white;border-radius:4px;text-decoration:none;font-weight:bold;">
             Support on Pond0x
           </a>
         </div>
