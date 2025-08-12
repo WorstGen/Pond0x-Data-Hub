@@ -88,108 +88,224 @@
     }
 
     .card {
-      background: rgba(123, 58, 173, 0.1);
-      backdrop-filter: blur(15px);
-      border-radius: 20px;
-      padding: 2rem;
-      border: 2px solid rgba(241, 156, 253, 0.3);
-      box-shadow: 0 12px 40px rgba(123, 58, 173, 0.2);
-      margin-bottom: 2rem;
-    }
+            background: rgba(123, 58, 173, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 3rem;
+            border: 2px solid rgba(241, 156, 253, 0.3);
+            box-shadow: 0 12px 40px rgba(123, 58, 173, 0.2);
+            transition: all 0.3s ease;
+        }
 
-    .input-section {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-top: 1rem;
-      justify-content: center;
-    }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 16px 50px rgba(123, 58, 173, 0.3);
+            border-color: rgba(241, 156, 253, 0.5);
+        }
 
-    .input-section input {
-      flex: 1;
-      min-width: 250px;
-      padding: 0.6rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
+        .card h2 {
+            font-size: 1.6rem;
+            margin-bottom: 2rem;
+            color: #FF13F0;
+            font-weight: 700;
+            text-align: center;
+        }
 
-    .btn {
-      background-color: #7b3aad;
-      color: white;
-      border: none;
-      padding: 0.6rem 1rem;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-    }
+        .input-section {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
 
-    .btn:hover {
-      background-color: #5c288c;
-    }
+        .wallet-input {
+            flex: 1;
+            min-width: 300px;
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 2px solid rgba(241, 156, 253, 0.3);
+            background: rgba(123, 58, 173, 0.1);
+            color: #7b3aad;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
 
-    .links-section {
-      margin-top: 1.5rem;
-    }
+        .wallet-input:focus {
+            outline: none;
+            border-color: rgba(241, 156, 253, 0.6);
+            box-shadow: 0 0 20px rgba(241, 156, 253, 0.2);
+        }
 
-    .section-title {
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin-bottom: 1rem;
-    }
+        .wallet-input::placeholder {
+            color: rgba(123, 58, 173, 0.6);
+        }
 
-    .link-item {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-    }
+        .btn {
+            background: linear-gradient(135deg, #f19cfd 0%, #FF13F0 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(241, 156, 253, 0.3);
+            white-space: nowrap;
+        }
 
-    .link-item a {
-      color: #0077cc;
-      font-weight: bold;
-      text-decoration: underline;
-    }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(241, 156, 253, 0.4);
+        }
 
-    .footer {
-      text-align: center;
-      margin-top: 2rem;
-      padding: 1rem;
-      color: #7b3aad;
-      opacity: 0.7;
-      font-size: 0.9rem;
-    }
+        .links-section {
+            display: none;
+        }
 
-    @media (max-width: 768px) {
-      .nav-container {
-        flex-direction: column;
-        align-items: flex-start;
-      }
+        .links-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
 
-      .nav-toggle {
-        display: block;
-      }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-      .nav-links {
-        display: none;
-        flex-direction: column;
-        width: 100%;
-        background-color: #FF13F0;
-        padding: 0.5rem 0;
-        margin-top: 0.5rem;
-      }
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #FF13F0;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
 
-      .nav-links.show {
-        display: flex;
-      }
+        .link-item {
+            padding: 16px 20px;
+            background: rgba(123, 58, 173, 0.08);
+            border-radius: 12px;
+            border: 1px solid rgba(241, 156, 253, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
 
-      .nav-links a {
-        font-size: 1rem;
-        padding: 0.5rem 1rem;
-        width: 100%;
-        text-align: center;
-      }
-    }
-  </style>
+        .link-item:hover {
+            background: rgba(123, 58, 173, 0.12);
+            border-color: rgba(241, 156, 253, 0.5);
+            transform: translateX(5px);
+        }
+
+        .link-content {
+            flex: 1;
+        }
+
+        .link-title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #FF13F0;
+            margin-bottom: 4px;
+        }
+
+        .link-url {
+            color: #FF13F0;
+            text-decoration: none;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .link-url:hover {
+            color: #f97316;
+            opacity: 1;
+        }
+
+        .link-description {
+            font-size: 0.8rem;
+            color: #7b3aad;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .copy-btn, .bookmark-btn {
+            background: rgba(241, 156, 253, 0.2);
+            color: #FF13F0;
+            border: 1px solid rgba(241, 156, 253, 0.4);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .copy-btn:hover, .bookmark-btn:hover {
+            background: rgba(241, 156, 253, 0.3);
+        }
+
+        .bookmark-btn {
+            background: rgba(123, 58, 173, 0.2);
+            border-color: rgba(123, 58, 173, 0.4);
+            color: #7b3aad;
+        }
+
+        .bookmark-btn:hover {
+            background: rgba(123, 58, 173, 0.3);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            color: #7b3aad;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .input-section {
+                flex-direction: column;
+            }
+            
+            .wallet-input {
+                min-width: 100%;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .card {
+                padding: 2rem;
+            }
+            
+            .link-item {
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+            }
+            
+            .copy-btn, .bookmark-btn {
+                align-self: flex-end;
+            }
+
+            .action-buttons {
+                align-self: flex-end;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -212,55 +328,157 @@
     </div>
 
     <div class="card">
-      <h2>PERSONAL POND🤝X HISTORY LINK GENERATOR</h2>
+            <h2>PERSONAL POND🤝X HISTORY LINK GENERATOR</h2>
+            
+            <div class="input-section">
+                <input 
+                    type="text" 
+                    id="wallet-input" 
+                    class="wallet-input"
+                    placeholder="Enter your Solana wallet address (e.g., 7xKXt9WGD...)"
+                >
+                <button class="btn" onclick="generateSolanaLinks()">Generate Links</button>
+            </div>
 
-      <div class="input-section">
-        <input type="text" id="walletInput" placeholder="Enter your Solana wallet address (e.g., 7xKXt9WGD...)" />
-        <button class="btn" onclick="generateLinks()">Generate Links</button>
-      </div>
-
-      <div id="links-section" class="links-section">
-        <div class="section-title">👨‍🍳 Your Personal History Links:</div>
-        <div id="links-container"></div>
-      </div>
-    </div>
+            <div id="links-section" class="links-section">
+                <div class="section-title">👨‍🍳 Your Personal History Links:</div>
+                <div id="links-container"></div>
+            </div>
+        </div>
 
     <div class="footer">
       <p><b>Built for <a href="https://cary0x.github.io/community/" target="_blank" class="link-url">the POND🤝X community</a> ❤️</b></p>
     </div>
   </div>
 
-  <script>
-    function toggleNav() {
-      const links = document.getElementById('navLinks');
-      links.classList.toggle('show');
-    }
+   <script>
+        // Solana wallet history link templates
+        const solanaLinkTemplates = [
+            {
+                name: "HASH BOOST HISTORY",
+                url: "https://solscan.io/account/{WALLET}?exclude_amount_zero=false&remove_spam=false&from_address={WALLET}&to_address=%218bVEtH3bXnpoS8mHCHkv6xfeT8EvG1KtWoTQvP3mx5nV%2C4ngqDt821wV2CjxoZLCLcTAPZNt6ZqpswoqyQEztsU36%2C%21{WALLET}&token_address=So11111111111111111111111111111111111111111#transfers",
+                description: "View your hash boost transaction history"
+            },
+            {
+                name: "MINING CLAIMS HISTORY",
+                url: "https://solscan.io/account/{WALLET}?from_address=AYg4dKoZJudVkD7Eu3ZaJjkzfoaATUqfiv8w8pS53opT#transfers",
+                description: "View your mining claims transaction history"
+            },
+            {
+                name: "SWAP REWARDS HISTORY",
+                url: "https://solscan.io/account/{WALLET}?from_address=1orFCnFfgwPzSgUaoK6Wr3MjgXZ7mtk8NGz9Hh4iWWL&remove_spam=false&exclude_amount_zero=false#transfers",
+                description: "View your swap rewards transaction history"
+            },
+            {
+                name: "PRO SUBSCRIPTION HISTORY",
+                url: "https://solscan.io/account/{WALLET}?exclude_amount_zero=false&remove_spam=false&to_address=2bsXHfqzWS3kgcgGifmffNCRokzgV1K9RMEiTcL6zQRF%2CGSMBLYht4JGmm1ZofyTFTGykYCwsenNQpRmiJ5fMnHpD&token_address=So11111111111111111111111111111111111111111&value=5&value=undefined#transfers",
+                description: "View your pro subscription transaction history"
+            },
+            {
+                name: "wPOND INFLOW/OUTFLOW HISTORY",
+                url: "https://solscan.io/account/{WALLET}?from_address=%21AYg4dKoZJudVkD7Eu3ZaJjkzfoaATUqfiv8w8pS53opT%2C%211orFCnFfgwPzSgUaoK6Wr3MjgXZ7mtk8NGz9Hh4iWWL&to_address=%211orFCnFfgwPzSgUaoK6Wr3MjgXZ7mtk8NGz9Hh4iWWL&token_address=3JgFwoYV74f6LwWjQWnr3YDPFnmBdwQfNyubv99jqUoq&remove_spam=false&exclude_amount_zero=false&visualize=true#transfers",
+                description: "View your wPOND token flow visualization"
+            }
+        ];
 
-    function generateLinks() {
-      const wallet = document.getElementById('walletInput').value.trim();
-      const container = document.getElementById('links-container');
-      container.innerHTML = '';
+        function generateSolanaLinks() {
+            const walletAddress = document.getElementById('wallet-input').value.trim();
+            const linksContainer = document.getElementById('links-container');
+            const linksSection = document.getElementById('links-section');
 
-      if (!wallet || wallet.length < 10) {
-        container.innerHTML = '<p style="color:red;">Please enter a valid Solana wallet address.</p>';
-        return;
-      }
+            if (!walletAddress) {
+                alert('Please enter a Solana wallet address first!');
+                return;
+            }
 
-      const base = 'https://worstgen.github.io/Pond0x-Data-Hub/';
-      const pages = [
-        { name: 'Mining Claims', url: `MiningClaims.html?wallet=${wallet}` },
-        { name: 'Hash Boosts', url: `HashBoosts.html?wallet=${wallet}` },
-        { name: 'wPOND Received', url: `wPONDReceived.html?wallet=${wallet}` },
-        { name: 'Rig Activations', url: `RigActivations.html?wallet=${wallet}` },
-      ];
+            // Basic validation for Solana address (should be base58, 32-44 chars)
+            if (walletAddress.length < 32 || walletAddress.length > 44) {
+                alert('Please enter a valid Solana wallet address');
+                return;
+            }
 
-      pages.forEach(page => {
-        const div = document.createElement('div');
-        div.className = 'link-item';
-        div.innerHTML = `<a href="${base + page.url}" target="_blank">${page.name}</a>`;
-        container.appendChild(div);
-      });
-    }
+            linksContainer.innerHTML = '';
+            
+            solanaLinkTemplates.forEach(template => {
+                const finalUrl = template.url.replace(/{WALLET}/g, walletAddress);
+                
+                const linkDiv = document.createElement('div');
+                linkDiv.className = 'link-item';
+                linkDiv.innerHTML = `
+                    <div class="link-content">
+                        <div class="link-title">${template.name}</div>
+                        <a href="${finalUrl}" target="_blank" class="link-url">Open in Solscan →</a>
+                        <div class="link-description">${template.description}</div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="bookmark-btn" onclick="bookmarkLink('${finalUrl}', '${template.name}', this)">🔖 Bookmark</button>
+                        <button class="copy-btn" onclick="copyToClipboard('${finalUrl}', this)">Copy Link</button>
+                    </div>
+                `;
+                
+                linksContainer.appendChild(linkDiv);
+            });
+
+            linksSection.classList.add('show');
+        }
+
+        function bookmarkLink(url, title, button) {
+            // Try to add bookmark using the Bookmark API (works in most browsers)
+            if (window.sidebar && window.sidebar.addPanel) {
+                // Firefox
+                window.sidebar.addPanel(title, url, "");
+            } else if (window.external && ('AddFavorite' in window.external)) {
+                // Internet Explorer
+                window.external.AddFavorite(url, title);
+            } else {
+                // For modern browsers, we'll show instructions or try the Bookmarks API
+                if (navigator.clipboard) {
+                    // Copy the URL and show a helpful message
+                    navigator.clipboard.writeText(url).then(() => {
+                        const originalText = button.textContent;
+                        button.textContent = 'URL Copied!';
+                        button.style.background = 'rgba(123, 58, 173, 0.4)';
+                        button.style.color = '#f97316';
+                        
+                        // Show instructions
+                        alert(`Bookmark instructions:\n\n1. The URL has been copied to your clipboard\n2. Press Ctrl+D (Cmd+D on Mac) to bookmark this page\n3. Or manually bookmark: ${title}\n\nURL: ${url}`);
+                        
+                        setTimeout(() => {
+                            button.textContent = originalText;
+                            button.style.background = 'rgba(123, 58, 173, 0.2)';
+                            button.style.color = '#7b3aad';
+                        }, 3000);
+                    });
+                } else {
+                    // Fallback for older browsers
+                    alert(`To bookmark this link:\n\n"${title}"\n\nPress Ctrl+D (Cmd+D on Mac) after opening:\n${url}`);
+                }
+            }
+        }
+
+        function copyToClipboard(text, button) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.style.background = 'rgba(241, 156, 253, 0.4)';
+                button.style.color = '#f97316';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = 'rgba(241, 156, 253, 0.2)';
+                    button.style.color = '#f19cfd';
+                }, 2000);
+            });
+        }
+
+        // Allow Enter key to generate links
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('wallet-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    generateSolanaLinks();
+                }
+            });
+        });
   </script>
 
 </body>
