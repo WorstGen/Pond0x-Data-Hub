@@ -410,8 +410,8 @@
            <div class="footer">
             <p><b>Built for <a href="https://cary0x.github.io/community/" target="_blank" class="link-url">the POND🤝X community</a> ❤️</b></p>
             </div>
-      <<div id="people-like-widget" style="text-align:center; margin: 3rem 0; font-family: sans-serif;">
-  <h3 style="margin-bottom:1rem;">People like</h3>
+      <div id="people-like-widget" style="text-align:center; margin: 3rem 0; font-family: sans-serif;">
+  <h2 style="margin-bottom:1rem;">People like</h2>
   <div id="plw-content">Loading...</div>
 </div>
 
@@ -421,8 +421,14 @@
   fetch(mdxUrl)
     .then(res => res.text())
     .then(text => {
-      const match = [...text.matchAll(/\[@([^\]]+)\]\(https:\/\/x\.com\/[^\)]+\)/g)];
-      const usernames = match.map(m => m[1]);
+      // Match lines like: - [@SomeUser](https://x.com/SomeUser)
+      const lines = text.split('\n');
+      const usernames = lines
+        .map(line => {
+          const match = line.match(/\[@([A-Za-z0-9_]+)\]\(https:\/\/x\.com\/[^\)]+\)/);
+          return match ? match[1] : null;
+        })
+        .filter(Boolean);
 
       if (usernames.length === 0) {
         document.getElementById('plw-content').textContent = "No community members found.";
