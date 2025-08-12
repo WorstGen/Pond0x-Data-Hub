@@ -1,121 +1,204 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8" /> <meta name="viewport" content="width=device-width, initial-scale=1.0"/> <title>POND🤝X DATA HUB</title> <style> * { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: linear-gradient(90deg, #089c00 0%, #16a305 15%, #13FF22 35%, #13FF22 65%, #16a305 85%, #089c00 100%);
-  color: #7b3aad;
-  min-height: 100vh;
-  padding-top: 70px; /* space for fixed navbar */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>POND🤝X DATA HUB</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-.navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background-color: #FF13F0;
-  z-index: 1000;
-  display: flex;
-  justify-content: center;
-  gap: 1.5rem;
-  padding: 1rem 2rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  flex-wrap: wrap;
-}
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(90deg, #089c00 0%, #16a305 15%, #13FF22 35%, #13FF22 65%, #16a305 85%, #089c00 100%);
+      color: #7b3aad;
+      min-height: 100vh;
+      padding-top: 50px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-.navbar a {
-  color: #13FF22;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 1rem;
-  transition: color 0.3s, background-color 0.3s;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-}
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #FF13F0;
+      z-index: 1000;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
 
-.navbar a:hover {
-  background-color: rgba(19, 255, 34, 0.15);
-  color: white;
-}
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0.3rem 1rem;
+      flex-wrap: wrap;
+    }
 
-.container {
-  max-width: 900px;
-  width: 100%;
-  padding: 0 1rem;
-}
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
 
-.header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
+    .nav-links a {
+      color: #13FF22;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1rem;
+      padding: 0.5rem;
+      border-radius: 5px;
+    }
 
-.header h1 {
-  font-size: 3rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  text-shadow: 0 0 20px rgba(123, 58, 173, 0.3);
-}
+    .nav-links a:hover {
+      background-color: rgba(19, 255, 34, 0.15);
+      color: white;
+    }
 
-.card {
-  background: rgba(123, 58, 173, 0.1);
-  backdrop-filter: blur(15px);
-  border-radius: 20px;
-  padding: 2rem;
-  border: 2px solid rgba(241, 156, 253, 0.3);
-  box-shadow: 0 12px 40px rgba(123, 58, 173, 0.2);
-}
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: white;
+      cursor: pointer;
+    }
 
-iframe {
-  width: 100%;
-  height: 600px;
-  border: none;
-  border-radius: 12px;
-  box-shadow: 0 0 15px rgba(123, 58, 173, 0.2);
-  background: white;
-}
+    .container {
+      max-width: 900px;
+      width: 100%;
+      padding: 0 1rem;
+    }
 
-.footer {
-  text-align: center;
-  margin-top: 2rem;
-  padding: 1rem;
-  color: #7b3aad;
-  opacity: 0.7;
-  font-size: 0.9rem;
-}
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
 
-.mirrored {
-  display: inline-block;
-  transform: scaleX(-1);
-}
+    .header img {
+      max-width: 100%;
+      height: auto;
+    }
 
-@media (max-width: 768px) {
-  .header h1 {
-    font-size: 2.2rem;
-  }
+    .card {
+      background: rgba(123, 58, 173, 0.1);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 2rem;
+      border: 2px solid rgba(241, 156, 253, 0.3);
+      box-shadow: 0 12px 40px rgba(123, 58, 173, 0.2);
+    }
 
-  iframe {
-    height: 500px;
-  }
+    iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(123, 58, 173, 0.2);
+      background: white;
+    }
 
-  .navbar {
-    flex-direction: column;
-    align-items: center;
-  }
+    .footer {
+      text-align: center;
+      margin-top: 2rem;
+      padding: 1rem;
+      color: #7b3aad;
+      opacity: 0.7;
+      font-size: 0.9rem;
+    }
 
-  .navbar a {
-    font-size: 1.1rem;
-    padding: 0.75rem 1.25rem;
-  }
-}
-</style> </head> <body> <!-- Sticky Nav --> <nav class="navbar"> <a href="https://worstgen.github.io/Pond0x-Data-Hub/">PERSONAL LINKS</a> <a href="https://worstgen.github.io/Pond0x-Data-Hub/MiningClaims.html">MINING CLAIMS</a> <a href="https://worstgen.github.io/Pond0x-Data-Hub/HashBoosts.html">HASH BOOSTS</a> <a href="https://worstgen.github.io/Pond0x-Data-Hub/wPONDReceived.html">wPOND RECEIVED</a> <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigActivations.html">RIG ACTIVATIONS</a> </nav> <div class="container"> <header class="header"> <h1><b>POND🤝X<br>DATA HUB</b></h1> </header>
-<div class="card">
-  <h2 style="text-align:center; margin-bottom: 1rem;">⛏️ Mining Claims <span class="mirrored">⛏️</span></h2>
-  <iframe src="https://dune.com/embeds/5592171/9098468" title="Dune Dashboard Embed" loading="lazy"></iframe>
-</div>
+    .mirrored {
+      display: inline-block;
+      transform: scaleX(-1);
+    }
 
-<div class="footer">
-  <p><b>Built for <a href="https://cary0x.github.io/community/" target="_blank" class="link-url">the POND🤝X community</a> ❤️</b></p>
-</div>
-</div> </body> </html>
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 0.2rem 0;
+      }
+
+      .nav-container {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0.2rem 1rem;
+      }
+
+      .nav-toggle {
+        display: block;
+        align-self: flex-start;
+        margin-bottom: 0.3rem;
+      }
+
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background-color: #FF13F0;
+        padding: 0.25rem 0;
+        margin-top: 0.3rem;
+      }
+
+      .nav-links.show {
+        display: flex;
+      }
+
+      .nav-links a {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+        width: 100%;
+        text-align: center;
+      }
+
+      iframe {
+        height: 450px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Responsive Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <button class="nav-toggle" onclick="toggleNav()">☰</button>
+      <div class="nav-links" id="navLinks">
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/">PERSONAL LINKS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/MiningClaims.html">MINING CLAIMS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/HashBoosts.html">HASH BOOSTS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/wPONDReceived.html">wPOND RECEIVED</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigActivations.html">RIG ACTIVATIONS</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="header">
+      <img src="https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/refs/heads/main/pond0xdatahub.png" alt="POND0X Data Hub Logo">
+    </div>
+
+    <div class="card">
+      <h2 style="text-align:center; margin-bottom: 1rem;"><span class="mirrored">⛏️</span> Mining Claims ⛏️</h2>
+      <iframe src="https://dune.com/embeds/5592171/9098468" title="Dune Dashboard Embed" loading="lazy"></iframe>
+    </div>
+
+    <div class="footer">
+      <p><b>Built for <a href="https://cary0x.github.io/community/" target="_blank" class="link-url">the POND🤝X community</a> ❤️</b></p>
+    </div>
+  </div>
+
+  <script>
+    function toggleNav() {
+      const links = document.getElementById('navLinks');
+      links.classList.toggle('show');
+    }
+  </script>
+
+</body>
+</html>
