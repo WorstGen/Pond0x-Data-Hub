@@ -1,30 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POND🤝X DATA HUB</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>POND🤝X DATA HUB</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(90deg, #16a305 0%, #13FF22 25%, #13FF22 50%, #13FF22 75%, #16a305 100%);
-;
-            color: #7b3aad;
-            min-height: 100vh;
-            line-height: 1.6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-        }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(90deg, #089c00 0%, #16a305 15%, #13FF22 35%, #13FF22 65%, #16a305 85%, #089c00 100%);
+      color: #7b3aad;
+      min-height: 100vh;
+      padding-top: 60px;
+    }
 
-        .container {
+    .container {
             max-width: 800px;
             width: 100%;
         }
@@ -66,12 +61,12 @@
         .card h2 {
             font-size: 1.6rem;
             margin-bottom: 2rem;
-            color: #FF13F0;
+            color: #7b3aad;
             font-weight: 700;
             text-align: center;
         }
 
-        .input-section {
+    .input-section {
             display: flex;
             gap: 1rem;
             align-items: center;
@@ -137,7 +132,7 @@
         .section-title {
             font-size: 1.3rem;
             font-weight: 600;
-            color: #FF13F0;
+            color: #7b3aad;
             margin-bottom: 1.5rem;
             text-align: center;
         }
@@ -167,7 +162,7 @@
         .link-title {
             font-weight: 600;
             font-size: 1rem;
-            color: #FF13F0;
+            color: #7b3aad;
             margin-bottom: 4px;
         }
 
@@ -179,7 +174,7 @@
         }
 
         .link-url:hover {
-            color: #f97316;
+            color: #7b3aad;
             opacity: 1;
         }
 
@@ -265,16 +260,138 @@
                 align-self: flex-end;
             }
         }
-    </style>
+    
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #FF13F0;
+      z-index: 1000;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0.3rem 1rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: white;
+      cursor: pointer;
+      margin-right: auto;
+    }
+
+    .nav-title {
+      color: #FF13F0;
+      font-weight: bold;
+      font-size: 1.1rem;
+      text-align: center;
+      width: 100%;
+      margin-bottom: 0.5rem;
+      display: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .nav-links a {
+      color: #13FF22;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1rem;
+      padding: 0.5rem;
+      border-radius: 5px;
+    }
+
+    .nav-links a:hover {
+      background-color: rgba(19, 255, 34, 0.15);
+      color: white;
+    }
+
+    .container {
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .header img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    @media (max-width: 768px) {
+  .nav-container {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.5rem 1rem;
+  }
+
+  .nav-toggle {
+    display: block;
+    align-self: flex-start;
+    margin: 0.25rem 0;
+  }
+
+      .nav-title {
+        display: block;
+      }
+
+      .nav-links {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        width: 100%;
+        display: none;
+      }
+
+      .nav-links.show {
+        display: flex;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <h1><b>POND🤝X<br>DATA HUB</b></h1>
-        </header>
+  <nav class="navbar">
+    <div class="nav-container">
+      <button class="nav-toggle" onclick="toggleNav()">☰</button>
+      <div class="nav-links" id="navLinks">
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/">PERSONAL LINKS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/MiningClaims.html">MINING CLAIMS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/HashBoosts.html">HASH BOOSTS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/wPONDReceived.html">wPOND RECEIVED</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigActivations.html">RIG ACTIVATIONS</a>
+      </div>
+    </div>
+  </nav>
 
-        <div class="card">
-            <h2>PERSONAL POND🤝X HISTORY LINK GENERATOR</h2>
+  <div class="container">
+    <div class="header">
+      <img src="https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/refs/heads/main/pond0xdatahub.png" alt="POND0X Data Hub Logo">
+    </div>
+  </div>
+
+    <div class="card">
+            <h2>Personal POND🤝X History Link Generator</h2>
             
             <div class="input-section">
                 <input 
@@ -291,11 +408,6 @@
                 <div id="links-container"></div>
             </div>
         </div>
-
-        <div class="footer">
-            <p><b>Built for <a href="https://cary0x.github.io/community/" target="_blank" class="link-url">the POND🤝X community</a> ❤️</b></p>
-        </div>
-    </div>
 
     <script>
         // Solana wallet history link templates
@@ -384,7 +496,7 @@
                         const originalText = button.textContent;
                         button.textContent = 'URL Copied!';
                         button.style.background = 'rgba(123, 58, 173, 0.4)';
-                        button.style.color = '#f97316';
+                        button.style.color = '#7b3aad';
                         
                         // Show instructions
                         alert(`Bookmark instructions:\n\n1. The URL has been copied to your clipboard\n2. Press Ctrl+D (Cmd+D on Mac) to bookmark this page\n3. Or manually bookmark: ${title}\n\nURL: ${url}`);
@@ -392,7 +504,7 @@
                         setTimeout(() => {
                             button.textContent = originalText;
                             button.style.background = 'rgba(123, 58, 173, 0.2)';
-                            button.style.color = '#7b3aad';
+                            button.style.color = '#FF13F0';
                         }, 3000);
                     });
                 } else {
@@ -426,5 +538,12 @@
             });
         });
     </script>
+
+  <script>
+    function toggleNav() {
+      const navLinks = document.getElementById('navLinks');
+      navLinks.classList.toggle('show');
+    }
+  </script>
 </body>
 </html>
