@@ -161,6 +161,40 @@
         height: 450px;
       }
     }
+      .people-like-section {
+      text-align: center;
+      margin-top: 2rem;
+      padding: 1rem;
+      color: #7b3aad;
+      font-size: 0.9rem;
+    }
+      .people-like-subtitle {
+      margin: 0.5rem 0 1rem 0;
+      font-size: 0.9rem;
+      color: #7b3aad;
+      opacity: 0.8;
+    }
+
+    #plw-content {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    /* Link styling for the section */
+    .people-like-section .link-url {
+      color: #FF13F0;
+      text-decoration: none;
+      opacity: 0.8;
+      transition: all 0.3s ease;
+    }
+
+    .people-like-section .link-url:hover {
+      color: #7b3aad;
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
@@ -189,8 +223,10 @@
       <iframe src="https://dune.com/embeds/5504647/8965439" title="Dune Dashboard Embed" loading="lazy"></iframe>
     </div>
 
-    <div class="footer">
+    <div class="people-like-section">
       <p><b>Built for <a href="https://cary0x.github.io/community/" target="_blank" class="link-url">the POND🤝X community</a> ❤️</b></p>
+      <p class="people-like-subtitle"><b>People like</b></p>
+  <div id="plw-content">Loading...</div>
     </div>
   </div>
 
@@ -200,6 +236,167 @@
       links.classList.toggle('show');
     }
   </script>
+
+  <script>
+  const MDX_URL = 'https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/main/src/community.mdx';
+
+// Parse community data from MDX
+function parseCommunityData(text) {
+  let communityMembers = [];
+  
+  const pondSectionMatch = text.match(/## The Pond[\s\S]*?<FallbackImageList[^>]*data=\{(\[[\s\S]*?\])\}[^>]*\/>/);
+  
+  if (pondSectionMatch) {
+    try {
+      let dataArrayString = pondSectionMatch[1]
+        .replace(/(\w+):/g, '"$1":')
+        .replace(/,\s*}/g, '}')
+        .replace(/,\s*]/g, ']');
+      
+      communityMembers = JSON.parse(dataArrayString);
+      console.log(`Found ${communityMembers.length} members from The Pond section`);
+    } catch (e) {
+      console.error('Error parsing The Pond FallbackImageList:', e);
+    }
+  }
+  
+  if (communityMembers.length === 0) {
+    const communityMembersMatch = text.match(/## Community Members([\s\S]*?)(?=##|$)/);
+    if (communityMembersMatch) {
+      const fallbackImageMatches = [...communityMembersMatch[1].matchAll(/<FallbackImage[^>]*data="([^"]+)"[^>]*refc="([^"]+)"[^>]*\/>/g)];
+      communityMembers = fallbackImageMatches.map(match => ({
+        name: match[1],
+        ref: match[2]
+      }));
+      console.log(`Found ${communityMembers.length} members from Community Members section`);
+    }
+  }
+  
+  return communityMembers;
+}
+
+// Select random community members
+function selectRandomMembers(members, count = 3) {
+  const selectedMembers = [];
+  const totalMembers = members.length;
+  const usedIndices = new Set();
+  const seed = Date.now();
+  
+  while (selectedMembers.length < count && selectedMembers.length < totalMembers) {
+    const randomIndex = Math.floor((Math.random() + seed * selectedMembers.length) % 1 * totalMembers);
+    if (!usedIndices.has(randomIndex)) {
+      usedIndices.add(randomIndex);
+      selectedMembers.push(members[randomIndex]);
+    }
+  }
+  
+  return selectedMembers;
+}
+
+// Create avatar with fallback
+function createAvatar(username, memberContainer) {
+  const loadingDiv = document.createElement('div');
+  loadingDiv.style.cssText = 'width:64px; height:64px; border-radius:50%; margin-bottom:0.75rem; background:linear-gradient(135deg,#7b3aad,#FF13F0); display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; font-size:18px;';
+  loadingDiv.textContent = username.substring(0, 2).toUpperCase();
+  
+  const avatar = document.createElement('img');
+  avatar.style.cssText = 'width:64px; height:64px; border-radius:50%; margin-bottom:0.75rem; object-fit:cover;';
+  avatar.alt = `@${username}`;
+  
+  const avatarSources = [
+    `https://unavatar.io/twitter/${username}?fallback=false`,
+    `https://github.com/${username}.png?size=64`,
+    `https://avatars.dicebear.com/api/initials/${username}.svg?background=%237b3aad&color=fff`,
+    `https://ui-avatars.com/api/?name=${username}&size=64&background=7b3aad&color=fff&rounded=true`
+  ];
+  
+  let currentSourceIndex = 0;
+  let avatarLoaded = false;
+  
+  const tryNextAvatar = () => {
+    if (currentSourceIndex < avatarSources.length && !avatarLoaded) {
+      avatar.src = avatarSources[currentSourceIndex];
+      currentSourceIndex++;
+    }
+  };
+  
+  avatar.onload = () => {
+    if (!avatarLoaded) {
+      avatarLoaded = true;
+      loadingDiv.replaceWith(avatar);
+    }
+  };
+  
+  avatar.onerror = tryNextAvatar;
+  
+  memberContainer.appendChild(loadingDiv);
+  tryNextAvatar();
+}
+
+// Render community members
+function renderCommunityMembers(selectedMembers) {
+  const container = document.getElementById('plw-content');
+  container.innerHTML = '';
+
+  selectedMembers.forEach(member => {
+    const { name: username, ref: referral } = member;
+    const profile = `https://x.com/${username}`;
+    const referralLink = `https://pond0x.com/referral/${referral}`;
+
+    const memberContainer = document.createElement('div');
+    memberContainer.style.cssText = 'display:flex; flex-direction:column; align-items:center; min-width:120px; max-width:150px;';
+    
+    createAvatar(username, memberContainer);
+
+    const profileLink = document.createElement('a');
+    profileLink.href = profile;
+    profileLink.target = '_blank';
+    profileLink.rel = 'noopener noreferrer';
+    profileLink.style.cssText = 'font-size:0.9rem; color:#FF13F0; text-decoration:none; margin-bottom:0.5rem; text-align:center; word-break:break-word; line-height:1.2;';
+    profileLink.textContent = `@${username}`;
+
+    const referralButton = document.createElement('a');
+    referralButton.href = referralLink;
+    referralButton.target = '_blank';
+    referralButton.rel = 'noopener noreferrer';
+    referralButton.style.cssText = 'padding:0.4rem 0.8rem; background:linear-gradient(135deg, #f19cfd 0%, #FF13F0 100%); color:white; border-radius:6px; text-decoration:none; font-weight:bold; font-size:0.8rem; text-align:center; white-space:nowrap; box-shadow: 0 2px 8px rgba(241, 156, 253, 0.3); transition: all 0.3s ease;';
+    referralButton.textContent = 'Referral';
+
+    memberContainer.appendChild(profileLink);
+    memberContainer.appendChild(referralButton);
+    container.appendChild(memberContainer);
+  });
+}
+
+// Load community data
+function loadCommunityData() {
+  fetch(MDX_URL)
+    .then(res => res.text())
+    .then(text => {
+      const communityMembers = parseCommunityData(text);
+      
+      if (!communityMembers || communityMembers.length === 0) {
+        document.getElementById('plw-content').textContent = "No community members found.";
+        return;
+      }
+
+      const selectedMembers = selectRandomMembers(communityMembers);
+      renderCommunityMembers(selectedMembers);
+    })
+    .catch(err => {
+      console.error('Error loading community data:', err);
+      document.getElementById('plw-content').textContent = "Couldn't load community.";
+    });
+}
+
+// Initialize the People Like section
+function initPeopleLikeSection() {
+  loadCommunityData();
+}
+
+// Auto-initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', initPeopleLikeSection);
+</script>
 
 </body>
 </html>
