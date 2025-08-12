@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>POND🤝X DATA HUB</title>
   <style>
     * {
@@ -16,17 +16,12 @@
       background: linear-gradient(90deg, #089c00 0%, #16a305 15%, #13FF22 35%, #13FF22 65%, #16a305 85%, #089c00 100%);
       color: #7b3aad;
       min-height: 100vh;
-      padding-top: 60px;
+      padding-top: 50px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    .container {
-      max-width: 900px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 1rem;
-    }
-
-    /* Navigation */
     .navbar {
       position: fixed;
       top: 0;
@@ -47,16 +42,6 @@
       flex-wrap: wrap;
     }
 
-    .nav-toggle {
-      display: none;
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      color: white;
-      cursor: pointer;
-      margin-right: auto;
-    }
-
     .nav-links {
       display: flex;
       gap: 1rem;
@@ -71,7 +56,6 @@
       font-size: 1rem;
       padding: 0.5rem;
       border-radius: 5px;
-      transition: all 0.3s ease;
     }
 
     .nav-links a:hover {
@@ -79,7 +63,21 @@
       color: white;
     }
 
-    /* Header */
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: white;
+      cursor: pointer;
+    }
+
+    .container {
+      max-width: 900px;
+      width: 100%;
+      padding: 0 1rem;
+    }
+
     .header {
       text-align: center;
       margin-bottom: 2rem;
@@ -90,202 +88,87 @@
       height: auto;
     }
 
-    /* Main Card */
     .card {
       background: rgba(123, 58, 173, 0.1);
       backdrop-filter: blur(15px);
       border-radius: 20px;
-      padding: 3rem;
+      padding: 2rem;
       border: 2px solid rgba(241, 156, 253, 0.3);
       box-shadow: 0 12px 40px rgba(123, 58, 173, 0.2);
-      transition: all 0.3s ease;
-      max-width: 800px;
-      margin: 0 auto;
     }
 
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 16px 50px rgba(123, 58, 173, 0.3);
-      border-color: rgba(241, 156, 253, 0.5);
-    }
-
-    .card h2 {
-      font-size: 1.6rem;
-      margin-bottom: 2rem;
-      color: #7b3aad;
-      font-weight: 700;
-      text-align: center;
-    }
-
-    /* Input Section */
-    .input-section {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 2rem;
-    }
-
-    .wallet-input {
-      flex: 1;
-      min-width: 300px;
-      padding: 15px 20px;
-      border-radius: 12px;
-      border: 2px solid rgba(241, 156, 253, 0.3);
-      background: rgba(123, 58, 173, 0.1);
-      color: #7b3aad;
-      font-size: 1.1rem;
-      transition: all 0.3s ease;
-    }
-
-    .wallet-input:focus {
-      outline: none;
-      border-color: rgba(241, 156, 253, 0.6);
-      box-shadow: 0 0 20px rgba(241, 156, 253, 0.2);
-    }
-
-    .wallet-input::placeholder {
-      color: rgba(123, 58, 173, 0.6);
-    }
-
-    .btn {
-      background: linear-gradient(135deg, #f19cfd 0%, #FF13F0 100%);
-      color: white;
+    iframe {
+      width: 100%;
+      height: 600px;
       border: none;
-      padding: 15px 30px;
       border-radius: 12px;
-      cursor: pointer;
-      font-size: 1.1rem;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(241, 156, 253, 0.3);
-      white-space: nowrap;
+      box-shadow: 0 0 15px rgba(123, 58, 173, 0.2);
+      background: white;
     }
 
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(241, 156, 253, 0.4);
-    }
-
-    /* Links Section */
-    .links-section {
-      display: none;
-    }
-
-    .links-section.show {
-      display: block;
-      animation: fadeIn 0.5s ease;
-    }
-
-    @keyframes fadeIn {
-      from { 
-        opacity: 0; 
-        transform: translateY(20px); 
-      }
-      to { 
-        opacity: 1; 
-        transform: translateY(0); 
-      }
-    }
-
-    .section-title {
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: #7b3aad;
-      margin-bottom: 1.5rem;
+    .footer {
       text-align: center;
-    }
-
-    .link-item {
-      padding: 16px 20px;
-      background: rgba(123, 58, 173, 0.08);
-      border-radius: 12px;
-      border: 1px solid rgba(241, 156, 253, 0.3);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-      transition: all 0.3s ease;
-    }
-
-    .link-item:hover {
-      background: rgba(123, 58, 173, 0.12);
-      border-color: rgba(241, 156, 253, 0.5);
-      transform: translateX(5px);
-    }
-
-    .link-content {
-      flex: 1;
-    }
-
-    .link-title {
-      font-weight: 600;
-      font-size: 1rem;
-      color: #7b3aad;
-      margin-bottom: 4px;
-    }
-
-    .link-url {
-      color: #FF13F0;
-      text-decoration: none;
-      font-size: 0.9rem;
-      opacity: 0.8;
-      transition: all 0.3s ease;
-    }
-
-    .link-url:hover {
-      color: #7b3aad;
-      opacity: 1;
-    }
-
-    .link-description {
-      font-size: 0.8rem;
+      margin-top: 2rem;
+      padding: 1rem;
       color: #7b3aad;
       opacity: 0.7;
-      margin-top: 4px;
+      font-size: 0.9rem;
     }
 
-    .action-buttons {
-      display: flex;
-      gap: 8px;
+    .mirrored {
+      display: inline-block;
+      transform: scaleX(-1);
     }
 
-    .copy-btn, .bookmark-btn {
-      background: rgba(241, 156, 253, 0.2);
-      color: #FF13F0;
-      border: 1px solid rgba(241, 156, 253, 0.4);
-      padding: 8px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      transition: all 0.3s ease;
-      white-space: nowrap;
-    }
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 0.2rem 0;
+      }
 
-    .copy-btn:hover, .bookmark-btn:hover {
-      background: rgba(241, 156, 253, 0.3);
-    }
+      .nav-container {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0.2rem 1rem;
+      }
 
-    .bookmark-btn {
-      background: rgba(123, 58, 173, 0.2);
-      border-color: rgba(123, 58, 173, 0.4);
-      color: #7b3aad;
-    }
+      .nav-toggle {
+        display: block;
+        align-self: flex-start;
+        margin-bottom: 0.3rem;
+      }
 
-    .bookmark-btn:hover {
-      background: rgba(123, 58, 173, 0.3);
-    }
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background-color: #FF13F0;
+        padding: 0.25rem 0;
+        margin-top: 0.3rem;
+      }
 
-    /* Footer */
-    .footer {
+      .nav-links.show {
+        display: flex;
+      }
+
+      .nav-links a {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+        width: 100%;
+        text-align: center;
+      }
+
+      iframe {
+        height: 450px;
+      }
+    }
+      .people-like-section {
       text-align: center;
       margin-top: 2rem;
       padding: 1rem;
       color: #7b3aad;
       font-size: 0.9rem;
     }
-
-    .footer-subtitle {
+      .people-like-subtitle {
       margin: 0.5rem 0 1rem 0;
       font-size: 0.9rem;
       color: #7b3aad;
@@ -300,61 +183,23 @@
       align-items: flex-start;
     }
 
-    /* Mobile Responsive */
-    @media (max-width: 768px) {
-      .nav-container {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 0.5rem 1rem;
-      }
+    /* Link styling for the section */
+    .people-like-section .link-url {
+      color: #FF13F0;
+      text-decoration: none;
+      opacity: 0.8;
+      transition: all 0.3s ease;
+    }
 
-      .nav-toggle {
-        display: block;
-        align-self: flex-start;
-        margin: 0.25rem 0;
-      }
-
-      .nav-links {
-        flex-direction: column;
-        align-items: center;
-        gap: 0.5rem;
-        width: 100%;
-        display: none;
-      }
-
-      .nav-links.show {
-        display: flex;
-      }
-
-      .input-section {
-        flex-direction: column;
-      }
-
-      .wallet-input {
-        min-width: 100%;
-      }
-
-      .btn {
-        width: 100%;
-      }
-
-      .card {
-        padding: 2rem;
-      }
-
-      .link-item {
-        flex-direction: column;
-        gap: 12px;
-        align-items: flex-start;
-      }
-
-      .action-buttons {
-        align-self: flex-end;
-      }
+    .people-like-section .link-url:hover {
+      color: #7b3aad;
+      opacity: 1;
     }
   </style>
 </head>
 <body>
+
+  <!-- Responsive Navigation -->
   <nav class="navbar">
     <div class="nav-container">
       <button class="nav-toggle" onclick="toggleNav()">☰</button>
@@ -374,320 +219,184 @@
     </div>
 
     <div class="card">
-      <h2>Personal POND🤝X History Link Generator</h2>
-      
-      <div class="input-section">
-        <input 
-          type="text" 
-          id="wallet-input" 
-          class="wallet-input"
-          placeholder="Enter your Solana wallet address (e.g., 7xKXt9WGD...)"
-        >
-        <button class="btn" onclick="generateSolanaLinks()">Generate Links</button>
-      </div>
+      <h2 style="text-align:center; margin-bottom: 1rem;"><span class="mirrored">✨</span> Hash Boosts ✨</h2>
+      <iframe src="https://dune.com/embeds/5504647/8965439" title="Dune Dashboard Embed" loading="lazy"></iframe>
+    </div>
 
-      <div id="links-section" class="links-section">
-        <div class="section-title">👨‍🍳 Your Personal History Links:</div>
-        <div id="links-container"></div>
-      </div>
-
-      <div class="footer">
-        <p><b>Built for <a href="https://cary0x.github.io/community/" target="_blank" class="link-url">the POND🤝X community</a> ❤️</b></p>
-        <p class="footer-subtitle"><b>People like</b></p>
-        <div id="plw-content">Loading...</div>
-      </div>
+    <div class="people-like-section">
+      <p><b>Built for <a href="https://cary0x.github.io/community/" target="_blank" class="link-url">the POND🤝X community</a> ❤️</b></p>
+      <p class="people-like-subtitle"><b>People like</b></p>
+  <div id="plw-content">Loading...</div>
     </div>
   </div>
 
   <script>
-    // Solana wallet history link templates
-    const SOLANA_LINK_TEMPLATES = [
-      {
-        name: "HASH BOOST HISTORY",
-        url: "https://solscan.io/account/{WALLET}?exclude_amount_zero=false&remove_spam=false&from_address={WALLET}&to_address=%218bVEtH3bXnpoS8mHCHkv6xfeT8EvG1KtWoTQvP3mx5nV%2C4ngqDt821wV2CjxoZLCLcTAPZNt6ZqpswoqyQEztsU36%2C%21{WALLET}&token_address=So11111111111111111111111111111111111111111#transfers",
-        description: "View your hash boost transaction history"
-      },
-      {
-        name: "MINING CLAIMS HISTORY",
-        url: "https://solscan.io/account/{WALLET}?from_address=AYg4dKoZJudVkD7Eu3ZaJjkzfoaATUqfiv8w8pS53opT#transfers",
-        description: "View your mining claims transaction history"
-      },
-      {
-        name: "SWAP REWARDS HISTORY",
-        url: "https://solscan.io/account/{WALLET}?from_address=1orFCnFfgwPzSgUaoK6Wr3MjgXZ7mtk8NGz9Hh4iWWL&remove_spam=false&exclude_amount_zero=false#transfers",
-        description: "View your swap rewards transaction history"
-      },
-      {
-        name: "PRO SUBSCRIPTION HISTORY",
-        url: "https://solscan.io/account/{WALLET}?exclude_amount_zero=false&remove_spam=false&to_address=2bsXHfqzWS3kgcgGifmffNCRokzgV1K9RMEiTcL6zQRF%2CGSMBLYht4JGmm1ZofyTFTGykYCwsenNQpRmiJ5fMnHpD&token_address=So11111111111111111111111111111111111111111&value=5&value=undefined#transfers",
-        description: "View your pro subscription transaction history"
-      },
-      {
-        name: "wPOND INFLOW/OUTFLOW HISTORY",
-        url: "https://solscan.io/account/{WALLET}?from_address=%21AYg4dKoZJudVkD7Eu3ZaJjkzfoaATUqfiv8w8pS53opT%2C%211orFCnFfgwPzSgUaoK6Wr3MjgXZ7mtk8NGz9Hh4iWWL&to_address=%211orFCnFfgwPzSgUaoK6Wr3MjgXZ7mtk8NGz9Hh4iWWL&token_address=3JgFwoYV74f6LwWjQWnr3YDPFnmBdwQfNyubv99jqUoq&remove_spam=false&exclude_amount_zero=false&visualize=true#transfers",
-        description: "View your wPOND token flow visualization"
-      }
-    ];
-
-    const MDX_URL = 'https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/main/src/community.mdx';
-
-    // Navigation toggle
     function toggleNav() {
-      const navLinks = document.getElementById('navLinks');
-      navLinks.classList.toggle('show');
+      const links = document.getElementById('navLinks');
+      links.classList.toggle('show');
     }
-
-    // Wallet address validation
-    function isValidSolanaAddress(address) {
-      return address && address.length >= 32 && address.length <= 44;
-    }
-
-    // Generate Solana links
-    function generateSolanaLinks() {
-      const walletAddress = document.getElementById('wallet-input').value.trim();
-      const linksContainer = document.getElementById('links-container');
-      const linksSection = document.getElementById('links-section');
-
-      if (!walletAddress) {
-        alert('Please enter a Solana wallet address first!');
-        return;
-      }
-
-      if (!isValidSolanaAddress(walletAddress)) {
-        alert('Please enter a valid Solana wallet address');
-        return;
-      }
-
-      linksContainer.innerHTML = '';
-      
-      SOLANA_LINK_TEMPLATES.forEach(template => {
-        const finalUrl = template.url.replace(/{WALLET}/g, walletAddress);
-        
-        const linkDiv = document.createElement('div');
-        linkDiv.className = 'link-item';
-        linkDiv.innerHTML = `
-          <div class="link-content">
-            <div class="link-title">${template.name}</div>
-            <a href="${finalUrl}" target="_blank" class="link-url">Open in Solscan →</a>
-            <div class="link-description">${template.description}</div>
-          </div>
-          <div class="action-buttons">
-            <button class="bookmark-btn" onclick="bookmarkLink('${finalUrl}', '${template.name}', this)">🔖 Bookmark</button>
-            <button class="copy-btn" onclick="copyToClipboard('${finalUrl}', this)">Copy Link</button>
-          </div>
-        `;
-        
-        linksContainer.appendChild(linkDiv);
-      });
-
-      linksSection.classList.add('show');
-    }
-
-    // Bookmark functionality
-    function bookmarkLink(url, title, button) {
-      if (window.sidebar && window.sidebar.addPanel) {
-        window.sidebar.addPanel(title, url, "");
-      } else if (window.external && ('AddFavorite' in window.external)) {
-        window.external.AddFavorite(url, title);
-      } else {
-        if (navigator.clipboard) {
-          navigator.clipboard.writeText(url).then(() => {
-            const originalText = button.textContent;
-            button.textContent = 'URL Copied!';
-            button.style.background = 'rgba(123, 58, 173, 0.4)';
-            button.style.color = '#7b3aad';
-            
-            alert(`Bookmark instructions:\n\n1. The URL has been copied to your clipboard\n2. Press Ctrl+D (Cmd+D on Mac) to bookmark this page\n3. Or manually bookmark: ${title}\n\nURL: ${url}`);
-            
-            setTimeout(() => {
-              button.textContent = originalText;
-              button.style.background = 'rgba(123, 58, 173, 0.2)';
-              button.style.color = '#FF13F0';
-            }, 3000);
-          });
-        } else {
-          alert(`To bookmark this link:\n\n"${title}"\n\nPress Ctrl+D (Cmd+D on Mac) after opening:\n${url}`);
-        }
-      }
-    }
-
-    // Copy to clipboard
-    function copyToClipboard(text, button) {
-      navigator.clipboard.writeText(text).then(() => {
-        const originalText = button.textContent;
-        button.textContent = 'Copied!';
-        button.style.background = 'rgba(241, 156, 253, 0.4)';
-        button.style.color = '#f97316';
-        
-        setTimeout(() => {
-          button.textContent = originalText;
-          button.style.background = 'rgba(241, 156, 253, 0.2)';
-          button.style.color = '#f19cfd';
-        }, 2000);
-      });
-    }
-
-    // Parse community data from MDX
-    function parseCommunityData(text) {
-      let communityMembers = [];
-      
-      const pondSectionMatch = text.match(/## The Pond[\s\S]*?<FallbackImageList[^>]*data=\{(\[[\s\S]*?\])\}[^>]*\/>/);
-      
-      if (pondSectionMatch) {
-        try {
-          let dataArrayString = pondSectionMatch[1]
-            .replace(/(\w+):/g, '"$1":')
-            .replace(/,\s*}/g, '}')
-            .replace(/,\s*]/g, ']');
-          
-          communityMembers = JSON.parse(dataArrayString);
-          console.log(`Found ${communityMembers.length} members from The Pond section`);
-        } catch (e) {
-          console.error('Error parsing The Pond FallbackImageList:', e);
-        }
-      }
-      
-      if (communityMembers.length === 0) {
-        const communityMembersMatch = text.match(/## Community Members([\s\S]*?)(?=##|$)/);
-        if (communityMembersMatch) {
-          const fallbackImageMatches = [...communityMembersMatch[1].matchAll(/<FallbackImage[^>]*data="([^"]+)"[^>]*refc="([^"]+)"[^>]*\/>/g)];
-          communityMembers = fallbackImageMatches.map(match => ({
-            name: match[1],
-            ref: match[2]
-          }));
-          console.log(`Found ${communityMembers.length} members from Community Members section`);
-        }
-      }
-      
-      return communityMembers;
-    }
-
-    // Select random community members
-    function selectRandomMembers(members, count = 3) {
-      const selectedMembers = [];
-      const totalMembers = members.length;
-      const usedIndices = new Set();
-      const seed = Date.now();
-      
-      while (selectedMembers.length < count && selectedMembers.length < totalMembers) {
-        const randomIndex = Math.floor((Math.random() + seed * selectedMembers.length) % 1 * totalMembers);
-        if (!usedIndices.has(randomIndex)) {
-          usedIndices.add(randomIndex);
-          selectedMembers.push(members[randomIndex]);
-        }
-      }
-      
-      return selectedMembers;
-    }
-
-    // Create avatar with fallback
-    function createAvatar(username, memberContainer) {
-      const loadingDiv = document.createElement('div');
-      loadingDiv.style.cssText = 'width:64px; height:64px; border-radius:50%; margin-bottom:0.75rem; background:linear-gradient(135deg,#7b3aad,#FF13F0); display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; font-size:18px;';
-      loadingDiv.textContent = username.substring(0, 2).toUpperCase();
-      
-      const avatar = document.createElement('img');
-      avatar.style.cssText = 'width:64px; height:64px; border-radius:50%; margin-bottom:0.75rem; object-fit:cover;';
-      avatar.alt = `@${username}`;
-      
-      const avatarSources = [
-        `https://unavatar.io/twitter/${username}?fallback=false`,
-        `https://github.com/${username}.png?size=64`,
-        `https://avatars.dicebear.com/api/initials/${username}.svg?background=%237b3aad&color=fff`,
-        `https://ui-avatars.com/api/?name=${username}&size=64&background=7b3aad&color=fff&rounded=true`
-      ];
-      
-      let currentSourceIndex = 0;
-      let avatarLoaded = false;
-      
-      const tryNextAvatar = () => {
-        if (currentSourceIndex < avatarSources.length && !avatarLoaded) {
-          avatar.src = avatarSources[currentSourceIndex];
-          currentSourceIndex++;
-        }
-      };
-      
-      avatar.onload = () => {
-        if (!avatarLoaded) {
-          avatarLoaded = true;
-          loadingDiv.replaceWith(avatar);
-        }
-      };
-      
-      avatar.onerror = tryNextAvatar;
-      
-      memberContainer.appendChild(loadingDiv);
-      tryNextAvatar();
-    }
-
-    // Render community members
-    function renderCommunityMembers(selectedMembers) {
-      const container = document.getElementById('plw-content');
-      container.innerHTML = '';
-
-      selectedMembers.forEach(member => {
-        const { name: username, ref: referral } = member;
-        const profile = `https://x.com/${username}`;
-        const referralLink = `https://pond0x.com/referral/${referral}`;
-
-        const memberContainer = document.createElement('div');
-        memberContainer.style.cssText = 'display:flex; flex-direction:column; align-items:center; min-width:120px; max-width:150px;';
-        
-        createAvatar(username, memberContainer);
-
-        const profileLink = document.createElement('a');
-        profileLink.href = profile;
-        profileLink.target = '_blank';
-        profileLink.rel = 'noopener noreferrer';
-        profileLink.style.cssText = 'font-size:0.9rem; color:#FF13F0; text-decoration:none; margin-bottom:0.5rem; text-align:center; word-break:break-word; line-height:1.2;';
-        profileLink.textContent = `@${username}`;
-
-        const referralButton = document.createElement('a');
-        referralButton.href = referralLink;
-        referralButton.target = '_blank';
-        referralButton.rel = 'noopener noreferrer';
-        referralButton.style.cssText = 'padding:0.4rem 0.8rem; background:linear-gradient(135deg, #f19cfd 0%, #FF13F0 100%); color:white; border-radius:6px; text-decoration:none; font-weight:bold; font-size:0.8rem; text-align:center; white-space:nowrap; box-shadow: 0 2px 8px rgba(241, 156, 253, 0.3); transition: all 0.3s ease;';
-        referralButton.textContent = 'Referral';
-
-        memberContainer.appendChild(profileLink);
-        memberContainer.appendChild(referralButton);
-        container.appendChild(memberContainer);
-      });
-    }
-
-    // Load community data
-    function loadCommunityData() {
-      fetch(MDX_URL)
-        .then(res => res.text())
-        .then(text => {
-          const communityMembers = parseCommunityData(text);
-          
-          if (!communityMembers || communityMembers.length === 0) {
-            document.getElementById('plw-content').textContent = "No community members found.";
-            return;
-          }
-
-          const selectedMembers = selectRandomMembers(communityMembers);
-          renderCommunityMembers(selectedMembers);
-        })
-        .catch(err => {
-          console.error('Error loading community data:', err);
-          document.getElementById('plw-content').textContent = "Couldn't load community.";
-        });
-    }
-
-    // Initialize
-    document.addEventListener('DOMContentLoaded', function() {
-      // Allow Enter key to generate links
-      document.getElementById('wallet-input').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-          generateSolanaLinks();
-        }
-      });
-
-      // Load community data
-      loadCommunityData();
-    });
   </script>
+
+  <script>
+  const MDX_URL = 'https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/main/src/community.mdx';
+
+// Parse community data from MDX
+function parseCommunityData(text) {
+  let communityMembers = [];
+  
+  const pondSectionMatch = text.match(/## The Pond[\s\S]*?<FallbackImageList[^>]*data=\{(\[[\s\S]*?\])\}[^>]*\/>/);
+  
+  if (pondSectionMatch) {
+    try {
+      let dataArrayString = pondSectionMatch[1]
+        .replace(/(\w+):/g, '"$1":')
+        .replace(/,\s*}/g, '}')
+        .replace(/,\s*]/g, ']');
+      
+      communityMembers = JSON.parse(dataArrayString);
+      console.log(`Found ${communityMembers.length} members from The Pond section`);
+    } catch (e) {
+      console.error('Error parsing The Pond FallbackImageList:', e);
+    }
+  }
+  
+  if (communityMembers.length === 0) {
+    const communityMembersMatch = text.match(/## Community Members([\s\S]*?)(?=##|$)/);
+    if (communityMembersMatch) {
+      const fallbackImageMatches = [...communityMembersMatch[1].matchAll(/<FallbackImage[^>]*data="([^"]+)"[^>]*refc="([^"]+)"[^>]*\/>/g)];
+      communityMembers = fallbackImageMatches.map(match => ({
+        name: match[1],
+        ref: match[2]
+      }));
+      console.log(`Found ${communityMembers.length} members from Community Members section`);
+    }
+  }
+  
+  return communityMembers;
+}
+
+// Select random community members
+function selectRandomMembers(members, count = 3) {
+  const selectedMembers = [];
+  const totalMembers = members.length;
+  const usedIndices = new Set();
+  const seed = Date.now();
+  
+  while (selectedMembers.length < count && selectedMembers.length < totalMembers) {
+    const randomIndex = Math.floor((Math.random() + seed * selectedMembers.length) % 1 * totalMembers);
+    if (!usedIndices.has(randomIndex)) {
+      usedIndices.add(randomIndex);
+      selectedMembers.push(members[randomIndex]);
+    }
+  }
+  
+  return selectedMembers;
+}
+
+// Create avatar with fallback
+function createAvatar(username, memberContainer) {
+  const loadingDiv = document.createElement('div');
+  loadingDiv.style.cssText = 'width:64px; height:64px; border-radius:50%; margin-bottom:0.75rem; background:linear-gradient(135deg,#7b3aad,#FF13F0); display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; font-size:18px;';
+  loadingDiv.textContent = username.substring(0, 2).toUpperCase();
+  
+  const avatar = document.createElement('img');
+  avatar.style.cssText = 'width:64px; height:64px; border-radius:50%; margin-bottom:0.75rem; object-fit:cover;';
+  avatar.alt = `@${username}`;
+  
+  const avatarSources = [
+    `https://unavatar.io/twitter/${username}?fallback=false`,
+    `https://github.com/${username}.png?size=64`,
+    `https://avatars.dicebear.com/api/initials/${username}.svg?background=%237b3aad&color=fff`,
+    `https://ui-avatars.com/api/?name=${username}&size=64&background=7b3aad&color=fff&rounded=true`
+  ];
+  
+  let currentSourceIndex = 0;
+  let avatarLoaded = false;
+  
+  const tryNextAvatar = () => {
+    if (currentSourceIndex < avatarSources.length && !avatarLoaded) {
+      avatar.src = avatarSources[currentSourceIndex];
+      currentSourceIndex++;
+    }
+  };
+  
+  avatar.onload = () => {
+    if (!avatarLoaded) {
+      avatarLoaded = true;
+      loadingDiv.replaceWith(avatar);
+    }
+  };
+  
+  avatar.onerror = tryNextAvatar;
+  
+  memberContainer.appendChild(loadingDiv);
+  tryNextAvatar();
+}
+
+// Render community members
+function renderCommunityMembers(selectedMembers) {
+  const container = document.getElementById('plw-content');
+  container.innerHTML = '';
+
+  selectedMembers.forEach(member => {
+    const { name: username, ref: referral } = member;
+    const profile = `https://x.com/${username}`;
+    const referralLink = `https://pond0x.com/referral/${referral}`;
+
+    const memberContainer = document.createElement('div');
+    memberContainer.style.cssText = 'display:flex; flex-direction:column; align-items:center; min-width:120px; max-width:150px;';
+    
+    createAvatar(username, memberContainer);
+
+    const profileLink = document.createElement('a');
+    profileLink.href = profile;
+    profileLink.target = '_blank';
+    profileLink.rel = 'noopener noreferrer';
+    profileLink.style.cssText = 'font-size:0.9rem; color:#FF13F0; text-decoration:none; margin-bottom:0.5rem; text-align:center; word-break:break-word; line-height:1.2;';
+    profileLink.textContent = `@${username}`;
+
+    const referralButton = document.createElement('a');
+    referralButton.href = referralLink;
+    referralButton.target = '_blank';
+    referralButton.rel = 'noopener noreferrer';
+    referralButton.style.cssText = 'padding:0.4rem 0.8rem; background:linear-gradient(135deg, #f19cfd 0%, #FF13F0 100%); color:white; border-radius:6px; text-decoration:none; font-weight:bold; font-size:0.8rem; text-align:center; white-space:nowrap; box-shadow: 0 2px 8px rgba(241, 156, 253, 0.3); transition: all 0.3s ease;';
+    referralButton.textContent = 'Referral';
+
+    memberContainer.appendChild(profileLink);
+    memberContainer.appendChild(referralButton);
+    container.appendChild(memberContainer);
+  });
+}
+
+// Load community data
+function loadCommunityData() {
+  fetch(MDX_URL)
+    .then(res => res.text())
+    .then(text => {
+      const communityMembers = parseCommunityData(text);
+      
+      if (!communityMembers || communityMembers.length === 0) {
+        document.getElementById('plw-content').textContent = "No community members found.";
+        return;
+      }
+
+      const selectedMembers = selectRandomMembers(communityMembers);
+      renderCommunityMembers(selectedMembers);
+    })
+    .catch(err => {
+      console.error('Error loading community data:', err);
+      document.getElementById('plw-content').textContent = "Couldn't load community.";
+    });
+}
+
+// Initialize the People Like section
+function initPeopleLikeSection() {
+  loadCommunityData();
+}
+
+// Auto-initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', initPeopleLikeSection);
+</script>
+
 </body>
 </html>
