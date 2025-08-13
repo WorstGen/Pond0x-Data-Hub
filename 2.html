@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⛏️ Mining Claims ⛏️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: radial-gradient(ellipse at center, #1a1a2e 0%, #0f0f1e 100%);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 165, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 215, 0, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(255, 140, 0, 0.05) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: -300px;
+            top: 0;
+            width: 300px;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            transition: left 0.3s ease;
+            z-index: 1000;
+            padding: 2rem 0;
+        }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar-menu li {
+            margin: 0;
+        }
+
+        .sidebar-menu a {
+            display: block;
+            padding: 1rem 2rem;
+            color: #b0b0c0;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+            border-left-color: #ffd700;
+        }
+
+        .menu-toggle {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            z-index: 1001;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 0.8rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .menu-toggle:hover {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .main-content {
+            margin-left: 0;
+            padding: 6rem 2rem 2rem;
+            transition: margin-left 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffd700, #ff8c00, #ffa500);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s ease-in-out infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .page-subtitle {
+            color: #b0b0c0;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .community-heart {
+            color: #8090a0;
+            font-size: 0.9rem;
+        }
+
+        .data-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .loading-container {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 215, 0, 0.2);
+            border-top: 4px solid #ffd700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 2rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 1.2rem;
+            color: #ffd700;
+            margin-bottom: 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #b0b0c0;
+            font-size: 0.9rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .data-table th {
+            background: rgba(255, 215, 0, 0.2);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #ffd700;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .data-table tr:hover {
+            background: rgba(255, 215, 0, 0.05);
+        }
+
+        .hash-value {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.8rem;
+            color: #40e0ff;
+            word-break: break-all;
+        }
+
+        .timestamp {
+            color: #8090a0;
+            font-size: 0.9rem;
+        }
+
+        .amount {
+            color: #80ff40;
+            font-weight: 600;
+        }
+
+        .search-container {
+            margin-bottom: 2rem;
+        }
+
+        .search-box {
+            width: 100%;
+            max-width: 400px;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .search-box::placeholder {
+            color: #8090a0;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 5rem 1rem 1rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+
+            .data-table {
+                font-size: 0.8rem;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    
+    <div class="overlay" onclick="toggleSidebar()"></div>
+    
+    <div class="menu-toggle" onclick="toggleSidebar()">
+        ☰
+    </div>
+
+    <nav class="sidebar">
+        <ul class="sidebar-menu">
+            <li><a href="index.html">PERSONAL LINKS</a></li>
+            <li><a href="MiningClaims.html" class="active">MINING CLAIMS</a></li>
+            <li><a href="HashBoosts.html">HASH BOOSTS</a></li>
+            <li><a href="wPONDReceived.html">wPOND RECEIVED</a></li>
+            <li><a href="RigActivations.html">RIG ACTIVATIONS</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-content">
+        <div class="container">
+            <header class="page-header">
+                <h1 class="page-title">⛏️ Mining Claims ⛏️</h1>
+                <p class="page-subtitle">Built for the POND🤝X community</p>
+                <p class="community-heart">❤️ People like you make this possible</p>
+            </header>
+
+            <div class="data-section">
+                <div class="search-container">
+                    <input type="text" class="search-box" placeholder="Search by transaction hash or wallet address..." />
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalClaims">-</div>
+                        <div class="stat-label">Total Claims</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="successfulClaims">-</div>
+                        <div class="stat-label">Successful</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalRewards">-</div>
+                        <div class="stat-label">Total Rewards</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="avgClaimTime">-</div>
+                        <div class="stat-label">Avg Claim Time</div>
+                    </div>
+                </div>
+
+                <div class="loading-container" id="loadingContainer">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">Loading mining claims data...</div>
+                    <p style="color: #8090a0;">Analyzing blockchain transactions...</p>
+                </div>
+
+                <div style="display: none;" id="dataContainer">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Transaction Hash</th>
+                                <th>Timestamp</th>
+                                <th>Claim Amount</th>
+                                <th>Status</th>
+                                <th>Gas Fee</th>
+                            </tr>
+                        </thead>
+                        <tbody id="claimsTableBody">
+                            <!-- Data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let sidebarOpen = false;
+
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.overlay');
+            
+            sidebarOpen = !sidebarOpen;
+            
+            if (sidebarOpen) {
+                sidebar.classList.add('open');
+                overlay.classList.add('show');
+            } else {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('show');
+            }
+        }
+
+        // Simulate loading data
+        function loadMiningClaimsData() {
+            // Simulate API call delay
+            setTimeout(() => {
+                // Hide loading container
+                document.getElementById('loadingContainer').style.display = 'none';
+                
+                // Show data container
+                document.getElementById('dataContainer').style.display = 'block';
+                
+                // Update stats
+                document.getElementById('totalClaims').textContent = '147';
+                document.getElementById('successfulClaims').textContent = '142';
+                document.getElementById('totalRewards').textContent = '2,847 wPOND';
+                document.getElementById('avgClaimTime').textContent = '14.2s';
+                
+                // Populate sample data
+                const sampleData = [
+                    {
+                        hash: '3xF8n2kQ9vR7mP4oL6sW1jH5nB9cX2yT8rE4dA7fG3kM',
+                        timestamp: '2025-08-13 15:42:33',
+                        amount: '19.7 wPOND',
+                        status: 'Success',
+                        gasFee: '0.0001 SOL'
+                    },
+                    {
+                        hash: '7pR3nK8xQ2mV9oL4sW6jH1nB5cX8yT4rE2dA9fG7kP',
+                        timestamp: '2025-08-13 14:28:17',
+                        amount: '23.4 wPOND',
+                        status: 'Success',
+                        gasFee: '0.0001 SOL'
+                    },
+                    {
+                        hash: '9kM5nP2xQ8vR7oL3sW4jH6nB1cX7yT5rE8dA2fG9kL',
+                        timestamp: '2025-08-13 13:15:42',
+                        amount: '16.8 wPOND',
+                        status: 'Success',
+                        gasFee: '0.0001 SOL'
+                    },
+                    {
+                        hash: '2yT6nR9xQ5vM8oL7sW3jH4nB2cX1yT9rE5dA6fG4kN',
+                        timestamp: '2025-08-13 12:03:29',
+                        amount: '21.2 wPOND',
+                        status: 'Failed',
+                        gasFee: '0.0001 SOL'
+                    },
+                    {
+                        hash: '6fG4nL7xQ3vK9oL2sW8jH5nB6cX4yT1rE7dA3fG8kM',
+                        timestamp: '2025-08-13 10:47:15',
+                        amount: '18.6 wPOND',
+                        status: 'Success',
+                        gasFee: '0.0001 SOL'
+                    }
+                ];
+                
+                const tableBody = document.getElementById('claimsTableBody');
+                tableBody.innerHTML = sampleData.map(item => `
+                    <tr>
+                        <td><span class="hash-value">${item.hash}</span></td>
+                        <td><span class="timestamp">${item.timestamp}</span></td>
+                        <td><span class="amount">${item.amount}</span></td>
+                        <td><span style="color: ${item.status === 'Success' ? '#80ff40' : '#ff4081'}">${item.status}</span></td>
+                        <td>${item.gasFee}</td>
+                    </tr>
+                `).join('');
+                
+            }, 2500);
+        }
+        
+        // Search functionality
+        document.querySelector('.search-box').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#claimsTableBody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        // Initialize data loading
+        loadMiningClaimsData();
