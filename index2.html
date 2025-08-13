@@ -3,296 +3,207 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>POND🤝X DATA HUB</title>
+  <title>Solana Wallet Link Generator</title>
   <style>
     body {
-      background-color: #0f0c29;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-      color: #fff;
-    }
-    .container {
+      background-color: #0a0a0a;
+      color: #f19cfd;
       text-align: center;
-      padding: 2rem 1rem;
-    }
-    .header img {
-      max-width: 300px;
-      margin-bottom: 2rem;
-    }
-    .card {
-      background-color: #1f1b3a;
-      border-radius: 15px;
       padding: 2rem;
+    }
+
+    .container {
       max-width: 800px;
-      margin: 0 auto;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      margin: auto;
+      background: #1a1a1a;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(241, 156, 253, 0.2);
     }
-    .card h2 {
-      margin-bottom: 1rem;
-      color: #f19cfd;
-    }
-    .input-section {
-      margin-bottom: 2rem;
-    }
-    .wallet-input {
-      padding: 0.75rem 1rem;
-      width: 100%;
-      max-width: 500px;
-      border: none;
-      border-radius: 10px;
-      font-size: 1rem;
-      margin-bottom: 1rem;
-    }
-    .btn {
-      background-color: #f19cfd;
-      color: #0f0c29;
-      padding: 0.75rem 1.25rem;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .btn:hover {
-      background-color: #fb9ad1;
-    }
-    .section-title {
-      font-size: 1.2rem;
-      margin-bottom: 1rem;
-      color: #f19cfd;
-    }
-    .link-item {
-      background: #292457;
-      border: 1px solid rgba(241, 156, 253, 0.3);
+
+    input[type="text"] {
+      width: 80%;
       padding: 1rem;
       margin-bottom: 1rem;
-      border-radius: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
     }
+
+    button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      background-color: #7b3aad;
+      color: white;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .links-section {
+      margin-top: 2rem;
+      text-align: left;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #f19cfd;
+    }
+
+    .link-item {
+      background: rgba(123, 58, 173, 0.1);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
     .link-title {
       font-weight: bold;
       color: #f19cfd;
     }
+
     .link-url {
-      color: #8b5cf6;
-      text-decoration: none;
-    }
-    .link-url:hover {
+      color: #9d4edd;
       text-decoration: underline;
-    }
-    .action-buttons {
-      display: flex;
-      gap: 1rem;
+      display: block;
       margin-top: 0.5rem;
     }
-    .bookmark-btn,
-    .copy-btn {
-      background: rgba(241, 156, 253, 0.2);
-      border: none;
-      color: #f19cfd;
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      cursor: pointer;
+
+    .link-description {
+      color: #ccc;
+      font-size: 0.9rem;
     }
-    .bookmark-btn:hover,
-    .copy-btn:hover {
-      background: rgba(241, 156, 253, 0.4);
+
+    .action-buttons button {
+      margin-left: 0.5rem;
+      background-color: #9d4edd;
     }
-    .people-like-section {
-      margin-top: 2rem;
-    }
-    .people-like-subtitle {
-      margin-bottom: 0.5rem;
-      font-weight: bold;
-      color: #f19cfd;
-    }
-    .navbar {
-      background-color: #1f1b3a;
+
+    pre {
+      background: rgba(241, 156, 253, 0.05);
       padding: 1rem;
-      text-align: center;
-      border-bottom: 1px solid #3e3b5b;
-    }
-    .nav-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .nav-links {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-    .nav-links a {
+      border-radius: 10px;
+      white-space: pre-wrap;
+      font-size: 0.9rem;
       color: #f19cfd;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .nav-links a:hover {
-      text-decoration: underline;
-    }
-    @media (max-width: 768px) {
-      .nav-links {
-        flex-direction: column;
-        align-items: center;
-        display: none;
-      }
-      .nav-links.show {
-        display: flex;
-      }
-      .nav-toggle {
-        display: block;
-        background: none;
-        border: none;
-        color: #f19cfd;
-        font-size: 1.5rem;
-        cursor: pointer;
-        margin-bottom: 1rem;
-      }
-    }
-    @media (min-width: 769px) {
-      .nav-toggle {
-        display: none;
-      }
     }
   </style>
 </head>
 <body>
-
-  <nav class="navbar">
-    <div class="nav-container">
-      <button class="nav-toggle" onclick="toggleNav()">☰</button>
-      <div class="nav-links" id="navLinks">
-        <a href="https://worstgen.github.io/Pond0x-Data-Hub/">PERSONAL LINKS</a>
-        <a href="https://worstgen.github.io/Pond0x-Data-Hub/MiningClaims.html">MINING CLAIMS</a>
-        <a href="https://worstgen.github.io/Pond0x-Data-Hub/HashBoosts.html">HASH BOOSTS</a>
-        <a href="https://worstgen.github.io/Pond0x-Data-Hub/wPONDReceived.html">wPOND RECEIVED</a>
-        <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigActivations.html">RIG ACTIVATIONS</a>
-      </div>
-    </div>
-  </nav>
-
   <div class="container">
-    <div class="header">
-      <img src="https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/refs/heads/main/pond0xdatahub.png" alt="POND0X Data Hub Logo">
-    </div>
-  </div>
+    <h1>🔗 Solana Wallet Link Generator</h1>
+    <p>Enter your Solana wallet address below to generate useful links and wallet data:</p>
+    <input type="text" id="wallet-input" placeholder="Enter Solana wallet address" />
+    <br />
+    <button onclick="generateSolanaLinks()">Generate Links</button>
 
-  <div class="card">
-    <h2>Personal POND🤝X History Link Generator</h2>
-
-    <div class="input-section">
-      <input 
-        type="text" 
-        id="wallet-input" 
-        class="wallet-input"
-        placeholder="Enter your Solana wallet address (e.g., 7xKXt9WGD...)"
-      >
-      <button class="btn" onclick="generateSolanaLinks()">Generate Links</button>
-    </div>
-
-    <div id="links-section" class="links-section">
-      <div class="section-title">👨‍🍳 Your Personal History Links:</div>
+    <div id="links-section" class="links-section" style="display:none;">
+      <div class="section-title">🧩 Personal History Links</div>
       <div id="links-container"></div>
     </div>
 
-    <!-- ✅ Cary0x Data Display Section -->
-    <div id="wallet-data-container" style="display:none; margin-top: 2rem;">
-      <h3 style="color: #f19cfd;">📦 Wallet Data from Cary0x</h3>
-      <pre id="wallet-data-output" style="color: #7b3aad; background: rgba(241, 156, 253, 0.05); padding: 1rem; border: 1px solid rgba(123, 58, 173, 0.2); border-radius: 10px; white-space: pre-wrap;"></pre>
-    </div>
-
-    <div class="people-like-section">
-      <p><b>Built for <a href="https://cary0x.github.io/community/" target="_blank" class="link-url">the POND🤝X community</a> ❤️</b></p>
+    <div id="wallet-data-section" class="links-section" style="display:none;">
+      <div class="section-title">📦 Wallet Data from Cary0x</div>
+      <pre id="wallet-data-pre">Loading...</pre>
     </div>
   </div>
 
   <script>
     const solanaLinkTemplates = [
       {
-        name: "HASH BOOST HISTORY",
-        url: "https://solscan.io/account/{WALLET}?exclude_amount_zero=false&remove_spam=false&from_address={WALLET}&to_address=%218bVEtH3bXnpoS8mHCHkv6xfeT8EvG1KtWoTQvP3mx5nV%2C4ngqDt821wV2CjxoZLCLcTAPZNt6ZqpswoqyQEztsU36%2C%21{WALLET}&token_address=So11111111111111111111111111111111111111111#transfers",
-        description: "View your hash boost transaction history"
+        name: "Solscan",
+        description: "View your wallet activity on Solscan",
+        url: "https://solscan.io/account/{WALLET}"
       },
       {
-        name: "MINING CLAIMS HISTORY",
-        url: "https://solscan.io/account/{WALLET}?from_address=AYg4dKoZJudVkD7Eu3ZaJjkzfoaATUqfiv8w8pS53opT#transfers",
-        description: "View your mining claims transaction history"
+        name: "Solana Explorer",
+        description: "Official Solana blockchain explorer",
+        url: "https://explorer.solana.com/address/{WALLET}"
       },
       {
-        name: "SWAP REWARDS HISTORY",
-        url: "https://solscan.io/account/{WALLET}?from_address=1orFCnFfgwPzSgUaoK6Wr3MjgXZ7mtk8NGz9Hh4iWWL&remove_spam=false&exclude_amount_zero=false#transfers",
-        description: "View your swap rewards transaction history"
-      },
-      {
-        name: "PRO SUBSCRIPTION HISTORY",
-        url: "https://solscan.io/account/{WALLET}?exclude_amount_zero=false&remove_spam=false&to_address=2bsXHfqzWS3kgcgGifmffNCRokzgV1K9RMEiTcL6zQRF%2CGSMBLYht4JGmm1ZofyTFTGykYCwsenNQpRmiJ5fMnHpD&token_address=So11111111111111111111111111111111111111111&value=5&value=undefined#transfers",
-        description: "View your pro subscription transaction history"
-      },
-      {
-        name: "wPOND INFLOW/OUTFLOW HISTORY",
-        url: "https://solscan.io/account/{WALLET}?from_address=%21AYg4dKoZJudVkD7Eu3ZaJjkzfoaATUqfiv8w8pS53opT%2C%211orFCnFfgwPzSgUaoK6Wr3MjgXZ7mtk8NGz9Hh4iWWL&to_address=%211orFCnFfgwPzSgUaoK6Wr3MjgXZ7mtk8NGz9Hh4iWWL&token_address=3JgFwoYV74f6LwWjQWnr3YDPFnmBdwQfNyubv99jqUoq&remove_spam=false&exclude_amount_zero=false&visualize=true#transfers",
-        description: "View your wPOND token flow visualization"
+        name: "Solana Beach",
+        description: "Track your wallet on Solana Beach",
+        url: "https://solanabeach.io/address/{WALLET}"
       }
     ];
 
     function generateSolanaLinks() {
-      const walletInput = document.getElementById('wallet-input').value.trim();
+      const walletAddress = document.getElementById('wallet-input').value.trim();
       const linksContainer = document.getElementById('links-container');
       const linksSection = document.getElementById('links-section');
 
-      if (!walletInput || walletInput.length < 32 || walletInput.length > 44) {
-        alert("Please enter a valid Solana wallet address.");
+      if (!walletAddress) {
+        alert('Please enter a Solana wallet address!');
+        return;
+      }
+
+      if (walletAddress.length < 32 || walletAddress.length > 44) {
+        alert('Please enter a valid Solana wallet address');
         return;
       }
 
       linksContainer.innerHTML = '';
-
       solanaLinkTemplates.forEach(template => {
-        const finalUrl = template.url.replace(/{WALLET}/g, walletInput);
-        const div = document.createElement('div');
-        div.className = 'link-item';
-        div.innerHTML = `
-          <div class="link-title">${template.name}</div>
-          <a href="${finalUrl}" class="link-url" target="_blank">Open in Solscan →</a>
-          <div>${template.description}</div>
+        const finalUrl = template.url.replace(/{WALLET}/g, walletAddress);
+
+        const linkDiv = document.createElement('div');
+        linkDiv.className = 'link-item';
+        linkDiv.innerHTML = `
+          <div>
+            <div class="link-title">${template.name}</div>
+            <a href="${finalUrl}" target="_blank" class="link-url">Open ${template.name} →</a>
+            <div class="link-description">${template.description}</div>
+          </div>
         `;
-        linksContainer.appendChild(div);
+        linksContainer.appendChild(linkDiv);
       });
 
-      linksSection.classList.add("show");
-      fetchWalletData(walletInput);
+      linksSection.style.display = 'block';
+      fetchWalletData(walletAddress);
     }
 
     function fetchWalletData(wallet) {
-      const container = document.getElementById("wallet-data-container");
-      const output = document.getElementById("wallet-data-output");
+      const pre = document.getElementById("wallet-data-pre");
+      const section = document.getElementById("wallet-data-section");
 
-      container.style.display = "block";
-      output.textContent = "Loading data from cary0x.com...";
+      section.style.display = "block";
+      pre.textContent = "🔄 Loading wallet data from Cary0x...";
 
-      const manifestURL = `https://www.cary0x.com/api/manifest/${wallet}`;
-      const healthURL = `https://www.cary0x.com/api/health/${wallet}`;
+      const proxy = "https://corsproxy.io/?";
+      const manifestURL = proxy + encodeURIComponent(`https://www.cary0x.com/api/manifest/${wallet}`);
+      const healthURL = proxy + encodeURIComponent(`https://www.cary0x.com/api/health/${wallet}`);
 
       Promise.all([
-        fetch(manifestURL).then(res => res.ok ? res.json() : Promise.reject("Manifest not found")),
-        fetch(healthURL).then(res => res.ok ? res.json() : Promise.reject("Health not found"))
+        fetch(manifestURL).then(async res => {
+          const contentType = res.headers.get("content-type");
+          if (!res.ok || !contentType.includes("application/json")) {
+            const text = await res.text();
+            throw new Error(`Manifest error: ${res.status}\n${text}`);
+          }
+          return res.json();
+        }),
+        fetch(healthURL).then(async res => {
+          const contentType = res.headers.get("content-type");
+          if (!res.ok || !contentType.includes("application/json")) {
+            const text = await res.text();
+            throw new Error(`Health error: ${res.status}\n${text}`);
+          }
+          return res.json();
+        })
       ])
       .then(([manifest, health]) => {
-        output.textContent = `🔍 Manifest:\n${JSON.stringify(manifest, null, 2)}\n\n❤️ Health:\n${JSON.stringify(health, null, 2)}`;
+        pre.textContent = `📄 Manifest:\n${JSON.stringify(manifest, null, 2)}\n\n❤️ Health:\n${JSON.stringify(health, null, 2)}`;
       })
       .catch(error => {
-        output.textContent = `❌ Error fetching data: ${error}`;
+        pre.textContent = `❌ Failed to load wallet data:\n\n${error.message}`;
       });
     }
-
-    function toggleNav() {
-      const navLinks = document.getElementById('navLinks');
-      navLinks.classList.toggle('show');
-    }
   </script>
-
 </body>
 </html>
