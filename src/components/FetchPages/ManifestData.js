@@ -1,4 +1,4 @@
-import { FetchComponent, DataField } from "@site/src/components/FetchData";
+import { FetchComponent, DataField } from "@site/Pond0x-Data-Hub/src/components/FetchData";
 
 export default function ManifestData() {
   const renderResults = (data) => (
