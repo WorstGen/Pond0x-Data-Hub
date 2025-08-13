@@ -423,10 +423,10 @@
     .bubble {
       position: absolute;
       border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(123, 58, 173, 0.5), rgba(241, 156, 253, 0.3));
+      background: radial-gradient(circle at 30% 30%, rgba(255, 19, 240, 0.8), rgba(255, 19, 240, 0.5), rgba(241, 12, 223, 0.3));
       box-shadow: 0 0 20px rgba(241, 156, 253, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.2);
       animation: float linear infinite;
-      opacity: 0;
+      opacity: 40;
     }
 
     @keyframes float {
@@ -438,11 +438,11 @@
         opacity: 0.8;
       }
       90% {
-        opacity: 0.8;
+        opacity: 1.6;
       }
       100% {
         transform: translateY(-100px) scale(1);
-        opacity: 0;
+        opacity: 30;
       }
     }
 
