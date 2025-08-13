@@ -294,10 +294,12 @@
 
     #plw-content {
       display: flex;
-      gap: 2rem;
+      gap: 1.5rem;
       justify-content: center;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       align-items: flex-start;
+      overflow-x: auto;
+      padding: 0 1rem;
     }
 
     /* Mobile Responsive */
@@ -350,6 +352,12 @@
 
       .action-buttons {
         align-self: flex-end;
+      }
+
+      /* Keep people like section side by side on mobile */
+      #plw-content {
+        gap: 1rem;
+        padding: 0 0.5rem;
       }
     }
   </style>
@@ -631,7 +639,7 @@
         const referralLink = `https://pond0x.com/referral/${referral}`;
 
         const memberContainer = document.createElement('div');
-        memberContainer.style.cssText = 'display:flex; flex-direction:column; align-items:center; min-width:120px; max-width:150px;';
+        memberContainer.style.cssText = 'display:flex; flex-direction:column; align-items:center; min-width:100px; max-width:120px; flex-shrink:0;';
         
         createAvatar(username, memberContainer);
 
@@ -639,7 +647,7 @@
         profileLink.href = profile;
         profileLink.target = '_blank';
         profileLink.rel = 'noopener noreferrer';
-        profileLink.style.cssText = 'font-size:0.9rem; color:#FF13F0; text-decoration:none; margin-bottom:0.5rem; text-align:center; word-break:break-word; line-height:1.2;';
+        profileLink.style.cssText = 'font-size:0.9rem; color:#1DA1F2; text-decoration:none; margin-bottom:0.5rem; text-align:center; word-break:break-word; line-height:1.2;';
         profileLink.textContent = `@${username}`;
 
         const referralButton = document.createElement('a');
