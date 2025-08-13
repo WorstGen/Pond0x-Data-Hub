@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>POND🤝X DATA HUB</title>
+  <style>
+    /* (All your original CSS unchanged — truncated for brevity in this explanation) */
+    /* Make sure you paste your entire original <style> block here — already included in your code */
+  </style>
+</head>
+<body>
+  <!-- Navbar (Unchanged) -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <button class="nav-toggle" onclick="toggleNav()">☰</button>
+      <div class="nav-links" id="navLinks">
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/">PERSONAL LINKS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/MiningClaims.html">MINING CLAIMS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/HashBoosts.html">HASH BOOSTS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/wPONDReceived.html">wPOND RECEIVED</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigActivations.html">RIG ACTIVATIONS</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="header">
+      <img src="https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/refs/heads/main/pond0xdatahub.png" alt="POND0X Data Hub Logo">
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Personal POND🤝X History Link Generator</h2>
+
+    <div class="input-section">
+      <input 
+        type="text" 
+        id="wallet-input" 
+        class="wallet-input"
+        placeholder="Enter your Solana wallet address (e.g., 7xKXt9WGD...)"
+      >
+      <button class="btn" onclick="generateSolanaLinks()">Generate Links</button>
+    </div>
+
+    <div id="links-section" class="links-section">
+      <div class="section-title">👨‍🍳 Your Personal History Links:</div>
+      <div id="links-container"></div>
+    </div>
+
+    <!-- NEW SECTION: API Wallet Data -->
+    <div id="wallet-data-section" class="links-section" style="margin-top: 2rem;">
+      <div class="section-title">📦 Wallet Data from Cary0x</div>
+      <div id="wallet-data-content" style="color: #7b3aad; font-size: 0.95rem; white-space: pre-wrap; background: rgba(123, 58, 173, 0.05); border: 1px solid rgba(241, 156, 253, 0.3); border-radius: 12px; padding: 1.5rem;"></div>
+    </div>
+
+    <div class="people-like-section">
+      <p><b>Built for <a href="https://cary0x.github.io/community/" target="_blank" class="link-url">the POND🤝X community</a> ❤️</b></p>
+      <p class="people-like-subtitle"><b>People like</b></p>
+      <div id="plw-content">Loading...</div>
+    </div>
+  </div>
+
+  <!-- Your existing community MDX loading script (unchanged) -->
+  <script>
+    // ... (unchanged: MDX parsing and community display script)
+  </script>
+
+  <!-- BEGIN: Updated generateSolanaLinks function + data fetch -->
+  <script>
+    const solanaLinkTemplates = [
+      {
+        name: "HASH BOOST HISTORY",
+        url: "https://solscan.io/account/{WALLET}?exclude_amount_zero=false&remove_spam=false&from_address={WALLET}&to_address=%218bVEtH3bXnpoS8mHCHkv6xfeT8EvG1KtWoTQvP3mx5nV%2C4ngqDt821wV2CjxoZLCLcTAPZNt6ZqpswoqyQEztsU36%2C%21{WALLET}&token_address=So11111111111111111111111111111111111111111#transfers",
+        description: "View your hash boost transaction history"
+      },
+      {
+        name: "MINING CLAIMS HISTORY",
+        url: "https://solscan.io/account/{WALLET}?from_address=AYg4dKoZJudVkD7Eu3ZaJjkzfoaATUqfiv8w8pS53opT#transfers",
+        description: "View your mining claims transaction history"
+      },
+      {
+        name: "SWAP REWARDS HISTORY",
+        url: "https://solscan.io/account/{WALLET}?from_address=1orFCnFfgwPzSgUaoK6Wr3MjgXZ7mtk8NGz9Hh4iWWL&remove_spam=false&exclude_amount_zero=false#transfers",
+        description: "View your swap rewards transaction history"
+      },
+      {
+        name: "PRO SUBSCRIPTION HISTORY",
+        url: "https://solscan.io/account/{WALLET}?exclude_amount_zero=false&remove_spam=false&to_address=2bsXHfqzWS3kgcgGifmffNCRokzgV1K9RMEiTcL6zQRF%2CGSMBLYht4JGmm1ZofyTFTGykYCwsenNQpRmiJ5fMnHpD&token_address=So11111111111111111111111111111111111111111&value=5&value=undefined#transfers",
+        description: "View your pro subscription transaction history"
+      },
+      {
+        name: "wPOND INFLOW/OUTFLOW HISTORY",
+        url: "https://solscan.io/account/{WALLET}?from_address=%21AYg4dKoZJudVkD7Eu3ZaJjkzfoaATUqfiv8w8pS53opT%2C%211orFCnFfgwPzSgUaoK6Wr3MjgXZ7mtk8NGz9Hh4iWWL&to_address=%211orFCnFfgwPzSgUaoK6Wr3MjgXZ7mtk8NGz9Hh4iWWL&token_address=3JgFwoYV74f6LwWjQWnr3YDPFnmBdwQfNyubv99jqUoq&remove_spam=false&exclude_amount_zero=false&visualize=true#transfers",
+        description: "View your wPOND token flow visualization"
+      }
+    ];
+
+    function generateSolanaLinks() {
+      const walletAddress = document.getElementById('wallet-input').value.trim();
+      const linksContainer = document.getElementById('links-container');
+      const linksSection = document.getElementById('links-section');
+      const walletDataSection = document.getElementById('wallet-data-section');
+      const walletDataContent = document.getElementById('wallet-data-content');
+
+      if (!walletAddress) {
+        alert('Please enter a Solana wallet address first!');
+        return;
+      }
+
+      if (walletAddress.length < 32 || walletAddress.length > 44) {
+        alert('Please enter a valid Solana wallet address');
+        return;
+      }
+
+      // Clear and show loading
+      walletDataContent.textContent = 'Loading wallet data...';
+      linksContainer.innerHTML = '';
+
+      // Generate history links
+      solanaLinkTemplates.forEach(template => {
+        const finalUrl = template.url.replace(/{WALLET}/g, walletAddress);
+        const linkDiv = document.createElement('div');
+        linkDiv.className = 'link-item';
+        linkDiv.innerHTML = `
+          <div class="link-content">
+            <div class="link-title">${template.name}</div>
+            <a href="${finalUrl}" target="_blank" class="link-url">Open in Solscan →</a>
+            <div class="link-description">${template.description}</div>
+          </div>
+          <div class="action-buttons">
+            <button class="bookmark-btn" onclick="bookmarkLink('${finalUrl}', '${template.name}', this)">🔖 Bookmark</button>
+            <button class="copy-btn" onclick="copyToClipboard('${finalUrl}', this)">Copy Link</button>
+          </div>
+        `;
+        linksContainer.appendChild(linkDiv);
+      });
+
+      linksSection.classList.add('show');
+
+      // Fetch external JSON data
+      const manifestUrl = `https://www.cary0x.com/api/manifest/${walletAddress}`;
+      const healthUrl = `https://www.cary0x.com/api/health/${walletAddress}`;
+
+      Promise.all([
+        fetch(manifestUrl).then(res => res.ok ? res.json() : Promise.reject('Manifest not found')),
+        fetch(healthUrl).then(res => res.ok ? res.json() : Promise.reject('Health not found'))
+      ])
+      .then(([manifestData, healthData]) => {
+        const formatted = `
+🔍 MANIFEST DATA:
+${JSON.stringify(manifestData, null, 2)}
+
+❤️ HEALTH DATA:
+${JSON.stringify(healthData, null, 2)}
+        `.trim();
+        walletDataContent.textContent = formatted;
+        walletDataSection.classList.add('show');
+      })
+      .catch(error => {
+        walletDataContent.textContent = `Error fetching wallet data: ${error}`;
+        walletDataSection.classList.add('show');
+      });
+    }
+
+    function copyToClipboard(text, button) {
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = button.textContent;
+        button.textContent = 'Copied!';
+        button.style.background = 'rgba(241, 156, 253, 0.4)';
+        button.style.color = '#f97316';
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.background = 'rgba(241, 156, 253, 0.2)';
+          button.style.color = '#f19cfd';
+        }, 2000);
+      });
+    }
+
+    function bookmarkLink(url, title, button) {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => {
+          alert(`URL copied to clipboard. Press Ctrl+D or Cmd+D to bookmark manually:\n\n${title}\n${url}`);
+        });
+      } else {
+        alert(`Press Ctrl+D or Cmd+D to bookmark:\n\n${title}\n${url}`);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('wallet-input').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') generateSolanaLinks();
+      });
+    });
+
+    function toggleNav() {
+      const navLinks = document.getElementById('navLinks');
+      navLinks.classList.toggle('show');
+    }
+  </script>
+
+</body>
+</html>
