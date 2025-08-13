@@ -669,7 +669,7 @@
         // Direct API call functions
         async function fetchManifestData(address) {
             try {
-                const response = await fetch(`https://www.cary0x.com/api/manifest/{WALLET}`, {
+                const response = await fetch(`https://www.cary0x.com/api/manifest/${address}`, {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json',
@@ -704,7 +704,7 @@
 
         async function fetchHealthData(address) {
             try {
-                const response = await fetch(`https://www.cary0x.com/api/health/{WALLET}`, {
+                const response = await fetch(`https://www.cary0x.com/api/health/${address}`, {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json',
@@ -744,19 +744,27 @@
             }
         }
 
-        // Display manifest data
+        // Display manifest data with proper formatting
         function displayManifestData(data) {
             const container = document.getElementById('manifest-data');
+            
+            // Format badges for better display
+            const badgesDisplay = data.badges === "none" ? "No badges" : 
+                data.badges.split(',').map(badge => badge.trim()).join(', ');
             
             const manifestItems = `
                 <div>
                     <div class="data-item">
                         <span class="data-label">SOL Swaps</span>
-                        <span class="data-value">${data.proSwapsSol || 0}</span>
+                        <span class="data-value">${data.proSwapsSol.toLocaleString()}</span>
                     </div>
                     <div class="data-item">
                         <span class="data-label">BX Swaps</span>
-                        <span class="data-value">${data.proSwapsBx || 0}</span>
+                        <span class="data-value">${data.proSwapsBx.toLocaleString()}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Total Swaps</span>
+                        <span class="data-value">${(data.proSwapsSol + data.proSwapsBx).toLocaleString()}</span>
                     </div>
                     <div class="data-item">
                         <span class="data-label">Has Twitter</span>
@@ -765,17 +773,17 @@
                             ${data.hasTwitter ? 'Connected' : 'Not Connected'}
                         </span>
                     </div>
-                    <div class="data-item">
-                        <span class="data-label">Badges</span>
-                        <span class="data-value">${data.badges || 0}</span>
-                    </div>
                 </div>
                 
                 <div>
                     <div class="data-item">
+                        <span class="data-label">Badges</span>
+                        <span class="data-value">${badgesDisplay}</span>
+                    </div>
+                    <div class="data-item">
                         <span class="data-label">Cope Status</span>
                         <span class="data-value">
-                            <span class="status-indicator ${data.cope ? 'status-true' : 'status-false'}"></span>
+                            <span class="status-indicator ${data.cope ? 'status-false' : 'status-true'}"></span>
                             ${data.cope ? 'Coper 😢' : 'Not a Coper ✅'}
                         </span>
                     </div>
@@ -788,11 +796,11 @@
                     </div>
                     <div class="data-item">
                         <span class="data-label">Days Since Pro Purchase</span>
-                        <span class="data-value">${data.proAgo || 0} days</span>
+                        <span class="data-value">${data.proAgo} days</span>
                     </div>
                     <div class="data-item">
                         <span class="data-label">Renewal Status</span>
-                        <span class="data-value">${(data.proAgo || 0) > 30 ? '⚠️ Renewal Due' : '✅ Current'}</span>
+                        <span class="data-value">${data.proAgo > 30 ? '⚠️ Renewal Due' : '✅ Current'}</span>
                     </div>
                 </div>
             `;
@@ -800,11 +808,11 @@
             container.innerHTML = manifestItems;
         }
 
-        // Display health data
+        // Display health data with proper formatting and currency
         function displayHealthData(data) {
             const container = document.getElementById('health-data');
-            const health = parseFloat(data.health || 0);
-            const healthPercentage = Math.min((health / 7) * 100, 129);
+            const health = parseInt(data.health);
+            const healthPercentage = Math.min((health / 9) * 100, 100); // Out of 9, not 7
             
             const healthItems = `
                 <div>
@@ -821,7 +829,7 @@
                     </div>
                     <div class="data-item">
                         <span class="data-label">Priority</span>
-                        <span class="data-value">${data.priority || 0}/100</span>
+                        <span class="data-value">${data.priority}/100</span>
                     </div>
                 </div>
                 
@@ -829,27 +837,27 @@
                     <div class="section-title">⛏️ Mining Sessions</div>
                     <div class="data-item">
                         <span class="data-label">Total Sessions</span>
-                        <span class="data-value">${data.miningSessions || 0}</span>
+                        <span class="data-value">${data.miningSessions.toLocaleString()}</span>
                     </div>
                     <div class="data-item">
                         <span class="data-label">In Mempool</span>
-                        <span class="data-value">${data.inMempool || 0}</span>
+                        <span class="data-value">${data.inMempool.toLocaleString()}</span>
                     </div>
                     <div class="data-item">
                         <span class="data-label">Sent</span>
-                        <span class="data-value">${data.sent || 0}</span>
+                        <span class="data-value">${data.sent.toLocaleString()}</span>
                     </div>
                     <div class="data-item">
                         <span class="data-label">Failed</span>
-                        <span class="data-value">${data.failed || 0}</span>
+                        <span class="data-value">${data.failed.toLocaleString()}</span>
                     </div>
                     <div class="data-item">
                         <span class="data-label">Drifted</span>
-                        <span class="data-value">${data.drifted || 0}</span>
+                        <span class="data-value">${data.drifted.toLocaleString()}</span>
                     </div>
                     <div class="data-item">
                         <span class="data-label">Drift Risk</span>
-                        <span class="data-value">${data.driftRisk || 0}</span>
+                        <span class="data-value">${data.driftRisk.toLocaleString()}</span>
                     </div>
                 </div>
                 
@@ -857,28 +865,28 @@
                     <div class="section-title">💰 Estimated Rewards (USD)</div>
                     <div class="data-item">
                         <span class="data-label">SOL Rewards</span>
-                        <span class="data-value">${data.estimatedSolUsd || 0}</span>
+                        <span class="data-value">${data.estimatedSolUsd}</span>
                     </div>
                     <div class="data-item">
                         <span class="data-label">wPond Rewards</span>
-                        <span class="data-value">${data.estimatedWpondUsd || 0}</span>
+                        <span class="data-value">${data.estimatedWpondUsd} wPOND</span>
                     </div>
                     <div class="data-item">
                         <span class="data-label">At Risk (Drift)</span>
-                        <span class="data-value">${data.estimatedDriftRiskUsd || 0}</span>
+                        <span class="data-value">${data.estimatedDriftRiskUsd}</span>
                     </div>
                     <div class="data-item">
                         <span class="data-label">Max Claim Estimate</span>
-                        <span class="data-value">${data.estimatedMaxClaimUsd || 0}</span>
+                        <span class="data-value">${data.estimatedMaxClaimUsd}</span>
                     </div>
                     <div class="data-item">
                         <span class="data-label">Already Drifted</span>
-                        <span class="data-value">${data.estimatedDriftedUsd || 0}</span>
+                        <span class="data-value">${data.estimatedDriftedUsd}</span>
                     </div>
                     
                     <div class="ai-notes">
                         <h4>🤖 AI Health Insights</h4>
-                        ${(data.aiNotes || []).map(note => `<p>• ${note}</p>`).join('')}
+                        ${data.aiNotes.map(note => `<p>• ${note}</p>`).join('')}
                         <div class="note-disclaimer">
                             <strong>Note:</strong> All estimations are based on current market prices and system conditions. 
                             Values recalculate every 60-90 seconds and are influenced by SOL price movements.
