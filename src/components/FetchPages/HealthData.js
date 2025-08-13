@@ -2,7 +2,7 @@ import {
   FetchComponent,
   DataField,
   DataFieldWithProgress,
-} from "@site/src/components/FetchData";
+} from "@site/Pond0x-Data-Hub/src/components/FetchData";
 
 export default function HealthData() {
   const renderResults = (data) => (
