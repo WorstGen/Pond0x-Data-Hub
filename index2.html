@@ -5,12 +5,162 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>POND🤝X DATA HUB</title>
   <style>
-    /* (All your original CSS unchanged — truncated for brevity in this explanation) */
-    /* Make sure you paste your entire original <style> block here — already included in your code */
+    body {
+      background-color: #0f0c29;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #fff;
+    }
+    .container {
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+    .header img {
+      max-width: 300px;
+      margin-bottom: 2rem;
+    }
+    .card {
+      background-color: #1f1b3a;
+      border-radius: 15px;
+      padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+    .card h2 {
+      margin-bottom: 1rem;
+      color: #f19cfd;
+    }
+    .input-section {
+      margin-bottom: 2rem;
+    }
+    .wallet-input {
+      padding: 0.75rem 1rem;
+      width: 100%;
+      max-width: 500px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+    .btn {
+      background-color: #f19cfd;
+      color: #0f0c29;
+      padding: 0.75rem 1.25rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .btn:hover {
+      background-color: #fb9ad1;
+    }
+    .section-title {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: #f19cfd;
+    }
+    .link-item {
+      background: #292457;
+      border: 1px solid rgba(241, 156, 253, 0.3);
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .link-title {
+      font-weight: bold;
+      color: #f19cfd;
+    }
+    .link-url {
+      color: #8b5cf6;
+      text-decoration: none;
+    }
+    .link-url:hover {
+      text-decoration: underline;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    .bookmark-btn,
+    .copy-btn {
+      background: rgba(241, 156, 253, 0.2);
+      border: none;
+      color: #f19cfd;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .bookmark-btn:hover,
+    .copy-btn:hover {
+      background: rgba(241, 156, 253, 0.4);
+    }
+    .people-like-section {
+      margin-top: 2rem;
+    }
+    .people-like-subtitle {
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+      color: #f19cfd;
+    }
+    .navbar {
+      background-color: #1f1b3a;
+      padding: 1rem;
+      text-align: center;
+      border-bottom: 1px solid #3e3b5b;
+    }
+    .nav-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      color: #f19cfd;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .nav-links a:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 768px) {
+      .nav-links {
+        flex-direction: column;
+        align-items: center;
+        display: none;
+      }
+      .nav-links.show {
+        display: flex;
+      }
+      .nav-toggle {
+        display: block;
+        background: none;
+        border: none;
+        color: #f19cfd;
+        font-size: 1.5rem;
+        cursor: pointer;
+        margin-bottom: 1rem;
+      }
+    }
+    @media (min-width: 769px) {
+      .nav-toggle {
+        display: none;
+      }
+    }
   </style>
 </head>
 <body>
-  <!-- Navbar (Unchanged) -->
+
   <nav class="navbar">
     <div class="nav-container">
       <button class="nav-toggle" onclick="toggleNav()">☰</button>
@@ -48,25 +198,17 @@
       <div id="links-container"></div>
     </div>
 
-    <!-- NEW SECTION: API Wallet Data -->
-    <div id="wallet-data-section" class="links-section" style="margin-top: 2rem;">
-      <div class="section-title">📦 Wallet Data from Cary0x</div>
-      <div id="wallet-data-content" style="color: #7b3aad; font-size: 0.95rem; white-space: pre-wrap; background: rgba(123, 58, 173, 0.05); border: 1px solid rgba(241, 156, 253, 0.3); border-radius: 12px; padding: 1.5rem;"></div>
+    <!-- ✅ Cary0x Data Display Section -->
+    <div id="wallet-data-container" style="display:none; margin-top: 2rem;">
+      <h3 style="color: #f19cfd;">📦 Wallet Data from Cary0x</h3>
+      <pre id="wallet-data-output" style="color: #7b3aad; background: rgba(241, 156, 253, 0.05); padding: 1rem; border: 1px solid rgba(123, 58, 173, 0.2); border-radius: 10px; white-space: pre-wrap;"></pre>
     </div>
 
     <div class="people-like-section">
       <p><b>Built for <a href="https://cary0x.github.io/community/" target="_blank" class="link-url">the POND🤝X community</a> ❤️</b></p>
-      <p class="people-like-subtitle"><b>People like</b></p>
-      <div id="plw-content">Loading...</div>
     </div>
   </div>
 
-  <!-- Your existing community MDX loading script (unchanged) -->
-  <script>
-    // ... (unchanged: MDX parsing and community display script)
-  </script>
-
-  <!-- BEGIN: Updated generateSolanaLinks function + data fetch -->
   <script>
     const solanaLinkTemplates = [
       {
@@ -97,101 +239,54 @@
     ];
 
     function generateSolanaLinks() {
-      const walletAddress = document.getElementById('wallet-input').value.trim();
+      const walletInput = document.getElementById('wallet-input').value.trim();
       const linksContainer = document.getElementById('links-container');
       const linksSection = document.getElementById('links-section');
-      const walletDataSection = document.getElementById('wallet-data-section');
-      const walletDataContent = document.getElementById('wallet-data-content');
 
-      if (!walletAddress) {
-        alert('Please enter a Solana wallet address first!');
+      if (!walletInput || walletInput.length < 32 || walletInput.length > 44) {
+        alert("Please enter a valid Solana wallet address.");
         return;
       }
 
-      if (walletAddress.length < 32 || walletAddress.length > 44) {
-        alert('Please enter a valid Solana wallet address');
-        return;
-      }
-
-      // Clear and show loading
-      walletDataContent.textContent = 'Loading wallet data...';
       linksContainer.innerHTML = '';
 
-      // Generate history links
       solanaLinkTemplates.forEach(template => {
-        const finalUrl = template.url.replace(/{WALLET}/g, walletAddress);
-        const linkDiv = document.createElement('div');
-        linkDiv.className = 'link-item';
-        linkDiv.innerHTML = `
-          <div class="link-content">
-            <div class="link-title">${template.name}</div>
-            <a href="${finalUrl}" target="_blank" class="link-url">Open in Solscan →</a>
-            <div class="link-description">${template.description}</div>
-          </div>
-          <div class="action-buttons">
-            <button class="bookmark-btn" onclick="bookmarkLink('${finalUrl}', '${template.name}', this)">🔖 Bookmark</button>
-            <button class="copy-btn" onclick="copyToClipboard('${finalUrl}', this)">Copy Link</button>
-          </div>
+        const finalUrl = template.url.replace(/{WALLET}/g, walletInput);
+        const div = document.createElement('div');
+        div.className = 'link-item';
+        div.innerHTML = `
+          <div class="link-title">${template.name}</div>
+          <a href="${finalUrl}" class="link-url" target="_blank">Open in Solscan →</a>
+          <div>${template.description}</div>
         `;
-        linksContainer.appendChild(linkDiv);
+        linksContainer.appendChild(div);
       });
 
-      linksSection.classList.add('show');
+      linksSection.classList.add("show");
+      fetchWalletData(walletInput);
+    }
 
-      // Fetch external JSON data
-      const manifestUrl = `https://www.cary0x.com/api/manifest/${walletAddress}`;
-      const healthUrl = `https://www.cary0x.com/api/health/${walletAddress}`;
+    function fetchWalletData(wallet) {
+      const container = document.getElementById("wallet-data-container");
+      const output = document.getElementById("wallet-data-output");
+
+      container.style.display = "block";
+      output.textContent = "Loading data from cary0x.com...";
+
+      const manifestURL = `https://www.cary0x.com/api/manifest/${wallet}`;
+      const healthURL = `https://www.cary0x.com/api/health/${wallet}`;
 
       Promise.all([
-        fetch(manifestUrl).then(res => res.ok ? res.json() : Promise.reject('Manifest not found')),
-        fetch(healthUrl).then(res => res.ok ? res.json() : Promise.reject('Health not found'))
+        fetch(manifestURL).then(res => res.ok ? res.json() : Promise.reject("Manifest not found")),
+        fetch(healthURL).then(res => res.ok ? res.json() : Promise.reject("Health not found"))
       ])
-      .then(([manifestData, healthData]) => {
-        const formatted = `
-🔍 MANIFEST DATA:
-${JSON.stringify(manifestData, null, 2)}
-
-❤️ HEALTH DATA:
-${JSON.stringify(healthData, null, 2)}
-        `.trim();
-        walletDataContent.textContent = formatted;
-        walletDataSection.classList.add('show');
+      .then(([manifest, health]) => {
+        output.textContent = `🔍 Manifest:\n${JSON.stringify(manifest, null, 2)}\n\n❤️ Health:\n${JSON.stringify(health, null, 2)}`;
       })
       .catch(error => {
-        walletDataContent.textContent = `Error fetching wallet data: ${error}`;
-        walletDataSection.classList.add('show');
+        output.textContent = `❌ Error fetching data: ${error}`;
       });
     }
-
-    function copyToClipboard(text, button) {
-      navigator.clipboard.writeText(text).then(() => {
-        const originalText = button.textContent;
-        button.textContent = 'Copied!';
-        button.style.background = 'rgba(241, 156, 253, 0.4)';
-        button.style.color = '#f97316';
-        setTimeout(() => {
-          button.textContent = originalText;
-          button.style.background = 'rgba(241, 156, 253, 0.2)';
-          button.style.color = '#f19cfd';
-        }, 2000);
-      });
-    }
-
-    function bookmarkLink(url, title, button) {
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(url).then(() => {
-          alert(`URL copied to clipboard. Press Ctrl+D or Cmd+D to bookmark manually:\n\n${title}\n${url}`);
-        });
-      } else {
-        alert(`Press Ctrl+D or Cmd+D to bookmark:\n\n${title}\n${url}`);
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('wallet-input').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') generateSolanaLinks();
-      });
-    });
 
     function toggleNav() {
       const navLinks = document.getElementById('navLinks');
