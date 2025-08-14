@@ -13,378 +13,443 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(90deg, #089c00 0%, #16a305 15%, #13FF22 35%, #13FF22 65%, #16a305 85%, #089c00 100%);
+      background: linear-gradient(90deg, #0ec404 0%, #25db0f 15%, #13FF22 35%, #13FF22 65%, #25db0f 85%, #0ec404 100%);
       color: #7b3aad;
       min-height: 100vh;
       padding-top: 60px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Static liquid background - no animation */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #0ec404 0%, #25db0f 15%, #13FF22 35%, #13FF22 65%, #25db0f 85%, #0ec404 100%);
+      z-index: -2;
+    }
+
+    /* Bubble container - can be hidden */
+    .bubble-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+      transition: opacity 0.3s ease;
+    }
+
+    .bubble-container.hidden {
+      opacity: 0;
+    }
+
+    /* Cook button styling */
+    .cook-button {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      background: linear-gradient(135deg, #f19cfd 0%, #FF13F0 100%);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(241, 156, 253, 0.3);
+      z-index: 1001;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cook-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(241, 156, 253, 0.4);
+    }
+
+    .cook-button.bubbles-off {
+      background: linear-gradient(135deg, #666 0%, #999 100%);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .cook-button.bubbles-off:hover {
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .cook-button {
+        top: 70px;
+        right: 15px;
+        padding: 10px 16px;
+        font-size: 0.9rem;
+      }
+    }
+
+    /* Individual bubble styles - bright popping colors only */
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      animation: bubble-rise linear infinite;
+      opacity: 0;
+    }
+
+    /* Bright, vibrant bubble color variants */
+    .bubble.electric-pink {
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(255, 20, 147, 0.8), rgba(255, 20, 147, 0.4));
+      border: 1px solid rgba(255, 20, 147, 0.7);
+      box-shadow: 
+        0 0 20px rgba(255, 20, 147, 0.6),
+        inset 5px 5px 10px rgba(255, 255, 255, 0.5),
+        inset -5px -5px 10px rgba(255, 20, 147, 0.3);
+    }
+
+    .bubble.neon-magenta {
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), rgba(255, 19, 240, 0.8), rgba(255, 19, 240, 0.4));
+      border: 1px solid rgba(255, 19, 240, 0.8);
+      box-shadow: 
+        0 0 25px rgba(255, 19, 240, 0.7),
+        inset 5px 5px 10px rgba(255, 255, 255, 0.6),
+        inset -5px -5px 10px rgba(255, 19, 240, 0.3);
+    }
+
+    .bubble.hot-pink {
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(255, 105, 180, 0.8), rgba(255, 105, 180, 0.4));
+      border: 1px solid rgba(255, 105, 180, 0.7);
+      box-shadow: 
+        0 0 22px rgba(255, 105, 180, 0.6),
+        inset 5px 5px 10px rgba(255, 255, 255, 0.5),
+        inset -5px -5px 10px rgba(255, 105, 180, 0.3);
+    }
+
+    .bubble.electric-blue {
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(0, 191, 255, 0.8), rgba(0, 191, 255, 0.4));
+      border: 1px solid rgba(0, 191, 255, 0.7);
+      box-shadow: 
+        0 0 20px rgba(0, 191, 255, 0.6),
+        inset 5px 5px 10px rgba(255, 255, 255, 0.5),
+        inset -5px -5px 10px rgba(0, 191, 255, 0.3);
+    }
+
+    .bubble.lime-green {
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(50, 205, 50, 0.8), rgba(50, 205, 50, 0.4));
+      border: 1px solid rgba(50, 205, 50, 0.7);
+      box-shadow: 
+        0 0 18px rgba(50, 205, 50, 0.6),
+        inset 5px 5px 10px rgba(255, 255, 255, 0.5),
+        inset -5px -5px 10px rgba(50, 205, 50, 0.3);
+    }
+
+    .bubble.bright-yellow {
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), rgba(255, 215, 0, 0.8), rgba(255, 215, 0, 0.4));
+      border: 1px solid rgba(255, 215, 0, 0.7);
+      box-shadow: 
+        0 0 20px rgba(255, 215, 0, 0.5),
+        inset 5px 5px 10px rgba(255, 255, 255, 0.6),
+        inset -5px -5px 10px rgba(255, 215, 0, 0.3);
+    }
+
+    /* Bubble animations with better visibility */
+    @keyframes bubble-rise {
+      0% {
+        opacity: 0;
+        transform: translateY(100vh) scale(0.3);
+      }
+      10% {
+        opacity: 0.8;
+      }
+      90% {
+        opacity: 0.8;
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-100px) scale(1);
+      }
+    }
+
+    @keyframes liquidFlow {
+      0%, 100% {
+        background: linear-gradient(90deg, #0ec404 0%, #25db0f 15%, #13FF22 35%, #13FF22 65%, #25db0f 85%, #0ec404 100%);
+        filter: hue-rotate(0deg) brightness(1);
+      }
+      25% {
+        background: linear-gradient(135deg, #25db0f 0%, #13FF22 20%, #0ec404 40%, #13FF22 60%, #25db0f 80%, #0ec404 100%);
+        filter: hue-rotate(5deg) brightness(1.05);
+      }
+      50% {
+        background: linear-gradient(90deg, #13FF22 0%, #0ec404 20%, #25db0f 40%, #0ec404 60%, #13FF22 80%, #25db0f 100%);
+        filter: hue-rotate(10deg) brightness(1.1);
+      }
+      75% {
+        background: linear-gradient(45deg, #0ec404 0%, #13FF22 25%, #25db0f 50%, #13FF22 75%, #0ec404 100%);
+        filter: hue-rotate(5deg) brightness(1.05);
+      }
     }
 
     .container {
-            max-width: 800px;
-            width: 100%;
-        }
+      max-width: 800px;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
 
-        .header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
 
-        .header h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            text-shadow: 0 0 20px rgba(123, 58, 173, 0.3);
-        }
+    .header h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 20px rgba(123, 58, 173, 0.3);
+    }
 
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            color: #7b3aad;
-        }
+    .header p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      color: #7b3aad;
+    }
 
-        .card {
-            background: rgba(123, 58, 173, 0.1);
-            backdrop-filter: blur(15px);
-            border-radius: 20px;
-            padding: 3rem;
-            border: 2px solid rgba(241, 156, 253, 0.3);
-            box-shadow: 0 12px 40px rgba(123, 58, 173, 0.2);
-            transition: all 0.3s ease;
-            margin-bottom: 2rem;
-        }
+    .card {
+      background: rgba(123, 58, 173, 0.1);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 3rem;
+      border: 2px solid rgba(241, 156, 253, 0.3);
+      box-shadow: 0 12px 40px rgba(123, 58, 173, 0.2);
+      transition: all 0.3s ease;
+    }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 16px 50px rgba(123, 58, 173, 0.3);
-            border-color: rgba(241, 156, 253, 0.5);
-        }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 50px rgba(123, 58, 173, 0.3);
+      border-color: rgba(241, 156, 253, 0.5);
+    }
 
-        .card h2 {
-            font-size: 1.6rem;
-            margin-bottom: 2rem;
-            color: #7b3aad;
-            font-weight: 700;
-            text-align: center;
-        }
+    .card h2 {
+      font-size: 1.6rem;
+      margin-bottom: 2rem;
+      color: #7b3aad;
+      font-weight: 700;
+      text-align: center;
+    }
 
     .input-section {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 2rem;
-        }
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
 
-        .wallet-input {
-            flex: 1;
-            min-width: 300px;
-            padding: 15px 20px;
-            border-radius: 12px;
-            border: 2px solid rgba(241, 156, 253, 0.3);
-            background: rgba(123, 58, 173, 0.1);
-            color: #7b3aad;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-        }
+    .wallet-input {
+      flex: 1;
+      min-width: 300px;
+      padding: 15px 20px;
+      border-radius: 12px;
+      border: 2px solid rgba(241, 156, 253, 0.3);
+      background: rgba(123, 58, 173, 0.1);
+      color: #7b3aad;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+    }
 
-        .wallet-input:focus {
-            outline: none;
-            border-color: rgba(241, 156, 253, 0.6);
-            box-shadow: 0 0 20px rgba(241, 156, 253, 0.2);
-        }
+    .wallet-input:focus {
+      outline: none;
+      border-color: rgba(241, 156, 253, 0.6);
+      box-shadow: 0 0 20px rgba(241, 156, 253, 0.2);
+    }
 
-        .wallet-input::placeholder {
-            color: rgba(123, 58, 173, 0.6);
-        }
+    .wallet-input::placeholder {
+      color: rgba(123, 58, 173, 0.6);
+    }
 
-        .btn {
-            background: linear-gradient(135deg, #f19cfd 0%, #FF13F0 100%);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(241, 156, 253, 0.3);
-            white-space: nowrap;
-        }
+    .btn {
+      background: linear-gradient(135deg, #f19cfd 0%, #FF13F0 100%);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(241, 156, 253, 0.3);
+      white-space: nowrap;
+    }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(241, 156, 253, 0.4);
-        }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(241, 156, 253, 0.4);
+    }
 
-        .links-section {
-            display: none;
-        }
+    .links-section {
+      display: none;
+    }
 
-        .links-section.show {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
+    .links-section.show {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-        .section-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #7b3aad;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #7b3aad;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
 
-        .link-item {
-            padding: 16px 20px;
-            background: rgba(123, 58, 173, 0.08);
-            border-radius: 12px;
-            border: 1px solid rgba(241, 156, 253, 0.3);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            transition: all 0.3s ease;
-        }
+    .link-item {
+      padding: 16px 20px;
+      background: rgba(123, 58, 173, 0.08);
+      border-radius: 12px;
+      border: 1px solid rgba(241, 156, 253, 0.3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      transition: all 0.3s ease;
+    }
 
-        .link-item:hover {
-            background: rgba(123, 58, 173, 0.12);
-            border-color: rgba(241, 156, 253, 0.5);
-            transform: translateX(5px);
-        }
+    .link-item:hover {
+      background: rgba(123, 58, 173, 0.12);
+      border-color: rgba(241, 156, 253, 0.5);
+      transform: translateX(5px);
+    }
 
-        .link-content {
-            flex: 1;
-        }
+    .link-content {
+      flex: 1;
+    }
 
-        .link-title {
-            font-weight: 600;
-            font-size: 1rem;
-            color: #7b3aad;
-            margin-bottom: 4px;
-        }
+    .link-title {
+      font-weight: 600;
+      font-size: 1rem;
+      color: #7b3aad;
+      margin-bottom: 4px;
+    }
 
-        .link-url {
-            color: #FF13F0;
-            text-decoration: none;
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
+    .link-url {
+      color: #FF13F0;
+      text-decoration: none;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
 
-        .link-url:hover {
-            color: #7b3aad;
-            opacity: 1;
-        }
+    .link-url:hover {
+      color: #7b3aad;
+      opacity: 1;
+    }
 
-        .link-description {
-            font-size: 0.8rem;
-            color: #7b3aad;
-            opacity: 0.7;
-            margin-top: 4px;
-        }
+    .link-description {
+      font-size: 0.8rem;
+      color: #7b3aad;
+      opacity: 0.7;
+      margin-top: 4px;
+    }
 
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-        }
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+    }
 
-        .copy-btn, .bookmark-btn {
-            background: rgba(241, 156, 253, 0.2);
-            color: #FF13F0;
-            border: 1px solid rgba(241, 156, 253, 0.4);
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-        }
+    .copy-btn, .bookmark-btn {
+      background: rgba(241, 156, 253, 0.2);
+      color: #FF13F0;
+      border: 1px solid rgba(241, 156, 253, 0.4);
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
 
-        .copy-btn:hover, .bookmark-btn:hover {
-            background: rgba(241, 156, 253, 0.3);
-        }
+    .copy-btn:hover, .bookmark-btn:hover {
+      background: rgba(241, 156, 253, 0.3);
+    }
 
-        .bookmark-btn {
-            background: rgba(123, 58, 173, 0.2);
-            border-color: rgba(123, 58, 173, 0.4);
-            color: #7b3aad;
-        }
+    .bookmark-btn {
+      background: rgba(123, 58, 173, 0.2);
+      border-color: rgba(123, 58, 173, 0.4);
+      color: #7b3aad;
+    }
 
-        .bookmark-btn:hover {
-            background: rgba(123, 58, 173, 0.3);
-        }
+    .bookmark-btn:hover {
+      background: rgba(123, 58, 173, 0.3);
+    }
 
-        .footer {
-            text-align: center;
-            margin-top: 2rem;
-            padding: 1rem;
-            color: #7b3aad;
-            font-size: 0.9rem;
-        }
+    .footer {
+      text-align: center;
+      margin-top: 2rem;
+      padding: 1rem;
+      color: #7b3aad;
+      font-size: 0.9rem;
+    }
 
-        .footer-subtitle {
-            margin: 0.5rem 0 1rem 0; 
-            font-size: 0.9rem; 
-            color: #7b3aad; 
-            opacity: 0.8;
-        }
+    .footer-subtitle {
+      margin: 0.5rem 0 1rem 0; 
+      font-size: 0.9rem; 
+      color: #7b3aad; 
+      opacity: 0.8;
+    }
 
-        /* New styles for integrated features */
-        .data-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
+    .second-section {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 2px solid rgba(241, 156, 253, 0.3);
+    }
 
-        .data-item {
-            padding: 12px 16px;
-            background: rgba(123, 58, 173, 0.05);
-            border-radius: 8px;
-            border: 1px solid rgba(241, 156, 253, 0.2);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-            transition: all 0.3s ease;
-        }
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2.2rem;
+      }
+      
+      .input-section {
+        flex-direction: column;
+      }
+      
+      .wallet-input {
+        min-width: 100%;
+      }
+      
+      .btn {
+        width: 100%;
+      }
+      
+      .card {
+        padding: 2rem;
+      }
+      
+      .link-item {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+      }
+      
+      .copy-btn, .bookmark-btn {
+        align-self: flex-end;
+      }
 
-        .data-item:hover {
-            background: rgba(123, 58, 173, 0.08);
-            border-color: rgba(241, 156, 253, 0.4);
-        }
+      .action-buttons {
+        align-self: flex-end;
+      }
+    }
 
-        .data-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .data-label {
-            font-weight: 500;
-            color: #7b3aad;
-            opacity: 0.8;
-        }
-
-        .data-value {
-            font-weight: 600;
-            color: #FF13F0;
-        }
-
-        .health-bar {
-            width: 100%;
-            height: 16px;
-            background: rgba(123, 58, 173, 0.1);
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
-            margin: 8px 0;
-        }
-
-        .health-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #FF13F0, #f19cfd, #13FF22);
-            border-radius: 8px;
-            transition: width 0.5s ease;
-        }
-
-        .status-indicator {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 6px;
-        }
-
-        .status-true { background: #13FF22; }
-        .status-false { background: #ff4444; }
-
-        .ai-notes {
-            background: rgba(255, 215, 0, 0.1);
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            border-radius: 12px;
-            padding: 16px;
-            margin-top: 1rem;
-        }
-
-        .ai-notes h4 {
-            color: #ffd700;
-            margin-bottom: 8px;
-            font-size: 1rem;
-        }
-
-        .ai-notes p {
-            margin-bottom: 6px;
-            font-size: 0.9rem;
-            line-height: 1.4;
-        }
-
-        .ai-notes .note-disclaimer {
-            font-size: 0.8rem;
-            opacity: 0.7;
-            margin-top: 12px;
-            font-style: italic;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 20px;
-            font-size: 1rem;
-            color: #FF13F0;
-        }
-
-        .error {
-            background: rgba(255, 68, 68, 0.1);
-            border: 1px solid rgba(255, 68, 68, 0.3);
-            color: #ff6b6b;
-            padding: 16px;
-            border-radius: 12px;
-            text-align: center;
-            margin: 16px 0;
-            font-size: 0.9rem;
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2.2rem;
-            }
-            
-            .input-section {
-                flex-direction: column;
-            }
-            
-            .wallet-input {
-                min-width: 100%;
-            }
-            
-            .btn {
-                width: 100%;
-            }
-            
-            .card {
-                padding: 2rem;
-            }
-            
-            .link-item {
-                flex-direction: column;
-                gap: 12px;
-                align-items: flex-start;
-            }
-            
-            .copy-btn, .bookmark-btn {
-                align-self: flex-end;
-            }
-
-            .action-buttons {
-                align-self: flex-end;
-            }
-
-            .data-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    
     .navbar {
       position: fixed;
       top: 0;
@@ -464,17 +529,17 @@
     }
 
     @media (max-width: 768px) {
-  .nav-container {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 0.5rem 1rem;
-  }
+      .nav-container {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0.5rem 1rem;
+      }
 
-  .nav-toggle {
-    display: block;
-    align-self: flex-start;
-    margin: 0.25rem 0;
-  }
+      .nav-toggle {
+        display: block;
+        align-self: flex-start;
+        margin: 0.25rem 0;
+      }
 
       .nav-title {
         display: block;
@@ -492,6 +557,7 @@
         display: flex;
       }
     }
+
     .people-like-section {
       text-align: center;
       margin-top: 2rem;
@@ -499,7 +565,8 @@
       color: #7b3aad;
       font-size: 0.9rem;
     }
-      .people-like-subtitle {
+
+    .people-like-subtitle {
       margin: 0.5rem 0 1rem 0;
       font-size: 0.9rem;
       color: #7b3aad;
@@ -514,7 +581,6 @@
       align-items: flex-start;
     }
 
-    /* Link styling for the section */
     .people-like-section .link-url {
       color: #FF13F0;
       text-decoration: none;
@@ -529,6 +595,14 @@
   </style>
 </head>
 <body>
+  <!-- Cook button for toggling bubbles -->
+  <button class="cook-button" id="cookButton" onclick="toggleBubbles()">
+    👨‍🍳 Cook
+  </button>
+
+  <!-- Bubble container for animation -->
+  <div class="bubble-container" id="bubbleContainer"></div>
+
   <nav class="navbar">
     <div class="nav-container">
       <button class="nav-toggle" onclick="toggleNav()">☰</button>
@@ -548,43 +622,27 @@
     </div>
   </div>
 
-    <div class="card">
-            <h2>Personal POND🤝X History Link Generator</h2>
-            
-            <div class="input-section">
-                <input 
-                    type="text" 
-                    id="wallet-input" 
-                    class="wallet-input"
-                    placeholder="Enter your Solana wallet address (e.g., 7xKXt9WGD...)"
-                >
-                <button class="btn" onclick="generateAllData()">Generate Links & Data</button>
-            </div>
-
-            <div id="links-section" class="links-section">
-                <div class="section-title">👨‍🍳 Your Personal History Links:</div>
-                <div id="links-container"></div>
-            </div>
+  <div class="card">
+    <h2>Personal POND🤝X History Link Generator</h2>
+    
+    <div class="input-section">
+      <input 
+        type="text" 
+        id="wallet-input" 
+        class="wallet-input"
+        placeholder="Enter your Solana wallet address (e.g., 7xKXt9WGD...)"
+      >
+      <button class="btn" onclick="generateSolanaLinks()">Generate Links</button>
     </div>
 
-    <!-- Manifest Data Section -->
-    <div id="manifest-card" class="card" style="display: none;">
-        <h2>📊 Manifest Data</h2>
-        <div id="loading-manifest" class="loading" style="display: none;">
-            🔄 Fetching your manifest data...
-        </div>
-        <div id="error-manifest" class="error" style="display: none;"></div>
-        <div id="manifest-data" class="data-grid"></div>
-    </div>
-
-    <!-- Mining Health Section -->
-    <div id="health-card" class="card" style="display: none;">
-        <h2>⛏️ Mining Health Data</h2>
-        <div id="loading-health" class="loading" style="display: none;">
-            🔄 Fetching your mining health data...
-        </div>
-        <div id="error-health" class="error" style="display: none;"></div>
-        <div id="health-data" class="data-grid"></div>
+    <div id="links-section" class="links-section">
+      <div class="section-title">👨‍🍳 Your Personal History Links:</div>
+      <div id="links-container"></div>
+      
+      <div id="second-links-section" class="second-section">
+        <div class="section-title">🐐 Links From Cary0x2's Unofficial Pond0x Info</div>
+        <div id="second-links-container"></div>
+      </div>
     </div>
 
     <div class="people-like-section">
@@ -592,576 +650,443 @@
       <p class="people-like-subtitle"><b>People like</b></p>
       <div id="plw-content">Loading...</div>
     </div>
+  </div>
 
-    <script>
-        // Existing Solana wallet history link templates
-        const solanaLinkTemplates = [
-            {
-                name: "HASH BOOST HISTORY",
-                url: "https://solscan.io/account/{WALLET}?exclude_amount_zero=false&remove_spam=false&from_address={WALLET}&to_address=%218bVEtH3bXnpoS8mHCHkv6xfeT8EvG1KtWoTQvP3mx5nV%2C4ngqDt821wV2CjxoZLCLcTAPZNt6ZqpswoqyQEztsU36%2C%21{WALLET}&token_address=So11111111111111111111111111111111111111111#transfers",
-                description: "View your hash boost transaction history"
-            },
-            {
-                name: "MINING CLAIMS HISTORY",
-                url: "https://solscan.io/account/{WALLET}?from_address=AYg4dKoZJudVkD7Eu3ZaJjkzfoaATUqfiv8w8pS53opT#transfers",
-                description: "View your mining claims transaction history"
-            },
-            {
-                name: "SWAP REWARDS HISTORY",
-                url: "https://solscan.io/account/{WALLET}?from_address=1orFCnFfgwPzSgUaoK6Wr3MjgXZ7mtk8NGz9Hh4iWWL&remove_spam=false&exclude_amount_zero=false#transfers",
-                description: "View your swap rewards transaction history"
-            },
-            {
-                name: "PRO SUBSCRIPTION HISTORY",
-                url: "https://solscan.io/account/{WALLET}?exclude_amount_zero=false&remove_spam=false&to_address=2bsXHfqzWS3kgcgGifmffNCRokzgV1K9RMEiTcL6zQRF%2CGSMBLYht4JGmm1ZofyTFTGykYCwsenNQpRmiJ5fMnHpD&token_address=So11111111111111111111111111111111111111111&value=5&value=undefined#transfers",
-                description: "View your pro subscription transaction history"
-            },
-            {
-                name: "wPOND INFLOW/OUTFLOW HISTORY",
-                url: "https://solscan.io/account/{WALLET}?from_address=%21AYg4dKoZJudVkD7Eu3ZaJjkzfoaATUqfiv8w8pS53opT%2C%211orFCnFfgwPzSgUaoK6Wr3MjgXZ7mtk8NGz9Hh4iWWL&to_address=%211orFCnFfgwPzSgUaoK6Wr3MjgXZ7mtk8NGz9Hh4iWWL&token_address=3JgFwoYV74f6LwWjQWnr3YDPFnmBdwQfNyubv99jqUoq&remove_spam=false&exclude_amount_zero=false&visualize=true#transfers",
-                description: "View your wPOND token flow visualization"
-            }
-        ];
+  <script>
+    // Optimized bubble animation system
+    const bubbleSystem = {
+      container: null,
+      bubbles: [],
+      maxBubbles: 25,
+      initialized: false,
+      animationRunning: true, // Track animation state
+      animationInterval: null,
+      
+      init() {
+        if (this.initialized) return;
+        this.container = document.getElementById('bubbleContainer');
+        this.createBubblePool();
+        this.startAnimation();
+        this.initialized = true;
+      },
 
-        // Generate Solana links (existing functionality)
-        function generateSolanaLinks() {
-            const walletAddress = document.getElementById('wallet-input').value.trim();
-            const linksContainer = document.getElementById('links-container');
-            const linksSection = document.getElementById('links-section');
-
-            if (!walletAddress) {
-                alert('Please enter a Solana wallet address first!');
-                return false;
-            }
-
-            // Basic validation for Solana address (should be base58, 32-44 chars)
-            if (walletAddress.length < 32 || walletAddress.length > 44) {
-                alert('Please enter a valid Solana wallet address');
-                return false;
-            }
-
-            linksContainer.innerHTML = '';
-            
-            solanaLinkTemplates.forEach(template => {
-                const finalUrl = template.url.replace(/{WALLET}/g, walletAddress);
-                
-                const linkDiv = document.createElement('div');
-                linkDiv.className = 'link-item';
-                linkDiv.innerHTML = `
-                    <div class="link-content">
-                        <div class="link-title">${template.name}</div>
-                        <a href="${finalUrl}" target="_blank" class="link-url">Open in Solscan →</a>
-                        <div class="link-description">${template.description}</div>
-                    </div>
-                    <div class="action-buttons">
-                        <button class="bookmark-btn" onclick="bookmarkLink('${finalUrl}', '${template.name}', this)">🔖 Bookmark</button>
-                        <button class="copy-btn" onclick="copyToClipboard('${finalUrl}', this)">Copy Link</button>
-                    </div>
-                `;
-                
-                linksContainer.appendChild(linkDiv);
-            });
-
-            linksSection.classList.add('show');
-            return true;
+      stop() {
+        this.animationRunning = false;
+        if (this.animationInterval) {
+          clearInterval(this.animationInterval);
         }
-
-        // Direct API call functions
-        async function fetchManifestData(address) {
-            try {
-                const response = await fetch(`https://www.cary0x.com/api/manifest/${address}`, {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
-                }
-                
-                const data = await response.json();
-                
-                if (data.error) {
-                    throw new Error(data.error);
-                }
-                
-                return {
-                    proSwapsSol: data.proSwapsSol || 0,
-                    proSwapsBx: data.proSwapsBx || 0,
-                    hasTwitter: data.hasTwitter || false,
-                    badges: data.badges || 0,
-                    cope: data.cope || false,
-                    isPro: data.isPro || false,
-                    proAgo: data.proAgo || 0
-                };
-            } catch (error) {
-                console.error('Error fetching manifest data:', error);
-                throw new Error(`Failed to fetch manifest data: ${error.message}`);
-            }
-        }
-
-        async function fetchHealthData(address) {
-            try {
-                const response = await fetch(`https://www.cary0x.com/api/health/${address}`, {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
-                }
-                
-                const data = await response.json();
-                
-                if (data.error) {
-                    throw new Error(data.error);
-                }
-                
-                return {
-                    health: data.stats?.health || data.health || 0,
-                    miningSessions: data.stats?.mining_sessions || data.miningSessions || 0,
-                    inMempool: data.stats?.in_mempool || data.inMempool || 0,
-                    sent: data.stats?.sent || data.sent || 0,
-                    failed: data.stats?.failed || data.failed || 0,
-                    drifted: data.stats?.drifted || data.drifted || 0,
-                    driftRisk: data.stats?.drift_risk || data.driftRisk || 0,
-                    priority: data.stats?.priority || data.priority || 0,
-                    estimatedSolUsd: data.stats?.estimates?.sol_usd || data.estimatedSolUsd || 0,
-                    estimatedWpondUsd: data.stats?.estimates?.wpond_usd || data.estimatedWpondUsd || 0,
-                    estimatedDriftRiskUsd: data.stats?.estimates?.drift_risk_usd || data.estimatedDriftRiskUsd || 0,
-                    estimatedMaxClaimUsd: data.stats?.estimates?.max_claim_estimate_usd || data.estimatedMaxClaimUsd || 0,
-                    estimatedDriftedUsd: data.stats?.estimates?.drifted_usd || data.estimatedDriftedUsd || 0,
-                    aiNotes: data.ai_beta || data.aiNotes || []
-                };
-            } catch (error) {
-                console.error('Error fetching health data:', error);
-                throw new Error(`Failed to fetch health data: ${error.message}`);
-            }
-        }
-
-        // Display manifest data with proper formatting
-        function displayManifestData(data) {
-            const container = document.getElementById('manifest-data');
-            
-            // Format badges for better display
-            const badgesDisplay = data.badges === "none" ? "No badges" : 
-                data.badges.split(',').map(badge => badge.trim()).join(', ');
-            
-            const manifestItems = `
-                <div>
-                    <div class="data-item">
-                        <span class="data-label">SOL Swaps</span>
-                        <span class="data-value">${data.proSwapsSol.toLocaleString()}</span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-label">BX Swaps</span>
-                        <span class="data-value">${data.proSwapsBx.toLocaleString()}</span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-label">Total Swaps</span>
-                        <span class="data-value">${(data.proSwapsSol + data.proSwapsBx).toLocaleString()}</span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-label">Has Twitter</span>
-                        <span class="data-value">
-                            <span class="status-indicator ${data.hasTwitter ? 'status-true' : 'status-false'}"></span>
-                            ${data.hasTwitter ? 'Connected' : 'Not Connected'}
-                        </span>
-                    </div>
-                </div>
-                
-                <div>
-                    <div class="data-item">
-                        <span class="data-label">Badges</span>
-                        <span class="data-value">${badgesDisplay}</span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-label">Cope Status</span>
-                        <span class="data-value">
-                            <span class="status-indicator ${data.cope ? 'status-false' : 'status-true'}"></span>
-                            ${data.cope ? 'Coper 😢' : 'Not a Coper ✅'}
-                        </span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-label">Is Pro</span>
-                        <span class="data-value">
-                            <span class="status-indicator ${data.isPro ? 'status-true' : 'status-false'}"></span>
-                            ${data.isPro ? 'Active' : 'Inactive'}
-                        </span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-label">Days Since Pro Purchase</span>
-                        <span class="data-value">${data.proAgo} days</span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-label">Renewal Status</span>
-                        <span class="data-value">${data.proAgo > 30 ? '⚠️ Renewal Due' : '✅ Current'}</span>
-                    </div>
-                </div>
-            `;
-            
-            container.innerHTML = manifestItems;
-        }
-
-        // Display health data with proper formatting and currency
-        function displayHealthData(data) {
-            const container = document.getElementById('health-data');
-            const health = parseInt(data.health);
-            const healthPercentage = Math.min((health / 9) * 100, 100); // Out of 9, not 7
-            
-            const healthItems = `
-                <div>
-                    <div class="section-title">❤️ Rig Health</div>
-                    <div class="data-item">
-                        <span class="data-label">Health Score</span>
-                        <span class="data-value">${health}/9</span>
-                    </div>
-                    <div class="health-bar">
-                        <div class="health-fill" style="width: ${healthPercentage}%"></div>
-                    </div>
-                    <div style="text-align: center; margin-bottom: 16px; font-size: 0.9em; opacity: 0.8; color: #7b3aad;">
-                        ${healthPercentage.toFixed(0)}% Health
-                    </div>
-                    <div class="data-item">
-                        <span class="data-label">Priority</span>
-                        <span class="data-value">${data.priority}/100</span>
-                    </div>
-                </div>
-                
-                <div>
-                    <div class="section-title">⛏️ Mining Sessions</div>
-                    <div class="data-item">
-                        <span class="data-label">Total Sessions</span>
-                        <span class="data-value">${data.miningSessions.toLocaleString()}</span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-label">In Mempool</span>
-                        <span class="data-value">${data.inMempool.toLocaleString()}</span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-label">Sent</span>
-                        <span class="data-value">${data.sent.toLocaleString()}</span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-label">Failed</span>
-                        <span class="data-value">${data.failed.toLocaleString()}</span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-label">Drifted</span>
-                        <span class="data-value">${data.drifted.toLocaleString()}</span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-label">Drift Risk</span>
-                        <span class="data-value">${data.driftRisk.toLocaleString()}</span>
-                    </div>
-                </div>
-                
-                <div>
-                    <div class="section-title">💰 Estimated Rewards (USD)</div>
-                    <div class="data-item">
-                        <span class="data-label">SOL Rewards</span>
-                        <span class="data-value">${data.estimatedSolUsd}</span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-label">wPond Rewards</span>
-                        <span class="data-value">${data.estimatedWpondUsd} wPOND</span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-label">At Risk (Drift)</span>
-                        <span class="data-value">${data.estimatedDriftRiskUsd}</span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-label">Max Claim Estimate</span>
-                        <span class="data-value">${data.estimatedMaxClaimUsd}</span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-label">Already Drifted</span>
-                        <span class="data-value">${data.estimatedDriftedUsd}</span>
-                    </div>
-                    
-                    <div class="ai-notes">
-                        <h4>🤖 AI Health Insights</h4>
-                        ${data.aiNotes.map(note => `<p>• ${note}</p>`).join('')}
-                        <div class="note-disclaimer">
-                            <strong>Note:</strong> All estimations are based on current market prices and system conditions. 
-                            Values recalculate every 60-90 seconds and are influenced by SOL price movements.
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            container.innerHTML = healthItems;
-        }
-
-        // Main function to generate all data
-        async function generateAllData() {
-            const walletAddress = document.getElementById('wallet-input').value.trim();
-            
-            if (!walletAddress) {
-                alert('Please enter a Solana wallet address first!');
-                return;
-            }
-
-            // Generate links first
-            if (!generateSolanaLinks()) {
-                return;
-            }
-
-            // Show the data cards
-            document.getElementById('manifest-card').style.display = 'block';
-            document.getElementById('health-card').style.display = 'block';
-
-            // Show loading states
-            document.getElementById('loading-manifest').style.display = 'block';
-            document.getElementById('loading-health').style.display = 'block';
-            document.getElementById('error-manifest').style.display = 'none';
-            document.getElementById('error-health').style.display = 'none';
-
-            // Fetch manifest data
-            try {
-                const manifestData = await fetchManifestData(walletAddress);
-                document.getElementById('loading-manifest').style.display = 'none';
-                displayManifestData(manifestData);
-            } catch (error) {
-                document.getElementById('loading-manifest').style.display = 'none';
-                const errorDiv = document.getElementById('error-manifest');
-                errorDiv.textContent = `Manifest data error: ${error.message}`;
-                errorDiv.style.display = 'block';
-            }
-
-            // Fetch health data
-            try {
-                const healthData = await fetchHealthData(walletAddress);
-                document.getElementById('loading-health').style.display = 'none';
-                displayHealthData(healthData);
-            } catch (error) {
-                document.getElementById('loading-health').style.display = 'none';
-                const errorDiv = document.getElementById('error-health');
-                errorDiv.textContent = `Health data error: ${error.message}`;
-                errorDiv.style.display = 'block';
-            }
-        }
-
-        // Existing bookmark and copy functions
-        function bookmarkLink(url, title, button) {
-            if (window.sidebar && window.sidebar.addPanel) {
-                window.sidebar.addPanel(title, url, "");
-            } else if (window.external && ('AddFavorite' in window.external)) {
-                window.external.AddFavorite(url, title);
-            } else {
-                if (navigator.clipboard) {
-                    navigator.clipboard.writeText(url).then(() => {
-                        const originalText = button.textContent;
-                        button.textContent = 'URL Copied!';
-                        button.style.background = 'rgba(123, 58, 173, 0.4)';
-                        button.style.color = '#7b3aad';
-                        
-                        alert(`Bookmark instructions:\n\n1. The URL has been copied to your clipboard\n2. Press Ctrl+D (Cmd+D on Mac) to bookmark this page\n3. Or manually bookmark: ${title}\n\nURL: ${url}`);
-                        
-                        setTimeout(() => {
-                            button.textContent = originalText;
-                            button.style.background = 'rgba(123, 58, 173, 0.2)';
-                            button.style.color = '#FF13F0';
-                        }, 3000);
-                    });
-                } else {
-                    alert(`To bookmark this link:\n\n"${title}"\n\nPress Ctrl+D (Cmd+D on Mac) after opening:\n${url}`);
-                }
-            }
-        }
-
-        function copyToClipboard(text, button) {
-            navigator.clipboard.writeText(text).then(() => {
-                const originalText = button.textContent;
-                button.textContent = 'Copied!';
-                button.style.background = 'rgba(241, 156, 253, 0.4)';
-                button.style.color = '#f97316';
-                
-                setTimeout(() => {
-                    button.textContent = originalText;
-                    button.style.background = 'rgba(241, 156, 253, 0.2)';
-                    button.style.color = '#f19cfd';
-                }, 2000);
-            });
-        }
-
-        // Allow Enter key to generate all data
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('wallet-input').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    generateAllData();
-                }
-            });
+        // Hide all active bubbles
+        this.bubbles.forEach(bubble => {
+          if (bubble.timer) {
+            clearTimeout(bubble.timer);
+          }
+          bubble.element.style.display = 'none';
+          bubble.active = false;
         });
-    </script>
+      },
 
-    <script>
-        function toggleNav() {
-            const navLinks = document.getElementById('navLinks');
-            navLinks.classList.toggle('show');
+      start() {
+        if (!this.animationRunning) {
+          this.animationRunning = true;
+          this.startAnimation();
         }
-    </script>
+      },
+      
+      createBubblePool() {
+        // Pre-create bubble elements with bright color variants
+        const colorClasses = ['electric-pink', 'neon-magenta', 'hot-pink', 'electric-blue', 'lime-green', 'bright-yellow'];
+        
+        for (let i = 0; i < this.maxBubbles; i++) {
+          const bubble = document.createElement('div');
+          const randomColor = colorClasses[Math.floor(Math.random() * colorClasses.length)];
+          bubble.className = `bubble ${randomColor}`;
+          bubble.style.display = 'none';
+          this.container.appendChild(bubble);
+          this.bubbles.push({
+            element: bubble,
+            active: false,
+            timer: 0
+          });
+        }
+      },
+      
+      getRandomBubble() {
+        return this.bubbles.find(b => !b.active) || this.bubbles[0];
+      },
+      
+      createBubble() {
+        const bubble = this.getRandomBubble();
+        if (!bubble || bubble.active) return;
+        
+        const size = Math.random() * 40 + 10; // 10-50px
+        const left = Math.random() * 100; // 0-100%
+        const duration = Math.random() * 4 + 6; // 6-10 seconds
+        const delay = Math.random() * 2; // 0-2 seconds delay
+        
+        const element = bubble.element;
+        element.style.cssText = `
+          width: ${size}px;
+          height: ${size}px;
+          left: ${left}%;
+          animation: bubble-rise ${duration}s linear ${delay}s forwards;
+          display: block;
+        `;
+        
+        bubble.active = true;
+        bubble.timer = setTimeout(() => {
+          element.style.display = 'none';
+          bubble.active = false;
+        }, (duration + delay) * 1000);
+      },
+      
+      startAnimation() {
+        if (!this.animationRunning) return;
+        
+        // Create initial bubbles
+        for (let i = 0; i < 8; i++) {
+          setTimeout(() => {
+            if (this.animationRunning) this.createBubble();
+          }, i * 600);
+        }
+        
+        // Continuous bubble creation - more frequent
+        this.animationInterval = setInterval(() => {
+          if (this.animationRunning && Math.random() < 0.8) { // 80% chance to create bubble
+            this.createBubble();
+          }
+        }, 900);
+      }
+    };
 
-    <script>
-        const MDX_URL = 'https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/main/src/community.mdx';
+    // Toggle bubbles function
+    function toggleBubbles() {
+      const container = document.getElementById('bubbleContainer');
+      const button = document.getElementById('cookButton');
+      
+      if (bubbleSystem.animationRunning) {
+        // Turn off bubbles
+        bubbleSystem.stop();
+        container.classList.add('hidden');
+        button.classList.add('bubbles-off');
+        button.innerHTML = '👨‍🍳 Cook';
+      } else {
+        // Turn on bubbles  
+        bubbleSystem.start();
+        container.classList.remove('hidden');
+        button.classList.remove('bubbles-off');
+        button.innerHTML = '👨‍🍳 Cook';
+      }
+    }
 
-        // Parse community data from MDX
-        function parseCommunityData(text) {
-            let communityMembers = [];
+    // Initialize bubble system when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      bubbleSystem.init();
+    });
+
+    // Rest of your existing JavaScript code...
+    const mdxUrl = 'https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/main/src/community.mdx';
+
+    fetch(mdxUrl)
+      .then(res => res.text())
+      .then(text => {
+        let communityMembers = [];
+        
+        const pondSectionMatch = text.match(/## The Pond[\s\S]*?<FallbackImageList[^>]*data=\{(\[[\s\S]*?\])\}[^>]*\/>/);
+        
+        if (pondSectionMatch) {
+          try {
+            let dataArrayString = pondSectionMatch[1];
             
-            const pondSectionMatch = text.match(/## The Pond[\s\S]*?<FallbackImageList[^>]*data=\{(\[[\s\S]*?\])\}[^>]*\/>/);
+            dataArrayString = dataArrayString
+              .replace(/(\w+):/g, '"$1":')
+              .replace(/,\s*}/g, '}')
+              .replace(/,\s*]/g, ']');
             
-            if (pondSectionMatch) {
-                try {
-                    let dataArrayString = pondSectionMatch[1]
-                        .replace(/(\w+):/g, '"$1":')
-                        .replace(/,\s*}/g, '}')
-                        .replace(/,\s*]/g, ']');
-                    
-                    communityMembers = JSON.parse(dataArrayString);
-                    console.log(`Found ${communityMembers.length} members from The Pond section`);
-                } catch (e) {
-                    console.error('Error parsing The Pond FallbackImageList:', e);
-                }
+            const membersArray = JSON.parse(dataArrayString);
+            communityMembers = membersArray;
+            console.log(`Found ${communityMembers.length} members from The Pond section`);
+          } catch (e) {
+            console.error('Error parsing The Pond FallbackImageList:', e);
+          }
+        }
+        
+        if (communityMembers.length === 0) {
+          const communityMembersMatch = text.match(/## Community Members([\s\S]*?)(?=##|$)/);
+          if (communityMembersMatch) {
+            const fallbackImageMatches = [...communityMembersMatch[1].matchAll(/<FallbackImage[^>]*data="([^"]+)"[^>]*refc="([^"]+)"[^>]*\/>/g)];
+            communityMembers = fallbackImageMatches.map(match => ({
+              name: match[1],
+              ref: match[2]
+            }));
+            console.log(`Found ${communityMembers.length} members from Community Members section`);
+          }
+        }
+
+        if (!communityMembers || communityMembers.length === 0) {
+          document.getElementById('plw-content').textContent = "No community members found.";
+          return;
+        }
+
+        const selectedMembers = [];
+        const totalMembers = communityMembers.length;
+        const usedIndices = new Set();
+        const seed = Date.now();
+        
+        while (selectedMembers.length < 3 && selectedMembers.length < totalMembers) {
+          const randomIndex = Math.floor((Math.random() + seed * selectedMembers.length) % 1 * totalMembers);
+          if (!usedIndices.has(randomIndex)) {
+            usedIndices.add(randomIndex);
+            selectedMembers.push(communityMembers[randomIndex]);
+          }
+        }
+
+        const container = document.getElementById('plw-content');
+        container.innerHTML = '';
+        container.style.cssText = 'display:flex; gap:2rem; justify-content:center; flex-wrap:wrap; align-items:flex-start;';
+
+        selectedMembers.forEach(member => {
+          const username = member.name;
+          const referral = member.ref;
+          const profile = `https://x.com/${username}`;
+          const referralLink = `https://pond0x.com/referral/${referral}`;
+
+          const memberContainer = document.createElement('div');
+          memberContainer.style.cssText = 'display:flex; flex-direction:column; align-items:center; min-width:120px; max-width:150px;';
+          
+          const loadingDiv = document.createElement('div');
+          loadingDiv.style.cssText = 'width:64px; height:64px; border-radius:50%; margin-bottom:0.75rem; background:linear-gradient(135deg,#7b3aad,#FF13F0); display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; font-size:18px;';
+          loadingDiv.textContent = username.substring(0, 2).toUpperCase();
+          
+          const avatar = document.createElement('img');
+          avatar.style.cssText = 'width:64px; height:64px; border-radius:50%; margin-bottom:0.75rem; object-fit:cover;';
+          avatar.alt = `@${username}`;
+          
+          const avatarSources = [
+            `https://unavatar.io/twitter/${username}?fallback=false`,
+            `https://github.com/${username}.png?size=64`,
+            `https://avatars.dicebear.com/api/initials/${username}.svg?background=%237b3aad&color=fff`,
+            `https://ui-avatars.com/api/?name=${username}&size=64&background=7b3aad&color=fff&rounded=true`
+          ];
+          
+          let currentSourceIndex = 0;
+          let avatarLoaded = false;
+          
+          const tryNextAvatar = () => {
+            if (currentSourceIndex < avatarSources.length && !avatarLoaded) {
+              avatar.src = avatarSources[currentSourceIndex];
+              currentSourceIndex++;
             }
-            
-            if (communityMembers.length === 0) {
-                const communityMembersMatch = text.match(/## Community Members([\s\S]*?)(?=##|$)/);
-                if (communityMembersMatch) {
-                    const fallbackImageMatches = [...communityMembersMatch[1].matchAll(/<FallbackImage[^>]*data="([^"]+)"[^>]*refc="([^"]+)"[^>]*\/>/g)];
-                    communityMembers = fallbackImageMatches.map(match => ({
-                        name: match[1],
-                        ref: match[2]
-                    }));
-                    console.log(`Found ${communityMembers.length} members from Community Members section`);
-                }
+          };
+          
+          avatar.onload = () => {
+            if (!avatarLoaded) {
+              avatarLoaded = true;
+              loadingDiv.replaceWith(avatar);
             }
+          };
+          
+          avatar.onerror = tryNextAvatar;
+          
+          tryNextAvatar();
+
+          const profileLink = document.createElement('a');
+          profileLink.href = profile;
+          profileLink.target = '_blank';
+          profileLink.rel = 'noopener noreferrer';
+          profileLink.style.cssText = 'font-size:0.9rem; color:#1DA1F2; text-decoration:none; margin-bottom:0.5rem; text-align:center; word-break:break-word; line-height:1.2;';
+          profileLink.textContent = `@${username}`;
+
+          const referralButton = document.createElement('a');
+          referralButton.href = referralLink;
+          referralButton.target = '_blank';
+          referralButton.rel = 'noopener noreferrer';
+          referralButton.style.cssText = 'padding:0.4rem 0.8rem; background:linear-gradient(135deg, #f19cfd 0%, #FF13F0 100%); color:white; border-radius:6px; text-decoration:none; font-weight:bold; font-size:0.8rem; text-align:center; white-space:nowrap; box-shadow: 0 2px 8px rgba(241, 156, 253, 0.3); transition: all 0.3s ease;';
+          referralButton.textContent = 'Referral';
+
+          memberContainer.appendChild(loadingDiv);
+          memberContainer.appendChild(profileLink);
+          memberContainer.appendChild(referralButton);
+
+          container.appendChild(memberContainer);
+        });
+      }).catch(err => {
+        console.error('Error loading community data:', err);
+        document.getElementById('plw-content').textContent = "Couldn't load community.";
+      });
+
+    // Link generation functionality
+    const solanaLinkTemplates = [
+      {
+        name: "HASH BOOST HISTORY",
+        url: "https://solscan.io/account/{WALLET}?exclude_amount_zero=false&remove_spam=false&from_address={WALLET}&to_address=%218bVEtH3bXnpoS8mHCHkv6xfeT8EvG1KtWoTQvP3mx5nV%2C4ngqDt821wV2CjxoZLCLcTAPZNt6ZqpswoqyQEztsU36%2C%21{WALLET}&token_address=So11111111111111111111111111111111111111111#transfers",
+        description: "View your hash boost transaction history"
+      },
+      {
+        name: "MINING CLAIMS HISTORY",
+        url: "https://solscan.io/account/{WALLET}?from_address=AYg4dKoZJudVkD7Eu3ZaJjkzfoaATUqfiv8w8pS53opT#transfers",
+        description: "View your mining claims transaction history"
+      },
+      {
+        name: "SWAP REWARDS HISTORY",
+        url: "https://solscan.io/account/{WALLET}?from_address=1orFCnFfgwPzSgUaoK6Wr3MjgXZ7mtk8NGz9Hh4iWWL&remove_spam=false&exclude_amount_zero=false#transfers",
+        description: "View your swap rewards transaction history"
+      },
+      {
+        name: "PRO SUBSCRIPTION HISTORY",
+        url: "https://solscan.io/account/{WALLET}?exclude_amount_zero=false&remove_spam=false&to_address=2bsXHfqzWS3kgcgGifmffNCRokzgV1K9RMEiTcL6zQRF%2CGSMBLYht4JGmm1ZofyTFTGykYCwsenNQpRmiJ5fMnHpD&token_address=So11111111111111111111111111111111111111111&value=5&value=undefined#transfers",
+        description: "View your pro subscription transaction history"
+      },
+      {
+        name: "wPOND INFLOW/OUTFLOW HISTORY",
+        url: "https://solscan.io/account/{WALLET}?from_address=%21AYg4dKoZJudVkD7Eu3ZaJjkzfoaATUqfiv8w8pS53opT%2C%211orFCnFfgwPzSgUaoK6Wr3MjgXZ7mtk8NGz9Hh4iWWL&to_address=%211orFCnFfgwPzSgUaoK6Wr3MjgXZ7mtk8NGz9Hh4iWWL&token_address=3JgFwoYV74f6LwWjQWnr3YDPFnmBdwQfNyubv99jqUoq&remove_spam=false&exclude_amount_zero=false&visualize=true#transfers",
+        description: "View your wPOND token flow visualization"
+      }
+    ];
+
+    const additionalLinkTemplates = [
+      {
+        name: "MANIFEST DATA",
+        url: "https://cary0x.github.io/docs/info/manifest",
+        description: "Returns your manifest data from your manifest on Pond0x"
+      },
+      {
+        name: "MINING HEALTH DATA",
+        url: "https://cary0x.github.io/docs/info/health",
+        description: "Returns your mining health data from your manifest on Pond0x"
+      },
+      {
+        name: "SWAP/BOOST DATA",
+        url: "https://cary0x.github.io/docs/info/swaps",
+        description: "Calculator used to determine how to reach 615 boost via Swaps"
+      },
+      {
+        name: "LUCK DATA",
+        url: "https://cary0x.github.io/docs/info/luck",
+        description: "Returns your luck data from your manifest on Pond0x"
+      },
+      {
+        name: "ETHEREUM BADGE DATA",
+        url: "https://cary0x.github.io/docs/info/ethbadges",
+        description: "Returns your ETH badge data from your manifest on Pond0x"
+      }
+    ];
+
+    function generateSolanaLinks() {
+      const walletAddress = document.getElementById('wallet-input').value.trim();
+      const linksContainer = document.getElementById('links-container');
+      const secondLinksContainer = document.getElementById('second-links-container');
+      const linksSection = document.getElementById('links-section');
+
+      if (!walletAddress) {
+        alert('Please enter a Solana wallet address first!');
+        return;
+      }
+
+      if (walletAddress.length < 32 || walletAddress.length > 44) {
+        alert('Please enter a valid Solana wallet address');
+        return;
+      }
+
+      linksContainer.innerHTML = '';
+      secondLinksContainer.innerHTML = '';
+      
+      solanaLinkTemplates.forEach(template => {
+        const finalUrl = template.url.replace(/{WALLET}/g, walletAddress);
+        
+        const linkDiv = document.createElement('div');
+        linkDiv.className = 'link-item';
+        linkDiv.innerHTML = `
+          <div class="link-content">
+            <div class="link-title">${template.name}</div>
+            <a href="${finalUrl}" target="_blank" class="link-url">Open on Solscan →</a>
+            <div class="link-description">${template.description}</div>
+          </div>
+          <div class="action-buttons">
+            <button class="bookmark-btn" onclick="bookmarkLink('${finalUrl}', '${template.name}', this)">🔖 Bookmark</button>
+            <button class="copy-btn" onclick="copyToClipboard('${finalUrl}', this)">Copy Link</button>
+          </div>
+        `;
+        
+        linksContainer.appendChild(linkDiv);
+      });
+
+      additionalLinkTemplates.forEach(template => {
+        const linkDiv = document.createElement('div');
+        linkDiv.className = 'link-item';
+        linkDiv.innerHTML = `
+          <div class="link-content">
+            <div class="link-title">${template.name}</div>
+            <a href="${template.url}" target="_blank" class="link-url">Open on Cary0x2's Unofficial Pond0x Info →</a>
+            <div class="link-description">${template.description}</div>
+          </div>
+          <div class="action-buttons">
+            <button class="bookmark-btn" onclick="bookmarkLink('${template.url}', '${template.name}', this)">🔖 Bookmark</button>
+            <button class="copy-btn" onclick="copyToClipboard('${template.url}', this)">Copy Link</button>
+          </div>
+        `;
+        
+        secondLinksContainer.appendChild(linkDiv);
+      });
+
+      linksSection.classList.add('show');
+    }
+
+    function bookmarkLink(url, title, button) {
+      if (window.sidebar && window.sidebar.addPanel) {
+        window.sidebar.addPanel(title, url, "");
+      } else if (window.external && ('AddFavorite' in window.external)) {
+        window.external.AddFavorite(url, title);
+      } else {
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(url).then(() => {
+            const originalText = button.textContent;
+            button.textContent = 'URL Copied!';
+            button.style.background = 'rgba(123, 58, 173, 0.4)';
+            button.style.color = '#7b3aad';
             
-            return communityMembers;
+            alert(`Bookmark instructions:\n\n1. The URL has been copied to your clipboard\n2. Press Ctrl+D (Cmd+D on Mac) to bookmark this page\n3. Or manually bookmark: ${title}\n\nURL: ${url}`);
+            
+            setTimeout(() => {
+              button.textContent = originalText;
+              button.style.background = 'rgba(123, 58, 173, 0.2)';
+              button.style.color = '#FF13F0';
+            }, 3000);
+          });
+        } else {
+          alert(`To bookmark this link:\n\n"${title}"\n\nPress Ctrl+D (Cmd+D on Mac) after opening:\n${url}`);
         }
+      }
+    }
 
-        // Select random community members
-        function selectRandomMembers(members, count = 3) {
-            const selectedMembers = [];
-            const totalMembers = members.length;
-            const usedIndices = new Set();
-            const seed = Date.now();
-            
-            while (selectedMembers.length < count && selectedMembers.length < totalMembers) {
-                const randomIndex = Math.floor((Math.random() + seed * selectedMembers.length) % 1 * totalMembers);
-                if (!usedIndices.has(randomIndex)) {
-                    usedIndices.add(randomIndex);
-                    selectedMembers.push(members[randomIndex]);
-                }
-            }
-            
-            return selectedMembers;
+    function copyToClipboard(text, button) {
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = button.textContent;
+        button.textContent = 'Copied!';
+        button.style.background = 'rgba(241, 156, 253, 0.4)';
+        button.style.color = '#f97316';
+        
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.background = 'rgba(241, 156, 253, 0.2)';
+          button.style.color = '#f19cfd';
+        }, 2000);
+      });
+    }
+
+    function toggleNav() {
+      const navLinks = document.getElementById('navLinks');
+      navLinks.classList.toggle('show');
+    }
+
+    // Allow Enter key to generate links
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('wallet-input').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          generateSolanaLinks();
         }
-
-        // Create avatar with fallback
-        function createAvatar(username, memberContainer) {
-            const loadingDiv = document.createElement('div');
-            loadingDiv.style.cssText = 'width:64px; height:64px; border-radius:50%; margin-bottom:0.75rem; background:linear-gradient(135deg,#7b3aad,#FF13F0); display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; font-size:18px;';
-            loadingDiv.textContent = username.substring(0, 2).toUpperCase();
-            
-            const avatar = document.createElement('img');
-            avatar.style.cssText = 'width:64px; height:64px; border-radius:50%; margin-bottom:0.75rem; object-fit:cover;';
-            avatar.alt = `@${username}`;
-            
-            const avatarSources = [
-                `https://unavatar.io/twitter/${username}?fallback=false`,
-                `https://github.com/${username}.png?size=64`,
-                `https://avatars.dicebear.com/api/initials/${username}.svg?background=%237b3aad&color=fff`,
-                `https://ui-avatars.com/api/?name=${username}&size=64&background=7b3aad&color=fff&rounded=true`
-            ];
-            
-            let currentSourceIndex = 0;
-            let avatarLoaded = false;
-            
-            const tryNextAvatar = () => {
-                if (currentSourceIndex < avatarSources.length && !avatarLoaded) {
-                    avatar.src = avatarSources[currentSourceIndex];
-                    currentSourceIndex++;
-                }
-            };
-            
-            avatar.onload = () => {
-                if (!avatarLoaded) {
-                    avatarLoaded = true;
-                    loadingDiv.replaceWith(avatar);
-                }
-            };
-            
-            avatar.onerror = tryNextAvatar;
-            
-            memberContainer.appendChild(loadingDiv);
-            tryNextAvatar();
-        }
-
-        // Render community members
-        function renderCommunityMembers(selectedMembers) {
-            const container = document.getElementById('plw-content');
-            container.innerHTML = '';
-
-            selectedMembers.forEach(member => {
-                const { name: username, ref: referral } = member;
-                const profile = `https://x.com/${username}`;
-                const referralLink = `https://pond0x.com/referral/${referral}`;
-
-                const memberContainer = document.createElement('div');
-                memberContainer.style.cssText = 'display:flex; flex-direction:column; align-items:center; min-width:120px; max-width:150px;';
-                
-                createAvatar(username, memberContainer);
-
-                const profileLink = document.createElement('a');
-                profileLink.href = profile;
-                profileLink.target = '_blank';
-                profileLink.rel = 'noopener noreferrer';
-                profileLink.style.cssText = 'font-size:0.9rem; color:#FF13F0; text-decoration:none; margin-bottom:0.5rem; text-align:center; word-break:break-word; line-height:1.2;';
-                profileLink.textContent = `@${username}`;
-
-                const referralButton = document.createElement('a');
-                referralButton.href = referralLink;
-                referralButton.target = '_blank';
-                referralButton.rel = 'noopener noreferrer';
-                referralButton.style.cssText = 'padding:0.4rem 0.8rem; background:linear-gradient(135deg, #f19cfd 0%, #FF13F0 100%); color:white; border-radius:6px; text-decoration:none; font-weight:bold; font-size:0.8rem; text-align:center; white-space:nowrap; box-shadow: 0 2px 8px rgba(241, 156, 253, 0.3); transition: all 0.3s ease;';
-                referralButton.textContent = 'Referral';
-
-                memberContainer.appendChild(profileLink);
-                memberContainer.appendChild(referralButton);
-                container.appendChild(memberContainer);
-            });
-        }
-
-        // Load community data
-        function loadCommunityData() {
-            fetch(MDX_URL)
-                .then(res => res.text())
-                .then(text => {
-                    const communityMembers = parseCommunityData(text);
-                    
-                    if (!communityMembers || communityMembers.length === 0) {
-                        document.getElementById('plw-content').textContent = "No community members found.";
-                        return;
-                    }
-
-                    const selectedMembers = selectRandomMembers(communityMembers);
-                    renderCommunityMembers(selectedMembers);
-                })
-                .catch(err => {
-                    console.error('Error loading community data:', err);
-                    document.getElementById('plw-content').textContent = "Couldn't load community.";
-                });
-        }
-
-        // Auto-initialize when DOM is ready
-        document.addEventListener('DOMContentLoaded', loadCommunityData);
-    </script>
+      });
+    });
+  </script>
 
 </body>
 </html>
