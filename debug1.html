@@ -208,73 +208,95 @@
       flex-direction: column;
       gap: 1rem;
       margin-bottom: 2rem;
+      align-items: center;
     }
 
-    .input-row {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-      flex-wrap: wrap;
+    .wallet-input-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
     }
 
     .wallet-input {
-      flex: 1;
-      min-width: 300px;
+      width: 100%;
       padding: 15px 20px;
       border-radius: 12px;
       border: 2px solid rgba(241, 156, 253, 0.3);
-      background: rgba(123, 58, 173, 0.1);
+      background: rgba(123, 58, 173, 0.1) !important;
       color: #7b3aad;
       font-size: 1.1rem;
       transition: all 0.3s ease;
+      position: relative;
+      z-index: 1;
     }
 
     .wallet-input:focus {
       outline: none;
       border-color: rgba(241, 156, 253, 0.6);
       box-shadow: 0 0 20px rgba(241, 156, 253, 0.2);
+      background: rgba(123, 58, 173, 0.1) !important;
     }
 
     .wallet-input::placeholder {
       color: rgba(123, 58, 173, 0.6);
     }
 
-    .wallet-type-indicator {
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      min-width: 100px;
-      text-align: center;
-      opacity: 0;
-      transform: scale(0.9);
-      pointer-events: none;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-left: auto;
-    }
-
-    .wallet-type-indicator.visible {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    .wallet-type-solana {
+    /* Wallet type border indicators */
+    .wallet-input-wrapper.wallet-type-solana::before {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      right: -3px;
+      bottom: -3px;
       background: linear-gradient(135deg, #9945FF 0%, #14F195 100%);
-      color: white;
+      border-radius: 15px;
+      z-index: 0;
     }
 
-    .wallet-type-ethereum {
+    .wallet-input-wrapper.wallet-type-solana .wallet-input {
+      border: none;
+      background: rgba(123, 58, 173, 0.1) !important;
+      box-shadow: 0 0 15px rgba(153, 69, 255, 0.2);
+    }
+
+    .wallet-input-wrapper.wallet-type-solana .wallet-input:focus {
+      box-shadow: 0 0 20px rgba(153, 69, 255, 0.3);
+      background: rgba(123, 58, 173, 0.1) !important;
+    }
+
+    .wallet-input-wrapper.wallet-type-ethereum::before {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      right: -3px;
+      bottom: -3px;
       background: linear-gradient(135deg, #189fe0 0%, #647cf6 100%);
-      color: white;
+      border-radius: 15px;
+      z-index: 0;
     }
 
-    .wallet-type-invalid {
-      background: linear-gradient(135deg, #adadad 0%, #999999 100%);
-      color: white;
+    .wallet-input-wrapper.wallet-type-ethereum .wallet-input {
+      border: none;
+      background: rgba(123, 58, 173, 0.1) !important;
+      box-shadow: 0 0 15px rgba(100, 124, 246, 0.2);
+    }
+
+    .wallet-input-wrapper.wallet-type-ethereum .wallet-input:focus {
+      box-shadow: 0 0 20px rgba(100, 124, 246, 0.3);
+      background: rgba(123, 58, 173, 0.1) !important;
+    }
+
+    .wallet-input-wrapper.wallet-type-invalid .wallet-input {
+      border: 3px solid #999999;
+      background: rgba(123, 58, 173, 0.1) !important;
+      box-shadow: 0 0 10px rgba(255, 107, 107, 0.2);
+    }
+
+    .wallet-input-wrapper.wallet-type-invalid .wallet-input:focus {
+      box-shadow: 0 0 15px rgba(255, 107, 107, 0.3);
+      background: rgba(123, 58, 173, 0.1) !important;
     }
 
     .btn {
@@ -289,7 +311,6 @@
       transition: all 0.3s ease;
       box-shadow: 0 4px 15px rgba(241, 156, 253, 0.3);
       white-space: nowrap;
-      align-self: flex-start;
     }
 
     .btn:hover {
@@ -424,22 +445,13 @@
         font-size: 2.2rem;
       }
       
-      .input-row {
-        flex-direction: column;
-      }
-      
       .wallet-input {
-        min-width: 100%;
-      }
-      
-      .wallet-type-indicator {
-        margin-left: 0;
-        align-self: flex-start;
+        max-width: 100%;
       }
       
       .btn {
-        width: 100%;
-        align-self: stretch;
+        width: auto;
+        min-width: 200px;
       }
       
       .card {
@@ -637,14 +649,13 @@
     <h2>Personal POND🤝X History Link Generator</h2>
     
     <div class="input-section">
-      <div class="input-row">
+      <div class="wallet-input-wrapper" id="wallet-input-wrapper">
         <input 
           type="text" 
           id="wallet-input" 
           class="wallet-input"
           placeholder="Enter your wallet address (Solana or Ethereum)"
         >
-        <div id="wallet-type-indicator" class="wallet-type-indicator"></div>
       </div>
       <button class="btn" onclick="generateLinks()">Generate Links</button>
     </div>
@@ -670,19 +681,19 @@
 // GLOBAL FUNCTIONS - Declared at the very top
 function detectWalletType() {
   const walletAddress = document.getElementById('wallet-input').value.trim();
-  const indicator = document.getElementById('wallet-type-indicator');
+  const walletInputWrapper = document.getElementById('wallet-input-wrapper');
   
-  // Hide indicator if no input
+  // Remove all wallet type classes first
+  walletInputWrapper.classList.remove('wallet-type-solana', 'wallet-type-ethereum', 'wallet-type-invalid');
+  
+  // Don't add any classes if no input
   if (!walletAddress) {
-    indicator.classList.remove('visible');
-    indicator.className = 'wallet-type-indicator';
     return 'none';
   }
   
   // Ethereum address detection (0x prefix and 40 hex characters)
   if (walletAddress.match(/^0x[a-fA-F0-9]{40}$/)) {
-    indicator.textContent = 'Ethereum';
-    indicator.className = 'wallet-type-indicator wallet-type-ethereum visible';
+    walletInputWrapper.classList.add('wallet-type-ethereum');
     return 'ethereum';
   }
   
@@ -690,14 +701,12 @@ function detectWalletType() {
   if (walletAddress.length >= 32 && walletAddress.length <= 44 && 
       walletAddress.match(/^[1-9A-HJ-NP-Za-km-z]+$/) && 
       !walletAddress.startsWith('0x')) {
-    indicator.textContent = 'Solana';
-    indicator.className = 'wallet-type-indicator wallet-type-solana visible';
+    walletInputWrapper.classList.add('wallet-type-solana');
     return 'solana';
   }
   
-  // Show invalid indicator for invalid addresses (but only if there's input)
-  indicator.textContent = 'Invalid';
-  indicator.className = 'wallet-type-indicator wallet-type-invalid visible';
+  // Show invalid border for invalid addresses (but only if there's input)
+  walletInputWrapper.classList.add('wallet-type-invalid');
   return 'invalid';
 }
 
