@@ -978,12 +978,12 @@
         linkDiv.innerHTML = `
           <div class="link-content">
             <div class="link-title">${template.name}</div>
-            <a href="${template.url}" target="_blank" class="link-url">Open on Cary0x2's Unofficial Pond0x Info →</a>
+            <a href="${finalUrl}" target="_blank" class="link-url">Open on Cary0x2's Unofficial Pond0x Info →</a>
             <div class="link-description">${template.description}</div>
           </div>
           <div class="action-buttons">
-            <button class="bookmark-btn" onclick="bookmarkLink('${template.url}', '${template.name}', this)">🔖 Bookmark</button>
-            <button class="copy-btn" onclick="copyToClipboard('${template.url}', this)">Copy Link</button>
+            <button class="bookmark-btn" onclick="bookmarkLink('${finalUrl}', '${template.name}', this)">🔖 Bookmark</button>
+            <button class="copy-btn" onclick="copyToClipboard('${finalUrl}', this)">Copy Link</button>
           </div>
         `;
         
