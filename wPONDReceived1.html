@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>POND🤝X DATA HUB</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(90deg, #0ec404 0%, #25db0f 15%, #13FF22 35%, #13FF22 65%, #25db0f 85%, #0ec404 100%);
+      color: #7b3aad;
+      min-height: 100vh;
+      padding-top: 50px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Bubble container - can be hidden */
+    .bubble-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+      transition: opacity 0.3s ease;
+    }
+
+    .bubble-container.hidden {
+      opacity: 0;
+    }
+
+    /* Cook button styling - bottom right position */
+    .cook-button {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: linear-gradient(135deg, #f19cfd 0%, #FF13F0 100%);
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 
+        0 6px 20px rgba(241, 156, 253, 0.4),
+        inset 2px 2px 10px rgba(255, 255, 255, 0.2),
+        inset -2px -2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1002;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .cook-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 
+        0 10px 30px rgba(241, 156, 253, 0.5),
+        inset 2px 2px 10px rgba(255, 255, 255, 0.3),
+        inset -2px -2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .cook-button.bubbles-off {
+      background: linear-gradient(135deg, #666 0%, #999 100%);
+      box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.3),
+        inset 2px 2px 10px rgba(255, 255, 255, 0.1),
+        inset -2px -2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .cook-button.bubbles-off:hover {
+      box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.4),
+        inset 2px 2px 10px rgba(255, 255, 255, 0.2),
+        inset -2px -2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    @media (max-width: 768px) {
+      .cook-button {
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        font-size: 1rem;
+      }
+    }
+
+    /* Clear glass bubbles - look like liquid boiling */
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      animation: bubble-rise linear infinite;
+      opacity: 0;
+      background: 
+        radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.3) 30%, transparent 70%),
+        radial-gradient(circle at 80% 80%, rgba(0, 0, 0, 0.1) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 
+        0 0 20px rgba(255, 255, 255, 0.2),
+        inset 3px 3px 15px rgba(255, 255, 255, 0.4),
+        inset -3px -3px 15px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(1px);
+    }
+
+    /* Bubble animations with better visibility */
+    @keyframes bubble-rise {
+      0% {
+        opacity: 0;
+        transform: translateY(100vh) scale(0.3);
+      }
+      10% {
+        opacity: 0.8;
+      }
+      90% {
+        opacity: 0.8;
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-100px) scale(1);
+      }
+    }
+
+    @keyframes liquidFlow {
+      0%, 100% {
+        background: linear-gradient(90deg, #0ec404 0%, #25db0f 15%, #13FF22 35%, #13FF22 65%, #25db0f 85%, #0ec404 100%);
+        filter: hue-rotate(0deg) brightness(1);
+      }
+      25% {
+        background: linear-gradient(135deg, #25db0f 0%, #13FF22 20%, #0ec404 40%, #13FF22 60%, #25db0f 80%, #0ec404 100%);
+        filter: hue-rotate(5deg) brightness(1.05);
+      }
+      50% {
+        background: linear-gradient(90deg, #13FF22 0%, #0ec404 20%, #25db0f 40%, #0ec404 60%, #13FF22 80%, #25db0f 100%);
+        filter: hue-rotate(10deg) brightness(1.1);
+      }
+      75% {
+        background: linear-gradient(45deg, #0ec404 0%, #13FF22 25%, #25db0f 50%, #13FF22 75%, #0ec404 100%);
+        filter: hue-rotate(5deg) brightness(1.05);
+      }
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #FF13F0;
+      z-index: 1000;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0.3rem 1rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .nav-links a {
+      color: #13FF22;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1rem;
+      padding: 0.5rem;
+      border-radius: 5px;
+    }
+
+    .nav-links a:hover {
+      background-color: rgba(19, 255, 34, 0.15);
+      color: white;
+    }
+
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: white;
+      cursor: pointer;
+    }
+
+    .container {
+      max-width: 900px;
+      width: 100%;
+      padding: 0 1rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .header img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .card {
+      background: rgba(123, 58, 173, 0.1);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 2rem;
+      border: 2px solid rgba(241, 156, 253, 0.3);
+      box-shadow: 0 12px 40px rgba(123, 58, 173, 0.2);
+    }
+
+    iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(123, 58, 173, 0.2);
+      background: white;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 2rem;
+      padding: 1rem;
+      color: #7b3aad;
+      opacity: 0.7;
+      font-size: 0.9rem;
+    }
+
+    .mirrored {
+      display: inline-block;
+      transform: scaleX(-1);
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 0.2rem 0;
+      }
+
+      .nav-container {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0.2rem 1rem;
+      }
+
+      .nav-toggle {
+        display: block;
+        align-self: flex-start;
+        margin-bottom: 0.3rem;
+      }
+
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background-color: #FF13F0;
+        padding: 0.25rem 0;
+        margin-top: 0.3rem;
+      }
+
+      .nav-links.show {
+        display: flex;
+      }
+
+      .nav-links a {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+        width: 100%;
+        text-align: center;
+      }
+
+      iframe {
+        height: 450px;
+      }
+    }
+    .people-like-section {
+      text-align: center;
+      margin-top: 2rem;
+      padding: 1rem;
+      color: #7b3aad;
+      font-size: 0.9rem;
+    }
+      .people-like-subtitle {
+      margin: 0.5rem 0 1rem 0;
+      font-size: 0.9rem;
+      color: #7b3aad;
+      opacity: 0.8;
+    }
+
+    #plw-content {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    /* Link styling for the section */
+    .people-like-section .link-url {
+      color: #FF13F0;
+      text-decoration: none;
+      opacity: 0.8;
+      transition: all 0.3s ease;
+    }
+
+    .people-like-section .link-url:hover {
+      color: #7b3aad;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cook button for toggling bubbles -->
+  <button class="cook-button" id="cookButton" onclick="toggleBubbles()">
+    👨‍🍳 Cook
+  </button>
+
+  <!-- Bubble container for animation -->
+  <div class="bubble-container" id="bubbleContainer"></div>
+
+  <!-- Responsive Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <button class="nav-toggle" onclick="toggleNav()">☰</button>
+      <div class="nav-links" id="navLinks">
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/">PERSONAL LINKS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/MiningClaims.html">MINING CLAIMS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/HashBoosts.html">HASH BOOSTS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/wPONDReceived.html">wPOND RECEIVED</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigActivations.html">RIG ACTIVATIONS</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="header">
+      <img src="https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/refs/heads/main/pond0xdatahub.png" alt="POND0X Data Hub Logo">
+    </div>
+
+    <div class="card">
+      <h2 style="text-align:center; margin-bottom: 1rem;">🪷 wPOND Received <span class="mirrored">🪷</span></h2>
+      <iframe src="https://dune.com/embeds/5504768/8965609" title="Dune Dashboard Embed" loading="lazy"></iframe>
+    </div>
+
+    <div class="people-like-section">
+      <p><b>Built for <a href="https://cary0x.github.io/community/" target="_blank" class="link-url">the POND🤝X community</a> ❤️</b></p>
+      <p class="people-like-subtitle"><b>People like</b></p>
+  <div id="plw-content">Loading...</div>
+    </div>
+
+    <script>
+    // Optimized bubble animation system
+    const bubbleSystem = {
+      container: null,
+      bubbles: [],
+      maxBubbles: 25,
+      initialized: false,
+      animationRunning: true, // Track animation state
+      animationInterval: null,
+      
+      init() {
+        if (this.initialized) return;
+        this.container = document.getElementById('bubbleContainer');
+        this.createBubblePool();
+        this.startAnimation();
+        this.initialized = true;
+      },
+
+      stop() {
+        this.animationRunning = false;
+        if (this.animationInterval) {
+          clearInterval(this.animationInterval);
+        }
+        // Hide all active bubbles
+        this.bubbles.forEach(bubble => {
+          if (bubble.timer) {
+            clearTimeout(bubble.timer);
+          }
+          bubble.element.style.display = 'none';
+          bubble.active = false;
+        });
+      },
+
+      start() {
+        if (!this.animationRunning) {
+          this.animationRunning = true;
+          this.startAnimation();
+        }
+      },
+      
+      createBubblePool() {
+        // Pre-create clear glass bubble elements
+        for (let i = 0; i < this.maxBubbles; i++) {
+          const bubble = document.createElement('div');
+          bubble.className = 'bubble';
+          bubble.style.display = 'none';
+          this.container.appendChild(bubble);
+          this.bubbles.push({
+            element: bubble,
+            active: false,
+            timer: 0
+          });
+        }
+      },
+      
+      getRandomBubble() {
+        return this.bubbles.find(b => !b.active) || this.bubbles[0];
+      },
+      
+      createBubble() {
+        const bubble = this.getRandomBubble();
+        if (!bubble || bubble.active) return;
+        
+        const size = Math.random() * 40 + 10; // 10-50px
+        const left = Math.random() * 100; // 0-100%
+        const duration = Math.random() * 4 + 6; // 6-10 seconds
+        const delay = Math.random() * 2; // 0-2 seconds delay
+        
+        const element = bubble.element;
+        element.style.cssText = `
+          width: ${size}px;
+          height: ${size}px;
+          left: ${left}%;
+          animation: bubble-rise ${duration}s linear ${delay}s forwards;
+          display: block;
+        `;
+        
+        bubble.active = true;
+        bubble.timer = setTimeout(() => {
+          element.style.display = 'none';
+          bubble.active = false;
+        }, (duration + delay) * 1000);
+      },
+      
+      startAnimation() {
+        if (!this.animationRunning) return;
+        
+        // Create initial bubbles
+        for (let i = 0; i < 8; i++) {
+          setTimeout(() => {
+            if (this.animationRunning) this.createBubble();
+          }, i * 600);
+        }
+        
+        // Continuous bubble creation - more frequent
+        this.animationInterval = setInterval(() => {
+          if (this.animationRunning && Math.random() < 0.8) { // 80% chance to create bubble
+            this.createBubble();
+          }
+        }, 900);
+      }
+    };
+
+    // Toggle bubbles and glass effects function
+    function toggleBubbles() {
+      const container = document.getElementById('bubbleContainer');
+      const button = document.getElementById('cookButton');
+      const body = document.body;
+      
+      if (bubbleSystem.animationRunning) {
+        // Turn off all effects
+        bubbleSystem.stop();
+        container.classList.add('hidden');
+        body.classList.add('glass-off');
+        button.classList.add('bubbles-off');
+        button.innerHTML = '👨‍🍳 Cook';
+      } else {
+        // Turn on all effects  
+        bubbleSystem.start();
+        container.classList.remove('hidden');
+        body.classList.remove('glass-off');
+        button.classList.remove('bubbles-off');
+        button.innerHTML = '👨‍🍳 Cook';
+      }
+    }
+
+    // Initialize bubble system when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      bubbleSystem.init();
+    });
+    </script>
+
+  <script>
+    function toggleNav() {
+      const links = document.getElementById('navLinks');
+      links.classList.toggle('show');
+    }
+  </script>
+
+  <script>
+const MDX_URL = 'https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/main/src/community.mdx';
+
+// Parse community data from MDX
+function parseCommunityData(text) {
+  let communityMembers = [];
+  
+  const pondSectionMatch = text.match(/## The Pond[\s\S]*?<FallbackImageList[^>]*data=\{(\[[\s\S]*?\])\}[^>]*\/>/);
+  
+  if (pondSectionMatch) {
+    try {
+      let dataArrayString = pondSectionMatch[1]
+        .replace(/(\w+):/g, '"$1":')
+        .replace(/,\s*}/g, '}')
+        .replace(/,\s*]/g, ']');
+      
+      communityMembers = JSON.parse(dataArrayString);
+      console.log(`Found ${communityMembers.length} members from The Pond section`);
+    } catch (e) {
+      console.error('Error parsing The Pond FallbackImageList:', e);
+    }
+  }
+  
+  if (communityMembers.length === 0) {
+    const communityMembersMatch = text.match(/## Community Members([\s\S]*?)(?=##|$)/);
+    if (communityMembersMatch) {
+      const fallbackImageMatches = [...communityMembersMatch[1].matchAll(/<FallbackImage[^>]*data="([^"]+)"[^>]*refc="([^"]+)"[^>]*\/>/g)];
+      communityMembers = fallbackImageMatches.map(match => ({
+        name: match[1],
+        ref: match[2]
+      }));
+      console.log(`Found ${communityMembers.length} members from Community Members section`);
+    }
+  }
+  
+  return communityMembers;
+}
+
+// Select random community members
+function selectRandomMembers(members, count = 3) {
+  const selectedMembers = [];
+  const totalMembers = members.length;
+  const usedIndices = new Set();
+  const seed = Date.now();
+  
+  while (selectedMembers.length < count && selectedMembers.length < totalMembers) {
+    const randomIndex = Math.floor((Math.random() + seed * selectedMembers.length) % 1 * totalMembers);
+    if (!usedIndices.has(randomIndex)) {
+      usedIndices.add(randomIndex);
+      selectedMembers.push(members[randomIndex]);
+    }
+  }
+  
+  return selectedMembers;
+}
+
+// Create avatar with fallback
+function createAvatar(username, memberContainer) {
+  const loadingDiv = document.createElement('div');
+  loadingDiv.style.cssText = 'width:64px; height:64px; border-radius:50%; margin-bottom:0.75rem; background:linear-gradient(135deg,#7b3aad,#FF13F0); display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; font-size:18px;';
+  loadingDiv.textContent = username.substring(0, 2).toUpperCase();
+  
+  const avatar = document.createElement('img');
+  avatar.style.cssText = 'width:64px; height:64px; border-radius:50%; margin-bottom:0.75rem; object-fit:cover;';
+  avatar.alt = `@${username}`;
+  
+  const avatarSources = [
+    `https://unavatar.io/twitter/${username}?fallback=false`,
+    `https://github.com/${username}.png?size=64`,
+    `https://avatars.dicebear.com/api/initials/${username}.svg?background=%237b3aad&color=fff`,
+    `https://ui-avatars.com/api/?name=${username}&size=64&background=7b3aad&color=fff&rounded=true`
+  ];
+  
+  let currentSourceIndex = 0;
+  let avatarLoaded = false;
+  
+  const tryNextAvatar = () => {
+    if (currentSourceIndex < avatarSources.length && !avatarLoaded) {
+      avatar.src = avatarSources[currentSourceIndex];
+      currentSourceIndex++;
+    }
+  };
+  
+  avatar.onload = () => {
+    if (!avatarLoaded) {
+      avatarLoaded = true;
+      loadingDiv.replaceWith(avatar);
+    }
+  };
+  
+  avatar.onerror = tryNextAvatar;
+  
+  memberContainer.appendChild(loadingDiv);
+  tryNextAvatar();
+}
+
+// Render community members
+function renderCommunityMembers(selectedMembers) {
+  const container = document.getElementById('plw-content');
+  container.innerHTML = '';
+
+  selectedMembers.forEach(member => {
+    const { name: username, ref: referral } = member;
+    const profile = `https://x.com/${username}`;
+    const referralLink = `https://pond0x.com/referral/${referral}`;
+
+    const memberContainer = document.createElement('div');
+    memberContainer.style.cssText = 'display:flex; flex-direction:column; align-items:center; min-width:120px; max-width:150px;';
+    
+    createAvatar(username, memberContainer);
+
+    const profileLink = document.createElement('a');
+    profileLink.href = profile;
+    profileLink.target = '_blank';
+    profileLink.rel = 'noopener noreferrer';
+    profileLink.style.cssText = 'font-size:0.9rem; color:#FF13F0; text-decoration:none; margin-bottom:0.5rem; text-align:center; word-break:break-word; line-height:1.2;';
+    profileLink.textContent = `@${username}`;
+
+    const referralButton = document.createElement('a');
+    referralButton.href = referralLink;
+    referralButton.target = '_blank';
+    referralButton.rel = 'noopener noreferrer';
+    referralButton.style.cssText = 'padding:0.4rem 0.8rem; background:linear-gradient(135deg, #f19cfd 0%, #FF13F0 100%); color:white; border-radius:6px; text-decoration:none; font-weight:bold; font-size:0.8rem; text-align:center; white-space:nowrap; box-shadow: 0 2px 8px rgba(241, 156, 253, 0.3); transition: all 0.3s ease;';
+    referralButton.textContent = 'Referral';
+
+    memberContainer.appendChild(profileLink);
+    memberContainer.appendChild(referralButton);
+    container.appendChild(memberContainer);
+  });
+}
+
+// Load community data
+function loadCommunityData() {
+  fetch(MDX_URL)
+    .then(res => res.text())
+    .then(text => {
+      const communityMembers = parseCommunityData(text);
+      
+      if (!communityMembers || communityMembers.length === 0) {
+        document.getElementById('plw-content').textContent = "No community members found.";
+        return;
+      }
+
+      const selectedMembers = selectRandomMembers(communityMembers);
+      renderCommunityMembers(selectedMembers);
+    })
+    .catch(err => {
+      console.error('Error loading community data:', err);
+      document.getElementById('plw-content').textContent = "Couldn't load community.";
+    });
+}
+
+// Initialize the People Like section
+function initPeopleLikeSection() {
+  loadCommunityData();
+}
+
+// Auto-initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', initPeopleLikeSection);
+</script>
+
+</body>
+</html>
