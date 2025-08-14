@@ -903,7 +903,7 @@
       }
     ];
 
-    const solanaLinkTemplates = [
+    const additionalLinkTemplates = [
       {
         name: "MANIFEST DATA",
         url: "https://cary0x.github.io/docs/info/manifest?wallet={WALLET}",
@@ -971,6 +971,7 @@
       });
 
       additionalLinkTemplates.forEach(template => {
+        const finalUrl = template.url.replace(/{WALLET}/g, walletAddress);
         const linkDiv = document.createElement('div');
         linkDiv.className = 'link-item';
         linkDiv.innerHTML = `
