@@ -840,33 +840,33 @@ const solanaCary0xTemplates = [
     name: "LUCK DATA",
     url: "https://cary0x.github.io/docs/info/luck?wallet={WALLET}",
     description: "Returns your luck data from your manifest on Pond0x"
-  },
-  {
-    name: "ETHEREUM BADGE DATA",
-    url: "https://cary0x.github.io/docs/info/ethbadges",
-    description: "Returns your ETH badge data from your manifest on Pond0x"
   }
 ];
 
 // Link templates for Ethereum wallets (placeholder - you'll replace these)
 const ethereumLinkTemplates = [
   {
-    name: "ETHEREUM EXAMPLE LINK 1",
-    url: "https://etherscan.io/address/{WALLET}",
-    description: "Example Ethereum link 1 - replace this with your actual links"
+    name: "ETHEREUM SWAP HISTORY",
+    url: "https://etherscan.io/advanced-filter?fadd={WALLET}&tadd=0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD%2c0x17CC6042605381c158D2adab487434Bde79Aa61C&qt=1&p=1",
+    description: "View your ETH swap transaction history"
   },
   {
-    name: "ETHEREUM EXAMPLE LINK 2",
-    url: "https://example.com/eth/{WALLET}",
-    description: "Example Ethereum link 2 - replace this with your actual links"
+    name: "PNDC INFLOW/OUTFLOW HISTORY",
+    url: "https://etherscan.io/token/0x423f4e6138e475d85cf7ea071ac92097ed631eea?a={WALLET}#analytics",
+    description: "View your PNDC token flow visualization"
+  },
+  {
+    name: "PORK INFLOW/OUTFLOW HISTORY",
+    url: "https://etherscan.io/token/0xb9f599ce614feb2e1bbe58f180f370d05b39344e?a={WALLET}#analytics",
+    description: "View your PORK token flow visualization"
   }
 ];
 
 const ethereumCary0xTemplates = [
   {
-    name: "ETHEREUM CARY0X EXAMPLE 1",
-    url: "https://cary0x.github.io/docs/info/ethereum-example?wallet={WALLET}",
-    description: "Example Ethereum Cary0x link - replace this with your actual links"
+    name: "ETHEREUM BADGE DATA",
+    url: "https://cary0x.github.io/docs/info/ethbadges?ethwallet={WALLET}",
+    description: "Returns your ETH badge data from your manifest on Pond0x"
   }
 ];
 
@@ -878,8 +878,8 @@ function generateSolanaLinks(walletAddress) {
   const secondTitle = document.getElementById('second-section-title');
 
   // Update titles for Solana
-  mainTitle.textContent = '👨‍🍳 Your Solana History Links';
-  secondTitle.textContent = '🐐 Solana Links From Cary0x2\'s Unofficial Pond0x Info';
+  mainTitle.textContent = '👨‍🍳 Your Personal History Links';
+  secondTitle.textContent = '🐐 Links From Cary0x2's Unofficial Pond0x Info';
 
   linksContainer.innerHTML = '';
   secondLinksContainer.innerHTML = '';
@@ -935,8 +935,8 @@ function generateEthereumLinks(walletAddress) {
   const secondTitle = document.getElementById('second-section-title');
 
   // Update titles for Ethereum
-  mainTitle.textContent = '👨‍🍳 Your Ethereum History Links';
-  secondTitle.textContent = '🐐 Ethereum Links From Cary0x2\'s Unofficial Pond0x Info';
+  mainTitle.textContent = '👨‍🍳 Your Personal History Links';
+  secondTitle.textContent = '🐐 Links From Cary0x2's Unofficial Pond0x Info';
 
   linksContainer.innerHTML = '';
   secondLinksContainer.innerHTML = '';
