@@ -370,135 +370,203 @@
   </div>
 
   <script>
-    // Optimized bubble animation system
-    const bubbleSystem = {
-      container: null,
-      bubbles: [],
-      maxBubbles: 25,
-      initialized: false,
-      animationRunning: true, // Track animation state
-      animationInterval: null,
-      
-      init() {
-        if (this.initialized) return;
-        this.container = document.getElementById('bubbleContainer');
-        this.createBubblePool();
-        this.startAnimation();
-        this.initialized = true;
-      },
-
-      stop() {
-        this.animationRunning = false;
-        if (this.animationInterval) {
-          clearInterval(this.animationInterval);
-        }
-        // Hide all active bubbles
-        this.bubbles.forEach(bubble => {
-          if (bubble.timer) {
-            clearTimeout(bubble.timer);
-          }
-          bubble.element.style.display = 'none';
-          bubble.active = false;
-        });
-      },
-
-      start() {
-        if (!this.animationRunning) {
-          this.animationRunning = true;
-          this.startAnimation();
-        }
-      },
-      
-      createBubblePool() {
-        // Pre-create clear glass bubble elements
-        for (let i = 0; i < this.maxBubbles; i++) {
-          const bubble = document.createElement('div');
-          bubble.className = 'bubble';
-          bubble.style.display = 'none';
-          this.container.appendChild(bubble);
-          this.bubbles.push({
-            element: bubble,
-            active: false,
-            timer: 0
-          });
-        }
-      },
-      
-      getRandomBubble() {
-        return this.bubbles.find(b => !b.active) || this.bubbles[0];
-      },
-      
-      createBubble() {
-        const bubble = this.getRandomBubble();
-        if (!bubble || bubble.active) return;
-        
-        const size = Math.random() * 40 + 10; // 10-50px
-        const left = Math.random() * 100; // 0-100%
-        const duration = Math.random() * 4 + 6; // 6-10 seconds
-        const delay = Math.random() * 2; // 0-2 seconds delay
-        
-        const element = bubble.element;
-        element.style.cssText = `
-          width: ${size}px;
-          height: ${size}px;
-          left: ${left}%;
-          animation: bubble-rise ${duration}s linear ${delay}s forwards;
-          display: block;
-        `;
-        
-        bubble.active = true;
-        bubble.timer = setTimeout(() => {
-          element.style.display = 'none';
-          bubble.active = false;
-        }, (duration + delay) * 1000);
-      },
-      
-      startAnimation() {
-        if (!this.animationRunning) return;
-        
-        // Create initial bubbles
-        for (let i = 0; i < 8; i++) {
-          setTimeout(() => {
-            if (this.animationRunning) this.createBubble();
-          }, i * 600);
-        }
-        
-        // Continuous bubble creation - more frequent
-        this.animationInterval = setInterval(() => {
-          if (this.animationRunning && Math.random() < 0.8) { // 80% chance to create bubble
-            this.createBubble();
-          }
-        }, 900);
+    // Enhanced bubble state management system
+const bubbleStateManager = {
+  storageKey: 'pond0x_bubble_state',
+  
+  // Save bubble state to sessionStorage (persists during browser session)
+  saveState(isEnabled) {
+    try {
+      sessionStorage.setItem(this.storageKey, JSON.stringify({
+        enabled: isEnabled,
+        timestamp: Date.now()
+      }));
+      console.log('Bubble state saved:', isEnabled);
+    } catch (e) {
+      console.warn('Could not save bubble state:', e);
+    }
+  },
+  
+  // Load bubble state from sessionStorage
+  loadState() {
+    try {
+      const stored = sessionStorage.getItem(this.storageKey);
+      if (stored) {
+        const state = JSON.parse(stored);
+        console.log('Bubble state loaded:', state.enabled);
+        return state.enabled;
       }
-    };
-
-    // Toggle bubbles and glass effects function
-    function toggleBubbles() {
+    } catch (e) {
+      console.warn('Could not load bubble state:', e);
+    }
+    return true; // Default to enabled
+  },
+  
+  // Initialize state on page load
+  init() {
+    const savedState = this.loadState();
+    console.log('Initializing bubble state:', savedState);
+    
+    // Set initial state without triggering toggle
+    if (!savedState) {
+      bubbleSystem.animationRunning = false;
       const container = document.getElementById('bubbleContainer');
       const button = document.getElementById('cookButton');
       const body = document.body;
       
-      if (bubbleSystem.animationRunning) {
-        // Turn off all effects
-        bubbleSystem.stop();
-        container.classList.add('hidden');
-        body.classList.add('glass-off');
-        button.classList.add('bubbles-off');
-        button.innerHTML = '👨‍🍳 Cook';
-      } else {
-        // Turn on all effects  
-        bubbleSystem.start();
-        container.classList.remove('hidden');
-        body.classList.remove('glass-off');
-        button.classList.remove('bubbles-off');
-        button.innerHTML = '👨‍🍳 Cook';
-      }
+      container.classList.add('hidden');
+      body.classList.add('glass-off');
+      button.classList.add('bubbles-off');
+      button.innerHTML = '👨‍🍳 Cook';
     }
+    
+    return savedState;
+  }
+};
 
-    // Initialize bubble system when page loads
-    document.addEventListener('DOMContentLoaded', () => {
-      bubbleSystem.init();
+// Optimized bubble animation system
+const bubbleSystem = {
+  container: null,
+  bubbles: [],
+  maxBubbles: 25,
+  initialized: false,
+  animationRunning: true, // Track animation state
+  animationInterval: null,
+  
+  init() {
+    if (this.initialized) return;
+    this.container = document.getElementById('bubbleContainer');
+    this.createBubblePool();
+    
+    // Load saved state and apply it
+    const shouldRun = bubbleStateManager.init();
+    if (shouldRun) {
+      this.startAnimation();
+    } else {
+      this.animationRunning = false;
+    }
+    
+    this.initialized = true;
+  },
+
+  stop() {
+    this.animationRunning = false;
+    if (this.animationInterval) {
+      clearInterval(this.animationInterval);
+    }
+    // Hide all active bubbles
+    this.bubbles.forEach(bubble => {
+      if (bubble.timer) {
+        clearTimeout(bubble.timer);
+      }
+      bubble.element.style.display = 'none';
+      bubble.active = false;
     });
+  },
+
+  start() {
+    if (!this.animationRunning) {
+      this.animationRunning = true;
+      this.startAnimation();
+    }
+  },
+  
+  createBubblePool() {
+    // Pre-create clear glass bubble elements
+    for (let i = 0; i < this.maxBubbles; i++) {
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      bubble.style.display = 'none';
+      this.container.appendChild(bubble);
+      this.bubbles.push({
+        element: bubble,
+        active: false,
+        timer: 0
+      });
+    }
+  },
+  
+  getRandomBubble() {
+    return this.bubbles.find(b => !b.active) || this.bubbles[0];
+  },
+  
+  createBubble() {
+    const bubble = this.getRandomBubble();
+    if (!bubble || bubble.active) return;
+    
+    const size = Math.random() * 40 + 10; // 10-50px
+    const left = Math.random() * 100; // 0-100%
+    const duration = Math.random() * 4 + 6; // 6-10 seconds
+    const delay = Math.random() * 2; // 0-2 seconds delay
+    
+    const element = bubble.element;
+    element.style.cssText = `
+      width: ${size}px;
+      height: ${size}px;
+      left: ${left}%;
+      animation: bubble-rise ${duration}s linear ${delay}s forwards;
+      display: block;
+    `;
+    
+    bubble.active = true;
+    bubble.timer = setTimeout(() => {
+      element.style.display = 'none';
+      bubble.active = false;
+    }, (duration + delay) * 1000);
+  },
+  
+  startAnimation() {
+    if (!this.animationRunning) return;
+    
+    // Create initial bubbles
+    for (let i = 0; i < 8; i++) {
+      setTimeout(() => {
+        if (this.animationRunning) this.createBubble();
+      }, i * 600);
+    }
+    
+    // Continuous bubble creation - more frequent
+    this.animationInterval = setInterval(() => {
+      if (this.animationRunning && Math.random() < 0.8) { // 80% chance to create bubble
+        this.createBubble();
+      }
+    }, 900);
+  }
+};
+
+// Toggle bubbles and glass effects function
+function toggleBubbles() {
+  const container = document.getElementById('bubbleContainer');
+  const button = document.getElementById('cookButton');
+  const body = document.body;
+  
+  if (bubbleSystem.animationRunning) {
+    // Turn off all effects
+    bubbleSystem.stop();
+    container.classList.add('hidden');
+    body.classList.add('glass-off');
+    button.classList.add('bubbles-off');
+    button.innerHTML = '👨‍🍳 Cook';
+    
+    // Save disabled state
+    bubbleStateManager.saveState(false);
+  } else {
+    // Turn on all effects  
+    bubbleSystem.start();
+    container.classList.remove('hidden');
+    body.classList.remove('glass-off');
+    button.classList.remove('bubbles-off');
+    button.innerHTML = '👨‍🍳 Cook';
+    
+    // Save enabled state
+    bubbleStateManager.saveState(true);
+  }
+}
+
+// Initialize bubble system when page loads
+document.addEventListener('DOMContentLoaded', () => {
+  bubbleSystem.init();
+});
   </script>
 
   <script>
