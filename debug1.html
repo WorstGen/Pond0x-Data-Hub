@@ -217,86 +217,77 @@
       max-width: 500px;
     }
 
-    .wallet-input {
+    /* Base wallet input styling */
+    input.wallet-input {
       width: 100%;
       padding: 15px 20px;
       border-radius: 12px;
       border: 2px solid rgba(241, 156, 253, 0.3);
       background: rgba(123, 58, 173, 0.1) !important;
-      color: #7b3aad;
+      color: #7b3aad !important;
       font-size: 1.1rem;
       transition: all 0.3s ease;
       position: relative;
       z-index: 1;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
     }
 
-    .wallet-input:focus {
-      outline: none;
+    input.wallet-input:focus {
+      outline: none !important;
       border-color: rgba(241, 156, 253, 0.6);
       box-shadow: 0 0 20px rgba(241, 156, 253, 0.2);
       background: rgba(123, 58, 173, 0.1) !important;
     }
 
-    .wallet-input::placeholder {
-      color: rgba(123, 58, 173, 0.6);
+    input.wallet-input::placeholder {
+      color: rgba(123, 58, 173, 0.6) !important;
     }
 
-    /* Wallet type border indicators */
-    .wallet-input-wrapper.wallet-type-solana::before {
-      content: '';
-      position: absolute;
-      top: -3px;
-      left: -3px;
-      right: -3px;
-      bottom: -3px;
-      background: linear-gradient(135deg, #9945FF 0%, #14F195 100%);
-      border-radius: 15px;
-      z-index: 0;
+    input.wallet-input:-webkit-autofill,
+    input.wallet-input:-webkit-autofill:hover,
+    input.wallet-input:-webkit-autofill:focus {
+      -webkit-box-shadow: none !important;
+      -webkit-text-fill-color: #7b3aad !important;
+      transition: background-color 5000s ease-in-out 0s !important;
     }
 
-    .wallet-input-wrapper.wallet-type-solana .wallet-input {
-      border: none;
-      background: rgba(123, 58, 173, 0.1) !important;
-      box-shadow: 0 0 15px rgba(153, 69, 255, 0.2);
+    /* Wallet type styling with 30% transparent gradients */
+    .wallet-input-wrapper.wallet-type-solana input.wallet-input {
+      background: linear-gradient(135deg, rgba(153, 69, 255, 0.3) 0%, rgba(20, 241, 149, 0.3) 100%) !important;
+      border: 2px solid rgba(20, 241, 149, 0.5) !important;
+      box-shadow: 0 0 15px rgba(153, 69, 255, 0.2) !important;
     }
 
-    .wallet-input-wrapper.wallet-type-solana .wallet-input:focus {
-      box-shadow: 0 0 20px rgba(153, 69, 255, 0.3);
-      background: rgba(123, 58, 173, 0.1) !important;
+    .wallet-input-wrapper.wallet-type-solana input.wallet-input:focus {
+      background: linear-gradient(135deg, rgba(153, 69, 255, 0.35) 0%, rgba(20, 241, 149, 0.35) 100%) !important;
+      box-shadow: 0 0 20px rgba(153, 69, 255, 0.3) !important;
+      border-color: rgba(20, 241, 149, 0.7) !important;
     }
 
-    .wallet-input-wrapper.wallet-type-ethereum::before {
-      content: '';
-      position: absolute;
-      top: -3px;
-      left: -3px;
-      right: -3px;
-      bottom: -3px;
-      background: linear-gradient(135deg, #189fe0 0%, #647cf6 100%);
-      border-radius: 15px;
-      z-index: 0;
+    .wallet-input-wrapper.wallet-type-ethereum input.wallet-input {
+      background: linear-gradient(135deg, rgba(24, 159, 224, 0.3) 0%, rgba(179, 179, 179, 0.3) 100%) !important;
+      border: 2px solid rgba(24, 159, 224, 0.5) !important;
+      box-shadow: 0 0 15px rgba(100, 124, 246, 0.2) !important;
     }
 
-    .wallet-input-wrapper.wallet-type-ethereum .wallet-input {
-      border: none;
-      background: rgba(123, 58, 173, 0.1) !important;
-      box-shadow: 0 0 15px rgba(100, 124, 246, 0.2);
+    .wallet-input-wrapper.wallet-type-ethereum input.wallet-input:focus {
+      background: linear-gradient(135deg, rgba(24, 159, 224, 0.35) 0%, rgba(179, 179, 179, 0.35) 100%) !important;
+      box-shadow: 0 0 20px rgba(100, 124, 246, 0.3) !important;
+      border-color: rgba(24, 159, 224, 0.7) !important;
     }
 
-    .wallet-input-wrapper.wallet-type-ethereum .wallet-input:focus {
-      box-shadow: 0 0 20px rgba(100, 124, 246, 0.3);
-      background: rgba(123, 58, 173, 0.1) !important;
+    .wallet-input-wrapper.wallet-type-invalid input.wallet-input {
+      background: rgba(153, 153, 153, 0.3) !important;
+      border: 2px solid rgba(153, 153, 153, 0.5) !important;
+      box-shadow: 0 0 10px rgba(255, 107, 107, 0.2) !important;
     }
 
-    .wallet-input-wrapper.wallet-type-invalid .wallet-input {
-      border: 3px solid #999999;
-      background: rgba(123, 58, 173, 0.1) !important;
-      box-shadow: 0 0 10px rgba(255, 107, 107, 0.2);
-    }
-
-    .wallet-input-wrapper.wallet-type-invalid .wallet-input:focus {
-      box-shadow: 0 0 15px rgba(255, 107, 107, 0.3);
-      background: rgba(123, 58, 173, 0.1) !important;
+    .wallet-input-wrapper.wallet-type-invalid input.wallet-input:focus {
+      background: rgba(153, 153, 153, 0.35) !important;
+      box-shadow: 0 0 15px rgba(255, 107, 107, 0.3) !important;
+      border-color: rgba(153, 153, 153, 0.7) !important;
     }
 
     .btn {
