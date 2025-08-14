@@ -972,6 +972,7 @@
 
       additionalLinkTemplates.forEach(template => {
         const finalUrl = template.url.replace(/{WALLET}/g, walletAddress);
+        
         const linkDiv = document.createElement('div');
         linkDiv.className = 'link-item';
         linkDiv.innerHTML = `
