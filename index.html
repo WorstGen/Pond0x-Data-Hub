@@ -13,7 +13,7 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(90deg, #089c00 0%, #16a305 15%, #13FF22 35%, #13FF22 65%, #16a305 85%, #089c00 100%);
+      background: linear-gradient(90deg, #0ec404 0%, #25db0f 15%, #13FF22 35%, #13FF22 65%, #25db0f 85%, #0ec404 100%);
       color: #7b3aad;
       min-height: 100vh;
       padding-top: 60px;
@@ -231,6 +231,13 @@
             opacity: 0.8;
         }
 
+        /* Style for the second section */
+        .second-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid rgba(241, 156, 253, 0.3);
+        }
+
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 2.2rem;
@@ -446,6 +453,11 @@
             <div id="links-section" class="links-section">
                 <div class="section-title">👨‍🍳 Your Personal History Links:</div>
                 <div id="links-container"></div>
+                
+                <div id="second-links-section" class="second-section">
+                    <div class="section-title">🐐 Links From Cary0x2's Unofficial Pond0x Info</div>
+                    <div id="second-links-container"></div>
+                </div>
             </div>
            <div class="people-like-section">
       <p><b>Built for <a href="https://cary0x.github.io/community/" target="_blank" class="link-url">the POND🤝X community</a> ❤️</b></p>
@@ -598,7 +610,7 @@
         </div>
 
     <script>
-        // Solana wallet history link templates
+        // First 5 Solana wallet history link templates (require wallet input)
         const solanaLinkTemplates = [
             {
                 name: "HASH BOOST HISTORY",
@@ -627,9 +639,39 @@
             }
         ];
 
+        // Second set of links (no wallet input required)
+        const additionalLinkTemplates = [
+            {
+                name: "Manifest Data",
+                url: "https://cary0x.github.io/docs/info/manifest",
+                description: "Returns your manifest data from your manifest on Pond0x"
+            },
+            {
+                name: "Mining Health Data",
+                url: "https://cary0x.github.io/docs/info/health",
+                description: "Returns your mining health data from your manifest on Pond0x"
+            },
+            {
+                name: "Swap/Boost Data",
+                url: "https://cary0x.github.io/docs/info/swaps",
+                description: "Calculator used to determine how to reach 615 boost via Swaps"
+            },
+            {
+                name: "Luck Data",
+                url: "https://cary0x.github.io/docs/info/luck",
+                description: "Returns your luck data from your manifest on Pond0x"
+            },
+            {
+                name: "Ethereum Badge Data",
+                url: "https://cary0x.github.io/docs/info/ethbadges",
+                description: "Returns your ETH badge data from your manifest on Pond0x"
+            }
+        ];
+
         function generateSolanaLinks() {
             const walletAddress = document.getElementById('wallet-input').value.trim();
             const linksContainer = document.getElementById('links-container');
+            const secondLinksContainer = document.getElementById('second-links-container');
             const linksSection = document.getElementById('links-section');
 
             if (!walletAddress) {
@@ -643,8 +685,11 @@
                 return;
             }
 
+            // Clear both containers
             linksContainer.innerHTML = '';
+            secondLinksContainer.innerHTML = '';
             
+            // Generate first 5 links (wallet-dependent)
             solanaLinkTemplates.forEach(template => {
                 const finalUrl = template.url.replace(/{WALLET}/g, walletAddress);
                 
@@ -653,7 +698,7 @@
                 linkDiv.innerHTML = `
                     <div class="link-content">
                         <div class="link-title">${template.name}</div>
-                        <a href="${finalUrl}" target="_blank" class="link-url">Open in Solscan →</a>
+                        <a href="${finalUrl}" target="_blank" class="link-url">Open on Solscan →</a>
                         <div class="link-description">${template.description}</div>
                     </div>
                     <div class="action-buttons">
@@ -663,6 +708,25 @@
                 `;
                 
                 linksContainer.appendChild(linkDiv);
+            });
+
+            // Generate second set of links (no wallet required)
+            additionalLinkTemplates.forEach(template => {
+                const linkDiv = document.createElement('div');
+                linkDiv.className = 'link-item';
+                linkDiv.innerHTML = `
+                    <div class="link-content">
+                        <div class="link-title">${template.name}</div>
+                        <a href="${template.url}" target="_blank" class="link-url">Open on Cary0x2's Unofficial Pond0x Info →</a>
+                        <div class="link-description">${template.description}</div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="bookmark-btn" onclick="bookmarkLink('${template.url}', '${template.name}', this)">🔖 Bookmark</button>
+                        <button class="copy-btn" onclick="copyToClipboard('${template.url}', this)">Copy Link</button>
+                    </div>
+                `;
+                
+                secondLinksContainer.appendChild(linkDiv);
             });
 
             linksSection.classList.add('show');
