@@ -679,17 +679,14 @@
     .header {
   text-align: center;
   margin-bottom: 2rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 200px;
 }
 
     .header img {
-      max-width: 50%;
-      height: auto;
-      transition: all 0.3s ease;
-    }
+  max-width: 50%;
+  height: auto;
+  transition: all 0.3s ease;
+  margin-top: 1.2em; /* Add this line */
+}
 
     [data-theme="dark"] .header img {
       filter: brightness(1.1) contrast(1.1) drop-shadow(0 0 20px rgba(189, 124, 253, 0.3));
