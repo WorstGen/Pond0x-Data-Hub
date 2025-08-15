@@ -381,16 +381,13 @@
 
     /* MOBILE SPECIFIC OPTIMIZATIONS */
     @media (max-width: 768px) {
-      body {
-        padding-top: 80px; /* More space for mobile nav */
-      }
       
       .header h1 {
         font-size: 2.2rem;
       }
       
       .card {
-        padding: 1rem; /* Slightly less padding on mobile */
+        padding: 1rem;
         margin: 0 0.5rem; /* Side margins for mobile */
         border-radius: 15px;
       }
@@ -428,7 +425,7 @@
     @media (max-width: 480px) {
       .card {
         padding: 1rem;
-        margin: 0 0.25rem;
+        margin: 0 0.25rem; /* Smaller side margins for extra small screens */
       }
       
       .iframe-container {
