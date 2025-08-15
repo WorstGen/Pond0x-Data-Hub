@@ -11,14 +11,103 @@
       box-sizing: border-box;
     }
 
+    :root {
+      /* Light mode variables */
+      --bg-gradient: linear-gradient(90deg, #0ec404 0%, #25db0f 15%, #13FF22 35%, #13FF22 65%, #25db0f 85%, #0ec404 100%);
+      --primary-color: #7b3aad;
+      --accent-color: #FF13F0;
+      --secondary-accent: #f19cfd;
+      --navbar-bg: #FF13F0;
+      --nav-text: #13FF22;
+      --card-bg: rgba(123, 58, 173, 0.1);
+      --card-border: rgba(241, 156, 253, 0.3);
+      --input-bg: rgba(255, 255, 255, 0.3);
+      --link-item-bg: rgba(123, 58, 173, 0.08);
+      --shadow-primary: rgba(123, 58, 173, 0.2);
+      --shadow-accent: rgba(241, 156, 253, 0.4);
+      --text-primary: #7b3aad;
+      --text-secondary: #7b3aad;
+    }
+
+    [data-theme="dark"] {
+      /* Dark mode variables */
+      --bg-gradient: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 20%, #16213e 40%, #1a1a2e 60%, #0f0f0f 80%, #0a0a0a 100%);
+      --primary-color: #e0b3ff;
+      --accent-color: #ff3df0;
+      --secondary-accent: #bd7cfd;
+      --navbar-bg: #1a1a2e;
+      --nav-text: #00ff88;
+      --card-bg: rgba(26, 26, 46, 0.8);
+      --card-border: rgba(189, 124, 253, 0.4);
+      --input-bg: rgba(26, 26, 46, 0.6);
+      --link-item-bg: rgba(26, 26, 46, 0.5);
+      --shadow-primary: rgba(189, 124, 253, 0.3);
+      --shadow-accent: rgba(255, 61, 240, 0.5);
+      --text-primary: #e0b3ff;
+      --text-secondary: #c9a3ff;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(90deg, #0ec404 0%, #25db0f 15%, #13FF22 35%, #13FF22 65%, #25db0f 85%, #0ec404 100%);
-      color: #7b3aad;
+      background: var(--bg-gradient);
+      color: var(--text-primary);
       min-height: 100vh;
       padding-top: 60px;
       position: relative;
       overflow-x: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Enhanced dark mode animations */
+    [data-theme="dark"] body {
+      animation: liquidFlowDark 8s ease-in-out infinite;
+    }
+
+    @keyframes liquidFlowDark {
+      0%, 100% {
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 20%, #16213e 40%, #1a1a2e 60%, #0f0f0f 80%, #0a0a0a 100%);
+        filter: hue-rotate(0deg) brightness(1);
+      }
+      25% {
+        background: linear-gradient(180deg, #1a1a2e 0%, #16213e 25%, #0a0a0a 50%, #1a1a2e 75%, #0f0f0f 100%);
+        filter: hue-rotate(10deg) brightness(1.1);
+      }
+      50% {
+        background: linear-gradient(45deg, #16213e 0%, #0f0f0f 30%, #1a1a2e 60%, #0a0a0a 100%);
+        filter: hue-rotate(15deg) brightness(1.15);
+      }
+      75% {
+        background: linear-gradient(225deg, #0f0f0f 0%, #1a1a2e 40%, #16213e 70%, #0a0a0a 100%);
+        filter: hue-rotate(10deg) brightness(1.1);
+      }
+    }
+
+    /* Light mode background animation */
+    body {
+      animation: liquidFlow 8s ease-in-out infinite;
+    }
+
+    [data-theme="dark"] body {
+      animation: liquidFlowDark 8s ease-in-out infinite;
+    }
+
+    @keyframes liquidFlow {
+      0%, 100% {
+        background: linear-gradient(90deg, #0ec404 0%, #25db0f 15%, #13FF22 35%, #13FF22 65%, #25db0f 85%, #0ec404 100%);
+        filter: hue-rotate(0deg) brightness(1);
+      }
+      25% {
+        background: linear-gradient(135deg, #25db0f 0%, #13FF22 20%, #0ec404 40%, #13FF22 60%, #25db0f 80%, #0ec404 100%);
+        filter: hue-rotate(5deg) brightness(1.05);
+      }
+      50% {
+        background: linear-gradient(90deg, #13FF22 0%, #0ec404 20%, #25db0f 40%, #0ec404 60%, #13FF22 80%, #25db0f 100%);
+        filter: hue-rotate(10deg) brightness(1.1);
+      }
+      75% {
+        background: linear-gradient(45deg, #0ec404 0%, #13FF22 25%, #25db0f 50%, #13FF22 75%, #0ec404 100%);
+        filter: hue-rotate(5deg) brightness(1.05);
+      }
     }
 
     /* Bubble container - can be hidden */
@@ -43,7 +132,7 @@
       position: fixed;
       bottom: 30px;
       right: 30px;
-      background: linear-gradient(135deg, #f19cfd 0%, #FF13F0 100%);
+      background: linear-gradient(135deg, var(--secondary-accent) 0%, var(--accent-color) 100%);
       color: white;
       border: none;
       padding: 15px 25px;
@@ -53,7 +142,7 @@
       font-weight: 600;
       transition: all 0.3s ease;
       box-shadow: 
-        0 6px 20px rgba(241, 156, 253, 0.4),
+        0 6px 20px var(--shadow-accent),
         inset 2px 2px 10px rgba(255, 255, 255, 0.2),
         inset -2px -2px 10px rgba(0, 0, 0, 0.1);
       z-index: 1002;
@@ -67,7 +156,7 @@
     .cook-button:hover {
       transform: translateY(-3px);
       box-shadow: 
-        0 10px 30px rgba(241, 156, 253, 0.5),
+        0 10px 30px var(--shadow-accent),
         inset 2px 2px 10px rgba(255, 255, 255, 0.3),
         inset -2px -2px 10px rgba(0, 0, 0, 0.1);
     }
@@ -87,6 +176,35 @@
         inset -2px -2px 10px rgba(0, 0, 0, 0.2);
     }
 
+    /* Dark mode toggle button */
+    .theme-toggle {
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1.5rem;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1001;
+      padding: 5px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.2);
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+    }
+
+    [data-theme="dark"] .theme-toggle {
+      filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.2));
+    }
+
+    [data-theme="dark"] .theme-toggle:hover {
+      transform: scale(1.2);
+      filter: drop-shadow(0 4px 8px rgba(255, 255, 255, 0.3));
+    }
+
     @media (max-width: 768px) {
       .cook-button {
         bottom: 20px;
@@ -94,9 +212,15 @@
         padding: 12px 20px;
         font-size: 1rem;
       }
+      
+      .theme-toggle {
+        top: 65px;
+        right: 15px;
+        font-size: 1.3rem;
+      }
     }
 
-    /* Clear glass bubbles - look like liquid boiling */
+    /* Enhanced dark mode bubbles */
     .bubble {
       position: absolute;
       border-radius: 50%;
@@ -113,6 +237,19 @@
         inset -3px -3px 15px rgba(0, 0, 0, 0.1),
         0 0 0 1px rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(1px);
+    }
+
+    [data-theme="dark"] .bubble {
+      background: 
+        radial-gradient(circle at 25% 25%, rgba(189, 124, 253, 0.6) 0%, rgba(255, 61, 240, 0.3) 30%, transparent 70%),
+        radial-gradient(circle at 80% 80%, rgba(26, 26, 46, 0.3) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(189, 124, 253, 0.2), rgba(255, 61, 240, 0.1));
+      border: 1px solid rgba(189, 124, 253, 0.4);
+      box-shadow: 
+        0 0 25px rgba(189, 124, 253, 0.3),
+        inset 3px 3px 15px rgba(189, 124, 253, 0.2),
+        inset -3px -3px 15px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(189, 124, 253, 0.2);
     }
 
     /* Bubble animations with better visibility */
@@ -133,25 +270,6 @@
       }
     }
 
-    @keyframes liquidFlow {
-      0%, 100% {
-        background: linear-gradient(90deg, #0ec404 0%, #25db0f 15%, #13FF22 35%, #13FF22 65%, #25db0f 85%, #0ec404 100%);
-        filter: hue-rotate(0deg) brightness(1);
-      }
-      25% {
-        background: linear-gradient(135deg, #25db0f 0%, #13FF22 20%, #0ec404 40%, #13FF22 60%, #25db0f 80%, #0ec404 100%);
-        filter: hue-rotate(5deg) brightness(1.05);
-      }
-      50% {
-        background: linear-gradient(90deg, #13FF22 0%, #0ec404 20%, #25db0f 40%, #0ec404 60%, #13FF22 80%, #25db0f 100%);
-        filter: hue-rotate(10deg) brightness(1.1);
-      }
-      75% {
-        background: linear-gradient(45deg, #0ec404 0%, #13FF22 25%, #25db0f 50%, #13FF22 75%, #0ec404 100%);
-        filter: hue-rotate(5deg) brightness(1.05);
-      }
-    }
-
     .container {
       max-width: 800px;
       width: 100%;
@@ -168,37 +286,44 @@
       font-size: 3rem;
       font-weight: 700;
       margin-bottom: 1rem;
-      text-shadow: 0 0 20px rgba(123, 58, 173, 0.3);
+      text-shadow: 0 0 20px var(--shadow-primary);
+      color: var(--text-primary);
     }
 
     .header p {
       font-size: 1.2rem;
       opacity: 0.9;
-      color: #7b3aad;
+      color: var(--text-primary);
     }
 
     .card {
       max-width: 800px;
-      background: rgba(123, 58, 173, 0.1);
+      background: var(--card-bg);
       backdrop-filter: blur(15px);
       border-radius: 20px;
       padding: 3rem;
-      border: 2px solid rgba(241, 156, 253, 0.3);
-      box-shadow: 0 12px 40px rgba(123, 58, 173, 0.2);
+      border: 2px solid var(--card-border);
+      box-shadow: 0 12px 40px var(--shadow-primary);
       transition: all 0.3s ease;
       margin: 0 auto;
     }
 
     .card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 16px 50px rgba(123, 58, 173, 0.3);
-      border-color: rgba(241, 156, 253, 0.5);
+      box-shadow: 0 16px 50px var(--shadow-primary);
+      border-color: var(--card-border);
+    }
+
+    [data-theme="dark"] .card:hover {
+      box-shadow: 
+        0 16px 50px var(--shadow-primary),
+        0 0 30px rgba(189, 124, 253, 0.2);
     }
 
     .card h2 {
       font-size: 1.6rem;
       margin-bottom: 2rem;
-      color: #7b3aad;
+      color: var(--text-primary);
       font-weight: 700;
       text-align: center;
     }
@@ -221,9 +346,9 @@
       width: 100%;
       padding: 15px 20px;
       border-radius: 12px;
-      border: 2px solid rgba(241, 156, 253, 0.3);
-      background: rgba(255, 255, 255, 0.3) !important;
-      color: #7b3aad;
+      border: 2px solid var(--card-border);
+      background: var(--input-bg) !important;
+      color: var(--text-primary);
       font-size: 1.1rem;
       transition: all 0.3s ease;
       position: relative;
@@ -232,13 +357,14 @@
 
     .wallet-input:focus {
       outline: none;
-      border-color: rgba(241, 156, 253, 0.6);
-      box-shadow: 0 0 20px rgba(241, 156, 253, 0.2);
-      background: rgba(255, 255, 255, 0.3) !important;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 20px var(--shadow-accent);
+      background: var(--input-bg) !important;
     }
 
     .wallet-input::placeholder {
-      color: rgba(123, 58, 173, 0.6);
+      color: var(--text-secondary);
+      opacity: 0.6;
     }
 
     /* Wallet type border indicators */
@@ -256,13 +382,13 @@
 
     .wallet-input-wrapper.wallet-type-solana .wallet-input {
       border: none;
-      background: rgba(255, 255, 255, 0.3) !important;
+      background: var(--input-bg) !important;
       box-shadow: 0 0 15px rgba(153, 69, 255, 0.2);
     }
 
     .wallet-input-wrapper.wallet-type-solana .wallet-input:focus {
       box-shadow: 0 0 20px rgba(153, 69, 255, 0.3);
-      background: rgba(255, 255, 255, 0.3) !important;
+      background: var(--input-bg) !important;
     }
 
     .wallet-input-wrapper.wallet-type-ethereum::before {
@@ -279,17 +405,17 @@
 
     .wallet-input-wrapper.wallet-type-ethereum .wallet-input {
       border: none;
-      background: rgba(255, 255, 255, 0.3) !important;
+      background: var(--input-bg) !important;
       box-shadow: 0 0 15px rgba(100, 124, 246, 0.2);
     }
 
     .wallet-input-wrapper.wallet-type-ethereum .wallet-input:focus {
       box-shadow: 0 0 20px rgba(100, 124, 246, 0.3);
-      background: rgba(255, 255, 255, 0.3) !important;
+      background: var(--input-bg) !important;
     }
 
     .btn {
-      background: linear-gradient(135deg, #f19cfd 0%, #FF13F0 100%);
+      background: linear-gradient(135deg, var(--secondary-accent) 0%, var(--accent-color) 100%);
       color: white;
       border: none;
       padding: 15px 30px;
@@ -298,13 +424,13 @@
       font-size: 1.1rem;
       font-weight: 600;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(241, 156, 253, 0.3);
+      box-shadow: 0 4px 15px var(--shadow-accent);
       white-space: nowrap;
     }
 
     .btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(241, 156, 253, 0.4);
+      box-shadow: 0 8px 25px var(--shadow-accent);
     }
 
     .links-section {
@@ -324,16 +450,16 @@
     .section-title {
       font-size: 1.3rem;
       font-weight: 600;
-      color: #7b3aad;
+      color: var(--text-primary);
       margin-bottom: 1.5rem;
       text-align: center;
     }
 
     .link-item {
       padding: 16px 20px;
-      background: rgba(123, 58, 173, 0.08);
+      background: var(--link-item-bg);
       border-radius: 12px;
-      border: 1px solid rgba(241, 156, 253, 0.3);
+      border: 1px solid var(--card-border);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -342,9 +468,13 @@
     }
 
     .link-item:hover {
-      background: rgba(123, 58, 173, 0.12);
-      border-color: rgba(241, 156, 253, 0.5);
+      background: var(--card-bg);
+      border-color: var(--accent-color);
       transform: translateX(5px);
+    }
+
+    [data-theme="dark"] .link-item:hover {
+      box-shadow: 0 4px 15px var(--shadow-primary);
     }
 
     .link-content {
@@ -354,25 +484,25 @@
     .link-title {
       font-weight: 600;
       font-size: 1rem;
-      color: #7b3aad;
+      color: var(--text-primary);
       margin-bottom: 4px;
     }
 
     .link-url {
-      color: #FF13F0;
+      color: var(--accent-color);
       text-decoration: none;
       font-size: 0.9rem;
       opacity: 0.8;
     }
 
     .link-url:hover {
-      color: #7b3aad;
+      color: var(--text-primary);
       opacity: 1;
     }
 
     .link-description {
       font-size: 0.8rem;
-      color: #7b3aad;
+      color: var(--text-secondary);
       opacity: 0.7;
       margin-top: 4px;
     }
@@ -383,9 +513,9 @@
     }
 
     .copy-btn, .bookmark-btn {
-      background: rgba(241, 156, 253, 0.2);
-      color: #FF13F0;
-      border: 1px solid rgba(241, 156, 253, 0.4);
+      background: var(--link-item-bg);
+      color: var(--accent-color);
+      border: 1px solid var(--card-border);
       padding: 8px 12px;
       border-radius: 6px;
       cursor: pointer;
@@ -395,38 +525,39 @@
     }
 
     .copy-btn:hover, .bookmark-btn:hover {
-      background: rgba(241, 156, 253, 0.3);
+      background: var(--card-bg);
+      box-shadow: 0 2px 8px var(--shadow-primary);
     }
 
     .bookmark-btn {
-      background: rgba(123, 58, 173, 0.2);
-      border-color: rgba(123, 58, 173, 0.4);
-      color: #7b3aad;
+      background: var(--link-item-bg);
+      border-color: var(--card-border);
+      color: var(--text-primary);
     }
 
     .bookmark-btn:hover {
-      background: rgba(123, 58, 173, 0.3);
+      background: var(--card-bg);
     }
 
     .footer {
       text-align: center;
       margin-top: 2rem;
       padding: 1rem;
-      color: #7b3aad;
+      color: var(--text-primary);
       font-size: 0.9rem;
     }
 
     .footer-subtitle {
       margin: 0.5rem 0 1rem 0; 
       font-size: 0.9rem; 
-      color: #7b3aad; 
+      color: var(--text-primary); 
       opacity: 0.8;
     }
 
     .second-section {
       margin-top: 2rem;
       padding-top: 2rem;
-      border-top: 2px solid rgba(241, 156, 253, 0.3);
+      border-top: 2px solid var(--card-border);
     }
 
     @media (max-width: 768px) {
@@ -467,9 +598,16 @@
       top: 0;
       left: 0;
       width: 100%;
-      background-color: #FF13F0;
+      background-color: var(--navbar-bg);
       z-index: 1000;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="dark"] .navbar {
+      box-shadow: 
+        0 4px 10px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(189, 124, 253, 0.1);
     }
 
     .nav-container {
@@ -480,6 +618,7 @@
       margin: 0 auto;
       padding: 0.3rem 1rem;
       flex-wrap: wrap;
+      position: relative;
     }
 
     .nav-toggle {
@@ -493,7 +632,7 @@
     }
 
     .nav-title {
-      color: #FF13F0;
+      color: var(--accent-color);
       font-weight: bold;
       font-size: 1.1rem;
       text-align: center;
@@ -510,17 +649,24 @@
     }
 
     .nav-links a {
-      color: #13FF22;
+      color: var(--nav-text);
       text-decoration: none;
       font-weight: bold;
       font-size: 1rem;
       padding: 0.5rem;
       border-radius: 5px;
+      transition: all 0.3s ease;
     }
 
     .nav-links a:hover {
       background-color: rgba(19, 255, 34, 0.15);
       color: white;
+      transform: translateY(-2px);
+    }
+
+    [data-theme="dark"] .nav-links a:hover {
+      background-color: rgba(0, 255, 136, 0.2);
+      box-shadow: 0 4px 15px rgba(0, 255, 136, 0.2);
     }
 
     .container {
@@ -538,6 +684,11 @@
     .header img {
       max-width: 100%;
       height: auto;
+      transition: all 0.3s ease;
+    }
+
+    [data-theme="dark"] .header img {
+      filter: brightness(1.1) contrast(1.1) drop-shadow(0 0 20px rgba(189, 124, 253, 0.3));
     }
 
     @media (max-width: 768px) {
@@ -574,14 +725,14 @@
       text-align: center;
       margin-top: 2rem;
       padding: 1rem;
-      color: #7b3aad;
+      color: var(--text-primary);
       font-size: 0.9rem;
     }
 
     .people-like-subtitle {
       margin: 0.5rem 0 1rem 0;
       font-size: 0.9rem;
-      color: #7b3aad;
+      color: var(--text-primary);
       opacity: 0.8;
     }
 
@@ -594,19 +745,33 @@
     }
 
     .people-like-section .link-url {
-      color: #FF13F0;
+      color: var(--accent-color);
       text-decoration: none;
       opacity: 0.8;
       transition: all 0.3s ease;
     }
 
     .people-like-section .link-url:hover {
-      color: #7b3aad;
+      color: var(--text-primary);
       opacity: 1;
+      text-shadow: 0 0 10px var(--shadow-accent);
+    }
+
+    /* Enhanced transitions for theme switching */
+    * {
+      transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                  background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                  border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                  box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
   </style>
 </head>
 <body>
+  <!-- Dark mode toggle button -->
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle dark mode">
+    ☀️
+  </button>
+
   <!-- Cook button for toggling bubbles -->
   <button class="cook-button" id="cookButton" onclick="toggleBubbles()">
     👨‍🍳 Cook
@@ -618,6 +783,7 @@
   <nav class="navbar">
     <div class="nav-container">
       <button class="nav-toggle" onclick="toggleNav()">☰</button>
+      
       <div class="nav-links" id="navLinks">
         <a href="https://worstgen.github.io/Pond0x-Data-Hub/">PERSONAL LINKS</a>
         <a href="https://worstgen.github.io/Pond0x-Data-Hub/MiningClaims.html">MINING CLAIMS</a>
@@ -667,7 +833,79 @@
   </div>
 
 <script>
+// Theme management with cross-page persistence
+const themeManager = {
+  storageKey: 'pond0x_theme_preference',
+  
+  init() {
+    const savedTheme = this.loadTheme();
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+    
+    this.setTheme(initialTheme);
+    
+    // Listen for system theme changes only if no manual preference is set
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      if (!this.loadTheme()) { // Only auto-switch if user hasn't manually set preference
+        this.setTheme(e.matches ? 'dark' : 'light');
+      }
+    });
+
+    // Listen for storage changes from other tabs/pages
+    window.addEventListener('storage', (e) => {
+      if (e.key === this.storageKey && e.newValue) {
+        const newTheme = e.newValue;
+        if (newTheme && newTheme !== this.getCurrentTheme()) {
+          this.setTheme(newTheme);
+        }
+      }
+    });
+  },
+  
+  loadTheme() {
+    try {
+      return localStorage.getItem(this.storageKey);
+    } catch (e) {
+      console.warn('Could not load theme preference:', e);
+      return null;
+    }
+  },
+  
+  saveTheme(theme) {
+    try {
+      localStorage.setItem(this.storageKey, theme);
+      console.log('Theme saved:', theme);
+    } catch (e) {
+      console.warn('Could not save theme preference:', e);
+    }
+  },
+
+  getCurrentTheme() {
+    return document.documentElement.getAttribute('data-theme') || 'light';
+  },
+  
+  setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    const button = document.getElementById('themeToggle');
+    if (button) {
+      button.textContent = theme === 'dark' ? '🌙' : '☀️';
+      button.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+    }
+    this.saveTheme(theme);
+  },
+  
+  toggle() {
+    const currentTheme = this.getCurrentTheme();
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    this.setTheme(newTheme);
+  }
+};
+
 // GLOBAL FUNCTIONS - Declared at the very top
+function toggleTheme() {
+  themeManager.toggle();
+}
+
 function detectWalletType() {
   const walletAddress = document.getElementById('wallet-input').value.trim();
   const walletInputWrapper = document.getElementById('wallet-input-wrapper');
@@ -987,7 +1225,7 @@ const bubbleStateManager = {
   
   saveState(isEnabled) {
     try {
-      sessionStorage.setItem(this.storageKey, JSON.stringify({
+      localStorage.setItem(this.storageKey, JSON.stringify({
         enabled: isEnabled,
         timestamp: Date.now()
       }));
@@ -999,7 +1237,7 @@ const bubbleStateManager = {
   
   loadState() {
     try {
-      const stored = sessionStorage.getItem(this.storageKey);
+      const stored = localStorage.getItem(this.storageKey);
       if (stored) {
         const state = JSON.parse(stored);
         console.log('Bubble state loaded:', state.enabled);
@@ -1269,6 +1507,10 @@ fetch(mdxUrl)
 
 // Initialize everything when page loads
 document.addEventListener('DOMContentLoaded', function() {
+  // Initialize theme first
+  themeManager.init();
+  
+  // Then initialize bubble system
   bubbleSystem.init();
   
   const walletInput = document.getElementById('wallet-input');
