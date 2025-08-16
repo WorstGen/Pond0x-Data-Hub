@@ -19,9 +19,9 @@
       --secondary-accent: #f19cfd;
       --navbar-bg: #FF13F0;
       --nav-text: #13FF22;
-      --card-bg: rgba(123, 58, 173, 0.1);
+      --card-bg: rgba(123, 58, 173, 0.15);
       --card-border: rgba(241, 156, 253, 0.3);
-      --input-bg: rgba(255, 255, 255, 0.3);
+      --input-bg: rgba(255, 255, 255, 0.2);
       --link-item-bg: rgba(123, 58, 173, 0.08);
       --shadow-primary: rgba(123, 58, 173, 0.2);
       --shadow-accent: rgba(241, 156, 253, 0.4);
@@ -37,9 +37,9 @@
       --secondary-accent: #bd7cfd;
       --navbar-bg: #1a1a2e;
       --nav-text: #00ff88;
-      --card-bg: rgba(26, 26, 46, 0.8);
+      --card-bg: rgba(26, 26, 46, 0.15);
       --card-border: rgba(189, 124, 253, 0.4);
-      --input-bg: rgba(26, 26, 46, 0.6);
+      --input-bg: rgba(26, 26, 46, 0.4);
       --link-item-bg: rgba(26, 26, 46, 0.5);
       --shadow-primary: rgba(189, 124, 253, 0.3);
       --shadow-accent: rgba(255, 61, 240, 0.5);
@@ -106,7 +106,7 @@
       }
     }
 
-    /* Bubble container */
+    /* Bubble container - can be hidden */
     .bubble-container {
       position: fixed;
       top: 0;
@@ -123,7 +123,7 @@
       opacity: 0;
     }
 
-    /* Cook button styling */
+    /* Cook button styling - bottom right position */
     .cook-button {
       position: fixed;
       bottom: 30px;
@@ -131,10 +131,10 @@
       background: linear-gradient(135deg, var(--secondary-accent) 0%, var(--accent-color) 100%);
       color: white;
       border: none;
-      padding: 15px 25px;
+      padding: 12px 20px;
       border-radius: 50px;
       cursor: pointer;
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 600;
       transition: all 0.3s ease;
       box-shadow: 
@@ -144,7 +144,7 @@
       z-index: 1002;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
@@ -201,8 +201,8 @@
       filter: drop-shadow(0 4px 8px rgba(255, 255, 255, 0.3));
     }
 
-    /* Save Wallet Modal */
-    .save-wallet-modal {
+    /* Main Modal */
+    .main-modal {
       position: fixed;
       top: 0;
       left: 0;
@@ -217,7 +217,7 @@
       animation: modalFadeIn 0.3s ease;
     }
 
-    .save-wallet-modal.show {
+    .main-modal.show {
       display: flex;
     }
 
@@ -230,23 +230,23 @@
       }
     }
 
-    .save-wallet-content {
+    .main-modal-content {
       background: var(--card-bg);
       backdrop-filter: blur(15px);
-      border-radius: 16px;
-      padding: 2rem;
+      border-radius: 12px;
+      padding: 1.5rem;
       border: 2px solid var(--card-border);
       box-shadow: 0 20px 60px var(--shadow-primary);
       max-width: 500px;
       width: 90%;
-      position: relative;
-      animation: modalSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       max-height: 80vh;
       overflow-y: auto;
+      position: relative;
+      animation: modalSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    [data-theme="light"] .save-wallet-content {
-      background: rgba(255, 255, 255, 0.95);
+    [data-theme="light"] .main-modal-content {
+      background: rgba(255, 255, 255, 0.85);
       border-color: rgba(123, 58, 173, 0.3);
       box-shadow: 0 20px 60px rgba(123, 58, 173, 0.2);
     }
@@ -262,50 +262,49 @@
       }
     }
 
-    .save-wallet-header {
-      text-align: center;
+    .wallet-input-section {
       margin-bottom: 1.5rem;
     }
 
-    .save-wallet-header h3 {
+    .wallet-input-section label {
+      display: block;
       color: var(--text-primary);
-      font-size: 1.3rem;
       font-weight: 600;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.4rem;
+      font-size: 0.9rem;
     }
 
-    .save-wallet-address {
-      background: var(--input-bg);
-      padding: 0.75rem;
-      border-radius: 8px;
-      font-family: monospace;
-      font-size: 0.85rem;
-      color: var(--accent-color);
-      word-break: break-all;
-      margin-bottom: 1rem;
-      border: 1px solid var(--card-border);
-    }
-
-    [data-theme="light"] .save-wallet-address {
-      background: rgba(123, 58, 173, 0.05);
-      border-color: rgba(123, 58, 173, 0.2);
-    }
-
-    .save-wallet-form {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .wallet-name-input {
+    .modal-wallet-input {
       width: 100%;
-      padding: 12px 16px;
+      padding: 10px 14px;
       border-radius: 8px;
       border: 2px solid var(--card-border);
       background: var(--input-bg);
       color: var(--text-primary);
-      font-size: 1rem;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      margin-bottom: 0.8rem;
+    }
+
+    .modal-wallet-input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 15px var(--shadow-accent);
+    }
+
+    .modal-wallet-input::placeholder {
+      color: var(--text-secondary);
+      opacity: 0.6;
+    }
+
+    .wallet-name-input {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 2px solid var(--card-border);
+      background: var(--input-bg);
+      color: var(--text-primary);
+      font-size: 0.9rem;
       transition: all 0.3s ease;
     }
 
@@ -320,175 +319,57 @@
       opacity: 0.6;
     }
 
-    /* Saved wallets section in modal */
-    .saved-wallets-section {
-      margin-top: 2rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid var(--card-border);
-    }
-
-    .saved-wallets-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-
-    .saved-wallets-title {
-      color: var(--text-primary);
-      font-weight: 600;
-      font-size: 1rem;
-    }
-
-    .modal-clear-all-btn {
-      background: none;
-      border: 1px solid var(--card-border);
-      color: var(--accent-color);
-      cursor: pointer;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      transition: all 0.3s ease;
-    }
-
-    .modal-clear-all-btn:hover {
-      background: var(--link-item-bg);
-      border-color: var(--accent-color);
-    }
-
-    .saved-wallets-list {
-      max-height: 200px;
-      overflow-y: auto;
-    }
-
-    .saved-wallet-item {
-      padding: 10px 12px;
-      background: var(--link-item-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-
-    .saved-wallet-item:hover {
-      background: var(--card-bg);
-      border-color: var(--accent-color);
-    }
-
-    .saved-wallet-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .saved-wallet-address {
-      color: var(--text-primary);
-      font-size: 0.85rem;
-      font-family: monospace;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 250px;
-    }
-
-    .saved-wallet-label {
-      color: var(--text-secondary);
-      font-size: 0.75rem;
-      opacity: 0.8;
-      margin-top: 2px;
-    }
-
-    .saved-wallet-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .saved-wallet-type {
-      background: linear-gradient(135deg, var(--secondary-accent), var(--accent-color));
-      color: white;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 0.65rem;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .saved-wallet-type.solana {
-      background: linear-gradient(135deg, #9945FF, #14F195);
-    }
-
-    .saved-wallet-type.ethereum {
-      background: linear-gradient(135deg, #647cf6, #3b82f6);
-    }
-
-    .modal-remove-btn {
-      background: none;
-      border: none;
-      color: var(--accent-color);
-      cursor: pointer;
-      font-size: 0.9rem;
-      opacity: 0.6;
-      padding: 4px;
-      border-radius: 4px;
-      transition: all 0.3s ease;
-    }
-
-    .modal-remove-btn:hover {
-      opacity: 1;
-      background: rgba(255, 19, 240, 0.1);
-    }
-
-    .no-saved-wallets {
-      text-align: center;
-      color: var(--text-secondary);
-      opacity: 0.6;
-      font-size: 0.9rem;
-      padding: 1rem;
-      font-style: italic;
-    }
-
     .modal-buttons {
       display: flex;
-      gap: 1rem;
+      gap: 0.8rem;
       justify-content: flex-end;
-      margin-top: 1.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
     }
 
     .modal-btn {
-      padding: 12px 20px;
-      border-radius: 8px;
+      padding: 8px 16px;
+      border-radius: 6px;
       border: none;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
-      min-width: 100px;
-    }
-
-    .modal-btn-save {
-      background: linear-gradient(135deg, var(--secondary-accent) 0%, var(--accent-color) 100%);
-      color: white;
-      box-shadow: 0 4px 15px var(--shadow-accent);
-    }
-
-    .modal-btn-save:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px var(--shadow-accent);
+      min-width: 80px;
     }
 
     .modal-btn-generate {
-      background: linear-gradient(135deg, #4ade80 0%, #16a34a 100%);
+      background: linear-gradient(135deg, var(--secondary-accent) 0%, var(--accent-color) 100%);
       color: white;
-      box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+      box-shadow: 0 3px 12px var(--shadow-accent);
     }
 
     .modal-btn-generate:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+      box-shadow: 0 5px 18px var(--shadow-accent);
+    }
+
+    .modal-btn-generate:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .modal-btn-save {
+      background: linear-gradient(135deg, #4ade80 0%, #16a34a 100%);
+      color: white;
+      box-shadow: 0 3px 12px rgba(34, 197, 94, 0.3);
+    }
+
+    .modal-btn-save:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 18px rgba(34, 197, 94, 0.4);
+    }
+
+    .modal-btn-save:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
     }
 
     .modal-btn-cancel {
@@ -501,18 +382,242 @@
       background: var(--card-bg);
     }
 
-    .modal-btn-row {
+    .saved-wallets-section {
+      margin-bottom: 1rem;
+    }
+
+    .saved-wallets-header {
       display: flex;
-      gap: 0.5rem;
       justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.8rem;
+    }
+
+    .saved-wallets-header h4 {
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .clear-all-btn {
+      background: none;
+      border: none;
+      color: var(--accent-color);
+      cursor: pointer;
+      font-size: 0.8rem;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+    }
+
+    .clear-all-btn:hover {
+      opacity: 1;
+    }
+
+    .saved-wallets-list {
+      max-height: 180px;
+      overflow-y: auto;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      background: var(--input-bg);
+    }
+
+    .saved-wallet-item {
+      padding: 10px 14px;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .saved-wallet-item:last-child {
+      border-bottom: none;
+    }
+
+    .saved-wallet-item:hover {
+      background: var(--card-bg);
+    }
+
+    .saved-wallet-item.selected {
+      background: var(--link-item-bg);
+      border-left: 3px solid var(--accent-color);
+    }
+
+    .saved-wallet-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .saved-wallet-address {
+      color: var(--text-primary);
+      font-size: 0.8rem;
+      font-family: monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .saved-wallet-label {
+      color: var(--text-secondary);
+      font-size: 0.7rem;
+      opacity: 0.8;
+      margin-top: 2px;
+    }
+
+    .saved-wallet-actions {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .saved-wallet-type {
+      background: linear-gradient(135deg, var(--secondary-accent), var(--accent-color));
+      color: white;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-right: 6px;
+    }
+
+    .saved-wallet-type.solana {
+      background: linear-gradient(135deg, #9945FF, #14F195);
+    }
+
+    .saved-wallet-type.ethereum {
+      background: linear-gradient(135deg, #647cf6, #3b82f6);
+    }
+
+    .remove-wallet-btn {
+      background: none;
+      border: none;
+      color: var(--accent-color);
+      cursor: pointer;
+      font-size: 0.9rem;
+      opacity: 0.6;
+      padding: 2px;
+      border-radius: 3px;
+      transition: all 0.3s ease;
+    }
+
+    .remove-wallet-btn:hover {
+      opacity: 1;
+      background: rgba(255, 19, 240, 0.1);
+    }
+
+    .no-saved-wallets {
+      padding: 1.5rem;
+      text-align: center;
+      color: var(--text-secondary);
+      opacity: 0.6;
+      font-size: 0.8rem;
+    }
+
+    /* Input dropdown for saved wallets */
+    .input-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border: 2px solid var(--card-border);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px var(--shadow-primary);
+      z-index: 10;
+      max-height: 200px;
+      overflow-y: auto;
+      opacity: 0;
+      transform: translateY(-10px);
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="light"] .input-dropdown {
+      background: rgba(255, 255, 255, 0.95);
+      border-color: rgba(123, 58, 173, 0.3);
+      box-shadow: 0 8px 32px rgba(123, 58, 173, 0.15);
+    }
+
+    .input-dropdown.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+
+    .input-dropdown-item {
+      padding: 12px 16px;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .input-dropdown-item:last-child {
+      border-bottom: none;
+    }
+
+    .input-dropdown-item:hover {
+      background: var(--link-item-bg);
+    }
+
+    .input-dropdown-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .input-dropdown-address {
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      font-family: monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .input-dropdown-label {
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      opacity: 0.8;
+      margin-top: 2px;
+    }
+
+    .input-dropdown-type {
+      background: linear-gradient(135deg, var(--secondary-accent), var(--accent-color));
+      color: white;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .input-dropdown-type.solana {
+      background: linear-gradient(135deg, #9945FF, #14F195);
+    }
+
+    .input-dropdown-type.ethereum {
+      background: linear-gradient(135deg, #647cf6, #3b82f6);
+    }
+
+    .input-dropdown-empty {
+      padding: 12px 16px;
+      color: var(--text-secondary);
+      opacity: 0.6;
+      text-align: center;
+      font-size: 0.9rem;
     }
 
     @media (max-width: 768px) {
       .cook-button {
         bottom: 20px;
         right: 20px;
-        padding: 12px 20px;
-        font-size: 1rem;
+        padding: 10px 18px;
+        font-size: 0.9rem;
       }
       
       .theme-toggle {
@@ -521,18 +626,13 @@
         font-size: 1.3rem;
       }
 
-      .save-wallet-content {
-        padding: 1.5rem;
+      .main-modal-content {
+        padding: 1.2rem;
         margin: 1rem;
       }
 
       .modal-buttons {
         flex-direction: column;
-      }
-
-      .modal-btn-row {
-        flex-direction: column;
-        gap: 0.5rem;
       }
     }
 
@@ -645,14 +745,13 @@
     .card {
       max-width: 800px;
       background: var(--card-bg);
-      backdrop-filter: blur(15px);
+      backdrop-filter: blur(10px);
       border-radius: 20px;
       padding: 3rem;
       border: 2px solid var(--card-border);
       box-shadow: 0 12px 40px var(--shadow-primary);
       transition: all 0.3s ease;
       margin: 0 auto;
-      opacity: 0.3;
     }
 
     .card:hover {
@@ -714,113 +813,29 @@
       opacity: 0.6;
     }
 
-    /* Wallet dropdown button */
-    .wallet-dropdown-btn {
+    /* Arrow button */
+    .arrow-btn {
       position: absolute;
       right: 8px;
       top: 50%;
       transform: translateY(-50%);
-      background: none;
+      background: linear-gradient(135deg, var(--secondary-accent) 0%, var(--accent-color) 100%);
       border: none;
       cursor: pointer;
-      padding: 8px;
+      padding: 8px 12px;
       z-index: 2;
-      color: var(--accent-color);
+      color: white;
       font-size: 1.2rem;
-      border-radius: 6px;
-      transition: all 0.3s ease;
-    }
-
-    .wallet-dropdown-btn:hover {
-      background: var(--card-bg);
-      transform: translateY(-50%) scale(1.1);
-    }
-
-    /* Simple wallet dropdown for selecting saved wallets */
-    .wallet-dropdown {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background: var(--card-bg);
-      backdrop-filter: blur(15px);
-      border: 2px solid var(--card-border);
-      border-radius: 12px;
-      box-shadow: 0 8px 32px var(--shadow-primary);
-      z-index: 10;
-      max-height: 250px;
-      overflow-y: auto;
-      opacity: 0;
-      transform: translateY(-10px);
-      pointer-events: none;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      margin-top: 4px;
-    }
-
-    [data-theme="light"] .wallet-dropdown {
-      background: rgba(255, 255, 255, 0.95);
-      border-color: rgba(123, 58, 173, 0.3);
-      box-shadow: 0 8px 32px rgba(123, 58, 173, 0.15);
-    }
-
-    .wallet-dropdown.show {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: all;
-    }
-
-    .wallet-option {
-      padding: 12px 16px;
-      cursor: pointer;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
       transition: all 0.3s ease;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      position: relative;
+      justify-content: center;
     }
 
-    .wallet-option:last-child {
-      border-bottom: none;
-    }
-
-    .wallet-option:hover {
-      background: var(--link-item-bg);
-      transform: translateX(3px);
-    }
-
-    .wallet-option-content {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .wallet-option-address {
-      color: var(--text-primary);
-      font-size: 0.9rem;
-      font-family: monospace;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 300px;
-    }
-
-    .wallet-option-type {
-      background: linear-gradient(135deg, var(--secondary-accent), var(--accent-color));
-      color: white;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      margin-left: 8px;
-    }
-
-    .wallet-option-type.solana {
-      background: linear-gradient(135deg, #9945FF, #14F195);
-    }
-
-    .wallet-option-type.ethereum {
-      background: linear-gradient(135deg, #647cf6, #3b82f6);
+    .arrow-btn:hover {
+      transform: translateY(-50%) scale(1.1);
+      box-shadow: 0 4px 15px var(--shadow-accent);
     }
 
     /* Wallet type border indicators */
@@ -1038,14 +1053,6 @@
       .header {
         margin-bottom: 2rem;
       }
-
-      .wallet-option-address {
-        max-width: 200px;
-      }
-
-      .wallet-dropdown {
-        max-height: 250px;
-      }
     }
 
     /* EXTRA SMALL MOBILE DEVICES */
@@ -1062,10 +1069,6 @@
       .card h2 {
         font-size: 1.1rem;
         margin-bottom: 1rem;
-      }
-
-      .wallet-option-address {
-        max-width: 150px;
       }
     }
 
@@ -1259,39 +1262,41 @@
     👨‍🍳 Cook
   </button>
 
-  <!-- Save Wallet Modal -->
-  <div class="save-wallet-modal" id="saveWalletModal">
-    <div class="save-wallet-content">
-      <div class="save-wallet-header">
-        <h3>💾 Generate Links</h3>
-        <div class="save-wallet-address" id="saveWalletAddress"></div>
-      </div>
-      <div class="save-wallet-form">
+  <!-- Main Modal -->
+  <div class="main-modal" id="mainModal">
+    <div class="main-modal-content">
+      
+      <div class="wallet-input-section">
+        <label for="modalWalletInput">Wallet Address</label>
+        <input 
+          type="text" 
+          id="modalWalletInput" 
+          class="modal-wallet-input"
+          placeholder="Enter your wallet address (Solana or Ethereum)"
+        >
+        <label for="walletNameInput">Custom Name (Optional)</label>
         <input 
           type="text" 
           id="walletNameInput" 
           class="wallet-name-input"
-          placeholder="Enter a custom name (optional)"
+          placeholder="Give this wallet a custom name"
         >
       </div>
-      
-      <!-- Saved wallets section -->
-      <div class="saved-wallets-section" id="savedWalletsSection">
+
+      <div class="modal-buttons">
+        <button class="modal-btn modal-btn-cancel" onclick="closeMainModal()">Cancel</button>
+        <button class="modal-btn modal-btn-save" id="saveWalletBtn" onclick="saveAndGenerate()" disabled>Save & Generate</button>
+        <button class="modal-btn modal-btn-generate" id="generateBtn" onclick="generateFromModal()" disabled>Generate Links</button>
+      </div>
+
+      <div class="saved-wallets-section">
         <div class="saved-wallets-header">
-          <h4 class="saved-wallets-title">Saved Wallets</h4>
-          <button class="modal-clear-all-btn" onclick="clearAllWallets()">Clear All</button>
+          <h4>💾 Saved Wallets</h4>
+          <button class="clear-all-btn" onclick="clearAllWallets()">Clear All</button>
         </div>
         <div class="saved-wallets-list" id="savedWalletsList">
-          <!-- Saved wallets will be populated here -->
+          <div class="no-saved-wallets">No saved wallets yet</div>
         </div>
-      </div>
-      
-      <div class="modal-buttons">
-        <div class="modal-btn-row">
-          <button class="modal-btn modal-btn-cancel" onclick="saveWalletManager.cancelSave()">Cancel</button>
-          <button class="modal-btn modal-btn-generate" onclick="saveWalletManager.generateWithoutSaving()">Generate Links</button>
-        </div>
-        <button class="modal-btn modal-btn-save" onclick="saveWalletManager.confirmSave()">Save & Generate Links</button>
       </div>
     </div>
   </div>
@@ -1329,14 +1334,15 @@
           id="wallet-input" 
           class="wallet-input"
           placeholder="Enter your wallet address (Solana or Ethereum)"
+          onclick="showInputDropdown()"
         >
-        <button class="wallet-dropdown-btn" id="walletDropdownBtn" onclick="showGenerateModal()">
+        <button class="arrow-btn" id="arrowBtn" onclick="openMainModal()">
           →
         </button>
         
-        <!-- Simple wallet dropdown for selecting saved wallets -->
-        <div class="wallet-dropdown" id="walletDropdown">
-          <div id="walletDropdownContent">
+        <!-- Input dropdown for quick wallet selection -->
+        <div class="input-dropdown" id="inputDropdown">
+          <div id="inputDropdownContent">
             <!-- Wallet options will be populated here -->
           </div>
         </div>
@@ -1361,180 +1367,31 @@
   </div>
 
 <script>
-// Enhanced save wallet modal management system
-const saveWalletManager = {
-  pendingWallet: null,
-  
-  showModal(address, type) {
-    this.pendingWallet = { address, type };
-    
-    const modal = document.getElementById('saveWalletModal');
-    const addressDiv = document.getElementById('saveWalletAddress');
-    const nameInput = document.getElementById('walletNameInput');
-    
-    // Format address display
-    const shortAddress = `${address.slice(0, 8)}...${address.slice(-6)}`;
-    const typeLabel = type === 'solana' ? 'Solana' : 'Ethereum';
-    addressDiv.textContent = `${typeLabel}: ${shortAddress}`;
-    
-    // Reset form
-    nameInput.value = '';
-    
-    // Update saved wallets section
-    this.updateSavedWalletsList();
-    
-    // Show modal
-    modal.classList.add('show');
-    
-    // Focus name input after a brief delay
-    setTimeout(() => nameInput.focus(), 150);
-  },
-  
-  updateSavedWalletsList() {
-    const container = document.getElementById('savedWalletsList');
-    const wallets = walletManager.loadWallets();
-    
-    if (wallets.length === 0) {
-      container.innerHTML = '<div class="no-saved-wallets">No saved wallets</div>';
-      return;
-    }
-    
-    container.innerHTML = wallets.map(wallet => {
-      // If wallet has a custom label that's different from the auto-generated one, show it differently
-      const autoLabel = walletManager.generateLabel(wallet.address, wallet.type);
-      const hasCustomName = wallet.label && wallet.label !== autoLabel;
-      
-      let displayText, displayLabel;
-      if (hasCustomName) {
-        // Show custom name with last 5 digits: "My Wallet (A1B2C)"
-        const last5 = wallet.address.slice(-5);
-        displayText = `${wallet.label} (${last5})`;
-        displayLabel = '';
-      } else {
-        // Show full address with auto-generated label below
-        displayText = wallet.address;
-        displayLabel = wallet.label;
-      }
-      
-      return `
-        <div class="saved-wallet-item" onclick="saveWalletManager.selectSavedWallet('${wallet.address}')">
-          <div class="saved-wallet-info">
-            <div class="saved-wallet-address">${displayText}</div>
-            ${displayLabel ? `<div class="saved-wallet-label">${displayLabel}</div>` : ''}
-          </div>
-          <div class="saved-wallet-actions">
-            <span class="saved-wallet-type ${wallet.type}">${wallet.type}</span>
-            <button class="modal-remove-btn" onclick="event.stopPropagation(); saveWalletManager.removeWallet('${wallet.address}')" title="Remove wallet">
-              ×
-            </button>
-          </div>
-        </div>
-      `;
-    }).join('');
-  },
-  
-  selectSavedWallet(address) {
-    const wallets = walletManager.loadWallets();
-    const wallet = wallets.find(w => w.address.toLowerCase() === address.toLowerCase());
-    
-    if (wallet) {
-      this.generateLinksForWallet(address, wallet.type);
-      this.hideSaveModal();
-    }
-  },
-  
-  removeWallet(address) {
-    walletManager.removeWallet(address);
-    this.updateSavedWalletsList();
-  },
-  
-  confirmSave() {
-    if (!this.pendingWallet) return;
-    
-    const nameInput = document.getElementById('walletNameInput');
-    const customName = nameInput.value.trim();
-    const { address, type } = this.pendingWallet;
-    
-    // Save the wallet
-    walletManager.addWallet(address, type, customName || null);
-    
-    // Generate links
-    this.generateLinksForWallet(address, type);
-    
-    this.hideSaveModal();
-  },
-  
-  generateWithoutSaving() {
-    if (!this.pendingWallet) return;
-    
-    const { address, type } = this.pendingWallet;
-    
-    // Generate links without saving
-    this.generateLinksForWallet(address, type);
-    
-    this.hideSaveModal();
-  },
-  
-  generateLinksForWallet(address, type) {
-    if (type === 'solana') {
-      generateSolanaLinks(address);
-    } else if (type === 'ethereum') {
-      generateEthereumLinks(address);
-    }
-  },
-  
-  cancelSave() {
-    this.hideSaveModal();
-  },
-  
-  hideSaveModal() {
-    const modal = document.getElementById('saveWalletModal');
-    modal.classList.remove('show');
-    this.pendingWallet = null;
-  },
-  
-  init() {
-    // Close modal when clicking outside
-    const modal = document.getElementById('saveWalletModal');
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        this.cancelSave();
-      }
-    });
-    
-    // Handle Enter key in name input
-    const nameInput = document.getElementById('walletNameInput');
-    nameInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        this.confirmSave();
-      }
-    });
-    
-    // Handle Escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && modal.classList.contains('show')) {
-        this.cancelSave();
-      }
-    });
-  }
-};
-
-// Enhanced Wallet Management System
+// Enhanced Wallet Management System with localStorage persistence
 const walletManager = {
+  storageKey: 'pond0x_saved_wallets',
   maxWallets: 10,
+  selectedWallet: null,
   
-  // Load saved wallets from in-memory storage
+  // Load saved wallets from localStorage
   loadWallets() {
-    if (!window.savedWallets) {
-      window.savedWallets = [];
+    try {
+      const stored = localStorage.getItem(this.storageKey);
+      return stored ? JSON.parse(stored) : [];
+    } catch (error) {
+      console.error('Error loading wallets from localStorage:', error);
+      return [];
     }
-    return window.savedWallets;
   },
   
-  // Save wallets to in-memory storage
+  // Save wallets to localStorage
   saveWallets(wallets) {
-    window.savedWallets = wallets;
-    console.log('Wallets saved:', wallets.length);
+    try {
+      localStorage.setItem(this.storageKey, JSON.stringify(wallets));
+      console.log('Wallets saved to localStorage:', wallets.length);
+    } catch (error) {
+      console.error('Error saving wallets to localStorage:', error);
+    }
   },
   
   // Check if wallet already exists
@@ -1570,7 +1427,7 @@ const walletManager = {
     }
     
     this.saveWallets(wallets);
-    this.updateDropdown();
+    this.updateUI();
     return true;
   },
   
@@ -1586,147 +1443,199 @@ const walletManager = {
     const wallets = this.loadWallets();
     const filtered = wallets.filter(w => w.address.toLowerCase() !== address.toLowerCase());
     this.saveWallets(filtered);
-    this.updateDropdown();
-    
-    // Close dropdown if empty
-    if (filtered.length === 0) {
-      const dropdown = document.getElementById('walletDropdown');
-      dropdown.classList.remove('show');
-    }
+    this.updateUI();
   },
   
   // Clear all wallets
   clearAll() {
-    this.saveWallets([]);
-    this.updateDropdown();
+    if (confirm('Are you sure you want to clear all saved wallets?')) {
+      this.saveWallets([]);
+      this.updateUI();
+      this.selectedWallet = null;
+      this.updateModalButtons();
+    }
+  },
+  
+  // Select a wallet
+  selectWallet(address) {
+    const wallets = this.loadWallets();
+    this.selectedWallet = wallets.find(w => w.address.toLowerCase() === address.toLowerCase());
     
-    // Close dropdown
-    const dropdown = document.getElementById('walletDropdown');
+    // Update modal input
+    const modalInput = document.getElementById('modalWalletInput');
+    if (modalInput) {
+      modalInput.value = address;
+      this.detectWalletType(modalInput);
+    }
+    
+    // Update main input
+    const mainInput = document.getElementById('wallet-input');
+    if (mainInput) {
+      mainInput.value = address;
+      detectWalletType();
+    }
+    
+    this.updateModalButtons();
+    this.updateSavedWalletsList();
+    
+    // Hide input dropdown
+    const dropdown = document.getElementById('inputDropdown');
     dropdown.classList.remove('show');
   },
   
-  // Update the simple dropdown UI
-  updateDropdown() {
-    const content = document.getElementById('walletDropdownContent');
+  // Update all UI components
+  updateUI() {
+    this.updateSavedWalletsList();
+    this.updateInputDropdown();
+  },
+  
+  // Update the saved wallets list in modal
+  updateSavedWalletsList() {
+    const container = document.getElementById('savedWalletsList');
     const wallets = this.loadWallets();
     
     if (wallets.length === 0) {
-      content.innerHTML = '<div style="padding: 12px 16px; color: var(--text-secondary); opacity: 0.6; text-align: center; font-size: 0.9rem;">No saved wallets</div>';
+      container.innerHTML = '<div class="no-saved-wallets">No saved wallets yet</div>';
       return;
     }
     
-    content.innerHTML = wallets.map(wallet => {
-      // If wallet has a custom label that's different from the auto-generated one, show it differently
+    container.innerHTML = wallets.map(wallet => {
+      const isSelected = this.selectedWallet && this.selectedWallet.address.toLowerCase() === wallet.address.toLowerCase();
       const autoLabel = this.generateLabel(wallet.address, wallet.type);
       const hasCustomName = wallet.label && wallet.label !== autoLabel;
       
-      let displayText;
+      let displayText, displayLabel;
       if (hasCustomName) {
-        // Show custom name with last 5 digits: "My Wallet (A1B2C)"
         const last5 = wallet.address.slice(-5);
         displayText = `${wallet.label} (${last5})`;
+        displayLabel = '';
       } else {
-        // Show shortened address
-        displayText = `${wallet.address.slice(0, 8)}...${wallet.address.slice(-6)}`;
+        displayText = wallet.address;
+        displayLabel = wallet.label;
       }
       
       return `
-        <div class="wallet-option" onclick="selectWallet('${wallet.address}')">
-          <div class="wallet-option-content">
-            <div class="wallet-option-address">${displayText}</div>
+        <div class="saved-wallet-item ${isSelected ? 'selected' : ''}" onclick="walletManager.selectWallet('${wallet.address}')">
+          <div class="saved-wallet-content">
+            <div class="saved-wallet-address">${displayText}</div>
+            ${displayLabel ? `<div class="saved-wallet-label">${displayLabel}</div>` : ''}
           </div>
-          <span class="wallet-option-type ${wallet.type}">${wallet.type}</span>
+          <div class="saved-wallet-actions">
+            <span class="saved-wallet-type ${wallet.type}">${wallet.type}</span>
+            <button class="remove-wallet-btn" onclick="event.stopPropagation(); walletManager.removeWallet('${wallet.address}')" title="Remove wallet">
+              ×
+            </button>
+          </div>
         </div>
       `;
     }).join('');
   },
   
+  // Update the input dropdown
+  updateInputDropdown() {
+    const content = document.getElementById('inputDropdownContent');
+    const wallets = this.loadWallets();
+    
+    if (wallets.length === 0) {
+      content.innerHTML = '<div class="input-dropdown-empty">No saved wallets</div>';
+      return;
+    }
+    
+    content.innerHTML = wallets.map(wallet => {
+      const autoLabel = this.generateLabel(wallet.address, wallet.type);
+      const hasCustomName = wallet.label && wallet.label !== autoLabel;
+      
+      let displayText, displayLabel;
+      if (hasCustomName) {
+        const last5 = wallet.address.slice(-5);
+        displayText = `${wallet.label} (${last5})`;
+        displayLabel = '';
+      } else {
+        displayText = wallet.address;
+        displayLabel = wallet.label;
+      }
+      
+      return `
+        <div class="input-dropdown-item" onclick="selectWalletFromDropdown('${wallet.address}')">
+          <div class="input-dropdown-content">
+            <div class="input-dropdown-address">${displayText}</div>
+            ${displayLabel ? `<div class="input-dropdown-label">${displayLabel}</div>` : ''}
+          </div>
+          <span class="input-dropdown-type ${wallet.type}">${wallet.type}</span>
+        </div>
+      `;
+    }).join('');
+  },
+  
+  // Detect wallet type in modal
+  detectWalletType(input) {
+    const walletAddress = input.value.trim();
+    
+    if (!walletAddress) {
+      return 'none';
+    }
+    
+    // Ethereum address detection
+    if (walletAddress.match(/^0x[a-fA-F0-9]{40}$/)) {
+      return 'ethereum';
+    }
+    
+    // Solana address detection
+    if (walletAddress.length >= 32 && walletAddress.length <= 44 && 
+        walletAddress.match(/^[1-9A-HJ-NP-Za-km-z]+$/) && 
+        !walletAddress.startsWith('0x')) {
+      return 'solana';
+    }
+    
+    return 'invalid';
+  },
+  
+  // Update modal buttons based on current state
+  updateModalButtons() {
+    const modalInput = document.getElementById('modalWalletInput');
+    const saveBtn = document.getElementById('saveWalletBtn');
+    const generateBtn = document.getElementById('generateBtn');
+    
+    const address = modalInput.value.trim();
+    const type = this.detectWalletType(modalInput);
+    const isValid = type === 'solana' || type === 'ethereum';
+    const alreadyExists = this.walletExists(address);
+    
+    // Enable/disable buttons
+    saveBtn.disabled = !isValid || alreadyExists;
+    generateBtn.disabled = !isValid;
+    
+    // Update save button text
+    if (alreadyExists && isValid) {
+      saveBtn.textContent = 'Already Saved';
+    } else {
+      saveBtn.textContent = 'Save & Generate';
+    }
+  },
+  
   // Initialize the wallet manager
   init() {
-    this.updateDropdown();
+    this.updateUI();
     
     // Close dropdown when clicking outside
     document.addEventListener('click', (e) => {
-      const dropdown = document.getElementById('walletDropdown');
-      const btn = document.getElementById('walletDropdownBtn');
-      const input = document.getElementById('wallet-input');
+      const dropdown = document.getElementById('inputDropdown');
       const wrapper = document.getElementById('wallet-input-wrapper');
+      const modal = document.getElementById('mainModal');
       
-      if (!wrapper.contains(e.target)) {
+      if (!wrapper.contains(e.target) && !modal.contains(e.target)) {
         dropdown.classList.remove('show');
       }
+    });
+    
+    // Modal input event listeners
+    const modalInput = document.getElementById('modalWalletInput');
+    modalInput.addEventListener('input', () => {
+      this.updateModalButtons();
     });
   }
 };
 
-// Global wallet management functions
-function showGenerateModal() {
-  const input = document.getElementById('wallet-input');
-  const walletAddress = input.value.trim();
-  
-  // If no address entered, show dropdown if there are saved wallets
-  if (!walletAddress) {
-    const wallets = walletManager.loadWallets();
-    if (wallets.length > 0) {
-      toggleWalletDropdown();
-      return;
-    }
-    // If no saved wallets, focus the input
-    input.focus();
-    return;
-  }
-  
-  // Validate the address
-  const walletType = detectWalletType();
-  
-  if (walletType === 'invalid') {
-    alert('Please enter a valid Solana or Ethereum wallet address');
-    input.focus();
-    return;
-  }
-  
-  // Show the modal
-  saveWalletManager.showModal(walletAddress, walletType);
-}
-
-function toggleWalletDropdown() {
-  const dropdown = document.getElementById('walletDropdown');
-  const wallets = walletManager.loadWallets();
-  
-  // Only show dropdown if there are saved wallets
-  if (wallets.length === 0) {
-    return;
-  }
-  
-  dropdown.classList.toggle('show');
-}
-
-function selectWallet(address) {
-  const input = document.getElementById('wallet-input');
-  input.value = address;
-  detectWalletType();
-  
-  const dropdown = document.getElementById('walletDropdown');
-  dropdown.classList.remove('show');
-  
-  // Focus the input
-  input.focus();
-}
-
-function clearAllWallets() {
-  if (confirm('Are you sure you want to clear all saved wallets?')) {
-    walletManager.clearAll();
-    
-    // Update the modal if it's open
-    if (document.getElementById('saveWalletModal').classList.contains('show')) {
-      saveWalletManager.updateSavedWalletsList();
-    }
-  }
-}
-
-// Theme management with cross-page persistence
-const themeManager = {
-  init() {
 // Theme management with cross-page persistence
 const themeManager = {
   init() {
@@ -1790,6 +1699,119 @@ function detectWalletType() {
   
   // Invalid addresses look the same as no input
   return 'invalid';
+}
+
+// Modal functions
+function openMainModal() {
+  const modal = document.getElementById('mainModal');
+  const modalInput = document.getElementById('modalWalletInput');
+  const mainInput = document.getElementById('wallet-input');
+  
+  // Copy main input value to modal
+  modalInput.value = mainInput.value;
+  
+  // Clear custom name input
+  document.getElementById('walletNameInput').value = '';
+  
+  // Update button states
+  walletManager.updateModalButtons();
+  
+  // Update saved wallets list
+  walletManager.updateSavedWalletsList();
+  
+  // Show modal
+  modal.classList.add('show');
+  
+  // Focus modal input
+  setTimeout(() => modalInput.focus(), 150);
+}
+
+function closeMainModal() {
+  const modal = document.getElementById('mainModal');
+  modal.classList.remove('show');
+  walletManager.selectedWallet = null;
+}
+
+function saveAndGenerate() {
+  const modalInput = document.getElementById('modalWalletInput');
+  const nameInput = document.getElementById('walletNameInput');
+  
+  const address = modalInput.value.trim();
+  const customName = nameInput.value.trim();
+  const type = walletManager.detectWalletType(modalInput);
+  
+  if (type === 'invalid' || !address) {
+    alert('Please enter a valid wallet address');
+    return;
+  }
+  
+  // Save wallet
+  walletManager.addWallet(address, type, customName || null);
+  
+  // Generate links
+  generateLinksForWallet(address, type);
+  
+  // Close modal
+  closeMainModal();
+}
+
+function generateFromModal() {
+  const modalInput = document.getElementById('modalWalletInput');
+  const address = modalInput.value.trim();
+  const type = walletManager.detectWalletType(modalInput);
+  
+  if (type === 'invalid' || !address) {
+    alert('Please enter a valid wallet address');
+    return;
+  }
+  
+  // Generate links without saving
+  generateLinksForWallet(address, type);
+  
+  // Close modal
+  closeMainModal();
+}
+
+function showInputDropdown() {
+  const dropdown = document.getElementById('inputDropdown');
+  const wallets = walletManager.loadWallets();
+  
+  if (wallets.length > 0) {
+    walletManager.updateInputDropdown();
+    dropdown.classList.add('show');
+  }
+}
+
+function selectWalletFromDropdown(address) {
+  const input = document.getElementById('wallet-input');
+  input.value = address;
+  detectWalletType();
+  
+  const dropdown = document.getElementById('inputDropdown');
+  dropdown.classList.remove('show');
+  
+  // Generate links immediately
+  const type = detectWalletType();
+  if (type === 'solana' || type === 'ethereum') {
+    generateLinksForWallet(address, type);
+  }
+}
+
+function clearAllWallets() {
+  walletManager.clearAll();
+}
+
+function generateLinksForWallet(address, type) {
+  // Update main input to show the address being used
+  const mainInput = document.getElementById('wallet-input');
+  mainInput.value = address;
+  detectWalletType();
+  
+  if (type === 'solana') {
+    generateSolanaLinks(address);
+  } else if (type === 'ethereum') {
+    generateEthereumLinks(address);
+  }
 }
 
 function toggleBubbles() {
@@ -2057,13 +2079,23 @@ function generateEthereumLinks(walletAddress) {
 // Enhanced bubble state management system
 const bubbleStateManager = {
   saveState(isEnabled) {
-    // Use in-memory storage for artifacts
-    window.bubbleState = isEnabled;
-    console.log('Bubble state saved:', isEnabled);
+    // Use localStorage for persistent storage
+    try {
+      localStorage.setItem('pond0x_bubble_state', JSON.stringify(isEnabled));
+      console.log('Bubble state saved:', isEnabled);
+    } catch (error) {
+      console.error('Error saving bubble state:', error);
+    }
   },
   
   loadState() {
-    return window.bubbleState !== undefined ? window.bubbleState : true;
+    try {
+      const stored = localStorage.getItem('pond0x_bubble_state');
+      return stored !== null ? JSON.parse(stored) : true;
+    } catch (error) {
+      console.error('Error loading bubble state:', error);
+      return true;
+    }
   },
   
   init() {
@@ -2322,10 +2354,6 @@ fetch(mdxUrl)
     document.getElementById('plw-content').textContent = "Couldn't load community.";
   });
 
-function generateLinks() {
-  showGenerateModal();
-}
-
 // GLOBAL FUNCTIONS
 function toggleTheme() {
   themeManager.toggle();
@@ -2336,9 +2364,6 @@ document.addEventListener('DOMContentLoaded', function() {
   // Initialize theme first
   themeManager.init();
   
-  // Initialize save wallet modal
-  saveWalletManager.init();
-  
   // Initialize wallet manager
   walletManager.init();
   
@@ -2348,37 +2373,42 @@ document.addEventListener('DOMContentLoaded', function() {
   const walletInput = document.getElementById('wallet-input');
   
   // Add input event listener for wallet type detection
-  walletInput.addEventListener('input', function() {
-    detectWalletType();
-    
-    // Show dropdown if there are saved wallets and input is clicked
-    const wallets = walletManager.loadWallets();
-    if (wallets.length > 0 && !this.value.trim()) {
-      const dropdown = document.getElementById('walletDropdown');
-      // Small delay to allow for typing
-      setTimeout(() => {
-        if (!this.value.trim()) {
-          dropdown.classList.add('show');
-        }
-      }, 100);
+  walletInput.addEventListener('input', detectWalletType);
+  
+  // Modal event listeners
+  const modal = document.getElementById('mainModal');
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      closeMainModal();
     }
   });
   
-  // Show dropdown when input is focused and empty
-  walletInput.addEventListener('focus', function() {
-    const wallets = walletManager.loadWallets();
-    if (wallets.length > 0 && !this.value.trim()) {
-      setTimeout(() => {
-        const dropdown = document.getElementById('walletDropdown');
-        dropdown.classList.add('show');
-      }, 100);
+  // Handle Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('show')) {
+      closeMainModal();
     }
   });
   
-  // Add enter key listener
-  walletInput.addEventListener('keypress', function(e) {
+  // Handle Enter key in modal inputs
+  const modalInput = document.getElementById('modalWalletInput');
+  const nameInput = document.getElementById('walletNameInput');
+  
+  modalInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
-      showGenerateModal();
+      const generateBtn = document.getElementById('generateBtn');
+      if (!generateBtn.disabled) {
+        generateFromModal();
+      }
+    }
+  });
+  
+  nameInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      const saveBtn = document.getElementById('saveWalletBtn');
+      if (!saveBtn.disabled) {
+        saveAndGenerate();
+      }
     }
   });
 });
