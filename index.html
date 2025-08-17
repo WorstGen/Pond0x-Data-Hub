@@ -2132,6 +2132,11 @@ const solanaCary0xTemplates = [
     name: "LUCK DATA",
     url: "https://cary0x.github.io/docs/info/luck?wallet={WALLET}",
     description: "Returns your luck data from your manifest on Pond0x"
+  },
+  {
+    name: "SUMGUY'S POND0X DASHBOARD",
+    url: "https://pond0xdash.com/results?sol={WALLET}",
+    description: "Returns a comprehensive sum of aggregated data"
   }
 ];
 
@@ -2171,7 +2176,7 @@ function generateSolanaLinks(walletAddress) {
 
   // Update titles for Solana
   mainTitle.textContent = '👨‍🍳 Your Personal History Links';
-  secondTitle.textContent = '🐐 Links From Cary0x2\'s Unofficial Pond0x Info';
+  secondTitle.textContent = '🐐 Links from Cary0x2 and other Community Members';
 
   linksContainer.innerHTML = '';
   secondLinksContainer.innerHTML = '';
@@ -2228,7 +2233,7 @@ function generateEthereumLinks(walletAddress) {
 
   // Update titles for Ethereum
   mainTitle.textContent = '👨‍🍳 Your Personal History Links';
-  secondTitle.textContent = '🐐 Links From Cary0x2\'s Unofficial Pond0x Info';
+  secondTitle.textContent = '🐐 Links from Cary0x2 and other Community Members';
 
   linksContainer.innerHTML = '';
   secondLinksContainer.innerHTML = '';
