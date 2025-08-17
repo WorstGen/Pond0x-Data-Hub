@@ -2136,7 +2136,7 @@ const solanaCary0xTemplates = [
   {
     name: "SUMGUY'S POND0X DASHBOARD",
     url: "https://pond0xdash.com/results?sol={WALLET}",
-    description: "Returns a comprehensive sum of aggregated data"
+    description: "Returns a comprehensive sum of aggregated Pond0x data in a clean dashboard interface"
   }
 ];
 
@@ -2209,7 +2209,7 @@ function generateSolanaLinks(walletAddress) {
     linkDiv.innerHTML = `
       <div class="link-content">
         <div class="link-title">${template.name}</div>
-        <a href="${finalUrl}" target="_blank" class="link-url">Open on Cary0x2's Unofficial Pond0x Info →</a>
+        <a href="${finalUrl}" target="_blank" class="link-url">Open on a new tab/window →</a>
         <div class="link-description">${template.description}</div>
       </div>
       <div class="action-buttons">
