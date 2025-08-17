@@ -1262,6 +1262,44 @@
     👨‍🍳 Cook
   </button>
 
+  <!-- Welcome Modal -->
+<div class="main-modal" id="welcomeModal">
+  <div class="main-modal-content">
+    <div style="text-align: center; margin-bottom: 1.5rem;">
+      <h3 style="color: var(--text-primary); font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem;">
+        Welcome to<br>POND🤝X Data Hub!
+      </h3>
+      <p style="color: var(--text-secondary); font-size: 0.9rem; opacity: 0.8; line-height: 1.4;">
+        Help improve the community experience by sharing your X profile tag
+      </p>
+    </div>
+
+    <form id="welcomeForm" action="https://formspree.io/f/xvgqnzez" method="POST">
+      <input 
+        type="text" 
+        id="welcomeXInput" 
+        name="x_profile" 
+        class="modal-wallet-input"
+        placeholder='Enter your X profile (e.g. "@WorstGen0x")'
+        required
+      >
+
+      <div style="text-align: center; margin: 0.8rem 0; color: var(--accent-color); font-weight: 600; font-size: 0.9rem; opacity: 0.9;">
+        PARTICIPATION IS VOLUNTARY<br>BUT REWARDING 🎁
+      </div>
+
+      <div style="text-align: center; font-size: 0.7rem; color: var(--text-secondary); opacity: 0.6; line-height: 1.3; margin-bottom: 1rem;">
+        Data is not collected on this site normally, but this one time if you choose to participate the data will not be shared with anyone other than WorstGen.<br><br>What happens next may surprise you!
+      </div>
+
+      <div class="modal-buttons">
+        <button type="button" class="modal-btn modal-btn-cancel" onclick="closeWelcomeModal(false)">Skip</button>
+        <button type="submit" class="modal-btn modal-btn-save" id="welcomeSubmitBtn">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
   <!-- Main Modal -->
   <div class="main-modal" id="mainModal">
     <div class="main-modal-content">
@@ -1367,6 +1405,74 @@
   </div>
 
 <script>
+// Welcome Modal Management System
+const welcomeManager = {
+  storageKey: 'pond0x_welcome_completed',
+
+  hasCompletedWelcome() {
+    try {
+      return localStorage.getItem(this.storageKey) === 'true';
+    } catch (e) {
+      console.warn('Could not check welcome status:', e);
+      return false;
+    }
+  },
+
+  markWelcomeCompleted() {
+    try {
+      localStorage.setItem(this.storageKey, 'true');
+      console.log('Welcome marked as completed');
+    } catch (e) {
+      console.warn('Could not save welcome status:', e);
+    }
+  },
+
+  showWelcomeModal() {
+    if (!this.hasCompletedWelcome()) {
+      document.getElementById('welcomeModal').classList.add('show');
+      return true;
+    }
+    return false;
+  }
+};
+
+// Handle form submission
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('welcomeForm');
+  const submitBtn = document.getElementById('welcomeSubmitBtn');
+
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+
+      try {
+        const formData = new FormData(form);
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: formData,
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (response.ok) {
+          welcomeManager.markWelcomeCompleted();
+          submitBtn.textContent = 'Thank You!';
+          submitBtn.style.background = 'linear-gradient(135deg, #4ade80 0%, #16a34a 100%)';
+          setTimeout(() => closeWelcomeModal(true), 1500);
+        } else {
+          throw new Error('Formspree error');
+        }
+      } catch (err) {
+        console.error('Error submitting X profile:', err);
+        alert('There was an error submitting your data. Please try again.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit';
+      }
+    });
+  }
+});
+
 // Enhanced Wallet Management System with localStorage persistence
 const walletManager = {
   storageKey: 'pond0x_saved_wallets',
@@ -1732,6 +1838,67 @@ function detectWalletType() {
   
   // Invalid addresses look the same as no input
   return 'invalid';
+}
+
+// Welcome Modal Functions
+function closeWelcomeModal(submitted = false) {
+  document.getElementById('welcomeModal').classList.remove('show');
+  if (!submitted) {
+    welcomeManager.markWelcomeCompleted();
+  }
+}
+
+async function submitWelcomeData() {
+  const walletInput = document.getElementById('welcomeWalletInput');
+  const walletAddress = walletInput.value.trim();
+  const submitBtn = document.getElementById('welcomeSubmitBtn');
+  
+  // Allow submission even if no wallet address is provided
+  if (walletAddress === '') {
+    welcomeManager.markWelcomeCompleted();
+    closeWelcomeModal(true);
+    return;
+  }
+  
+  // Validate Solana address if provided
+  if (!welcomeManager.validateSolanaAddress(walletAddress)) {
+    alert('Please enter a valid Solana wallet address or leave blank to skip.');
+    return;
+  }
+  
+  // Disable button during submission
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Submitting...';
+  
+  try {
+    // For demonstration, we'll just log the data
+    // In production, replace this with your actual webhook call
+    console.log('Submitting wallet data:', {
+      wallet_address: walletAddress,
+      timestamp: new Date().toISOString(),
+      source: 'pond0x_data_hub_welcome'
+    });
+    
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Mark welcome as completed
+    welcomeManager.markWelcomeCompleted();
+    
+    // Show success message
+    submitBtn.textContent = 'Thank You!';
+    submitBtn.style.background = 'linear-gradient(135deg, #4ade80 0%, #16a34a 100%)';
+    
+    setTimeout(() => {
+      closeWelcomeModal(true);
+    }, 1500);
+    
+  } catch (error) {
+    console.error('Error submitting data:', error);
+    alert('There was an error submitting your data. Please try again.');
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Submit';
+  }
 }
 
 // Modal functions
@@ -2411,6 +2578,11 @@ document.addEventListener('DOMContentLoaded', function() {
   // Then initialize bubble system
   bubbleSystem.init();
   
+  // Show welcome modal for first-time visitors
+  setTimeout(() => {
+    welcomeManager.showWelcomeModal();
+  }, 500);
+  
   const walletInput = document.getElementById('wallet-input');
   
   // Add input event listener for wallet type detection
@@ -2418,22 +2590,36 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Modal event listeners
   const modal = document.getElementById('mainModal');
+  const welcomeModal = document.getElementById('welcomeModal');
+  
   modal.addEventListener('click', (e) => {
     if (e.target === modal) {
       closeMainModal();
     }
   });
   
+  welcomeModal.addEventListener('click', (e) => {
+    if (e.target === welcomeModal) {
+      closeWelcomeModal(false);
+    }
+  });
+  
   // Handle Escape key
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.classList.contains('show')) {
-      closeMainModal();
+    if (e.key === 'Escape') {
+      if (modal.classList.contains('show')) {
+        closeMainModal();
+      }
+      if (welcomeModal.classList.contains('show')) {
+        closeWelcomeModal(false);
+      }
     }
   });
   
   // Handle Enter key in modal inputs
   const modalInput = document.getElementById('modalWalletInput');
   const nameInput = document.getElementById('walletNameInput');
+  const welcomeXInput = document.getElementById('welcomeXInput');
   
   modalInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
@@ -2450,6 +2636,12 @@ document.addEventListener('DOMContentLoaded', function() {
       if (!saveBtn.disabled) {
         saveAndGenerate();
       }
+    }
+  });
+  
+  welcomeXInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      submitWelcomeData();
     }
   });
 });
