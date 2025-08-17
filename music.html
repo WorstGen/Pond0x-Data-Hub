@@ -895,8 +895,17 @@
                 📁 Choose Audio Files
               </label>
             </div>
-            <p style="text-align: center; opacity: 0.7; margin-top: 10px; color: var(--text-secondary);">
-              Supports MP3, WAV, OGG, and other audio formats
+            
+            <div class="url-input-container" style="margin-top: 20px;">
+              <input type="text" id="url-input" placeholder="Paste GitHub raw URL or direct audio link..." 
+                     style="width: 100%; padding: 12px; border: 1px solid var(--card-border); border-radius: 8px; background: var(--input-bg); color: var(--text-primary); margin-bottom: 10px;">
+              <button id="add-url-btn" class="file-input-label" style="width: 100%; margin: 0;">
+                🌐 Add from URL
+              </button>
+            </div>
+            
+            <p style="text-align: center; opacity: 0.7; margin-top: 10px; color: var(--text-secondary); font-size: 0.8em;">
+              Supports MP3, WAV, OGG from files or GitHub raw URLs
             </p>
           </div>
 
@@ -1214,6 +1223,8 @@ class WebJukebox {
     this.currentTitle = document.getElementById('current-title');
     this.currentArtist = document.getElementById('current-artist');
     this.visualizer = document.getElementById('visualizer');
+    this.urlInput = document.getElementById('url-input');
+    this.addUrlBtn = document.getElementById('add-url-btn');
   }
 
   bindEvents() {
@@ -1226,6 +1237,10 @@ class WebJukebox {
     this.progressBar.addEventListener('click', (e) => this.seekTo(e));
     this.volumeSlider.addEventListener('input', (e) => this.setVolume(e.target.value));
     this.fileInput.addEventListener('change', (e) => this.handleFileInput(e));
+    this.addUrlBtn.addEventListener('click', () => this.handleUrlInput());
+    this.urlInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') this.handleUrlInput();
+    });
     
     this.audio.addEventListener('loadedmetadata', () => this.updateDuration());
     this.audio.addEventListener('timeupdate', () => this.updateProgress());
@@ -1262,22 +1277,74 @@ class WebJukebox {
     files.forEach(file => this.addTrack(file));
   }
 
+  handleUrlInput() {
+    const url = this.urlInput.value.trim();
+    if (!url) return;
+    
+    // Convert GitHub blob URLs to raw URLs
+    let processedUrl = url;
+    if (url.includes('github.com') && url.includes('/blob/')) {
+      processedUrl = url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
+    }
+    
+    // Validate URL format
+    try {
+      new URL(processedUrl);
+    } catch (e) {
+      alert('Please enter a valid URL');
+      return;
+    }
+    
+    // Extract filename from URL
+    const urlParts = processedUrl.split('/');
+    const filename = urlParts[urlParts.length - 1] || 'Unknown Track';
+    
+    this.addTrackFromUrl(processedUrl, filename);
+    this.urlInput.value = '';
+  }
+
   addTrack(file) {
     const track = {
       id: Date.now() + Math.random(),
       file: file,
       name: file.name.replace(/\.[^/.]+$/, ""),
       url: URL.createObjectURL(file),
-      duration: 0
+      duration: 0,
+      isUrl: false
     };
     
     this.playlist.push(track);
     this.renderPlaylist();
   }
 
+  addTrackFromUrl(url, filename) {
+    const track = {
+      id: Date.now() + Math.random(),
+      file: null,
+      name: filename.replace(/\.[^/.]+$/, ""),
+      url: url,
+      duration: 0,
+      isUrl: true
+    };
+    
+    this.playlist.push(track);
+    this.renderPlaylist();
+    
+    // Test if URL is accessible
+    const testAudio = new Audio();
+    testAudio.addEventListener('loadedmetadata', () => {
+      console.log(`Successfully loaded: ${filename}`);
+    });
+    testAudio.addEventListener('error', () => {
+      alert(`Could not load audio from URL: ${filename}\n\nTip: Make sure it's a direct link to an audio file (raw.githubusercontent.com for GitHub)`);
+      this.removeTrack(this.playlist.length - 1);
+    });
+    testAudio.src = url;
+  }
+
   renderPlaylist() {
     if (this.playlist.length === 0) {
-      this.trackList.innerHTML = '<p style="text-align: center; opacity: 0.7; padding: 20px; color: var(--text-secondary);">No tracks added yet. Upload some music to get started!</p>';
+      this.trackList.innerHTML = '<p style="text-align: center; opacity: 0.7; padding: 20px; color: var(--text-secondary);">No tracks added yet. Upload files or add URLs!</p>';
       return;
     }
 
@@ -1286,7 +1353,7 @@ class WebJukebox {
            data-index="${index}">
         <div class="track-details">
           <h4>${track.name}</h4>
-          <p>Click to play</p>
+          <p>${track.isUrl ? '🌐 From URL' : '📁 Local file'}</p>
         </div>
         <button class="remove-btn" data-remove="${index}">×</button>
       </div>
@@ -1321,7 +1388,12 @@ class WebJukebox {
       this.currentTrack--;
     }
 
-    URL.revokeObjectURL(this.playlist[index].url);
+    const track = this.playlist[index];
+    // Only revoke object URLs for local files, not external URLs
+    if (!track.isUrl && track.url.startsWith('blob:')) {
+      URL.revokeObjectURL(track.url);
+    }
+    
     this.playlist.splice(index, 1);
     this.renderPlaylist();
   }
@@ -1339,7 +1411,7 @@ class WebJukebox {
     
     this.audio.src = track.url;
     this.currentTitle.textContent = track.name;
-    this.currentArtist.textContent = track.file.name;
+    this.currentArtist.textContent = track.isUrl ? 'From URL' : track.file.name;
     
     try {
       await this.audio.play();
