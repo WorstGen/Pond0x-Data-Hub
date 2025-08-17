@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>POND🤝X DATA HUB</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      /* Light mode variables */
+      --bg-gradient: linear-gradient(90deg, #0ec404 0%, #25db0f 15%, #13FF22 35%, #13FF22 65%, #25db0f 85%, #0ec404 100%);
+      --primary-color: #7b3aad;
+      --accent-color: #FF13F0;
+      --secondary-accent: #f19cfd;
+      --navbar-bg: #FF13F0;
+      --nav-text: #13FF22;
+      --card-bg: rgba(123, 58, 173, 0.1);
+      --card-border: rgba(241, 156, 253, 0.3);
+      --input-bg: rgba(255, 255, 255, 0.3);
+      --link-item-bg: rgba(123, 58, 173, 0.08);
+      --shadow-primary: rgba(123, 58, 173, 0.2);
+      --shadow-accent: rgba(241, 156, 253, 0.4);
+      --text-primary: #7b3aad;
+      --text-secondary: #7b3aad;
+    }
+
+    [data-theme="dark"] {
+      /* Dark mode variables */
+      --bg-gradient: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 20%, #16213e 40%, #1a1a2e 60%, #0f0f0f 80%, #0a0a0a 100%);
+      --primary-color: #e0b3ff;
+      --accent-color: #ff3df0;
+      --secondary-accent: #bd7cfd;
+      --navbar-bg: #1a1a2e;
+      --nav-text: #00ff88;
+      --card-bg: rgba(26, 26, 46, 0.8);
+      --card-border: rgba(189, 124, 253, 0.4);
+      --input-bg: rgba(26, 26, 46, 0.6);
+      --link-item-bg: rgba(26, 26, 46, 0.5);
+      --shadow-primary: rgba(189, 124, 253, 0.3);
+      --shadow-accent: rgba(255, 61, 240, 0.5);
+      --text-primary: #e0b3ff;
+      --text-secondary: #c9a3ff;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding-top: 60px;
+      position: relative;
+      overflow-x: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Flowing wave animation for light mode */
+    body {
+      background: 
+        linear-gradient(0deg, 
+          rgba(19, 255, 34, 0.4) 0%, 
+          rgba(37, 219, 15, 0.3) 50%, 
+          rgba(14, 196, 4, 0.35) 100%),
+        linear-gradient(180deg, 
+          rgba(25, 200, 20, 0.25) 0%, 
+          rgba(19, 255, 34, 0.2) 100%),
+        linear-gradient(135deg, #0ec404 0%, #25db0f 25%, #13FF22 50%, #25db0f 75%, #0ec404 100%);
+      background-size: 100% 200%, 100% 150%, 100% 100%;
+      animation: smoothLiquidFlow 6s ease-in-out infinite;
+    }
+
+    @keyframes smoothLiquidFlow {
+      0%, 100% {
+        background-position: 0% 100%, 0% 0%, 0% 0%;
+      }
+      50% {
+        background-position: 0% 0%, 0% 100%, 0% 0%;
+      }
+    }
+
+    /* Flowing wave animation for dark mode */
+    [data-theme="dark"] body {
+      background: 
+        linear-gradient(0deg, 
+          rgba(189, 124, 253, 0.15) 0%, 
+          rgba(255, 61, 240, 0.1) 50%, 
+          rgba(26, 26, 46, 0.2) 100%),
+        linear-gradient(180deg, 
+          rgba(26, 26, 46, 0.15) 0%, 
+          rgba(189, 124, 253, 0.08) 100%),
+        linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #1a1a2e 75%, #0f0f0f 100%);
+      background-size: 100% 180%, 100% 140%, 100% 100%;
+      animation: smoothLiquidFlowDark 8s ease-in-out infinite;
+    }
+
+    @keyframes smoothLiquidFlowDark {
+      0%, 100% {
+        background-position: 0% 100%, 0% 0%, 0% 0%;
+      }
+      50% {
+        background-position: 0% 0%, 0% 100%, 0% 0%;
+      }
+    }
+
+    /* Dark mode toggle button */
+    .theme-toggle {
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1.5rem;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1001;
+      padding: 5px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.2);
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+    }
+
+    [data-theme="dark"] .theme-toggle {
+      filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.2));
+    }
+
+    [data-theme="dark"] .theme-toggle:hover {
+      transform: scale(1.2);
+      filter: drop-shadow(0 4px 8px rgba(255, 255, 255, 0.3));
+    }
+
+    .container {
+      max-width: 1010px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .header h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 20px var(--shadow-primary);
+      color: var(--text-primary);
+    }
+
+    .header p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      color: var(--text-primary);
+    }
+
+    .header img {
+      max-width: 69%;
+      height: auto;
+      transition: all 0.3s ease;
+      margin-top: 1.2em;
+    }
+
+    [data-theme="dark"] .header img {
+      filter: brightness(1.1) contrast(1.1) drop-shadow(0 0 20px rgba(189, 124, 253, 0.3));
+    }
+
+    .card {
+      max-width: 1010px;
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 1.5rem;
+      border: 2px solid var(--card-border);
+      box-shadow: 0 12px 40px var(--shadow-primary);
+      transition: all 0.3s ease;
+      margin: 0 auto 2rem auto;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 50px var(--shadow-primary);
+      border-color: var(--card-border);
+    }
+
+    [data-theme="dark"] .card:hover {
+      box-shadow: 
+        0 16px 50px var(--shadow-primary),
+        0 0 30px rgba(189, 124, 253, 0.2);
+    }
+
+    .card h2 {
+      font-size: 1.6rem;
+      margin-bottom: 2rem;
+      color: var(--text-primary);
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: var(--navbar-bg);
+      z-index: 1000;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="dark"] .navbar {
+      box-shadow: 
+        0 4px 10px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(189, 124, 253, 0.1);
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0.3rem 1rem;
+      flex-wrap: wrap;
+      position: relative;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .nav-links a {
+      color: var(--nav-text);
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1rem;
+      padding: 0.5rem;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      background-color: rgba(19, 255, 34, 0.15);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    [data-theme="dark"] .nav-links a:hover {
+      background-color: rgba(0, 255, 136, 0.2);
+      box-shadow: 0 4px 15px rgba(0, 255, 136, 0.2);
+    }
+
+    /* Game Styles */
+    .game-container {
+      position: relative;
+      height: 600px;
+      border-radius: 15px;
+      overflow: hidden;
+      background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.1) 0%, 
+        rgba(123, 58, 173, 0.05) 100%);
+      border: 2px solid var(--card-border);
+      margin-bottom: 2rem;
+    }
+
+    [data-theme="dark"] .game-container {
+      background: linear-gradient(135deg, 
+        rgba(26, 26, 46, 0.3) 0%, 
+        rgba(189, 124, 253, 0.1) 100%);
+    }
+
+    .game-ui {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 1rem;
+      background: linear-gradient(180deg, 
+        rgba(123, 58, 173, 0.2) 0%, 
+        transparent 100%);
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    [data-theme="dark"] .game-ui {
+      background: linear-gradient(180deg, 
+        rgba(26, 26, 46, 0.4) 0%, 
+        transparent 100%);
+    }
+
+    .score-display, .level-display, .combo-display {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 0.5rem 1rem;
+      border-radius: 25px;
+      border: 1px solid var(--card-border);
+      font-weight: bold;
+      color: var(--text-primary);
+    }
+
+    [data-theme="dark"] .score-display, 
+    [data-theme="dark"] .level-display, 
+    [data-theme="dark"] .combo-display {
+      background: rgba(26, 26, 46, 0.3);
+    }
+
+    .start-button, .pause-button {
+      background: linear-gradient(135deg, var(--secondary-accent) 0%, var(--accent-color) 100%);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px var(--shadow-accent);
+    }
+
+    .start-button:hover, .pause-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--shadow-accent);
+    }
+
+    .game-bubble {
+      position: absolute;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(5px);
+      z-index: 5;
+    }
+
+    .game-bubble:hover {
+      transform: scale(1.1);
+      filter: brightness(1.2);
+    }
+
+    .game-bubble.popping {
+      animation: pop 0.4s ease-out forwards;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.5); opacity: 0.8; }
+      100% { transform: scale(2); opacity: 0; }
+    }
+
+    .power-bubble {
+      box-shadow: 0 0 20px currentColor;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .score-popup {
+      position: absolute;
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: var(--accent-color);
+      pointer-events: none;
+      z-index: 15;
+      animation: scoreFloat 1s ease-out forwards;
+    }
+
+    @keyframes scoreFloat {
+      0% { opacity: 1; transform: translateY(0px); }
+      100% { opacity: 0; transform: translateY(-50px); }
+    }
+
+    .game-over-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 20;
+      color: white;
+      text-align: center;
+      gap: 1rem;
+    }
+
+    .game-over-screen h3 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: var(--accent-color);
+    }
+
+    .game-over-screen.show {
+      display: flex;
+    }
+
+    .leaderboard {
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border-radius: 15px;
+      padding: 1.5rem;
+      border: 2px solid var(--card-border);
+      box-shadow: 0 8px 30px var(--shadow-primary);
+    }
+
+    .leaderboard h3 {
+      text-align: center;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+      font-size: 1.4rem;
+    }
+
+    .leaderboard-entry {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.8rem;
+      margin-bottom: 0.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+    }
+
+    [data-theme="dark"] .leaderboard-entry {
+      background: rgba(26, 26, 46, 0.2);
+    }
+
+    .leaderboard-rank {
+      font-weight: bold;
+      color: var(--accent-color);
+      min-width: 30px;
+    }
+
+    .leaderboard-name {
+      flex: 1;
+      margin-left: 1rem;
+      color: var(--text-primary);
+    }
+
+    .leaderboard-score {
+      font-weight: bold;
+      color: var(--secondary-accent);
+    }
+
+    .name-input {
+      background: var(--input-bg);
+      border: 2px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.8rem;
+      color: var(--text-primary);
+      font-size: 1rem;
+      margin: 0.5rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .name-input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 15px var(--shadow-accent);
+    }
+
+    /* Mobile optimizations */
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2.2rem;
+      }
+      
+      .card {
+        padding: 1rem;
+        margin: 0 0.5rem 2rem 0.5rem;
+        border-radius: 15px;
+      }
+      
+      .game-container {
+        height: 500px;
+      }
+      
+      .game-ui {
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 0.8rem;
+      }
+      
+      .score-display, .level-display, .combo-display {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+      }
+      
+      .start-button, .pause-button {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+      }
+      
+      .container {
+        padding: 0.5rem;
+      }
+      
+      .theme-toggle {
+        top: 65px;
+        right: 15px;
+        font-size: 1.3rem;
+      }
+    }
+
+    /* Enhanced transitions for theme switching */
+    * {
+      transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                  background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                  border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                  box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  </style>
+</head>
+<body>
+  <!-- Dark mode toggle button -->
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle dark mode">
+    ☀️
+  </button>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-links">
+        <a href="#game">BUBBLE POP</a>
+        <a href="#leaderboard">LEADERBOARD</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/">DATA HUB</a>
+        <a href="https://pond0x.com">POND0X</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="header">
+      <img src="https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/refs/heads/main/pond0xdatahub.png" alt="POND0X Data Hub Logo">
+    </div>
+
+    <!-- Game Card -->
+    <div class="card">
+      <h2>🫧 POND0X Bubble Pop Championship</h2>
+      <div class="game-container" id="gameContainer">
+        <div class="game-ui">
+          <div class="score-display">Score: <span id="score">0</span></div>
+          <div class="level-display">Level: <span id="level">1</span></div>
+          <div class="combo-display">Combo: <span id="combo">0</span>x</div>
+          <button class="start-button" id="startButton" onclick="startGame()">Start Game</button>
+          <button class="pause-button" id="pauseButton" onclick="togglePause()" style="display: none;">Pause</button>
+        </div>
+
+        <div class="game-over-screen" id="gameOverScreen">
+          <h3>🎉 Game Complete!</h3>
+          <div>Final Score: <span id="finalScore">0</span></div>
+          <div>Level Reached: <span id="finalLevel">1</span></div>
+          <input type="text" class="name-input" id="playerName" placeholder="Enter your name" maxlength="15">
+          <button class="start-button" onclick="submitScore()">Submit Score</button>
+          <button class="start-button" onclick="restartGame()">Play Again</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leaderboard Card -->
+    <div class="card">
+      <div class="leaderboard" id="leaderboard">
+        <h3>🏆 Top Bubble Poppers</h3>
+        <div id="leaderboardList">
+          <!-- Leaderboard entries will be populated here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+// Theme management
+const themeManager = {
+  init() {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    this.setTheme(prefersDark ? 'dark' : 'light');
+  },
+  
+  setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    const button = document.getElementById('themeToggle');
+    if (button) {
+      button.textContent = theme === 'dark' ? '🌙' : '☀️';
+      button.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+    }
+  },
+  
+  toggle() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    this.setTheme(newTheme);
+  }
+};
+
+function toggleTheme() {
+  themeManager.toggle();
+}
+
+// Game State
+const gameState = {
+  score: 0,
+  level: 1,
+  combo: 0,
+  isPlaying: false,
+  isPaused: false,
+  bubbles: [],
+  gameLoop: null,
+  spawnRate: 2000,
+  bubbleSpeed: 2,
+  maxBubbles: 8,
+  comboTimer: null,
+  comboTimeout: 2000
+};
+
+// Bubble types with different colors and point values
+const bubbleTypes = [
+  { color: '#FF13F0', points: 10, size: 50 },
+  { color: '#13FF22', points: 15, size: 45 },
+  { color: '#f19cfd', points: 20, size: 40 },
+  { color: '#bd7cfd', points: 25, size: 35 },
+  { color: '#00ff88', points: 50, size: 30, special: true }
+];
+
+// Game Functions
+function startGame() {
+  if (gameState.isPlaying) return;
+  
+  gameState.isPlaying = true;
+  gameState.isPaused = false;
+  gameState.score = 0;
+  gameState.level = 1;
+  gameState.combo = 0;
+  gameState.bubbles = [];
+  gameState.spawnRate = 2000;
+  gameState.bubbleSpeed = 2;
+  
+  document.getElementById('startButton').style.display = 'none';
+  document.getElementById('pauseButton').style.display = 'block';
+  document.getElementById('gameOverScreen').classList.remove('show');
+  
+  updateUI();
+  gameLoop();
+  spawnBubbles();
+}
+
+function togglePause() {
+  if (!gameState.isPlaying) return;
+  
+  gameState.isPaused = !gameState.isPaused;
+  const button = document.getElementById('pauseButton');
+  
+  if (gameState.isPaused) {
+    button.textContent = 'Resume';
+    clearInterval(gameState.gameLoop);
+  } else {
+    button.textContent = 'Pause';
+    gameLoop();
+  }
+}
+
+function gameLoop() {
+  if (!gameState.isPlaying || gameState.isPaused) return;
+  
+  gameState.gameLoop = setInterval(() => {
+    if (gameState.isPaused) return;
+    
+    moveBubbles();
+    checkLevelUp();
+    removeOffscreenBubbles();
+  }, 16); // ~60fps
+}
+
+function spawnBubbles() {
+  if (!gameState.isPlaying || gameState.isPaused) return;
+  
+  if (gameState.bubbles.length < gameState.maxBubbles) {
+    createBubble();
+  }
+  
+  setTimeout(() => {
+    if (gameState.isPlaying) spawnBubbles();
+  }, gameState.spawnRate);
+}
+
+function createBubble() {
+  const container = document.getElementById('gameContainer');
+  const bubble = document.createElement('div');
+  const type = bubbleTypes[Math.floor(Math.random() * bubbleTypes.length)];
+  const x = Math.random() * (container.clientWidth - type.size);
+  
+  bubble.className = 'game-bubble' + (type.special ? ' power-bubble' : '');
+  bubble.style.width = type.size + 'px';
+  bubble.style.height = type.size + 'px';
+  bubble.style.background = `radial-gradient(circle at 30% 30%, 
+    ${type.color}aa, ${type.color}66, ${type.color}33)`;
+  bubble.style.left = x + 'px';
+  bubble.style.top = '-' + type.size + 'px';
+  bubble.style.boxShadow = `0 0 15px ${type.color}66`;
+  
+  const bubbleData = {
+    element: bubble,
+    x: x,
+    y: -type.size,
+    speed: gameState.bubbleSpeed + Math.random() * 2,
+    type: type,
+    id: Date.now() + Math.random()
+  };
+  
+  bubble.onclick = () => popBubble(bubbleData);
+  
+  container.appendChild(bubble);
+  gameState.bubbles.push(bubbleData);
+}
+
+function popBubble(bubbleData) {
+  if (!gameState.isPlaying || gameState.isPaused) return;
+  
+  const bubble = bubbleData.element;
+  bubble.classList.add('popping');
+  
+  // Update score and combo
+  gameState.combo++;
+  const points = bubbleData.type.points * Math.max(1, Math.floor(gameState.combo / 5));
+  gameState.score += points;
+  
+  // Show score popup
+  showScorePopup(bubble.offsetLeft + bubble.offsetWidth/2, 
+                 bubble.offsetTop + bubble.offsetHeight/2, 
+                 '+' + points);
+  
+  // Special bubble effects
+  if (bubbleData.type.special) {
+    // Power bubble - destroy nearby bubbles
+    destroyNearbyBubbles(bubbleData.x + bubbleData.type.size/2, 
+                        bubbleData.y + bubbleData.type.size/2);
+    gameState.score += 100;
+    showScorePopup(bubble.offsetLeft + bubble.offsetWidth/2, 
+                   bubble.offsetTop - 30, 
+                   'POWER! +100');
+  }
+  
+  // Remove bubble
+  setTimeout(() => {
+    if (bubble.parentNode) {
+      bubble.parentNode.removeChild(bubble);
+    }
+  }, 400);
+  
+  // Remove from game state
+  const index = gameState.bubbles.indexOf(bubbleData);
+  if (index > -1) {
+    gameState.bubbles.splice(index, 1);
+  }
+  
+  // Reset combo timer
+  clearTimeout(gameState.comboTimer);
+  gameState.comboTimer = setTimeout(() => {
+    gameState.combo = 0;
+    updateUI();
+  }, gameState.comboTimeout);
+  
+  updateUI();
+}
+
+function destroyNearbyBubbles(x, y) {
+  const radius = 80;
+  const bubblesInRange = gameState.bubbles.filter(bubble => {
+    const bubbleX = bubble.x + bubble.type.size/2;
+    const bubbleY = bubble.y + bubble.type.size/2;
+    const distance = Math.sqrt((bubbleX - x)**2 + (bubbleY - y)**2);
+    return distance <= radius && bubble.element.parentNode;
+  });
+  
+      bubblesInRange.forEach(bubble => {
+    bubble.element.classList.add('popping');
+    gameState.score += bubble.type.points;
+    
+    setTimeout(() => {
+      if (bubble.element.parentNode) {
+        bubble.element.parentNode.removeChild(bubble.element);
+      }
+    }, 400);
+    
+    const index = gameState.bubbles.indexOf(bubble);
+    if (index > -1) {
+      gameState.bubbles.splice(index, 1);
+    }
+  });
+}
+
+function showScorePopup(x, y, text) {
+  const popup = document.createElement('div');
+  popup.className = 'score-popup';
+  popup.textContent = text;
+  popup.style.left = x + 'px';
+  popup.style.top = y + 'px';
+  
+  document.getElementById('gameContainer').appendChild(popup);
+  
+  setTimeout(() => {
+    if (popup.parentNode) {
+      popup.parentNode.removeChild(popup);
+    }
+  }, 1000);
+}
+
+function moveBubbles() {
+  gameState.bubbles.forEach((bubbleData, index) => {
+    bubbleData.y += bubbleData.speed;
+    bubbleData.element.style.top = bubbleData.y + 'px';
+    
+    // Check if bubble reached bottom
+    const container = document.getElementById('gameContainer');
+    if (bubbleData.y > container.clientHeight) {
+      endGame();
+    }
+  });
+}
+
+function removeOffscreenBubbles() {
+  const container = document.getElementById('gameContainer');
+  gameState.bubbles = gameState.bubbles.filter(bubbleData => {
+    if (bubbleData.y > container.clientHeight + 100) {
+      if (bubbleData.element.parentNode) {
+        bubbleData.element.parentNode.removeChild(bubbleData.element);
+      }
+      return false;
+    }
+    return true;
+  });
+}
+
+function checkLevelUp() {
+  const newLevel = Math.floor(gameState.score / 500) + 1;
+  if (newLevel > gameState.level) {
+    gameState.level = newLevel;
+    gameState.spawnRate = Math.max(800, gameState.spawnRate - 200);
+    gameState.bubbleSpeed = Math.min(6, gameState.bubbleSpeed + 0.5);
+    gameState.maxBubbles = Math.min(12, gameState.maxBubbles + 1);
+    
+    showScorePopup(
+      document.getElementById('gameContainer').clientWidth / 2,
+      document.getElementById('gameContainer').clientHeight / 2,
+      'LEVEL UP!'
+    );
+  }
+}
+
+function updateUI() {
+  document.getElementById('score').textContent = gameState.score;
+  document.getElementById('level').textContent = gameState.level;
+  document.getElementById('combo').textContent = gameState.combo;
+}
+
+function endGame() {
+  gameState.isPlaying = false;
+  clearInterval(gameState.gameLoop);
+  clearTimeout(gameState.comboTimer);
+  
+  // Clear all bubbles
+  gameState.bubbles.forEach(bubbleData => {
+    if (bubbleData.element.parentNode) {
+      bubbleData.element.parentNode.removeChild(bubbleData.element);
+    }
+  });
+  gameState.bubbles = [];
+  
+  // Show game over screen
+  document.getElementById('finalScore').textContent = gameState.score;
+  document.getElementById('finalLevel').textContent = gameState.level;
+  document.getElementById('gameOverScreen').classList.add('show');
+  
+  document.getElementById('startButton').style.display = 'block';
+  document.getElementById('pauseButton').style.display = 'none';
+}
+
+function restartGame() {
+  startGame();
+}
+
+// Leaderboard System
+const leaderboard = {
+  scores: JSON.parse(localStorage.getItem('pondx_bubble_leaderboard') || '[]'),
+  
+  addScore(name, score, level) {
+    this.scores.push({
+      name: name || 'Anonymous',
+      score: score,
+      level: level,
+      date: new Date().toISOString().split('T')[0]
+    });
+    
+    this.scores.sort((a, b) => b.score - a.score);
+    this.scores = this.scores.slice(0, 10); // Keep top 10
+    
+    localStorage.setItem('pondx_bubble_leaderboard', JSON.stringify(this.scores));
+    this.render();
+  },
+  
+  render() {
+    const container = document.getElementById('leaderboardList');
+    container.innerHTML = '';
+    
+    if (this.scores.length === 0) {
+      container.innerHTML = '<div style="text-align: center; opacity: 0.7; padding: 2rem;">No scores yet. Be the first to play!</div>';
+      return;
+    }
+    
+    this.scores.forEach((entry, index) => {
+      const div = document.createElement('div');
+      div.className = 'leaderboard-entry';
+      div.innerHTML = `
+        <div class="leaderboard-rank">#${index + 1}</div>
+        <div class="leaderboard-name">${this.escapeHtml(entry.name)}</div>
+        <div class="leaderboard-score">${entry.score.toLocaleString()}</div>
+      `;
+      container.appendChild(div);
+    });
+  },
+  
+  escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+};
+
+function submitScore() {
+  const name = document.getElementById('playerName').value.trim();
+  if (!name) {
+    alert('Please enter your name!');
+    return;
+  }
+  
+  leaderboard.addScore(name, gameState.score, gameState.level);
+  document.getElementById('gameOverScreen').classList.remove('show');
+  document.getElementById('playerName').value = '';
+  
+  // Scroll to leaderboard
+  document.getElementById('leaderboard').scrollIntoView({ 
+    behavior: 'smooth' 
+  });
+}
+
+// Initialize game
+document.addEventListener('DOMContentLoaded', function() {
+  themeManager.init();
+  leaderboard.render();
+  
+  // Add some sample scores if leaderboard is empty
+  if (leaderboard.scores.length === 0) {
+    leaderboard.addScore('POND0X_Dev', 2500, 6);
+    leaderboard.addScore('BubbleMaster', 2100, 5);
+    leaderboard.addScore('PopKing', 1850, 4);
+    leaderboard.addScore('Froggy', 1200, 3);
+    leaderboard.addScore('Lily', 950, 2);
+  }
+});
+
+// Handle Enter key in name input
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && document.getElementById('gameOverScreen').classList.contains('show')) {
+    submitScore();
+  }
+});
+
+</script>
+
+</body>
+</html>
