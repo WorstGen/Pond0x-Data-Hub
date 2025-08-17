@@ -1638,19 +1638,51 @@ const walletManager = {
 
 // Theme management with cross-page persistence
 const themeManager = {
+  storageKey: 'pond0x_theme_preference',
+  
   init() {
-    // For artifacts, use system preference as default
+    const savedTheme = this.loadTheme();
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const initialTheme = prefersDark ? 'dark' : 'light';
+    const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
     
     this.setTheme(initialTheme);
     
-    // Listen for system theme changes
+    // Listen for system theme changes only if no manual preference is set
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-      this.setTheme(e.matches ? 'dark' : 'light');
+      if (!this.loadTheme()) { // Only auto-switch if user hasn't manually set preference
+        this.setTheme(e.matches ? 'dark' : 'light');
+      }
+    });
+
+    // Listen for storage changes from other tabs/pages
+    window.addEventListener('storage', (e) => {
+      if (e.key === this.storageKey && e.newValue) {
+        const newTheme = e.newValue;
+        if (newTheme && newTheme !== this.getCurrentTheme()) {
+          this.setTheme(newTheme);
+        }
+      }
     });
   },
   
+  loadTheme() {
+    try {
+      return localStorage.getItem(this.storageKey);
+    } catch (e) {
+      console.warn('Could not load theme preference:', e);
+      return null;
+    }
+  },
+  
+  saveTheme(theme) {
+    try {
+      localStorage.setItem(this.storageKey, theme);
+      console.log('Theme saved:', theme);
+    } catch (e) {
+      console.warn('Could not save theme preference:', e);
+    }
+  },
+
   getCurrentTheme() {
     return document.documentElement.getAttribute('data-theme') || 'light';
   },
@@ -1662,6 +1694,7 @@ const themeManager = {
       button.textContent = theme === 'dark' ? '🌙' : '☀️';
       button.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
     }
+    this.saveTheme(theme);
   },
   
   toggle() {
@@ -2078,24 +2111,32 @@ function generateEthereumLinks(walletAddress) {
 
 // Enhanced bubble state management system
 const bubbleStateManager = {
+  storageKey: 'pond0x_bubble_state',
+  
   saveState(isEnabled) {
-    // Use localStorage for persistent storage
     try {
-      localStorage.setItem('pond0x_bubble_state', JSON.stringify(isEnabled));
+      localStorage.setItem(this.storageKey, JSON.stringify({
+        enabled: isEnabled,
+        timestamp: Date.now()
+      }));
       console.log('Bubble state saved:', isEnabled);
-    } catch (error) {
-      console.error('Error saving bubble state:', error);
+    } catch (e) {
+      console.warn('Could not save bubble state:', e);
     }
   },
   
   loadState() {
     try {
-      const stored = localStorage.getItem('pond0x_bubble_state');
-      return stored !== null ? JSON.parse(stored) : true;
-    } catch (error) {
-      console.error('Error loading bubble state:', error);
-      return true;
+      const stored = localStorage.getItem(this.storageKey);
+      if (stored) {
+        const state = JSON.parse(stored);
+        console.log('Bubble state loaded:', state.enabled);
+        return state.enabled;
+      }
+    } catch (e) {
+      console.warn('Could not load bubble state:', e);
     }
+    return true;
   },
   
   init() {
