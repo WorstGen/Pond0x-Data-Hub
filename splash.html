@@ -1913,9 +1913,46 @@ function detectWalletType() {
   return 'invalid';
 }
 
-// ──────────────────────────────────────────────────────────────
-// Loading + Error Helpers
-// ──────────────────────────────────────────────────────────────
+// Mining Data Fetcher
+async function fetchMiningData() {
+  const walletInput = document.getElementById('wallet-input');
+  const walletAddress = walletInput.value.trim();
+  
+  if (!validateSolanaAddress(walletAddress)) {
+    showError('Please enter a valid Solana wallet address');
+    return;
+  }
+  
+  showLoading();
+  
+  try {
+    const apiUrl = `https://pond0x-proxy.wsfdxv2hjq.workers.dev/health?id=${encodeURIComponent(walletAddress)}`;
+    
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    
+    // Check if we got valid data
+    if (!data || typeof data !== 'object') {
+      throw new Error('Invalid response format received from API');
+    }
+    
+    displayMiningData(data);
+    
+  } catch (error) {
+    showError(`Unable to fetch mining data: ${error.message}`);
+  }
+}
+
 function showLoading() {
   document.getElementById('loading-section').classList.add('show');
   document.getElementById('error-section').classList.remove('show');
@@ -1935,127 +1972,22 @@ function showDashboard() {
   document.getElementById('loading-section').classList.remove('show');
   document.getElementById('error-section').classList.remove('show');
   document.getElementById('dashboard-section').classList.add('show');
+  // Don't show/hide pro-notice here - let displayMiningData handle it
 }
 
-// ──────────────────────────────────────────────────────────────
-// NEW: Wallet Manifest Fetcher + Renderer
-// ──────────────────────────────────────────────────────────────
-async function fetchWalletManifest(walletAddress) {
-  try {
-    const apiUrl = `https://pond0x-proxy.wsfdxv2hjq.workers.dev/manifest?id=${encodeURIComponent(walletAddress)}`;
-
-    const response = await fetch(apiUrl, {
-      method: 'GET',
-      headers: { 'Accept': 'application/json' }
-    });
-
-    if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-
-    const data = await response.json();
-    if (!data || typeof data !== 'object') throw new Error('Invalid manifest data');
-
-    displayWalletManifest(data);
-  } catch (error) {
-    console.error('Manifest Error:', error.message);
-    addDataNotice(`Wallet Manifest unavailable: ${error.message}`);
-  }
-}
-
-function displayWalletManifest(data) {
-  const dashboardSection = document.getElementById('dashboard-section');
-
-  const manifestSection = document.createElement('div');
-  manifestSection.style.cssText = `
-    margin-bottom: 2rem;
-    padding: 1.5rem;
-    background: var(--link-item-bg);
-    border-radius: 12px;
-    border: 1px solid var(--card-border);
-  `;
-
-  const badges = Array.isArray(data.badges) ? data.badges.join(', ') : (data.badges || 'None');
-
-  manifestSection.innerHTML = `
-    <h2 style="margin:0 0 1rem 0; font-size: 1.25rem; color: var(--text-primary);">🪪 Wallet Manifest</h2>
-    <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
-      <div><strong>Badges:</strong> ${badges}</div>
-      <div><strong>Cope:</strong> ${data.cope ? '✅ Yes' : '❌ No'}</div>
-      <div><strong>Twitter Linked:</strong> ${data.hasTwitter ? '✅ Yes' : '❌ No'}</div>
-      <div><strong>Pro User:</strong> ${data.isPro ? '🌟 Yes' : 'No'}</div>
-      <div><strong>Pro Since:</strong> ${data.proAgo ?? 'N/A'}</div>
-      <div><strong>Pro Expiry:</strong> ${data.proExpiry ?? 'N/A'}</div>
-      <div><strong>Pro Swaps (Bx):</strong> ${Number(data.proSwapsBx ?? 0).toLocaleString()}</div>
-      <div><strong>Pro Swaps (SOL):</strong> ${Number(data.proSwapsSol ?? 0).toLocaleString()}</div>
-    </div>
-  `;
-
-  dashboardSection.prepend(manifestSection);
-}
-
-// ──────────────────────────────────────────────────────────────
-// REPLACEMENT: Mining Data Fetcher (parallel-safe version)
-// ──────────────────────────────────────────────────────────────
-async function fetchMiningData(walletAddress) {
-  try {
-    const apiUrl = `https://pond0x-proxy.wsfdxv2hjq.workers.dev/health?id=${encodeURIComponent(walletAddress)}`;
-
-    const response = await fetch(apiUrl, {
-      method: 'GET',
-      headers: { 'Accept': 'application/json' }
-    });
-
-    if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-
-    const data = await response.json();
-    if (!data || typeof data !== 'object') throw new Error('Invalid mining data');
-
-    displayMiningData(data); // existing renderer
-  } catch (error) {
-    showError(`Unable to fetch mining data: ${error.message}`);
-  }
-}
-
-// ──────────────────────────────────────────────────────────────
-// NEW: Parallel initializer — calls both manifest + mining
-// ──────────────────────────────────────────────────────────────
-async function initDashboard() {
-  const walletInput = document.getElementById('wallet-input');
-  const walletAddress = walletInput.value.trim();
-
-  if (!validateSolanaAddress(walletAddress)) {
-    showError('Please enter a valid Solana wallet address');
-    return;
-  }
-
-  showLoading();
-
-  try {
-    await Promise.all([
-      fetchWalletManifest(walletAddress),
-      fetchMiningData(walletAddress)
-    ]);
-    // displayMiningData() calls showDashboard()
-  } catch (error) {
-    showError(`Unable to load dashboard: ${error.message}`);
-  }
-}
-
-// ──────────────────────────────────────────────────────────────
-// EXISTING: Display Mining Data (unchanged from your code)
-// ──────────────────────────────────────────────────────────────
 function displayMiningData(data) {
   const dataGrid = document.getElementById('data-grid');
   const detailedGrid = document.getElementById('detailed-grid');
   const proNotice = document.getElementById('pro-notice');
-
+  
   // Clear existing data
   dataGrid.innerHTML = '';
   detailedGrid.innerHTML = '';
-
+  
   const stats = data.stats || {};
   const estimates = stats.estimates || {};
-
-  // Overview cards
+  
+  // Main Stats Overview
   const overviewCards = [
     {
       title: 'Mining Sessions',
@@ -2068,7 +2000,7 @@ function displayMiningData(data) {
       value: `${stats.health || 0}`,
       description: 'Overall mining rig health rating',
       icon: '❤️',
-      progress: Math.min((stats.health || 0) * (100 / 7), 100)
+      progress: Math.min((stats.health || 0) * (100 / 7), 100) // Full bar at health 7
     },
     {
       title: 'In Mempool',
@@ -2083,12 +2015,13 @@ function displayMiningData(data) {
       icon: '🌟'
     }
   ];
+  
   overviewCards.forEach(card => {
     const cardElement = createDataCard(card);
     dataGrid.appendChild(cardElement);
   });
-
-  // Detailed Metrics
+  
+  // Detailed Financial & Risk Metrics
   const detailedMetrics = [
     {
       title: 'SOL Price (USD)',
@@ -2139,33 +2072,35 @@ function displayMiningData(data) {
       icon: '🏆'
     }
   ];
+  
   detailedMetrics.forEach(metric => {
     const cardElement = createDataCard(metric);
     detailedGrid.appendChild(cardElement);
   });
 
-  // AI insights
+  // Check if AI insights are available and show/hide PRO notice accordingly
   const hasAIInsights = data.ai_beta && Array.isArray(data.ai_beta) && data.ai_beta.length > 0;
+  
   if (hasAIInsights) {
+    // Hide PRO notice and show AI insights
     proNotice.style.display = 'none';
     addAIInsightsSection(data.ai_beta);
   } else {
+    // Show PRO notice only when no AI insights are available after API call
     proNotice.style.display = 'block';
   }
 
+  // Add data notice if present
   if (data.data && data.data.msg) {
     addDataNotice(data.data.msg);
   }
-
+  
   showDashboard();
 }
 
-// ──────────────────────────────────────────────────────────────
-// EXISTING: Data Notice + AI Insights
-// ──────────────────────────────────────────────────────────────
 function addDataNotice(message) {
   const dashboardSection = document.getElementById('dashboard-section');
-
+  
   const noticeDiv = document.createElement('div');
   noticeDiv.style.cssText = `
     background: var(--link-item-bg);
@@ -2177,7 +2112,7 @@ function addDataNotice(message) {
     text-align: center;
     border-left: 4px solid var(--warning-color);
   `;
-
+  
   noticeDiv.innerHTML = `
     <div style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
       <span style="font-size: 1.5rem;">ℹ️</span>
@@ -2186,24 +2121,31 @@ function addDataNotice(message) {
       </p>
     </div>
   `;
-
+  
   dashboardSection.appendChild(noticeDiv);
 }
 
+// AI Insights Section
 function addAIInsightsSection(aiInsights) {
   const dashboardSection = document.getElementById('dashboard-section');
+  
+  // Create AI Insights section
   const aiSection = document.createElement('div');
   aiSection.style.marginTop = '3rem';
-
+  
   const aiTitle = document.createElement('div');
   aiTitle.className = 'section-title';
   aiTitle.innerHTML = '🤖 AI Insights & Recommendations';
-
+  
   const aiContainer = document.createElement('div');
   aiContainer.className = 'ai-insights-container';
-  aiContainer.style.cssText = `display: grid; gap: 1rem; margin-top: 1.5rem;`;
-
-  aiInsights.forEach((insight) => {
+  aiContainer.style.cssText = `
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  `;
+  
+  aiInsights.forEach((insight, index) => {
     const insightCard = document.createElement('div');
     insightCard.className = 'ai-insight-card';
     insightCard.style.cssText = `
@@ -2217,27 +2159,23 @@ function addAIInsightsSection(aiInsights) {
       overflow: hidden;
       border-left: 4px solid var(--accent-color);
     `;
-
+    
     insightCard.innerHTML = `
       <div style="display: flex; align-items: flex-start; gap: 1rem;">
         <div style="font-size: 1.5rem; opacity: 0.8; flex-shrink: 0;">
           ${getInsightIcon(insight)}
         </div>
         <div style="flex: 1;">
-          <p style="color: var(--text-primary); font-size: 1rem; line-height: 1.5; margin: 0;
-            font-weight: ${insight.includes('risk') || insight.includes('drift') ? '600' : '500'};">
-            ${insight}
-          </p>
+          <p style="
+            color: var(--text-primary); 
+            font-size: 1rem; 
+            line-height: 1.5; 
+            margin: 0;
+            font-weight: ${insight.includes('risk') || insight.includes('drift') ? '600' : '500'};
+          ">${insight}</p>
         </div>
       </div>
     `;
-    aiContainer.appendChild(insightCard);
-  });
-
-  aiSection.appendChild(aiTitle);
-  aiSection.appendChild(aiContainer);
-  dashboardSection.appendChild(aiSection);
-}
     
     // Add hover effect
     insightCard.addEventListener('mouseenter', () => {
@@ -2392,7 +2330,7 @@ function generateMiningReport(address) {
   detectWalletType();
   
   // Fetch mining data
-  initDashboard();
+  fetchMiningData();
 }
 
 function toggleBubbles() {
