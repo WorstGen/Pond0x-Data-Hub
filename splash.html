@@ -347,6 +347,409 @@
       text-align: center;
     }
 
+    /* Main Modal */
+    .main-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      backdrop-filter: blur(8px);
+      animation: modalFadeIn 0.3s ease;
+    }
+
+    .main-modal.show {
+      display: flex;
+    }
+
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .main-modal-content {
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 2px solid var(--card-border);
+      box-shadow: 0 20px 60px var(--shadow-primary);
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+      animation: modalSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="light"] .main-modal-content {
+      background: rgba(255, 255, 255, 0.85);
+      border-color: rgba(123, 58, 173, 0.3);
+      box-shadow: 0 20px 60px rgba(123, 58, 173, 0.2);
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .wallet-input-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .wallet-input-section label {
+      display: block;
+      color: var(--text-primary);
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      font-size: 0.9rem;
+    }
+
+    .modal-wallet-input {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 2px solid var(--card-border);
+      background: var(--input-bg);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      margin-bottom: 0.8rem;
+    }
+
+    .modal-wallet-input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 15px var(--shadow-accent);
+    }
+
+    .modal-wallet-input::placeholder {
+      color: var(--text-secondary);
+      opacity: 0.6;
+    }
+
+    .wallet-name-input {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 2px solid var(--card-border);
+      background: var(--input-bg);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .wallet-name-input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 15px var(--shadow-accent);
+    }
+
+    .wallet-name-input::placeholder {
+      color: var(--text-secondary);
+      opacity: 0.6;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 0.8rem;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .modal-btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-width: 80px;
+    }
+
+    .modal-btn-generate {
+      background: linear-gradient(135deg, var(--secondary-accent) 0%, var(--accent-color) 100%);
+      color: white;
+      box-shadow: 0 3px 12px var(--shadow-accent);
+    }
+
+    .modal-btn-generate:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 18px var(--shadow-accent);
+    }
+
+    .modal-btn-generate:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .modal-btn-save {
+      background: linear-gradient(135deg, #4ade80 0%, #16a34a 100%);
+      color: white;
+      box-shadow: 0 3px 12px rgba(34, 197, 94, 0.3);
+    }
+
+    .modal-btn-save:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 18px rgba(34, 197, 94, 0.4);
+    }
+
+    .modal-btn-save:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .modal-btn-cancel {
+      background: var(--link-item-bg);
+      color: var(--text-primary);
+      border: 1px solid var(--card-border);
+    }
+
+    .modal-btn-cancel:hover {
+      background: var(--card-bg);
+    }
+
+    .saved-wallets-section {
+      margin-bottom: 1rem;
+    }
+
+    .saved-wallets-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.8rem;
+    }
+
+    .saved-wallets-header h4 {
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .clear-all-btn {
+      background: none;
+      border: none;
+      color: var(--accent-color);
+      cursor: pointer;
+      font-size: 0.8rem;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+    }
+
+    .clear-all-btn:hover {
+      opacity: 1;
+    }
+
+    .saved-wallets-list {
+      max-height: 180px;
+      overflow-y: auto;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      background: var(--input-bg);
+    }
+
+    .saved-wallet-item {
+      padding: 10px 14px;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .saved-wallet-item:last-child {
+      border-bottom: none;
+    }
+
+    .saved-wallet-item:hover {
+      background: var(--card-bg);
+    }
+
+    .saved-wallet-item.selected {
+      background: var(--link-item-bg);
+      border-left: 3px solid var(--accent-color);
+    }
+
+    .saved-wallet-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .saved-wallet-address {
+      color: var(--text-primary);
+      font-size: 0.8rem;
+      font-family: monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .saved-wallet-label {
+      color: var(--text-secondary);
+      font-size: 0.7rem;
+      opacity: 0.8;
+      margin-top: 2px;
+    }
+
+    .saved-wallet-actions {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .saved-wallet-type {
+      background: linear-gradient(135deg, var(--secondary-accent), var(--accent-color));
+      color: white;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-right: 6px;
+    }
+
+    .saved-wallet-type.solana {
+      background: linear-gradient(135deg, #9945FF, #14F195);
+    }
+
+    .remove-wallet-btn {
+      background: none;
+      border: none;
+      color: var(--accent-color);
+      cursor: pointer;
+      font-size: 0.9rem;
+      opacity: 0.6;
+      padding: 2px;
+      border-radius: 3px;
+      transition: all 0.3s ease;
+    }
+
+    .remove-wallet-btn:hover {
+      opacity: 1;
+      background: rgba(255, 19, 240, 0.1);
+    }
+
+    .no-saved-wallets {
+      padding: 1.5rem;
+      text-align: center;
+      color: var(--text-secondary);
+      opacity: 0.6;
+      font-size: 0.8rem;
+    }
+
+    /* Input dropdown for saved wallets */
+    .input-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border: 2px solid var(--card-border);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px var(--shadow-primary);
+      z-index: 10;
+      max-height: 200px;
+      overflow-y: auto;
+      opacity: 0;
+      transform: translateY(-10px);
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="light"] .input-dropdown {
+      background: rgba(255, 255, 255, 0.95);
+      border-color: rgba(123, 58, 173, 0.3);
+      box-shadow: 0 8px 32px rgba(123, 58, 173, 0.15);
+    }
+
+    .input-dropdown.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+
+    .input-dropdown-item {
+      padding: 12px 16px;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .input-dropdown-item:last-child {
+      border-bottom: none;
+    }
+
+    .input-dropdown-item:hover {
+      background: var(--link-item-bg);
+    }
+
+    .input-dropdown-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .input-dropdown-address {
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      font-family: monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .input-dropdown-label {
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      opacity: 0.8;
+      margin-top: 2px;
+    }
+
+    .input-dropdown-type {
+      background: linear-gradient(135deg, var(--secondary-accent), var(--accent-color));
+      color: white;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .input-dropdown-type.solana {
+      background: linear-gradient(135deg, #9945FF, #14F195);
+    }
+
+    .input-dropdown-empty {
+      padding: 12px 16px;
+      color: var(--text-secondary);
+      opacity: 0.6;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
     .input-section {
       display: flex;
       flex-direction: column;
@@ -529,6 +932,7 @@
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
+      text-align: center;
     }
 
     .data-card:hover {
@@ -540,7 +944,7 @@
     .data-card-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
       margin-bottom: 1rem;
     }
 
@@ -573,35 +977,6 @@
       opacity: 0.8;
       text-align: center;
       line-height: 1.4;
-    }
-
-    .status-badge {
-      padding: 0.3rem 0.8rem;
-      border-radius: 50px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .status-healthy {
-      background: linear-gradient(135deg, var(--success-color), #16a34a);
-      color: white;
-    }
-
-    .status-warning {
-      background: linear-gradient(135deg, var(--warning-color), #d97706);
-      color: white;
-    }
-
-    .status-danger {
-      background: linear-gradient(135deg, var(--error-color), #dc2626);
-      color: white;
-    }
-
-    .status-info {
-      background: linear-gradient(135deg, var(--info-color), #2563eb);
-      color: white;
     }
 
     .progress-bar {
@@ -811,6 +1186,15 @@
       .data-card-value {
         font-size: 1.5rem;
       }
+
+      .main-modal-content {
+        padding: 1.2rem;
+        margin: 1rem;
+      }
+
+      .modal-buttons {
+        flex-direction: column;
+      }
     }
 
     /* Enhanced transitions for theme switching */
@@ -855,6 +1239,45 @@
   <!-- Bubble container for animation -->
   <div class="bubble-container" id="bubbleContainer"></div>
 
+  <!-- Main Modal -->
+  <div class="main-modal" id="mainModal">
+    <div class="main-modal-content">
+      
+      <div class="wallet-input-section">
+        <label for="modalWalletInput">Solana Wallet Address</label>
+        <input
+          type="text"
+          id="modalWalletInput"
+          class="modal-wallet-input"
+          placeholder="Enter your Solana wallet address"
+        >
+        <label for="walletNameInput">Custom Name (Optional)</label>
+        <input
+          type="text"
+          id="walletNameInput"
+          class="wallet-name-input"
+          placeholder="Give this wallet a custom name"
+        >
+      </div>
+
+      <div class="modal-buttons">
+        <button class="modal-btn modal-btn-cancel" onclick="closeMainModal()">Cancel</button>
+        <button class="modal-btn modal-btn-save" id="saveWalletBtn" onclick="saveAndGenerate()" disabled>Save & Generate</button>
+        <button class="modal-btn modal-btn-generate" id="generateBtn" onclick="generateFromModal()" disabled>Generate Report</button>
+      </div>
+
+      <div class="saved-wallets-section">
+        <div class="saved-wallets-header">
+          <h4>💾 Saved Solana Wallets</h4>
+          <button class="clear-all-btn" onclick="clearAllWallets()">Clear All</button>
+        </div>
+        <div class="saved-wallets-list" id="savedWalletsList">
+          <div class="no-saved-wallets">No saved wallets yet</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <nav class="navbar">
     <div class="nav-container">
       <button class="nav-toggle" onclick="toggleNav()">☰</button>
@@ -880,15 +1303,23 @@
     
     <div class="input-section">
       <div class="wallet-input-wrapper" id="wallet-input-wrapper">
-        <input 
-          type="text" 
-          id="wallet-input" 
+        <input
+          type="text"
+          id="wallet-input"
           class="wallet-input"
           placeholder="Enter your Solana wallet address"
+          onclick="showInputDropdown()"
         >
-        <button class="arrow-btn" id="arrowBtn" onclick="fetchMiningData()">
+        <button class="arrow-btn" id="arrowBtn" onclick="openMainModal()">
           📊
         </button>
+        
+        <!-- Input dropdown for quick wallet selection -->
+        <div class="input-dropdown" id="inputDropdown">
+          <div id="inputDropdownContent">
+            <!-- Wallet options will be populated here -->
+          </div>
+        </div>
       </div>
     </div>
 
@@ -915,7 +1346,7 @@
       </div>
 
       <div class="section-title" style="margin-top: 3rem;">
-        📈 Detailed Metrics
+        📈 Claim Estimates
       </div>
       
       <div class="data-grid" id="detailed-grid">
@@ -938,17 +1369,338 @@
 // Global variables
 let isDebugging = false;
 
+// Enhanced Wallet Management System with localStorage persistence (Solana-only for this page)
+const walletManager = {
+  storageKey: 'pond0x_saved_wallets',
+  maxWallets: 10,
+  selectedWallet: null,
+  
+  // Load saved wallets from localStorage, filter to only show Solana wallets on this page
+  loadWallets() {
+    try {
+      const stored = JSON.parse(localStorage.getItem(this.storageKey)) || [];
+      // Filter to only return Solana wallets for this mining dashboard
+      return stored.filter(wallet => wallet.type === 'solana');
+    } catch (error) {
+      console.error('Error loading wallets from localStorage:', error);
+      return [];
+    }
+  },
+  
+  // Load ALL wallets (including Ethereum) for storage operations
+  loadAllWallets() {
+    try {
+      const stored = localStorage.getItem(this.storageKey);
+      return stored ? JSON.parse(stored) : [];
+    } catch (error) {
+      console.error('Error loading wallets from localStorage:', error);
+      return [];
+    }
+  },
+  
+  // Save wallets to localStorage
+  saveWallets(wallets) {
+    try {
+      localStorage.setItem(this.storageKey, JSON.stringify(wallets));
+      console.log('Wallets saved to localStorage:', wallets.length);
+    } catch (error) {
+      console.error('Error saving wallets to localStorage:', error);
+    }
+  },
+  
+  // Check if wallet already exists
+  walletExists(address) {
+    const wallets = this.loadAllWallets();
+    return wallets.some(w => w.address.toLowerCase() === address.toLowerCase());
+  },
+  
+  // Add a new wallet
+  addWallet(address, type, label = null) {
+    // Only allow Solana wallets on this page
+    if (type !== 'solana') {
+      console.log('Only Solana wallets are supported on this page');
+      return false;
+    }
+    
+    const wallets = this.loadAllWallets();
+    
+    // Check if wallet already exists
+    if (this.walletExists(address)) {
+      console.log('Wallet already saved');
+      return false;
+    }
+    
+    // Create wallet object
+    const wallet = {
+      address: address,
+      type: type,
+      label: label || this.generateLabel(address, type),
+      dateAdded: new Date().toISOString()
+    };
+    
+    // Add to beginning of array (most recent first)
+    wallets.unshift(wallet);
+    
+    // Limit to maxWallets
+    if (wallets.length > this.maxWallets) {
+      wallets.splice(this.maxWallets);
+    }
+    
+    this.saveWallets(wallets);
+    this.updateUI();
+    return true;
+  },
+  
+  // Generate a label for the wallet
+  generateLabel(address, type) {
+    const shortAddress = `${address.slice(0, 6)}...${address.slice(-4)}`;
+    const typeLabel = type === 'solana' ? 'SOL' : 'ETH';
+    return `${typeLabel} ${shortAddress}`;
+  },
+  
+  // Remove a wallet
+  removeWallet(address) {
+    const wallets = this.loadAllWallets();
+    const filtered = wallets.filter(w => w.address.toLowerCase() !== address.toLowerCase());
+    this.saveWallets(filtered);
+    this.updateUI();
+  },
+  
+  // Clear all wallets
+  clearAll() {
+    if (confirm('Are you sure you want to clear all saved Solana wallets?')) {
+      // Only clear Solana wallets, keep Ethereum ones for other pages
+      const allWallets = this.loadAllWallets();
+      const ethereumWallets = allWallets.filter(w => w.type === 'ethereum');
+      this.saveWallets(ethereumWallets);
+      this.updateUI();
+      this.selectedWallet = null;
+      this.updateModalButtons();
+    }
+  },
+  
+  // Select a wallet
+  selectWallet(address) {
+    const wallets = this.loadWallets(); // Only Solana wallets
+    this.selectedWallet = wallets.find(w => w.address.toLowerCase() === address.toLowerCase());
+    
+    // Update modal input
+    const modalInput = document.getElementById('modalWalletInput');
+    if (modalInput) {
+      modalInput.value = address;
+      this.updateModalButtons();
+    }
+    
+    // Update main input
+    const mainInput = document.getElementById('wallet-input');
+    if (mainInput) {
+      mainInput.value = address;
+      detectWalletType();
+    }
+    
+    this.updateModalButtons();
+    this.updateSavedWalletsList();
+    
+    // Hide input dropdown
+    const dropdown = document.getElementById('inputDropdown');
+    dropdown.classList.remove('show');
+  },
+  
+  // Update all UI components
+  updateUI() {
+    this.updateSavedWalletsList();
+    this.updateInputDropdown();
+  },
+  
+  // Update the saved wallets list in modal (Solana only)
+  updateSavedWalletsList() {
+    const container = document.getElementById('savedWalletsList');
+    const wallets = this.loadWallets(); // Only Solana wallets
+    
+    if (wallets.length === 0) {
+      container.innerHTML = '<div class="no-saved-wallets">No saved Solana wallets yet</div>';
+      return;
+    }
+    
+    container.innerHTML = wallets.map(wallet => {
+      const isSelected = this.selectedWallet && this.selectedWallet.address.toLowerCase() === wallet.address.toLowerCase();
+      const autoLabel = this.generateLabel(wallet.address, wallet.type);
+      const hasCustomName = wallet.label && wallet.label !== autoLabel;
+      
+      let displayText, displayLabel;
+      if (hasCustomName) {
+        const last5 = wallet.address.slice(-5);
+        displayText = `${wallet.label} (${last5})`;
+        displayLabel = '';
+      } else {
+        displayText = wallet.address;
+        displayLabel = wallet.label;
+      }
+      
+      return `
+        <div class="saved-wallet-item ${isSelected ? 'selected' : ''}" onclick="walletManager.selectWallet('${wallet.address}')">
+          <div class="saved-wallet-content">
+            <div class="saved-wallet-address">${displayText}</div>
+            ${displayLabel ? `<div class="saved-wallet-label">${displayLabel}</div>` : ''}
+          </div>
+          <div class="saved-wallet-actions">
+            <span class="saved-wallet-type ${wallet.type}">${wallet.type}</span>
+            <button class="remove-wallet-btn" onclick="event.stopPropagation(); walletManager.removeWallet('${wallet.address}')" title="Remove wallet">
+              ×
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  },
+  
+  // Update the input dropdown (Solana only)
+  updateInputDropdown() {
+    const content = document.getElementById('inputDropdownContent');
+    const wallets = this.loadWallets(); // Only Solana wallets
+    
+    if (wallets.length === 0) {
+      content.innerHTML = '<div class="input-dropdown-empty">No saved Solana wallets</div>';
+      return;
+    }
+    
+    content.innerHTML = wallets.map(wallet => {
+      const autoLabel = this.generateLabel(wallet.address, wallet.type);
+      const hasCustomName = wallet.label && wallet.label !== autoLabel;
+      
+      let displayText, displayLabel;
+      if (hasCustomName) {
+        const last5 = wallet.address.slice(-5);
+        displayText = `${wallet.label} (${last5})`;
+        displayLabel = '';
+      } else {
+        displayText = wallet.address;
+        displayLabel = wallet.label;
+      }
+      
+      return `
+        <div class="input-dropdown-item" onclick="selectWalletFromDropdown('${wallet.address}')">
+          <div class="input-dropdown-content">
+            <div class="input-dropdown-address">${displayText}</div>
+            ${displayLabel ? `<div class="input-dropdown-label">${displayLabel}</div>` : ''}
+          </div>
+          <span class="input-dropdown-type ${wallet.type}">${wallet.type}</span>
+        </div>
+      `;
+    }).join('');
+  },
+  
+  // Detect wallet type in modal (Solana only for this page)
+  detectWalletType(input) {
+    const walletAddress = input.value.trim();
+    
+    if (!walletAddress) {
+      return 'none';
+    }
+    
+    // Solana address detection (base58, 32-44 characters, no 0x prefix)
+    if (walletAddress.length >= 32 && walletAddress.length <= 44 &&
+        walletAddress.match(/^[1-9A-HJ-NP-Za-km-z]+$/) &&
+        !walletAddress.startsWith('0x')) {
+      return 'solana';
+    }
+    
+    return 'invalid';
+  },
+  
+  // Update modal buttons based on current state
+  updateModalButtons() {
+    const modalInput = document.getElementById('modalWalletInput');
+    const saveBtn = document.getElementById('saveWalletBtn');
+    const generateBtn = document.getElementById('generateBtn');
+    
+    const address = modalInput.value.trim();
+    const type = this.detectWalletType(modalInput);
+    const isValid = type === 'solana';
+    const alreadyExists = this.walletExists(address);
+    
+    // Enable/disable buttons
+    saveBtn.disabled = !isValid || alreadyExists;
+    generateBtn.disabled = !isValid;
+    
+    // Update save button text
+    if (alreadyExists && isValid) {
+      saveBtn.textContent = 'Already Saved';
+    } else {
+      saveBtn.textContent = 'Save & Generate';
+    }
+  },
+  
+  // Initialize the wallet manager
+  init() {
+    this.updateUI();
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      const dropdown = document.getElementById('inputDropdown');
+      const wrapper = document.getElementById('wallet-input-wrapper');
+      const modal = document.getElementById('mainModal');
+      
+      if (!wrapper.contains(e.target) && !modal.contains(e.target)) {
+        dropdown.classList.remove('show');
+      }
+    });
+    
+    // Modal input event listeners
+    const modalInput = document.getElementById('modalWalletInput');
+    modalInput.addEventListener('input', () => {
+      this.updateModalButtons();
+    });
+  }
+};
+
 // Theme management with cross-page persistence
 const themeManager = {
+  storageKey: 'pond0x_theme_preference',
+  
   init() {
+    const savedTheme = this.loadTheme();
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    this.setTheme(prefersDark ? 'dark' : 'light');
+    const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
     
+    this.setTheme(initialTheme);
+    
+    // Listen for system theme changes only if no manual preference is set
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-      this.setTheme(e.matches ? 'dark' : 'light');
+      if (!this.loadTheme()) { // Only auto-switch if user hasn't manually set preference
+        this.setTheme(e.matches ? 'dark' : 'light');
+      }
+    });
+
+    // Listen for storage changes from other tabs/pages
+    window.addEventListener('storage', (e) => {
+      if (e.key === this.storageKey && e.newValue) {
+        const newTheme = e.newValue;
+        if (newTheme && newTheme !== this.getCurrentTheme()) {
+          this.setTheme(newTheme);
+        }
+      }
     });
   },
   
+  loadTheme() {
+    try {
+      return localStorage.getItem(this.storageKey);
+    } catch (e) {
+      console.warn('Could not load theme preference:', e);
+      return null;
+    }
+  },
+  
+  saveTheme(theme) {
+    try {
+      localStorage.setItem(this.storageKey, theme);
+      console.log('Theme saved:', theme);
+    } catch (e) {
+      console.warn('Could not save theme preference:', e);
+    }
+  },
+
   getCurrentTheme() {
     return document.documentElement.getAttribute('data-theme') || 'light';
   },
@@ -960,12 +1712,63 @@ const themeManager = {
       button.textContent = theme === 'dark' ? '🌙' : '☀️';
       button.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
     }
+    this.saveTheme(theme);
   },
   
   toggle() {
     const currentTheme = this.getCurrentTheme();
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
     this.setTheme(newTheme);
+  }
+};
+
+// Enhanced bubble state management system
+const bubbleStateManager = {
+  storageKey: 'pond0x_bubble_state',
+  
+  saveState(isEnabled) {
+    try {
+      localStorage.setItem(this.storageKey, JSON.stringify({
+        enabled: isEnabled,
+        timestamp: Date.now()
+      }));
+      console.log('Bubble state saved:', isEnabled);
+    } catch (e) {
+      console.warn('Could not save bubble state:', e);
+    }
+  },
+  
+  loadState() {
+    try {
+      const stored = localStorage.getItem(this.storageKey);
+      if (stored) {
+        const state = JSON.parse(stored);
+        console.log('Bubble state loaded:', state.enabled);
+        return state.enabled;
+      }
+    } catch (e) {
+      console.warn('Could not load bubble state:', e);
+    }
+    return true;
+  },
+  
+  init() {
+    const savedState = this.loadState();
+    console.log('Initializing bubble state:', savedState);
+    
+    if (!savedState) {
+      bubbleSystem.animationRunning = false;
+      const container = document.getElementById('bubbleContainer');
+      const button = document.getElementById('cookButton');
+      const body = document.body;
+      
+      container.classList.add('hidden');
+      body.classList.add('glass-off');
+      button.classList.add('bubbles-off');
+      button.innerHTML = '👨‍🍳 Cook';
+    }
+    
+    return savedState;
   }
 };
 
@@ -982,7 +1785,14 @@ const bubbleSystem = {
     if (this.initialized) return;
     this.container = document.getElementById('bubbleContainer');
     this.createBubblePool();
-    this.startAnimation();
+    
+    const shouldRun = bubbleStateManager.init();
+    if (shouldRun) {
+      this.startAnimation();
+    } else {
+      this.animationRunning = false;
+    }
+    
     this.initialized = true;
   },
 
@@ -1067,7 +1877,7 @@ const bubbleSystem = {
   }
 };
 
-// Wallet validation
+// Wallet validation - Solana only for this page
 function validateSolanaAddress(address) {
   if (!address || address.trim().length === 0) return false;
   
@@ -1177,7 +1987,7 @@ function displayMiningData(data) {
   const stats = data.stats || {};
   const estimates = stats.estimates || {};
   
-  // Main Stats Overview (without status badges for specified metrics)
+  // Main Stats Overview
   const overviewCards = [
     {
       title: 'Mining Sessions',
@@ -1190,7 +2000,6 @@ function displayMiningData(data) {
       value: `${stats.health || 0}`,
       description: 'Overall mining rig health rating',
       icon: '❤️',
-      status: getHealthStatus(stats.health),
       progress: Math.min((stats.health || 0) * (100 / 7), 100) // Full bar at health 7
     },
     {
@@ -1230,15 +2039,13 @@ function displayMiningData(data) {
       title: 'Drift Risk Claims',
       value: stats.drift_risk?.toLocaleString() || '0',
       description: 'Number of claims at risk of drifting',
-      icon: '⚠️',
-      status: stats.drift_risk > 1000 ? 'danger' : stats.drift_risk > 100 ? 'warning' : 'healthy'
+      icon: '⚠️'
     },
     {
       title: 'Drift Risk Value',
       value: `${estimates.drift_risk_usd ? estimates.drift_risk_usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}`,
       description: 'USD value of claims at drift risk',
-      icon: '💸',
-      status: estimates.drift_risk_usd > 50000 ? 'danger' : estimates.drift_risk_usd > 10000 ? 'warning' : 'healthy'
+      icon: '💸'
     },
     {
       title: 'Successfully Sent',
@@ -1404,7 +2211,6 @@ function createDataCard(data) {
   card.className = 'data-card';
   
   const hasProgress = typeof data.progress === 'number';
-  const hasStatus = data.status;
   
   card.innerHTML = `
     <div class="data-card-header">
@@ -1412,7 +2218,6 @@ function createDataCard(data) {
         <span class="data-card-icon">${data.icon}</span>
         ${data.title}
       </div>
-      ${hasStatus ? `<span class="status-badge status-${data.status}">${data.status}</span>` : ''}
     </div>
     <div class="data-card-value">${data.value}</div>
     ${hasProgress ? `
@@ -1426,12 +2231,111 @@ function createDataCard(data) {
   return card;
 }
 
-// Status helper functions
-function getHealthStatus(health) {
-  if (!health || health < 2) return 'danger';
-  if (health >= 6) return 'healthy';
-  if (health >= 3) return 'warning';
-  return 'danger';
+// Modal functions
+function openMainModal() {
+  const modal = document.getElementById('mainModal');
+  const modalInput = document.getElementById('modalWalletInput');
+  const mainInput = document.getElementById('wallet-input');
+  
+  // Copy main input value to modal
+  modalInput.value = mainInput.value;
+  
+  // Clear custom name input
+  document.getElementById('walletNameInput').value = '';
+  
+  // Update button states
+  walletManager.updateModalButtons();
+  
+  // Update saved wallets list
+  walletManager.updateSavedWalletsList();
+  
+  // Show modal
+  modal.classList.add('show');
+  
+  // Focus modal input
+  setTimeout(() => modalInput.focus(), 150);
+}
+
+function closeMainModal() {
+  const modal = document.getElementById('mainModal');
+  modal.classList.remove('show');
+  walletManager.selectedWallet = null;
+}
+
+function saveAndGenerate() {
+  const modalInput = document.getElementById('modalWalletInput');
+  const nameInput = document.getElementById('walletNameInput');
+  
+  const address = modalInput.value.trim();
+  const customName = nameInput.value.trim();
+  const type = walletManager.detectWalletType(modalInput);
+  
+  if (type !== 'solana' || !address) {
+    alert('Please enter a valid Solana wallet address');
+    return;
+  }
+  
+  // Save wallet
+  walletManager.addWallet(address, type, customName || null);
+  
+  // Generate mining report
+  generateMiningReport(address);
+  
+  // Close modal
+  closeMainModal();
+}
+
+function generateFromModal() {
+  const modalInput = document.getElementById('modalWalletInput');
+  const address = modalInput.value.trim();
+  const type = walletManager.detectWalletType(modalInput);
+  
+  if (type !== 'solana' || !address) {
+    alert('Please enter a valid Solana wallet address');
+    return;
+  }
+  
+  // Generate mining report without saving
+  generateMiningReport(address);
+  
+  // Close modal
+  closeMainModal();
+}
+
+function showInputDropdown() {
+  const dropdown = document.getElementById('inputDropdown');
+  const wallets = walletManager.loadWallets();
+  
+  if (wallets.length > 0) {
+    walletManager.updateInputDropdown();
+    dropdown.classList.add('show');
+  }
+}
+
+function selectWalletFromDropdown(address) {
+  const input = document.getElementById('wallet-input');
+  input.value = address;
+  detectWalletType();
+  
+  const dropdown = document.getElementById('inputDropdown');
+  dropdown.classList.remove('show');
+  
+  // Generate mining report immediately
+  generateMiningReport(address);
+}
+
+function clearAllWallets() {
+  walletManager.clearAll();
+}
+
+function generateMiningReport(address) {
+  // Update main input to show the address being used
+  const mainInput = document.getElementById('wallet-input');
+  mainInput.value = address;
+  detectWalletType();
+  
+  // Fetch mining data
+  fetchMiningData();
 }
 
 function toggleBubbles() {
@@ -1445,12 +2349,14 @@ function toggleBubbles() {
     body.classList.add('glass-off');
     button.classList.add('bubbles-off');
     button.innerHTML = '👨‍🍳 Cook';
+    bubbleStateManager.saveState(false);
   } else {
     bubbleSystem.start();
     container.classList.remove('hidden');
     body.classList.remove('glass-off');
     button.classList.remove('bubbles-off');
     button.innerHTML = '👨‍🍳 Cook';
+    bubbleStateManager.saveState(true);
   }
 }
 
@@ -1468,6 +2374,9 @@ document.addEventListener('DOMContentLoaded', function() {
   // Initialize theme first
   themeManager.init();
   
+  // Initialize wallet manager
+  walletManager.init();
+  
   // Then initialize bubble system
   bubbleSystem.init();
   
@@ -1480,6 +2389,37 @@ document.addEventListener('DOMContentLoaded', function() {
   walletInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
       fetchMiningData();
+    }
+  });
+  
+  // Modal event listeners
+  const modal = document.getElementById('mainModal');
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      closeMainModal();
+    }
+  });
+  
+  // Handle Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('show')) {
+      closeMainModal();
+    }
+  });
+  
+  // Handle Enter key in modal inputs
+  const modalInput = document.getElementById('modalWalletInput');
+  const nameInput = document.getElementById('walletNameInput');
+  
+  modalInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      generateFromModal();
+    }
+  });
+  
+  nameInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      saveAndGenerate();
     }
   });
 });
