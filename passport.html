@@ -2082,9 +2082,8 @@ async function initDashboard() {
 function displayMiningData(data) {
   const dataGrid = document.getElementById('data-grid');
   const detailedGrid = document.getElementById('detailed-grid');
-  const proNotice = document.getElementById('pro-notice');
 
-  if (!dataGrid || !detailedGrid || !proNotice) return;
+  if (!dataGrid || !detailedGrid) return;
 
   // Clear existing data
   dataGrid.innerHTML = '';
