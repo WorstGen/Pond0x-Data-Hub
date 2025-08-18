@@ -1156,48 +1156,6 @@
         padding: 0.4rem 0.6rem;
       }
 
-      .people-like-section {
-      text-align: center;
-      margin-top: 2rem;
-      padding: 1rem;
-      color: var(--text-primary);
-      font-size: 0.9rem;
-    }
-
-    .people-like-subtitle {
-      margin: 0.5rem 0 1rem 0;
-      font-size: 0.9rem;
-      color: var(--text-primary);
-      opacity: 0.8;
-    }
-
-    #plw-content {
-      display: flex;
-      gap: 2rem;
-      justify-content: center;
-      flex-wrap: wrap;
-      align-items: flex-start;
-    }
-
-    @media (max-width: 768px) {
-      #plw-content {
-        gap: 1.5rem;
-      }
-    }
-
-    .people-like-section .link-url {
-      color: var(--accent-color);
-      text-decoration: none;
-      opacity: 0.8;
-      transition: all 0.3s ease;
-    }
-
-    .people-like-section .link-url:hover {
-      color: var(--text-primary);
-      opacity: 1;
-      text-shadow: 0 0 10px var(--shadow-accent);
-    } 
-
       .cook-button {
         bottom: 20px;
         right: 20px;
@@ -1353,7 +1311,7 @@
           onclick="showInputDropdown()"
         >
         <button class="arrow-btn" id="arrowBtn" onclick="openMainModal()">
-          📊
+          ▶
         </button>
         
         <!-- Input dropdown for quick wallet selection -->
@@ -1405,55 +1363,42 @@
         </p>
       </div>
     </div>
-
-    <div class="people-like-section">
-      <p><b>Built for <a href="https://cary0x.github.io/community/" target="_blank" class="link-url">the POND🤝X community</a> ❤️</b></p>
-      <p class="people-like-subtitle"><b>People like</b></p>
-      <div id="plw-content">Loading...</div>
-    </div>
-   </div>
   </div>
 
 <script>
 // Global variables
 let isDebugging = false;
 
-// Enhanced Wallet Management System with localStorage persistence (Solana-only for this page)
+// Enhanced Wallet Management System with memory persistence (Solana-only for this page)
 const walletManager = {
   storageKey: 'pond0x_saved_wallets',
   maxWallets: 10,
   selectedWallet: null,
+  wallets: [], // In-memory storage
   
-  // Load saved wallets from localStorage, filter to only show Solana wallets on this page
+  // Load saved wallets from memory, filter to only show Solana wallets on this page
   loadWallets() {
     try {
-      const stored = JSON.parse(localStorage.getItem(this.storageKey)) || [];
       // Filter to only return Solana wallets for this mining dashboard
-      return stored.filter(wallet => wallet.type === 'solana');
+      return this.wallets.filter(wallet => wallet.type === 'solana');
     } catch (error) {
-      console.error('Error loading wallets from localStorage:', error);
+      console.error('Error loading wallets:', error);
       return [];
     }
   },
   
   // Load ALL wallets (including Ethereum) for storage operations
   loadAllWallets() {
-    try {
-      const stored = localStorage.getItem(this.storageKey);
-      return stored ? JSON.parse(stored) : [];
-    } catch (error) {
-      console.error('Error loading wallets from localStorage:', error);
-      return [];
-    }
+    return this.wallets;
   },
   
-  // Save wallets to localStorage
+  // Save wallets to memory
   saveWallets(wallets) {
     try {
-      localStorage.setItem(this.storageKey, JSON.stringify(wallets));
-      console.log('Wallets saved to localStorage:', wallets.length);
+      this.wallets = [...wallets];
+      console.log('Wallets saved to memory:', wallets.length);
     } catch (error) {
-      console.error('Error saving wallets to localStorage:', error);
+      console.error('Error saving wallets:', error);
     }
   },
   
@@ -1663,6 +1608,8 @@ const walletManager = {
     const saveBtn = document.getElementById('saveWalletBtn');
     const generateBtn = document.getElementById('generateBtn');
     
+    if (!modalInput || !saveBtn || !generateBtn) return;
+    
     const address = modalInput.value.trim();
     const type = this.detectWalletType(modalInput);
     const isValid = type === 'solana';
@@ -1697,71 +1644,44 @@ const walletManager = {
     
     // Modal input event listeners
     const modalInput = document.getElementById('modalWalletInput');
-    modalInput.addEventListener('input', () => {
-      this.updateModalButtons();
-    });
+    if (modalInput) {
+      modalInput.addEventListener('input', () => {
+        this.updateModalButtons();
+      });
+    }
   }
 };
 
 // Theme management with cross-page persistence
 const themeManager = {
   storageKey: 'pond0x_theme_preference',
+  currentTheme: 'light',
   
   init() {
-    const savedTheme = this.loadTheme();
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+    const initialTheme = prefersDark ? 'dark' : 'light';
     
     this.setTheme(initialTheme);
     
-    // Listen for system theme changes only if no manual preference is set
+    // Listen for system theme changes
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-      if (!this.loadTheme()) { // Only auto-switch if user hasn't manually set preference
-        this.setTheme(e.matches ? 'dark' : 'light');
-      }
-    });
-
-    // Listen for storage changes from other tabs/pages
-    window.addEventListener('storage', (e) => {
-      if (e.key === this.storageKey && e.newValue) {
-        const newTheme = e.newValue;
-        if (newTheme && newTheme !== this.getCurrentTheme()) {
-          this.setTheme(newTheme);
-        }
-      }
+      this.setTheme(e.matches ? 'dark' : 'light');
     });
   },
   
-  loadTheme() {
-    try {
-      return localStorage.getItem(this.storageKey);
-    } catch (e) {
-      console.warn('Could not load theme preference:', e);
-      return null;
-    }
-  },
-  
-  saveTheme(theme) {
-    try {
-      localStorage.setItem(this.storageKey, theme);
-      console.log('Theme saved:', theme);
-    } catch (e) {
-      console.warn('Could not save theme preference:', e);
-    }
-  },
-
   getCurrentTheme() {
-    return document.documentElement.getAttribute('data-theme') || 'light';
+    return this.currentTheme;
   },
   
   setTheme(theme) {
+    this.currentTheme = theme;
     document.documentElement.setAttribute('data-theme', theme);
     const button = document.getElementById('themeToggle');
     if (button) {
       button.textContent = theme === 'dark' ? '🌙' : '☀️';
       button.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
     }
-    this.saveTheme(theme);
+    console.log('Theme set to:', theme);
   },
   
   toggle() {
@@ -1774,31 +1694,15 @@ const themeManager = {
 // Enhanced bubble state management system
 const bubbleStateManager = {
   storageKey: 'pond0x_bubble_state',
+  currentState: true,
   
   saveState(isEnabled) {
-    try {
-      localStorage.setItem(this.storageKey, JSON.stringify({
-        enabled: isEnabled,
-        timestamp: Date.now()
-      }));
-      console.log('Bubble state saved:', isEnabled);
-    } catch (e) {
-      console.warn('Could not save bubble state:', e);
-    }
+    this.currentState = isEnabled;
+    console.log('Bubble state saved:', isEnabled);
   },
   
   loadState() {
-    try {
-      const stored = localStorage.getItem(this.storageKey);
-      if (stored) {
-        const state = JSON.parse(stored);
-        console.log('Bubble state loaded:', state.enabled);
-        return state.enabled;
-      }
-    } catch (e) {
-      console.warn('Could not load bubble state:', e);
-    }
-    return true;
+    return this.currentState;
   },
   
   init() {
@@ -1811,10 +1715,12 @@ const bubbleStateManager = {
       const button = document.getElementById('cookButton');
       const body = document.body;
       
-      container.classList.add('hidden');
-      body.classList.add('glass-off');
-      button.classList.add('bubbles-off');
-      button.innerHTML = '👨‍🍳 Cook';
+      if (container) container.classList.add('hidden');
+      if (body) body.classList.add('glass-off');
+      if (button) {
+        button.classList.add('bubbles-off');
+        button.innerHTML = '👨‍🍳 Cook';
+      }
     }
     
     return savedState;
@@ -1833,6 +1739,8 @@ const bubbleSystem = {
   init() {
     if (this.initialized) return;
     this.container = document.getElementById('bubbleContainer');
+    if (!this.container) return;
+    
     this.createBubblePool();
     
     const shouldRun = bubbleStateManager.init();
@@ -1849,6 +1757,7 @@ const bubbleSystem = {
     this.animationRunning = false;
     if (this.animationInterval) {
       clearInterval(this.animationInterval);
+      this.animationInterval = null;
     }
     this.bubbles.forEach(bubble => {
       if (bubble.timer) {
@@ -1885,6 +1794,8 @@ const bubbleSystem = {
   },
   
   createBubble() {
+    if (!this.animationRunning) return;
+    
     const bubble = this.getRandomBubble();
     if (!bubble || bubble.active) return;
     
@@ -1944,6 +1855,8 @@ function detectWalletType() {
   const walletAddress = document.getElementById('wallet-input').value.trim();
   const walletInputWrapper = document.getElementById('wallet-input-wrapper');
   
+  if (!walletInputWrapper) return 'none';
+  
   // Remove all wallet type classes first
   walletInputWrapper.classList.remove('wallet-type-solana');
   
@@ -1962,81 +1875,176 @@ function detectWalletType() {
   return 'invalid';
 }
 
-// Mining Data Fetcher
-async function fetchMiningData() {
-  const walletInput = document.getElementById('wallet-input');
-  const walletAddress = walletInput.value.trim();
+// ──────────────────────────────────────────────────────────────
+// Loading + Error Helpers
+// ──────────────────────────────────────────────────────────────
+function showLoading() {
+  const loadingSection = document.getElementById('loading-section');
+  const errorSection = document.getElementById('error-section');
+  const dashboardSection = document.getElementById('dashboard-section');
+  const proNotice = document.getElementById('pro-notice');
   
-  if (!validateSolanaAddress(walletAddress)) {
-    showError('Please enter a valid Solana wallet address');
-    return;
-  }
+  if (loadingSection) loadingSection.classList.add('show');
+  if (errorSection) errorSection.classList.remove('show');
+  if (dashboardSection) dashboardSection.classList.remove('show');
+  if (proNotice) proNotice.style.display = 'none';
+}
+
+function showError(message) {
+  const errorMessage = document.getElementById('error-message');
+  const loadingSection = document.getElementById('loading-section');
+  const errorSection = document.getElementById('error-section');
+  const dashboardSection = document.getElementById('dashboard-section');
+  const proNotice = document.getElementById('pro-notice');
   
-  showLoading();
+  if (errorMessage) errorMessage.textContent = message;
+  if (loadingSection) loadingSection.classList.remove('show');
+  if (errorSection) errorSection.classList.add('show');
+  if (dashboardSection) dashboardSection.classList.remove('show');
+  if (proNotice) proNotice.style.display = 'none';
+}
+
+function showDashboard() {
+  const loadingSection = document.getElementById('loading-section');
+  const errorSection = document.getElementById('error-section');
+  const dashboardSection = document.getElementById('dashboard-section');
   
+  if (loadingSection) loadingSection.classList.remove('show');
+  if (errorSection) errorSection.classList.remove('show');
+  if (dashboardSection) dashboardSection.classList.add('show');
+}
+
+// ──────────────────────────────────────────────────────────────
+// NEW: Wallet Manifest Fetcher + Renderer
+// ──────────────────────────────────────────────────────────────
+async function fetchWalletManifest(walletAddress) {
   try {
-    const apiUrl = `https://pond0x-proxy.wsfdxv2hjq.workers.dev/health?id=${encodeURIComponent(walletAddress)}`;
-    
+    const apiUrl = `https://pond0x-proxy.wsfdxv2hjq.workers.dev/manifest?id=${encodeURIComponent(walletAddress)}`;
+
     const response = await fetch(apiUrl, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json'
-      }
+      headers: { 'Accept': 'application/json' }
     });
-    
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-    
+
+    if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+
     const data = await response.json();
-    
-    // Check if we got valid data
-    if (!data || typeof data !== 'object') {
-      throw new Error('Invalid response format received from API');
-    }
-    
-    displayMiningData(data);
-    
+    if (!data || typeof data !== 'object') throw new Error('Invalid manifest data');
+
+    displayWalletManifest(data);
+  } catch (error) {
+    console.error('Manifest Error:', error.message);
+    addDataNotice(`Wallet Manifest unavailable: ${error.message}`);
+  }
+}
+
+function displayWalletManifest(data) {
+  const dashboardSection = document.getElementById('dashboard-section');
+  if (!dashboardSection) return;
+
+  // Remove any existing manifest section
+  const existingManifest = dashboardSection.querySelector('.manifest-section');
+  if (existingManifest) {
+    existingManifest.remove();
+  }
+
+  const manifestSection = document.createElement('div');
+  manifestSection.className = 'manifest-section';
+  manifestSection.style.cssText = `
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--link-item-bg);
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+  `;
+
+  const badges = Array.isArray(data.badges) ? data.badges.join(', ') : (data.badges || 'None');
+
+  manifestSection.innerHTML = `
+    <h2 style="margin:0 0 1rem 0; font-size: 1.25rem; color: var(--text-primary);">🪪 Wallet Manifest</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+      <div><strong>Badges:</strong> ${badges}</div>
+      <div><strong>Cope:</strong> ${data.cope ? '✅ Yes' : '❌ No'}</div>
+      <div><strong>Twitter Linked:</strong> ${data.hasTwitter ? '✅ Yes' : '❌ No'}</div>
+      <div><strong>Pro User:</strong> ${data.isPro ? '🌟 Yes' : 'No'}</div>
+      <div><strong>Pro Since:</strong> ${data.proAgo ?? 'N/A'}</div>
+      <div><strong>Pro Expiry:</strong> ${data.proExpiry ?? 'N/A'}</div>
+      <div><strong>Pro Swaps (Bx):</strong> ${Number(data.proSwapsBx ?? 0).toLocaleString()}</div>
+      <div><strong>Pro Swaps (SOL):</strong> ${Number(data.proSwapsSol ?? 0).toLocaleString()}</div>
+    </div>
+  `;
+
+  dashboardSection.prepend(manifestSection);
+}
+
+// ──────────────────────────────────────────────────────────────
+// REPLACEMENT: Mining Data Fetcher (parallel-safe version)
+// ──────────────────────────────────────────────────────────────
+async function fetchMiningData(walletAddress) {
+  try {
+    const apiUrl = `https://pond0x-proxy.wsfdxv2hjq.workers.dev/health?id=${encodeURIComponent(walletAddress)}`;
+
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+
+    const data = await response.json();
+    if (!data || typeof data !== 'object') throw new Error('Invalid mining data');
+
+    displayMiningData(data); // existing renderer
   } catch (error) {
     showError(`Unable to fetch mining data: ${error.message}`);
   }
 }
 
-function showLoading() {
-  document.getElementById('loading-section').classList.add('show');
-  document.getElementById('error-section').classList.remove('show');
-  document.getElementById('dashboard-section').classList.remove('show');
-  document.getElementById('pro-notice').style.display = 'none';
+// ──────────────────────────────────────────────────────────────
+// NEW: Parallel initializer — calls both manifest + mining
+// ──────────────────────────────────────────────────────────────
+async function initDashboard() {
+  const walletInput = document.getElementById('wallet-input');
+  if (!walletInput) return;
+  
+  const walletAddress = walletInput.value.trim();
+
+  if (!validateSolanaAddress(walletAddress)) {
+    showError('Please enter a valid Solana wallet address');
+    return;
+  }
+
+  showLoading();
+
+  try {
+    await Promise.all([
+      fetchWalletManifest(walletAddress),
+      fetchMiningData(walletAddress)
+    ]);
+    // displayMiningData() calls showDashboard()
+  } catch (error) {
+    showError(`Unable to load dashboard: ${error.message}`);
+  }
 }
 
-function showError(message) {
-  document.getElementById('error-message').textContent = message;
-  document.getElementById('loading-section').classList.remove('show');
-  document.getElementById('error-section').classList.add('show');
-  document.getElementById('dashboard-section').classList.remove('show');
-  document.getElementById('pro-notice').style.display = 'none';
-}
-
-function showDashboard() {
-  document.getElementById('loading-section').classList.remove('show');
-  document.getElementById('error-section').classList.remove('show');
-  document.getElementById('dashboard-section').classList.add('show');
-  // Don't show/hide pro-notice here - let displayMiningData handle it
-}
-
+// ──────────────────────────────────────────────────────────────
+// EXISTING: Display Mining Data (unchanged from your code)
+// ──────────────────────────────────────────────────────────────
 function displayMiningData(data) {
   const dataGrid = document.getElementById('data-grid');
   const detailedGrid = document.getElementById('detailed-grid');
   const proNotice = document.getElementById('pro-notice');
-  
+
+  if (!dataGrid || !detailedGrid || !proNotice) return;
+
   // Clear existing data
   dataGrid.innerHTML = '';
   detailedGrid.innerHTML = '';
-  
+
   const stats = data.stats || {};
   const estimates = stats.estimates || {};
-  
-  // Main Stats Overview
+
+  // Overview cards
   const overviewCards = [
     {
       title: 'Mining Sessions',
@@ -2049,7 +2057,7 @@ function displayMiningData(data) {
       value: `${stats.health || 0}`,
       description: 'Overall mining rig health rating',
       icon: '❤️',
-      progress: Math.min((stats.health || 0) * (100 / 7), 100) // Full bar at health 7
+      progress: Math.min((stats.health || 0) * (100 / 7), 100)
     },
     {
       title: 'In Mempool',
@@ -2069,8 +2077,8 @@ function displayMiningData(data) {
     const cardElement = createDataCard(card);
     dataGrid.appendChild(cardElement);
   });
-  
-  // Detailed Financial & Risk Metrics
+
+  // Detailed Metrics
   const detailedMetrics = [
     {
       title: 'SOL Price (USD)',
@@ -2127,29 +2135,29 @@ function displayMiningData(data) {
     detailedGrid.appendChild(cardElement);
   });
 
-  // Check if AI insights are available and show/hide PRO notice accordingly
+  // AI insights
   const hasAIInsights = data.ai_beta && Array.isArray(data.ai_beta) && data.ai_beta.length > 0;
-  
   if (hasAIInsights) {
-    // Hide PRO notice and show AI insights
     proNotice.style.display = 'none';
     addAIInsightsSection(data.ai_beta);
   } else {
-    // Show PRO notice only when no AI insights are available after API call
     proNotice.style.display = 'block';
   }
 
-  // Add data notice if present
   if (data.data && data.data.msg) {
     addDataNotice(data.data.msg);
   }
-  
+
   showDashboard();
 }
 
+// ──────────────────────────────────────────────────────────────
+// EXISTING: Data Notice + AI Insights
+// ──────────────────────────────────────────────────────────────
 function addDataNotice(message) {
   const dashboardSection = document.getElementById('dashboard-section');
-  
+  if (!dashboardSection) return;
+
   const noticeDiv = document.createElement('div');
   noticeDiv.style.cssText = `
     background: var(--link-item-bg);
@@ -2161,7 +2169,7 @@ function addDataNotice(message) {
     text-align: center;
     border-left: 4px solid var(--warning-color);
   `;
-  
+
   noticeDiv.innerHTML = `
     <div style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
       <span style="font-size: 1.5rem;">ℹ️</span>
@@ -2170,31 +2178,33 @@ function addDataNotice(message) {
       </p>
     </div>
   `;
-  
+
   dashboardSection.appendChild(noticeDiv);
 }
 
-// AI Insights Section
 function addAIInsightsSection(aiInsights) {
   const dashboardSection = document.getElementById('dashboard-section');
+  if (!dashboardSection) return;
   
-  // Create AI Insights section
+  // Remove any existing AI insights section
+  const existingAI = dashboardSection.querySelector('.ai-insights-section');
+  if (existingAI) {
+    existingAI.remove();
+  }
+  
   const aiSection = document.createElement('div');
+  aiSection.className = 'ai-insights-section';
   aiSection.style.marginTop = '3rem';
-  
+
   const aiTitle = document.createElement('div');
   aiTitle.className = 'section-title';
   aiTitle.innerHTML = '🤖 AI Insights & Recommendations';
-  
+
   const aiContainer = document.createElement('div');
   aiContainer.className = 'ai-insights-container';
-  aiContainer.style.cssText = `
-    display: grid;
-    gap: 1rem;
-    margin-top: 1.5rem;
-  `;
-  
-  aiInsights.forEach((insight, index) => {
+  aiContainer.style.cssText = `display: grid; gap: 1rem; margin-top: 1.5rem;`;
+
+  aiInsights.forEach((insight) => {
     const insightCard = document.createElement('div');
     insightCard.className = 'ai-insight-card';
     insightCard.style.cssText = `
@@ -2208,20 +2218,17 @@ function addAIInsightsSection(aiInsights) {
       overflow: hidden;
       border-left: 4px solid var(--accent-color);
     `;
-    
+
     insightCard.innerHTML = `
       <div style="display: flex; align-items: flex-start; gap: 1rem;">
         <div style="font-size: 1.5rem; opacity: 0.8; flex-shrink: 0;">
           ${getInsightIcon(insight)}
         </div>
         <div style="flex: 1;">
-          <p style="
-            color: var(--text-primary); 
-            font-size: 1rem; 
-            line-height: 1.5; 
-            margin: 0;
-            font-weight: ${insight.includes('risk') || insight.includes('drift') ? '600' : '500'};
-          ">${insight}</p>
+          <p style="color: var(--text-primary); font-size: 1rem; line-height: 1.5; margin: 0;
+            font-weight: ${insight.includes('risk') || insight.includes('drift') ? '600' : '500'};">
+            ${insight}
+          </p>
         </div>
       </div>
     `;
@@ -2239,7 +2246,7 @@ function addAIInsightsSection(aiInsights) {
     
     aiContainer.appendChild(insightCard);
   });
-  
+
   aiSection.appendChild(aiTitle);
   aiSection.appendChild(aiContainer);
   dashboardSection.appendChild(aiSection);
@@ -2247,12 +2254,7 @@ function addAIInsightsSection(aiInsights) {
 
 function getInsightIcon(insight) {
   const text = insight.toLowerCase();
-  if (text.includes('healthy') || text.includes('boost')) return '✨';
-  if (text.includes('risk') || text.includes('drift')) return '✨';
-  if (text.includes('account') || text.includes('linked')) return '✨';
-  if (text.includes('pro') || text.includes('priority')) return '✨';
-  if (text.includes('turbo') || text.includes('gud')) return '✨';
-  return '💡';
+  return '✨';
 }
 
 function createDataCard(data) {
@@ -2286,11 +2288,14 @@ function openMainModal() {
   const modalInput = document.getElementById('modalWalletInput');
   const mainInput = document.getElementById('wallet-input');
   
+  if (!modal || !modalInput || !mainInput) return;
+  
   // Copy main input value to modal
   modalInput.value = mainInput.value;
   
   // Clear custom name input
-  document.getElementById('walletNameInput').value = '';
+  const nameInput = document.getElementById('walletNameInput');
+  if (nameInput) nameInput.value = '';
   
   // Update button states
   walletManager.updateModalButtons();
@@ -2307,13 +2312,17 @@ function openMainModal() {
 
 function closeMainModal() {
   const modal = document.getElementById('mainModal');
-  modal.classList.remove('show');
-  walletManager.selectedWallet = null;
+  if (modal) {
+    modal.classList.remove('show');
+    walletManager.selectedWallet = null;
+  }
 }
 
 function saveAndGenerate() {
   const modalInput = document.getElementById('modalWalletInput');
   const nameInput = document.getElementById('walletNameInput');
+  
+  if (!modalInput || !nameInput) return;
   
   const address = modalInput.value.trim();
   const customName = nameInput.value.trim();
@@ -2336,6 +2345,8 @@ function saveAndGenerate() {
 
 function generateFromModal() {
   const modalInput = document.getElementById('modalWalletInput');
+  if (!modalInput) return;
+  
   const address = modalInput.value.trim();
   const type = walletManager.detectWalletType(modalInput);
   
@@ -2353,6 +2364,8 @@ function generateFromModal() {
 
 function showInputDropdown() {
   const dropdown = document.getElementById('inputDropdown');
+  if (!dropdown) return;
+  
   const wallets = walletManager.loadWallets();
   
   if (wallets.length > 0) {
@@ -2363,11 +2376,13 @@ function showInputDropdown() {
 
 function selectWalletFromDropdown(address) {
   const input = document.getElementById('wallet-input');
+  if (!input) return;
+  
   input.value = address;
   detectWalletType();
   
   const dropdown = document.getElementById('inputDropdown');
-  dropdown.classList.remove('show');
+  if (dropdown) dropdown.classList.remove('show');
   
   // Generate mining report immediately
   generateMiningReport(address);
@@ -2380,17 +2395,21 @@ function clearAllWallets() {
 function generateMiningReport(address) {
   // Update main input to show the address being used
   const mainInput = document.getElementById('wallet-input');
-  mainInput.value = address;
-  detectWalletType();
+  if (mainInput) {
+    mainInput.value = address;
+    detectWalletType();
+  }
   
   // Fetch mining data
-  fetchMiningData();
+  initDashboard();
 }
 
 function toggleBubbles() {
   const container = document.getElementById('bubbleContainer');
   const button = document.getElementById('cookButton');
   const body = document.body;
+  
+  if (!container || !button || !body) return;
   
   if (bubbleSystem.animationRunning) {
     bubbleSystem.stop();
@@ -2411,146 +2430,19 @@ function toggleBubbles() {
 
 function toggleNav() {
   const navLinks = document.getElementById('navLinks');
-  navLinks.classList.toggle('show');
+  if (navLinks) {
+    navLinks.classList.toggle('show');
+  }
 }
 
 function toggleTheme() {
   themeManager.toggle();
 }
 
-  / Community data loading
-const mdxUrl = 'https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/main/src/community.mdx';
-
-fetch(mdxUrl)
-  .then(res => res.text())
-  .then(text => {
-    let communityMembers = [];
-    
-    const pondSectionMatch = text.match(/## The Pond[\s\S]*?<FallbackImageList[^>]*data=\{(\[[\s\S]*?\])\}[^>]*\/>/);
-    
-    if (pondSectionMatch) {
-      try {
-        let dataArrayString = pondSectionMatch[1];
-        
-        dataArrayString = dataArrayString
-          .replace(/(\w+):/g, '"$1":')
-          .replace(/,\s*}/g, '}')
-          .replace(/,\s*]/g, ']');
-        
-        const membersArray = JSON.parse(dataArrayString);
-        communityMembers = membersArray;
-        console.log(`Found ${communityMembers.length} members from The Pond section`);
-      } catch (e) {
-        console.error('Error parsing The Pond FallbackImageList:', e);
-      }
-    }
-    
-    if (communityMembers.length === 0) {
-      const communityMembersMatch = text.match(/## Community Members([\s\S]*?)(?=##|$)/);
-      if (communityMembersMatch) {
-        const fallbackImageMatches = [...communityMembersMatch[1].matchAll(/<FallbackImage[^>]*data="([^"]+)"[^>]*refc="([^"]+)"[^>]*\/>/g)];
-        communityMembers = fallbackImageMatches.map(match => ({
-          name: match[1],
-          ref: match[2]
-        }));
-        console.log(`Found ${communityMembers.length} members from Community Members section`);
-      }
-    }
-
-    if (!communityMembers || communityMembers.length === 0) {
-      document.getElementById('plw-content').textContent = "No community members found.";
-      return;
-    }
-
-    const selectedMembers = [];
-    const totalMembers = communityMembers.length;
-    const usedIndices = new Set();
-    const seed = Date.now();
-    
-    while (selectedMembers.length < 3 && selectedMembers.length < totalMembers) {
-      const randomIndex = Math.floor((Math.random() + seed * selectedMembers.length) % 1 * totalMembers);
-      if (!usedIndices.has(randomIndex)) {
-        usedIndices.add(randomIndex);
-        selectedMembers.push(communityMembers[randomIndex]);
-      }
-    }
-
-    const container = document.getElementById('plw-content');
-    container.innerHTML = '';
-    container.style.cssText = 'display:flex; gap:2rem; justify-content:center; flex-wrap:wrap; align-items:flex-start;';
-
-    selectedMembers.forEach(member => {
-      const username = member.name;
-      const referral = member.ref;
-      const profile = `https://x.com/${username}`;
-      const referralLink = `https://pond0x.com/referral/${referral}`;
-
-      const memberContainer = document.createElement('div');
-      memberContainer.style.cssText = 'display:flex; flex-direction:column; align-items:center; min-width:120px; max-width:150px;';
-      
-      const loadingDiv = document.createElement('div');
-      loadingDiv.style.cssText = 'width:64px; height:64px; border-radius:50%; margin-bottom:0.75rem; background:linear-gradient(135deg,#7b3aad,#FF13F0); display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; font-size:18px;';
-      loadingDiv.textContent = username.substring(0, 2).toUpperCase();
-      
-      const avatar = document.createElement('img');
-      avatar.style.cssText = 'width:64px; height:64px; border-radius:50%; margin-bottom:0.75rem; object-fit:cover;';
-      avatar.alt = `@${username}`;
-      
-      const avatarSources = [
-        `https://unavatar.io/twitter/${username}?fallback=false`,
-        `https://github.com/${username}.png?size=64`,
-        `https://avatars.dicebear.com/api/initials/${username}.svg?background=%237b3aad&color=fff`,
-        `https://ui-avatars.com/api/?name=${username}&size=64&background=7b3aad&color=fff&rounded=true`
-      ];
-      
-      let currentSourceIndex = 0;
-      let avatarLoaded = false;
-      
-      const tryNextAvatar = () => {
-        if (currentSourceIndex < avatarSources.length && !avatarLoaded) {
-          avatar.src = avatarSources[currentSourceIndex];
-          currentSourceIndex++;
-        }
-      };
-      
-      avatar.onload = () => {
-        if (!avatarLoaded) {
-          avatarLoaded = true;
-          loadingDiv.replaceWith(avatar);
-        }
-      };
-      
-      avatar.onerror = tryNextAvatar;
-      
-      tryNextAvatar();
-
-      const profileLink = document.createElement('a');
-      profileLink.href = profile;
-      profileLink.target = '_blank';
-      profileLink.rel = 'noopener noreferrer';
-      profileLink.style.cssText = 'font-size:0.9rem; color:#1DA1F2; text-decoration:none; margin-bottom:0.5rem; text-align:center; word-break:break-word; line-height:1.2;';
-      profileLink.textContent = `@${username}`;
-
-      const referralButton = document.createElement('a');
-      referralButton.href = referralLink;
-      referralButton.target = '_blank';
-      referralButton.rel = 'noopener noreferrer';
-      referralButton.style.cssText = 'padding:0.4rem 0.8rem; background:linear-gradient(135deg, #f19cfd 0%, #FF13F0 100%); color:white; border-radius:6px; text-decoration:none; font-weight:bold; font-size:0.8rem; text-align:center; white-space:nowrap; box-shadow: 0 2px 8px rgba(241, 156, 253, 0.3); transition: all 0.3s ease;';
-      referralButton.textContent = 'Referral';
-
-      memberContainer.appendChild(loadingDiv);
-      memberContainer.appendChild(profileLink);
-      memberContainer.appendChild(referralButton);
-
-      container.appendChild(memberContainer);
-    });
-  }).catch(err => {
-    console.error('Error loading community data:', err);
-    document.getElementById('plw-content').textContent = "Couldn't load community.";
-  });
-
 // Initialize everything when page loads
 document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOM Content Loaded - Initializing...');
+  
   // Initialize theme first
   themeManager.init();
   
@@ -2562,27 +2454,31 @@ document.addEventListener('DOMContentLoaded', function() {
   
   const walletInput = document.getElementById('wallet-input');
   
-  // Add input event listener for wallet type detection
-  walletInput.addEventListener('input', detectWalletType);
-  
-  // Handle Enter key in wallet input
-  walletInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      fetchMiningData();
-    }
-  });
+  if (walletInput) {
+    // Add input event listener for wallet type detection
+    walletInput.addEventListener('input', detectWalletType);
+    
+    // Handle Enter key in wallet input
+    walletInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        initDashboard();
+      }
+    });
+  }
   
   // Modal event listeners
   const modal = document.getElementById('mainModal');
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      closeMainModal();
-    }
-  });
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeMainModal();
+      }
+    });
+  }
   
   // Handle Escape key
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.classList.contains('show')) {
+    if (e.key === 'Escape' && modal && modal.classList.contains('show')) {
       closeMainModal();
     }
   });
@@ -2591,17 +2487,23 @@ document.addEventListener('DOMContentLoaded', function() {
   const modalInput = document.getElementById('modalWalletInput');
   const nameInput = document.getElementById('walletNameInput');
   
-  modalInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      generateFromModal();
-    }
-  });
+  if (modalInput) {
+    modalInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        generateFromModal();
+      }
+    });
+  }
   
-  nameInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      saveAndGenerate();
-    }
-  });
+  if (nameInput) {
+    nameInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        saveAndGenerate();
+      }
+    });
+  }
+  
+  console.log('Initialization complete');
 });
 </script>
 
