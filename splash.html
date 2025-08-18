@@ -1162,6 +1162,7 @@ function showDashboard() {
   document.getElementById('loading-section').classList.remove('show');
   document.getElementById('error-section').classList.remove('show');
   document.getElementById('dashboard-section').classList.add('show');
+  // Don't show/hide pro-notice here - let displayMiningData handle it
 }
 
 function displayMiningData(data) {
@@ -1278,7 +1279,7 @@ function displayMiningData(data) {
     proNotice.style.display = 'none';
     addAIInsightsSection(data.ai_beta);
   } else {
-    // Show PRO notice when no AI insights available
+    // Show PRO notice only when no AI insights are available after API call
     proNotice.style.display = 'block';
   }
 
