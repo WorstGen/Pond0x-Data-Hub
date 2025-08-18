@@ -2025,13 +2025,13 @@ function displayMiningData(data) {
   const detailedMetrics = [
     {
       title: 'SOL Price (USD)',
-      value: `${estimates.sol_usd ? estimates.sol_usd.toFixed(2) : '0.00'}`,
+      value: `$${estimates.sol_usd ? estimates.sol_usd.toFixed(2) : '0.00'}`,
       description: 'Current SOL price in USD',
       icon: '◎'
     },
     {
       title: 'wPOND Price (USD)',
-      value: `${estimates.wpond_usd ? estimates.wpond_usd.toFixed(8) : '0.00000000'}`,
+      value: `$${estimates.wpond_usd ? estimates.wpond_usd.toFixed(8) : '0.00000000'}`,
       description: 'Current wPOND price in USD',
       icon: '🪷'
     },
@@ -2043,7 +2043,7 @@ function displayMiningData(data) {
     },
     {
       title: 'Drift Risk Value',
-      value: `${estimates.drift_risk_usd ? estimates.drift_risk_usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}`,
+      value: `$${estimates.drift_risk_usd ? estimates.drift_risk_usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}`,
       description: 'USD value of claims at drift risk',
       icon: '💸'
     },
@@ -2067,7 +2067,7 @@ function displayMiningData(data) {
     },
     {
       title: 'Max Claim Estimate',
-      value: `${estimates.max_claim_estimate_usd ? estimates.max_claim_estimate_usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}`,
+      value: `$${estimates.max_claim_estimate_usd ? estimates.max_claim_estimate_usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}`,
       description: 'Maximum estimated claim value in USD',
       icon: '🏆'
     }
