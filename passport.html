@@ -1225,6 +1225,109 @@
       font-family: inherit;
       color: var(--accent-color);
     }
+
+    /* People Like Section Styles */
+  .people-like-section {
+  text-align: center;
+  margin-top: 2rem;
+  padding: 1rem;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.people-like-subtitle {
+  margin: 0.5rem 0 1rem 0; 
+  font-size: 0.9rem; 
+  color: var(--text-primary); 
+  opacity: 0.8;
+}
+
+#plw-content {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+@media (max-width: 768px) {
+  #plw-content {
+    gap: 1.5rem;
+  }
+}
+
+.people-like-section .link-url {
+  color: var(--accent-color);
+  text-decoration: none;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+.people-like-section .link-url:hover {
+  color: var(--text-primary);
+  opacity: 1;
+  text-shadow: 0 0 10px var(--shadow-accent);
+}
+
+.member-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 120px;
+  max-width: 150px;
+}
+
+.member-avatar-loading {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  margin-bottom: 0.75rem;
+  background: linear-gradient(135deg, #7b3aad, #FF13F0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.member-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  margin-bottom: 0.75rem;
+  object-fit: cover;
+}
+
+.member-profile-link {
+  font-size: 0.9rem;
+  color: #1DA1F2;
+  text-decoration: none;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  word-break: break-word;
+  line-height: 1.2;
+}
+
+.member-referral-button {
+  padding: 0.4rem 0.8rem;
+  background: linear-gradient(135deg, #f19cfd 0%, #FF13F0 100%);
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 0.8rem;
+  text-align: center;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(241, 156, 253, 0.3);
+  transition: all 0.3s ease;
+}
+
+.member-referral-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(241, 156, 253, 0.4);
+}
+    
   </style>
 </head>
 <body>
@@ -1365,6 +1468,15 @@
         </p>
       </div>
     </div>
+
+    <!-- PEOPLE LIKE SECTION - START -->
+<div class="people-like-section">
+  <p><b>Built for <a href="https://cary0x.github.io/community/" target="_blank" class="link-url">the POND🤝X community</a> ❤️</b></p>
+  <p class="people-like-subtitle"><b>People like</b></p>
+  <div id="plw-content">Loading...</div>
+</div>
+<!-- PEOPLE LIKE SECTION - END -->
+    
   </div>
 
 <script>
@@ -2562,6 +2674,188 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   console.log('Initialization complete');
+});
+
+  // Community data loading system
+const CommunityLoader = {
+  mdxUrl: 'https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/main/src/community.mdx',
+  
+  async loadCommunityData() {
+    try {
+      const response = await fetch(this.mdxUrl);
+      const text = await response.text();
+      
+      let communityMembers = [];
+      
+      // First, try to find The Pond section with FallbackImageList
+      const pondSectionMatch = text.match(/## The Pond[\s\S]*?<FallbackImageList[^>]*data=\{(\[[\s\S]*?\])\}[^>]*\/>/);
+      
+      if (pondSectionMatch) {
+        try {
+          let dataArrayString = pondSectionMatch[1];
+          
+          // Clean up the data string for JSON parsing
+          dataArrayString = dataArrayString
+            .replace(/(\w+):/g, '"$1":')
+            .replace(/,\s*}/g, '}')
+            .replace(/,\s*]/g, ']');
+          
+          const membersArray = JSON.parse(dataArrayString);
+          communityMembers = membersArray;
+          console.log(`Found ${communityMembers.length} members from The Pond section`);
+        } catch (e) {
+          console.error('Error parsing The Pond FallbackImageList:', e);
+        }
+      }
+      
+      // Fallback: try Community Members section
+      if (communityMembers.length === 0) {
+        const communityMembersMatch = text.match(/## Community Members([\s\S]*?)(?=##|$)/);
+        if (communityMembersMatch) {
+          const fallbackImageMatches = [...communityMembersMatch[1].matchAll(/<FallbackImage[^>]*data="([^"]+)"[^>]*refc="([^"]+)"[^>]*\/>/g)];
+          communityMembers = fallbackImageMatches.map(match => ({
+            name: match[1],
+            ref: match[2]
+          }));
+          console.log(`Found ${communityMembers.length} members from Community Members section`);
+        }
+      }
+
+      return communityMembers;
+    } catch (error) {
+      console.error('Error loading community data:', error);
+      return [];
+    }
+  },
+
+  selectRandomMembers(members, count = 3) {
+    if (!members || members.length === 0) return [];
+    
+    const selectedMembers = [];
+    const totalMembers = members.length;
+    const usedIndices = new Set();
+    const seed = Date.now();
+    
+    while (selectedMembers.length < count && selectedMembers.length < totalMembers) {
+      const randomIndex = Math.floor((Math.random() + seed * selectedMembers.length) % 1 * totalMembers);
+      if (!usedIndices.has(randomIndex)) {
+        usedIndices.add(randomIndex);
+        selectedMembers.push(members[randomIndex]);
+      }
+    }
+    
+    return selectedMembers;
+  },
+
+  createMemberElement(member) {
+    const username = member.name;
+    const referral = member.ref;
+    const profile = `https://x.com/${username}`;
+    const referralLink = `https://pond0x.com/referral/${referral}`;
+
+    const memberContainer = document.createElement('div');
+    memberContainer.className = 'member-container';
+    
+    // Create loading placeholder
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'member-avatar-loading';
+    loadingDiv.textContent = username.substring(0, 2).toUpperCase();
+    
+    // Create avatar image
+    const avatar = document.createElement('img');
+    avatar.className = 'member-avatar';
+    avatar.alt = `@${username}`;
+    
+    // Avatar sources to try in order
+    const avatarSources = [
+      `https://unavatar.io/twitter/${username}?fallback=false`,
+      `https://github.com/${username}.png?size=64`,
+      `https://avatars.dicebear.com/api/initials/${username}.svg?background=%237b3aad&color=fff`,
+      `https://ui-avatars.com/api/?name=${username}&size=64&background=7b3aad&color=fff&rounded=true`
+    ];
+    
+    let currentSourceIndex = 0;
+    let avatarLoaded = false;
+    
+    const tryNextAvatar = () => {
+      if (currentSourceIndex < avatarSources.length && !avatarLoaded) {
+        avatar.src = avatarSources[currentSourceIndex];
+        currentSourceIndex++;
+      }
+    };
+    
+    avatar.onload = () => {
+      if (!avatarLoaded) {
+        avatarLoaded = true;
+        loadingDiv.replaceWith(avatar);
+      }
+    };
+    
+    avatar.onerror = tryNextAvatar;
+    
+    // Create profile link
+    const profileLink = document.createElement('a');
+    profileLink.href = profile;
+    profileLink.target = '_blank';
+    profileLink.rel = 'noopener noreferrer';
+    profileLink.className = 'member-profile-link';
+    profileLink.textContent = `@${username}`;
+
+    // Create referral button
+    const referralButton = document.createElement('a');
+    referralButton.href = referralLink;
+    referralButton.target = '_blank';
+    referralButton.rel = 'noopener noreferrer';
+    referralButton.className = 'member-referral-button';
+    referralButton.textContent = 'Referral';
+
+    // Assemble the member container
+    memberContainer.appendChild(loadingDiv);
+    memberContainer.appendChild(profileLink);
+    memberContainer.appendChild(referralButton);
+
+    // Start loading avatar
+    tryNextAvatar();
+
+    return memberContainer;
+  },
+
+  async renderPeopleLike() {
+    const container = document.getElementById('plw-content');
+    if (!container) {
+      console.error('plw-content container not found');
+      return;
+    }
+
+    try {
+      const communityMembers = await this.loadCommunityData();
+      
+      if (!communityMembers || communityMembers.length === 0) {
+        container.textContent = "No community members found.";
+        return;
+      }
+
+      const selectedMembers = this.selectRandomMembers(communityMembers, 3);
+      
+      // Clear loading text
+      container.innerHTML = '';
+      
+      // Add each selected member
+      selectedMembers.forEach(member => {
+        const memberElement = this.createMemberElement(member);
+        container.appendChild(memberElement);
+      });
+      
+    } catch (error) {
+      console.error('Error rendering People Like section:', error);
+      container.textContent = "Couldn't load community.";
+    }
+  }
+};
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', function() {
+  CommunityLoader.renderPeopleLike();
 });
 </script>
 
