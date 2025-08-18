@@ -529,6 +529,7 @@
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
+      text-align: center;
     }
 
     .data-card:hover {
@@ -540,7 +541,7 @@
     .data-card-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
       margin-bottom: 1rem;
     }
 
@@ -573,35 +574,6 @@
       opacity: 0.8;
       text-align: center;
       line-height: 1.4;
-    }
-
-    .status-badge {
-      padding: 0.3rem 0.8rem;
-      border-radius: 50px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .status-healthy {
-      background: linear-gradient(135deg, var(--success-color), #16a34a);
-      color: white;
-    }
-
-    .status-warning {
-      background: linear-gradient(135deg, var(--warning-color), #d97706);
-      color: white;
-    }
-
-    .status-danger {
-      background: linear-gradient(135deg, var(--error-color), #dc2626);
-      color: white;
-    }
-
-    .status-info {
-      background: linear-gradient(135deg, var(--info-color), #2563eb);
-      color: white;
     }
 
     .progress-bar {
@@ -734,6 +706,17 @@
 
     [data-theme="dark"] .header img {
       filter: brightness(1.1) contrast(1.1) drop-shadow(0 0 20px rgba(189, 124, 253, 0.3));
+    }
+
+    .pro-notice {
+      background: var(--link-item-bg);
+      backdrop-filter: blur(15px);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid var(--warning-color);
+      margin-top: 2rem;
+      text-align: center;
+      border-left: 4px solid var(--warning-color);
     }
 
     @media (max-width: 768px) {
@@ -912,10 +895,14 @@
       </div>
     </div>
 
-    <!-- Debug Information -->
-    <div id="debug-section" class="debug-info" style="display: none;">
-      <h3>🔍 Debug Information</h3>
-      <div id="debug-content"></div>
+    <!-- PRO Notice (shown when AI insights are NOT available) -->
+    <div id="pro-notice" class="pro-notice" style="display: none;">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
+        <span style="font-size: 1.5rem;">⭐</span>
+        <p style="margin: 0; color: var(--text-primary); font-size: 1rem; font-weight: 500;">
+          Individual stats require signed request and PRO account
+        </p>
+      </div>
     </div>
   </div>
 
@@ -1052,37 +1039,6 @@ const bubbleSystem = {
   }
 };
 
-// Debug system
-const debugSystem = {
-  logs: [],
-  
-  log(message, type = 'info') {
-    const timestamp = new Date().toLocaleTimeString();
-    this.logs.push({ timestamp, message, type });
-    console.log(`[${timestamp}] ${message}`);
-    this.updateDebugDisplay();
-  },
-  
-  updateDebugDisplay() {
-    const debugContent = document.getElementById('debug-content');
-    if (debugContent) {
-      debugContent.textContent = this.logs.map(log => 
-        `[${log.timestamp}] ${log.type.toUpperCase()}: ${log.message}`
-      ).join('\n');
-    }
-  },
-  
-  show() {
-    document.getElementById('debug-section').style.display = 'block';
-    isDebugging = true;
-  },
-  
-  hide() {
-    document.getElementById('debug-section').style.display = 'none';
-    isDebugging = false;
-  }
-};
-
 // Wallet validation
 function validateSolanaAddress(address) {
   if (!address || address.trim().length === 0) return false;
@@ -1119,188 +1075,51 @@ function detectWalletType() {
   return 'invalid';
 }
 
-// Mining Data Fetcher with enhanced debugging
+// Mining Data Fetcher
 async function fetchMiningData() {
   const walletInput = document.getElementById('wallet-input');
   const walletAddress = walletInput.value.trim();
   
-  debugSystem.show();
-  debugSystem.log(`Starting fetch for wallet: ${walletAddress}`);
-  
   if (!validateSolanaAddress(walletAddress)) {
-    debugSystem.log('Invalid Solana address format', 'error');
     showError('Please enter a valid Solana wallet address');
     return;
   }
   
   showLoading();
   
-  // Test multiple API endpoints and approaches
-  const endpoints = [
-    `https://pond0x-proxy.wsfdxv2hjq.workers.dev/health?id=${encodeURIComponent(walletAddress)}`,
-    `https://pond0x-proxy.wsfdxv2hjq.workers.dev/health/${encodeURIComponent(walletAddress)}`,
-    `https://pond0x-proxy.wsfdxv2hjq.workers.dev/?endpoint=health&id=${encodeURIComponent(walletAddress)}`
-  ];
-  
-  debugSystem.log(`Testing ${endpoints.length} different endpoint formats...`);
-  
-  for (let i = 0; i < endpoints.length; i++) {
-    const apiUrl = endpoints[i];
-    debugSystem.log(`Attempt ${i + 1}: ${apiUrl}`);
-    
-    try {
-      debugSystem.log(`Attempting fetch with different CORS modes...`);
-      
-      // Try different fetch configurations
-      const fetchConfigs = [
-        {
-          method: 'GET',
-          mode: 'cors',
-          headers: {
-            'Accept': 'application/json',
-            'Origin': window.location.origin
-          }
-        },
-        {
-          method: 'GET',
-          mode: 'no-cors',
-          headers: {
-            'Accept': 'application/json'
-          }
-        },
-        {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-            'Access-Control-Request-Method': 'GET',
-            'Access-Control-Request-Headers': 'accept'
-          }
-        }
-      ];
-      
-      for (let configIndex = 0; configIndex < fetchConfigs.length; configIndex++) {
-        const config = fetchConfigs[configIndex];
-        debugSystem.log(`Config ${configIndex + 1}: mode=${config.mode || 'default'}`);
-        
-        try {
-          const response = await fetch(apiUrl, config);
-          
-          debugSystem.log(`Response received - Status: ${response.status} ${response.statusText}`);
-          debugSystem.log(`Response type: ${response.type}`);
-          debugSystem.log(`Response headers: ${JSON.stringify([...response.headers.entries()])}`);
-          debugSystem.log(`Response URL: ${response.url}`);
-          
-          if (config.mode === 'no-cors') {
-            debugSystem.log('No-CORS mode: Cannot read response data, but request succeeded', 'warning');
-            showError('Connection successful but CORS configuration needed.\nPlease add proper CORS headers to your Cloudflare Worker.');
-            return;
-          }
-          
-          if (!response.ok) {
-            const errorText = await response.text().catch(() => 'Unable to read error text');
-            debugSystem.log(`Error response body: ${errorText}`, 'error');
-            throw new Error(`HTTP ${response.status}: ${response.statusText}. ${errorText}`);
-          }
-          
-          const data = await response.json();
-          debugSystem.log(`Success! Received data: ${JSON.stringify(data, null, 2)}`);
-          
-          // Check if we got valid data
-          if (!data || typeof data !== 'object') {
-            debugSystem.log('Invalid response format received', 'error');
-            throw new Error('Invalid response format received from API');
-          }
-          
-          displayMiningData(data);
-          return; // Success! Exit the function
-          
-        } catch (configError) {
-          debugSystem.log(`Config ${configIndex + 1} failed: ${configError.message}`, 'error');
-          continue; // Try next config
-        }
-      }
-      
-    } catch (endpointError) {
-      debugSystem.log(`Endpoint ${i + 1} failed: ${endpointError.message}`, 'error');
-      continue; // Try next endpoint
-    }
-  }
-  
-  // If we get here, all attempts failed
-  debugSystem.log('All endpoint attempts failed', 'error');
-  
-  // Test basic connectivity
-  debugSystem.log('Testing basic worker connectivity...', 'info');
   try {
-    const testResponse = await fetch('https://pond0x-proxy.wsfdxv2hjq.workers.dev/', { 
+    const apiUrl = `https://pond0x-proxy.wsfdxv2hjq.workers.dev/health?id=${encodeURIComponent(walletAddress)}`;
+    
+    const response = await fetch(apiUrl, {
       method: 'GET',
-      mode: 'no-cors' // Use no-cors to bypass CORS for connectivity test
+      headers: {
+        'Accept': 'application/json'
+      }
     });
-    debugSystem.log(`Basic connectivity test - Status: ${testResponse.status}, Type: ${testResponse.type}`, 'info');
     
-    if (testResponse.type === 'opaque') {
-      showError(`CORS Configuration Issue:
-
-Your Cloudflare Worker is reachable but lacks proper CORS headers.
-
-To fix this, add these headers to your Worker response:
-
-Response Headers Needed:
-• Access-Control-Allow-Origin: *
-• Access-Control-Allow-Methods: GET, POST, OPTIONS
-• Access-Control-Allow-Headers: Content-Type, Accept
-• Access-Control-Max-Age: 86400
-
-Example Worker Code:
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Accept',
-  'Content-Type': 'application/json'
-};
-
-// Handle OPTIONS preflight
-if (request.method === 'OPTIONS') {
-  return new Response(null, { headers: corsHeaders });
-}
-
-// Add to your response
-return new Response(JSON.stringify(data), { headers: corsHeaders });`);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
-  } catch (testError) {
-    debugSystem.log(`Basic connectivity failed: ${testError.message}`, 'error');
     
-    if (testError.message.includes('Failed to fetch')) {
-      showError(`Network Connectivity Issue:
-
-Cannot reach your Cloudflare Worker at:
-https://pond0x-proxy.wsfdxv2hjq.workers.dev/
-
-Possible causes:
-1. Worker is not deployed or has been deleted
-2. Domain name is incorrect
-3. Worker domain is blocked by network/firewall
-4. Worker has runtime errors preventing responses
-
-Please check:
-• Worker deployment status in Cloudflare dashboard
-• Worker logs for runtime errors
-• Network connectivity to *.workers.dev domains`);
+    const data = await response.json();
+    
+    // Check if we got valid data
+    if (!data || typeof data !== 'object') {
+      throw new Error('Invalid response format received from API');
     }
+    
+    displayMiningData(data);
+    
+  } catch (error) {
+    showError(`Unable to fetch mining data: ${error.message}`);
   }
-}
-
-// Test function that users can call manually
-function testWorkerEndpoints() {
-  debugSystem.show();
-  debugSystem.log('Manual endpoint testing started...', 'info');
-  fetchMiningData();
 }
 
 function showLoading() {
   document.getElementById('loading-section').classList.add('show');
   document.getElementById('error-section').classList.remove('show');
   document.getElementById('dashboard-section').classList.remove('show');
+  document.getElementById('pro-notice').style.display = 'none';
 }
 
 function showError(message) {
@@ -1308,62 +1127,54 @@ function showError(message) {
   document.getElementById('loading-section').classList.remove('show');
   document.getElementById('error-section').classList.add('show');
   document.getElementById('dashboard-section').classList.remove('show');
+  document.getElementById('pro-notice').style.display = 'none';
 }
 
 function showDashboard() {
   document.getElementById('loading-section').classList.remove('show');
   document.getElementById('error-section').classList.remove('show');
   document.getElementById('dashboard-section').classList.add('show');
+  // Don't show/hide pro-notice here - let displayMiningData handle it
 }
 
 function displayMiningData(data) {
   const dataGrid = document.getElementById('data-grid');
   const detailedGrid = document.getElementById('detailed-grid');
+  const proNotice = document.getElementById('pro-notice');
   
   // Clear existing data
   dataGrid.innerHTML = '';
   detailedGrid.innerHTML = '';
   
-  debugSystem.log('Displaying mining data...');
-  
   const stats = data.stats || {};
   const estimates = stats.estimates || {};
-  
-  // Add account info header
-  if (data.account) {
-    addAccountHeader(data.account);
-  }
   
   // Main Stats Overview
   const overviewCards = [
     {
-      title: '⛏️ Mining Sessions',
+      title: 'Mining Sessions',
       value: stats.mining_sessions?.toLocaleString() || '0',
       description: 'Total number of mining sessions completed',
-      icon: '⛏️',
-      status: stats.mining_sessions > 1000 ? 'healthy' : stats.mining_sessions > 100 ? 'warning' : 'info'
+      icon: '⛏️'
     },
     {
-      title: '🏥 Health Score',
-      value: `${stats.health || 0}/10`,
+      title: 'Health Score',
+      value: `${stats.health || 0}`,
       description: 'Overall mining rig health rating',
-      icon: '🏥',
-      status: getHealthStatus(stats.health),
-      progress: (stats.health || 0) * 10
+      icon: '❤️',
+      progress: Math.min((stats.health || 0) * (100 / 7), 100) // Full bar at health 7
     },
     {
-      title: '📊 In Mempool',
+      title: 'In Mempool',
       value: stats.in_mempool?.toLocaleString() || '0',
       description: 'Claims currently in the mempool queue',
-      icon: '📊',
-      status: stats.in_mempool > 0 ? 'info' : 'warning'
+      icon: '⏳'
     },
     {
-      title: '🚀 Priority Level',
+      title: 'Priority Level',
       value: `${stats.priority || 1}x`,
       description: 'Your claim priority multiplier in the queue',
-      icon: '🚀',
-      status: stats.priority >= 3 ? 'healthy' : stats.priority >= 2 ? 'warning' : 'info'
+      icon: '🌟'
     }
   ];
   
@@ -1375,57 +1186,52 @@ function displayMiningData(data) {
   // Detailed Financial & Risk Metrics
   const detailedMetrics = [
     {
-      title: '💵 SOL Price (USD)',
+      title: 'SOL Price (USD)',
       value: `${estimates.sol_usd ? estimates.sol_usd.toFixed(2) : '0.00'}`,
       description: 'Current SOL price in USD',
-      icon: '💵'
+      icon: '◎'
     },
     {
-      title: '🪙 wPOND Price (USD)',
+      title: 'wPOND Price (USD)',
       value: `${estimates.wpond_usd ? estimates.wpond_usd.toFixed(8) : '0.00000000'}`,
       description: 'Current wPOND price in USD',
-      icon: '🪙'
+      icon: '🪷'
     },
     {
-      title: '⚠️ Drift Risk Claims',
+      title: 'Drift Risk Claims',
       value: stats.drift_risk?.toLocaleString() || '0',
       description: 'Number of claims at risk of drifting',
-      icon: '⚠️',
-      status: stats.drift_risk > 1000 ? 'danger' : stats.drift_risk > 100 ? 'warning' : 'healthy'
+      icon: '⚠️'
     },
     {
-      title: '💸 Drift Risk Value',
+      title: 'Drift Risk Value',
       value: `${estimates.drift_risk_usd ? estimates.drift_risk_usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}`,
       description: 'USD value of claims at drift risk',
-      icon: '💸',
-      status: estimates.drift_risk_usd > 50000 ? 'danger' : estimates.drift_risk_usd > 10000 ? 'warning' : 'healthy'
+      icon: '💸'
     },
     {
-      title: '✅ Successfully Sent',
+      title: 'Successfully Sent',
       value: stats.sent?.toLocaleString() || '0',
       description: 'Claims successfully processed and sent',
-      icon: '✅',
-      status: 'healthy'
+      icon: '✅'
     },
     {
-      title: '❌ Failed Claims',
+      title: 'Failed Claims',
       value: stats.failed?.toLocaleString() || '0',
       description: 'Claims that failed processing',
-      icon: '❌',
-      status: stats.failed > 0 ? 'danger' : 'healthy'
+      icon: '❌'
     },
     {
-      title: '📉 Drifted Claims',
+      title: 'Drifted Claims',
       value: stats.drifted?.toLocaleString() || '0',
       description: 'Claims that have already drifted',
-      icon: '📉',
-      status: stats.drifted > 0 ? 'danger' : 'healthy'
+      icon: '📉'
     },
     {
-      title: '🎯 Max Claim Estimate',
+      title: 'Max Claim Estimate',
       value: `${estimates.max_claim_estimate_usd ? estimates.max_claim_estimate_usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}`,
       description: 'Maximum estimated claim value in USD',
-      icon: '🎯'
+      icon: '🏆'
     }
   ];
   
@@ -1434,9 +1240,16 @@ function displayMiningData(data) {
     detailedGrid.appendChild(cardElement);
   });
 
-  // Add AI Insights Section
-  if (data.ai_beta && Array.isArray(data.ai_beta) && data.ai_beta.length > 0) {
+  // Check if AI insights are available and show/hide PRO notice accordingly
+  const hasAIInsights = data.ai_beta && Array.isArray(data.ai_beta) && data.ai_beta.length > 0;
+  
+  if (hasAIInsights) {
+    // Hide PRO notice and show AI insights
+    proNotice.style.display = 'none';
     addAIInsightsSection(data.ai_beta);
+  } else {
+    // Show PRO notice only when no AI insights are available after API call
+    proNotice.style.display = 'block';
   }
 
   // Add data notice if present
@@ -1445,53 +1258,6 @@ function displayMiningData(data) {
   }
   
   showDashboard();
-}
-
-function addAccountHeader(account) {
-  const dashboardSection = document.getElementById('dashboard-section');
-  
-  // Remove existing account header if present
-  const existingHeader = dashboardSection.querySelector('.account-header');
-  if (existingHeader) {
-    existingHeader.remove();
-  }
-  
-  const accountHeader = document.createElement('div');
-  accountHeader.className = 'account-header';
-  accountHeader.style.cssText = `
-    background: var(--link-item-bg);
-    backdrop-filter: blur(15px);
-    border-radius: 12px;
-    padding: 1.5rem;
-    border: 1px solid var(--card-border);
-    margin-bottom: 2rem;
-    text-align: center;
-    border-left: 4px solid var(--accent-color);
-  `;
-  
-  accountHeader.innerHTML = `
-    <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 1rem;">
-      <span style="font-size: 1.5rem;">👤</span>
-      <h3 style="margin: 0; color: var(--text-primary); font-size: 1.2rem; font-weight: 700;">
-        Account Overview
-      </h3>
-    </div>
-    <div style="
-      font-family: monospace; 
-      font-size: 1rem; 
-      color: var(--accent-color);
-      background: var(--input-bg);
-      padding: 0.8rem 1rem;
-      border-radius: 8px;
-      border: 1px solid var(--card-border);
-      word-break: break-all;
-      letter-spacing: 0.5px;
-    ">
-      ${account}
-    </div>
-  `;
-  
-  dashboardSection.insertBefore(accountHeader, dashboardSection.firstChild);
 }
 
 function addDataNotice(message) {
@@ -1553,7 +1319,7 @@ function addAIInsightsSection(aiInsights) {
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
-      border-left: 4px solid ${getInsightColor(insight)};
+      border-left: 4px solid var(--accent-color);
     `;
     
     insightCard.innerHTML = `
@@ -1594,20 +1360,12 @@ function addAIInsightsSection(aiInsights) {
 
 function getInsightIcon(insight) {
   const text = insight.toLowerCase();
-  if (text.includes('healthy') || text.includes('boost')) return '✅';
-  if (text.includes('risk') || text.includes('drift')) return '⚠️';
-  if (text.includes('account') || text.includes('linked')) return '🔗';
-  if (text.includes('pro') || text.includes('priority')) return '⭐';
-  if (text.includes('turbo') || text.includes('gud')) return '🚀';
+  if (text.includes('healthy') || text.includes('boost')) return '✨';
+  if (text.includes('risk') || text.includes('drift')) return '✨';
+  if (text.includes('account') || text.includes('linked')) return '✨';
+  if (text.includes('pro') || text.includes('priority')) return '✨';
+  if (text.includes('turbo') || text.includes('gud')) return '✨';
   return '💡';
-}
-
-function getInsightColor(insight) {
-  const text = insight.toLowerCase();
-  if (text.includes('healthy') || text.includes('gud')) return 'var(--success-color)';
-  if (text.includes('risk') || text.includes('drift')) return 'var(--warning-color)';
-  if (text.includes('pro') || text.includes('priority')) return 'var(--accent-color)';
-  return 'var(--info-color)';
 }
 
 function createDataCard(data) {
@@ -1615,7 +1373,6 @@ function createDataCard(data) {
   card.className = 'data-card';
   
   const hasProgress = typeof data.progress === 'number';
-  const hasStatus = data.status;
   
   card.innerHTML = `
     <div class="data-card-header">
@@ -1623,7 +1380,6 @@ function createDataCard(data) {
         <span class="data-card-icon">${data.icon}</span>
         ${data.title}
       </div>
-      ${hasStatus ? `<span class="status-badge status-${data.status}">${data.status}</span>` : ''}
     </div>
     <div class="data-card-value">${data.value}</div>
     ${hasProgress ? `
@@ -1635,53 +1391,6 @@ function createDataCard(data) {
   `;
   
   return card;
-}
-
-// Status helper functions
-function getHashRateStatus(hashRate) {
-  if (!hashRate || hashRate === '0') return 'danger';
-  const rate = parseFloat(hashRate);
-  if (rate >= 1000) return 'healthy';
-  if (rate >= 500) return 'warning';
-  return 'danger';
-}
-
-function getHealthStatus(health) {
-  if (!health || health === 0) return 'danger';
-  if (health >= 8) return 'healthy';
-  if (health >= 5) return 'warning';
-  return 'danger';
-}
-
-function getBoostStatus(boost) {
-  if (!boost) return 'info';
-  const level = parseFloat(boost);
-  if (level >= 2) return 'healthy';
-  if (level >= 1.5) return 'warning';
-  return 'info';
-}
-
-function getEfficiencyStatus(efficiency) {
-  if (!efficiency) return 'danger';
-  if (efficiency >= 85) return 'healthy';
-  if (efficiency >= 70) return 'warning';
-  return 'danger';
-}
-
-function getTempStatus(temp) {
-  if (!temp || temp === 'N/A') return 'info';
-  if (temp.includes('Normal') || temp.includes('Good')) return 'healthy';
-  if (temp.includes('Warm') || temp.includes('High')) return 'warning';
-  return 'danger';
-}
-
-function formatDate(dateString) {
-  try {
-    const date = new Date(dateString);
-    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-  } catch (e) {
-    return dateString;
-  }
 }
 
 function toggleBubbles() {
