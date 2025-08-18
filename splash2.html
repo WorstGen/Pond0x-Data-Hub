@@ -1960,19 +1960,60 @@ function displayWalletManifest(data) {
 
   const badges = Array.isArray(data.badges) ? data.badges.join(', ') : (data.badges || 'None');
 
-  manifestSection.innerHTML = `
-    <h2 style="margin:0 0 1rem 0; font-size: 1.25rem; color: var(--text-primary);">🪪 Wallet Manifest</h2>
-    <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
-      <div><strong>Badges:</strong> ${badges}</div>
-      <div><strong>Cope:</strong> ${data.cope ? '✅ Yes' : '❌ No'}</div>
-      <div><strong>Twitter Linked:</strong> ${data.hasTwitter ? '✅ Yes' : '❌ No'}</div>
-      <div><strong>Pro User:</strong> ${data.isPro ? '🌟 Yes' : 'No'}</div>
-      <div><strong>Pro Since:</strong> ${data.proAgo ?? 'N/A'}</div>
-      <div><strong>Pro Expiry:</strong> ${data.proExpiry ?? 'N/A'}</div>
-      <div><strong>Pro Swaps (Bx):</strong> ${Number(data.proSwapsBx ?? 0).toLocaleString()}</div>
-      <div><strong>Pro Swaps (SOL):</strong> ${Number(data.proSwapsSol ?? 0).toLocaleString()}</div>
-    </div>
-  `;
+  // Map badges to emojis
+const badgeMap = {
+  void: "🐇",
+  diamond: "💎",
+  pork: "🐽",
+  chef: "👨🏻‍🍳",
+  points: "✨",
+  stand: "✊",
+  swap: "🤝"
+};
+
+// Convert badges string to emoji list
+let badgeList = (badges || "")
+  .split(",")
+  .map(b => badgeMap[b.trim()] || "")
+  .filter(Boolean);
+
+// Add Twitter X in front if hasTwitter
+if (data.hasTwitter) {
+  badgeList.unshift("𝕏");
+}
+
+// Add 🤡 at the end if cope is true
+if (data.cope) {
+  badgeList.push("🤡");
+}
+
+manifestSection.innerHTML = `
+  <h2 style="margin:0 0 1rem 0; font-size:1.25rem; color:var(--text-primary);">🪪 Passport</h2>
+
+  <!-- Big Emoji Line -->
+  <div style="font-size:2.5rem; line-height:1.5; text-align:center; margin-bottom:1rem;">
+    ${badgeList.join(" ")}
+  </div>
+
+  <!-- Passport/ID Styled Details -->
+  <div style="
+      display:flex; 
+      flex-wrap:wrap; 
+      gap:1rem; 
+      justify-content:center; 
+      font-size:1.25rem; 
+      padding:1rem; 
+      border-radius:12px; 
+      background-color:rgba(0,0,0,0.05); 
+      box-shadow:0 2px 8px rgba(0,0,0,0.15);
+  ">
+    <div><strong>Pro User:</strong> ${data.isPro ? '🌟 Yes' : 'No'}</div>
+    <div><strong>Pro Since:</strong> ${data.proAgo ?? 'N/A'}</div>
+    <div><strong>Pro Expiry:</strong> ${data.proExpiry ?? 'N/A'}</div>
+    <div><strong>Pro Swaps (Bx):</strong> ${Number(data.proSwapsBx ?? 0).toLocaleString()}</div>
+    <div><strong>Pro Swaps (SOL):</strong> ${Number(data.proSwapsSol ?? 0).toLocaleString()}</div>
+  </div>
+`;
 
   dashboardSection.prepend(manifestSection);
 }
