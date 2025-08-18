@@ -322,7 +322,7 @@
       background: var(--card-bg);
       backdrop-filter: blur(10px);
       border-radius: 20px;
-      padding: 1,5rem;
+      padding: 1.5rem;
       border: 2px solid var(--card-border);
       box-shadow: 0 12px 40px var(--shadow-primary);
       transition: all 0.3s ease;
@@ -2044,6 +2044,47 @@ function showDashboard() {
 }
 
 // ──────────────────────────────────────────────────────────────
+// NEW: Clear All Dashboard Content Function
+// ──────────────────────────────────────────────────────────────
+function clearAllDashboardContent() {
+  const dashboardSection = document.getElementById('dashboard-section');
+  if (!dashboardSection) return;
+  
+  // Clear the main data grids
+  const dataGrid = document.getElementById('data-grid');
+  const detailedGrid = document.getElementById('detailed-grid');
+  if (dataGrid) dataGrid.innerHTML = '';
+  if (detailedGrid) detailedGrid.innerHTML = '';
+  
+  // Remove all dynamically added sections
+  const dynamicSections = [
+    '.manifest-section',
+    '.ai-insights-section',
+    '.data-notice',
+    '.additional-content'
+  ];
+  
+  dynamicSections.forEach(selector => {
+    const elements = dashboardSection.querySelectorAll(selector);
+    elements.forEach(element => element.remove());
+  });
+  
+  // Also remove any dynamically added divs that aren't part of the original structure
+  const allChildren = Array.from(dashboardSection.children);
+  allChildren.forEach(child => {
+    // Keep only the original structural elements
+    if (!child.classList.contains('section-title') && 
+        !child.classList.contains('data-grid') && 
+        child.id !== 'data-grid' && 
+        child.id !== 'detailed-grid') {
+      child.remove();
+    }
+  });
+  
+  console.log('All dashboard content cleared');
+}
+
+// ──────────────────────────────────────────────────────────────
 // NEW: Wallet Manifest Fetcher + Renderer
 // ──────────────────────────────────────────────────────────────
 async function fetchWalletManifest(walletAddress) {
@@ -2070,12 +2111,6 @@ async function fetchWalletManifest(walletAddress) {
 function displayWalletManifest(data) {
   const dashboardSection = document.getElementById('dashboard-section');
   if (!dashboardSection) return;
-
-  // Remove any existing manifest section
-  const existingManifest = dashboardSection.querySelector('.manifest-section');
-  if (existingManifest) {
-    existingManifest.remove();
-  }
 
   const manifestSection = document.createElement('div');
   manifestSection.className = 'manifest-section';
@@ -2185,6 +2220,9 @@ async function initDashboard() {
   }
 
   showLoading();
+  
+  // CRITICAL FIX: Clear all previous dashboard content before loading new data
+  clearAllDashboardContent();
 
   try {
     await Promise.all([
@@ -2198,7 +2236,7 @@ async function initDashboard() {
 }
 
 // ──────────────────────────────────────────────────────────────
-// EXISTING: Display Mining Data (unchanged from your code)
+// UPDATED: Display Mining Data (with enhanced clearing)
 // ──────────────────────────────────────────────────────────────
 function displayMiningData(data) {
   const dataGrid = document.getElementById('data-grid');
@@ -2207,7 +2245,7 @@ function displayMiningData(data) {
 
   if (!dataGrid || !detailedGrid || !proNotice) return;
 
-  // Clear existing data
+  // Clear existing data in the grids (redundant but safe)
   dataGrid.innerHTML = '';
   detailedGrid.innerHTML = '';
 
@@ -2252,13 +2290,13 @@ function displayMiningData(data) {
   const detailedMetrics = [
     {
       title: 'SOL Price (USD)',
-      value: `$${estimates.sol_usd ? estimates.sol_usd.toFixed(2) : '0.00'}`,
+      value: `${estimates.sol_usd ? estimates.sol_usd.toFixed(2) : '0.00'}`,
       description: 'Current SOL price in USD',
       icon: '◎'
     },
     {
       title: 'wPOND Price (USD)',
-      value: `$${estimates.wpond_usd ? estimates.wpond_usd.toFixed(8) : '0.00000000'}`,
+      value: `${estimates.wpond_usd ? estimates.wpond_usd.toFixed(8) : '0.00000000'}`,
       description: 'Current wPOND price in USD',
       icon: '🪷'
     },
@@ -2270,7 +2308,7 @@ function displayMiningData(data) {
     },
     {
       title: 'Drift Risk Value',
-      value: `$${estimates.drift_risk_usd ? estimates.drift_risk_usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}`,
+      value: `${estimates.drift_risk_usd ? estimates.drift_risk_usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}`,
       description: 'USD value of claims at drift risk',
       icon: '💸'
     },
@@ -2294,7 +2332,7 @@ function displayMiningData(data) {
     },
     {
       title: 'Max Claim Estimate',
-      value: `$${estimates.max_claim_estimate_usd ? estimates.max_claim_estimate_usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}`,
+      value: `${estimates.max_claim_estimate_usd ? estimates.max_claim_estimate_usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}`,
       description: 'Maximum estimated claim value in USD',
       icon: '🏆'
     }
@@ -2322,13 +2360,14 @@ function displayMiningData(data) {
 }
 
 // ──────────────────────────────────────────────────────────────
-// EXISTING: Data Notice + AI Insights
+// UPDATED: Data Notice + AI Insights (with class names for clearing)
 // ──────────────────────────────────────────────────────────────
 function addDataNotice(message) {
   const dashboardSection = document.getElementById('dashboard-section');
   if (!dashboardSection) return;
 
   const noticeDiv = document.createElement('div');
+  noticeDiv.className = 'data-notice'; // Added class for easier clearing
   noticeDiv.style.cssText = `
     background: var(--link-item-bg);
     backdrop-filter: blur(15px);
@@ -2356,14 +2395,8 @@ function addAIInsightsSection(aiInsights) {
   const dashboardSection = document.getElementById('dashboard-section');
   if (!dashboardSection) return;
   
-  // Remove any existing AI insights section
-  const existingAI = dashboardSection.querySelector('.ai-insights-section');
-  if (existingAI) {
-    existingAI.remove();
-  }
-  
   const aiSection = document.createElement('div');
-  aiSection.className = 'ai-insights-section';
+  aiSection.className = 'ai-insights-section'; // Class for easier clearing
   aiSection.style.marginTop = '3rem';
 
   const aiTitle = document.createElement('div');
