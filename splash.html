@@ -1196,8 +1196,7 @@ function displayMiningData(data) {
       title: 'In Mempool',
       value: stats.in_mempool?.toLocaleString() || '0',
       description: 'Claims currently in the mempool queue',
-      icon: '📊',
-      status: stats.in_mempool > 0 ? 'info' : 'warning'
+      icon: '📊'
     },
     {
       title: 'Priority Level',
@@ -1271,13 +1270,15 @@ function displayMiningData(data) {
     detailedGrid.appendChild(cardElement);
   });
 
-  // Check if AI insights are available
+  // Check if AI insights are available and show/hide PRO notice accordingly
   const hasAIInsights = data.ai_beta && Array.isArray(data.ai_beta) && data.ai_beta.length > 0;
   
   if (hasAIInsights) {
-    addAIInsightsSection(data.ai_beta);
+    // Hide PRO notice and show AI insights
     proNotice.style.display = 'none';
+    addAIInsightsSection(data.ai_beta);
   } else {
+    // Show PRO notice when no AI insights available
     proNotice.style.display = 'block';
   }
 
