@@ -736,6 +736,17 @@
       filter: brightness(1.1) contrast(1.1) drop-shadow(0 0 20px rgba(189, 124, 253, 0.3));
     }
 
+    .pro-notice {
+      background: var(--link-item-bg);
+      backdrop-filter: blur(15px);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid var(--warning-color);
+      margin-top: 2rem;
+      text-align: center;
+      border-left: 4px solid var(--warning-color);
+    }
+
     @media (max-width: 768px) {
       .nav-container {
         flex-direction: column;
@@ -912,10 +923,14 @@
       </div>
     </div>
 
-    <!-- Debug Information -->
-    <div id="debug-section" class="debug-info" style="display: none;">
-      <h3>🔍 Debug Information</h3>
-      <div id="debug-content"></div>
+    <!-- PRO Notice (shown when AI insights are NOT available) -->
+    <div id="pro-notice" class="pro-notice" style="display: none;">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
+        <span style="font-size: 1.5rem;">⭐</span>
+        <p style="margin: 0; color: var(--text-primary); font-size: 1rem; font-weight: 500;">
+          Individual stats require signed request and PRO account
+        </p>
+      </div>
     </div>
   </div>
 
@@ -1052,37 +1067,6 @@ const bubbleSystem = {
   }
 };
 
-// Debug system
-const debugSystem = {
-  logs: [],
-  
-  log(message, type = 'info') {
-    const timestamp = new Date().toLocaleTimeString();
-    this.logs.push({ timestamp, message, type });
-    console.log(`[${timestamp}] ${message}`);
-    this.updateDebugDisplay();
-  },
-  
-  updateDebugDisplay() {
-    const debugContent = document.getElementById('debug-content');
-    if (debugContent) {
-      debugContent.textContent = this.logs.map(log => 
-        `[${log.timestamp}] ${log.type.toUpperCase()}: ${log.message}`
-      ).join('\n');
-    }
-  },
-  
-  show() {
-    document.getElementById('debug-section').style.display = 'block';
-    isDebugging = true;
-  },
-  
-  hide() {
-    document.getElementById('debug-section').style.display = 'none';
-    isDebugging = false;
-  }
-};
-
 // Wallet validation
 function validateSolanaAddress(address) {
   if (!address || address.trim().length === 0) return false;
@@ -1119,188 +1103,51 @@ function detectWalletType() {
   return 'invalid';
 }
 
-// Mining Data Fetcher with enhanced debugging
+// Mining Data Fetcher
 async function fetchMiningData() {
   const walletInput = document.getElementById('wallet-input');
   const walletAddress = walletInput.value.trim();
   
-  debugSystem.show();
-  debugSystem.log(`Starting fetch for wallet: ${walletAddress}`);
-  
   if (!validateSolanaAddress(walletAddress)) {
-    debugSystem.log('Invalid Solana address format', 'error');
     showError('Please enter a valid Solana wallet address');
     return;
   }
   
   showLoading();
   
-  // Test multiple API endpoints and approaches
-  const endpoints = [
-    `https://pond0x-proxy.wsfdxv2hjq.workers.dev/health?id=${encodeURIComponent(walletAddress)}`,
-    `https://pond0x-proxy.wsfdxv2hjq.workers.dev/health/${encodeURIComponent(walletAddress)}`,
-    `https://pond0x-proxy.wsfdxv2hjq.workers.dev/?endpoint=health&id=${encodeURIComponent(walletAddress)}`
-  ];
-  
-  debugSystem.log(`Testing ${endpoints.length} different endpoint formats...`);
-  
-  for (let i = 0; i < endpoints.length; i++) {
-    const apiUrl = endpoints[i];
-    debugSystem.log(`Attempt ${i + 1}: ${apiUrl}`);
-    
-    try {
-      debugSystem.log(`Attempting fetch with different CORS modes...`);
-      
-      // Try different fetch configurations
-      const fetchConfigs = [
-        {
-          method: 'GET',
-          mode: 'cors',
-          headers: {
-            'Accept': 'application/json',
-            'Origin': window.location.origin
-          }
-        },
-        {
-          method: 'GET',
-          mode: 'no-cors',
-          headers: {
-            'Accept': 'application/json'
-          }
-        },
-        {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-            'Access-Control-Request-Method': 'GET',
-            'Access-Control-Request-Headers': 'accept'
-          }
-        }
-      ];
-      
-      for (let configIndex = 0; configIndex < fetchConfigs.length; configIndex++) {
-        const config = fetchConfigs[configIndex];
-        debugSystem.log(`Config ${configIndex + 1}: mode=${config.mode || 'default'}`);
-        
-        try {
-          const response = await fetch(apiUrl, config);
-          
-          debugSystem.log(`Response received - Status: ${response.status} ${response.statusText}`);
-          debugSystem.log(`Response type: ${response.type}`);
-          debugSystem.log(`Response headers: ${JSON.stringify([...response.headers.entries()])}`);
-          debugSystem.log(`Response URL: ${response.url}`);
-          
-          if (config.mode === 'no-cors') {
-            debugSystem.log('No-CORS mode: Cannot read response data, but request succeeded', 'warning');
-            showError('Connection successful but CORS configuration needed.\nPlease add proper CORS headers to your Cloudflare Worker.');
-            return;
-          }
-          
-          if (!response.ok) {
-            const errorText = await response.text().catch(() => 'Unable to read error text');
-            debugSystem.log(`Error response body: ${errorText}`, 'error');
-            throw new Error(`HTTP ${response.status}: ${response.statusText}. ${errorText}`);
-          }
-          
-          const data = await response.json();
-          debugSystem.log(`Success! Received data: ${JSON.stringify(data, null, 2)}`);
-          
-          // Check if we got valid data
-          if (!data || typeof data !== 'object') {
-            debugSystem.log('Invalid response format received', 'error');
-            throw new Error('Invalid response format received from API');
-          }
-          
-          displayMiningData(data);
-          return; // Success! Exit the function
-          
-        } catch (configError) {
-          debugSystem.log(`Config ${configIndex + 1} failed: ${configError.message}`, 'error');
-          continue; // Try next config
-        }
-      }
-      
-    } catch (endpointError) {
-      debugSystem.log(`Endpoint ${i + 1} failed: ${endpointError.message}`, 'error');
-      continue; // Try next endpoint
-    }
-  }
-  
-  // If we get here, all attempts failed
-  debugSystem.log('All endpoint attempts failed', 'error');
-  
-  // Test basic connectivity
-  debugSystem.log('Testing basic worker connectivity...', 'info');
   try {
-    const testResponse = await fetch('https://pond0x-proxy.wsfdxv2hjq.workers.dev/', { 
+    const apiUrl = `https://pond0x-proxy.wsfdxv2hjq.workers.dev/health?id=${encodeURIComponent(walletAddress)}`;
+    
+    const response = await fetch(apiUrl, {
       method: 'GET',
-      mode: 'no-cors' // Use no-cors to bypass CORS for connectivity test
+      headers: {
+        'Accept': 'application/json'
+      }
     });
-    debugSystem.log(`Basic connectivity test - Status: ${testResponse.status}, Type: ${testResponse.type}`, 'info');
     
-    if (testResponse.type === 'opaque') {
-      showError(`CORS Configuration Issue:
-
-Your Cloudflare Worker is reachable but lacks proper CORS headers.
-
-To fix this, add these headers to your Worker response:
-
-Response Headers Needed:
-• Access-Control-Allow-Origin: *
-• Access-Control-Allow-Methods: GET, POST, OPTIONS
-• Access-Control-Allow-Headers: Content-Type, Accept
-• Access-Control-Max-Age: 86400
-
-Example Worker Code:
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Accept',
-  'Content-Type': 'application/json'
-};
-
-// Handle OPTIONS preflight
-if (request.method === 'OPTIONS') {
-  return new Response(null, { headers: corsHeaders });
-}
-
-// Add to your response
-return new Response(JSON.stringify(data), { headers: corsHeaders });`);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
-  } catch (testError) {
-    debugSystem.log(`Basic connectivity failed: ${testError.message}`, 'error');
     
-    if (testError.message.includes('Failed to fetch')) {
-      showError(`Network Connectivity Issue:
-
-Cannot reach your Cloudflare Worker at:
-https://pond0x-proxy.wsfdxv2hjq.workers.dev/
-
-Possible causes:
-1. Worker is not deployed or has been deleted
-2. Domain name is incorrect
-3. Worker domain is blocked by network/firewall
-4. Worker has runtime errors preventing responses
-
-Please check:
-• Worker deployment status in Cloudflare dashboard
-• Worker logs for runtime errors
-• Network connectivity to *.workers.dev domains`);
+    const data = await response.json();
+    
+    // Check if we got valid data
+    if (!data || typeof data !== 'object') {
+      throw new Error('Invalid response format received from API');
     }
+    
+    displayMiningData(data);
+    
+  } catch (error) {
+    showError(`Unable to fetch mining data: ${error.message}`);
   }
-}
-
-// Test function that users can call manually
-function testWorkerEndpoints() {
-  debugSystem.show();
-  debugSystem.log('Manual endpoint testing started...', 'info');
-  fetchMiningData();
 }
 
 function showLoading() {
   document.getElementById('loading-section').classList.add('show');
   document.getElementById('error-section').classList.remove('show');
   document.getElementById('dashboard-section').classList.remove('show');
+  document.getElementById('pro-notice').style.display = 'none';
 }
 
 function showError(message) {
@@ -1308,6 +1155,7 @@ function showError(message) {
   document.getElementById('loading-section').classList.remove('show');
   document.getElementById('error-section').classList.add('show');
   document.getElementById('dashboard-section').classList.remove('show');
+  document.getElementById('pro-notice').style.display = 'none';
 }
 
 function showDashboard() {
@@ -1319,43 +1167,43 @@ function showDashboard() {
 function displayMiningData(data) {
   const dataGrid = document.getElementById('data-grid');
   const detailedGrid = document.getElementById('detailed-grid');
+  const proNotice = document.getElementById('pro-notice');
   
   // Clear existing data
   dataGrid.innerHTML = '';
   detailedGrid.innerHTML = '';
   
-  debugSystem.log('Displaying mining data...');
+  const stats = data.stats || {};
+  const estimates = stats.estimates || {};
   
-  // Overview cards
+  // Main Stats Overview (without status badges for specified metrics)
   const overviewCards = [
     {
-      title: '⚡ Current Hash Rate',
-      value: data.hashRate || '0',
-      description: 'Your current mining hash rate',
-      icon: '⚡',
-      status: getHashRateStatus(data.hashRate)
+      title: 'Mining Sessions',
+      value: stats.mining_sessions?.toLocaleString() || '0',
+      description: 'Total number of mining sessions completed',
+      icon: '⛏️'
     },
     {
-      title: '🏥 Health Score',
-      value: data.healthScore ? `${data.healthScore}%` : '0%',
-      description: 'Overall mining health percentage',
+      title: 'Health Score',
+      value: `${stats.health || 0}`,
+      description: 'Overall mining rig health rating',
       icon: '🏥',
-      status: getHealthStatus(data.healthScore),
-      progress: data.healthScore || 0
+      status: getHealthStatus(stats.health),
+      progress: Math.min((stats.health || 0) * (100 / 7), 100) // Full bar at health 7
     },
     {
-      title: '⛏️ Mining Status',
-      value: data.isMining ? 'Active' : 'Inactive',
-      description: 'Current mining activity status',
-      icon: '⛏️',
-      status: data.isMining ? 'healthy' : 'danger'
+      title: 'In Mempool',
+      value: stats.in_mempool?.toLocaleString() || '0',
+      description: 'Claims currently in the mempool queue',
+      icon: '📊',
+      status: stats.in_mempool > 0 ? 'info' : 'warning'
     },
     {
-      title: '🔥 Boost Level',
-      value: data.boostLevel || '0x',
-      description: 'Your current mining boost multiplier',
-      icon: '🔥',
-      status: getBoostStatus(data.boostLevel)
+      title: 'Priority Level',
+      value: `${stats.priority || 1}x`,
+      description: 'Your claim priority multiplier in the queue',
+      icon: '🚀'
     }
   ];
   
@@ -1364,46 +1212,57 @@ function displayMiningData(data) {
     dataGrid.appendChild(cardElement);
   });
   
-  // Detailed metrics
+  // Detailed Financial & Risk Metrics
   const detailedMetrics = [
     {
-      title: '💰 Total Earnings',
-      value: data.totalEarnings ? `${parseFloat(data.totalEarnings).toFixed(4)} wPOND` : '0 wPOND',
-      description: 'Total wPOND earned from mining',
-      icon: '💰'
+      title: 'SOL Price (USD)',
+      value: `${estimates.sol_usd ? estimates.sol_usd.toFixed(2) : '0.00'}`,
+      description: 'Current SOL price in USD',
+      icon: '💵'
     },
     {
-      title: '⏱️ Uptime',
-      value: data.uptime || '0h',
-      description: 'Mining uptime in the last 24 hours',
-      icon: '⏱️'
+      title: 'wPOND Price (USD)',
+      value: `${estimates.wpond_usd ? estimates.wpond_usd.toFixed(8) : '0.00000000'}`,
+      description: 'Current wPOND price in USD',
+      icon: '🪙'
     },
     {
-      title: '🎯 Efficiency',
-      value: data.efficiency ? `${data.efficiency}%` : '0%',
-      description: 'Mining efficiency rating',
-      icon: '🎯',
-      progress: data.efficiency || 0,
-      status: getEfficiencyStatus(data.efficiency)
+      title: 'Drift Risk Claims',
+      value: stats.drift_risk?.toLocaleString() || '0',
+      description: 'Number of claims at risk of drifting',
+      icon: '⚠️',
+      status: stats.drift_risk > 1000 ? 'danger' : stats.drift_risk > 100 ? 'warning' : 'healthy'
     },
     {
-      title: '🔋 Energy Usage',
-      value: data.energyUsage || '0 kW/h',
-      description: 'Estimated energy consumption',
-      icon: '🔋'
+      title: 'Drift Risk Value',
+      value: `${estimates.drift_risk_usd ? estimates.drift_risk_usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}`,
+      description: 'USD value of claims at drift risk',
+      icon: '💸',
+      status: estimates.drift_risk_usd > 50000 ? 'danger' : estimates.drift_risk_usd > 10000 ? 'warning' : 'healthy'
     },
     {
-      title: '🌡️ Temperature',
-      value: data.temperature || 'N/A',
-      description: 'Mining rig temperature status',
-      icon: '🌡️',
-      status: getTempStatus(data.temperature)
+      title: 'Successfully Sent',
+      value: stats.sent?.toLocaleString() || '0',
+      description: 'Claims successfully processed and sent',
+      icon: '✅'
     },
     {
-      title: '📅 Last Active',
-      value: data.lastActive ? formatDate(data.lastActive) : 'Unknown',
-      description: 'Last recorded mining activity',
-      icon: '📅'
+      title: 'Failed Claims',
+      value: stats.failed?.toLocaleString() || '0',
+      description: 'Claims that failed processing',
+      icon: '❌'
+    },
+    {
+      title: 'Drifted Claims',
+      value: stats.drifted?.toLocaleString() || '0',
+      description: 'Claims that have already drifted',
+      icon: '📉'
+    },
+    {
+      title: 'Max Claim Estimate',
+      value: `${estimates.max_claim_estimate_usd ? estimates.max_claim_estimate_usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}`,
+      description: 'Maximum estimated claim value in USD',
+      icon: '🎯'
     }
   ];
   
@@ -1411,8 +1270,131 @@ function displayMiningData(data) {
     const cardElement = createDataCard(metric);
     detailedGrid.appendChild(cardElement);
   });
+
+  // Check if AI insights are available
+  const hasAIInsights = data.ai_beta && Array.isArray(data.ai_beta) && data.ai_beta.length > 0;
+  
+  if (hasAIInsights) {
+    addAIInsightsSection(data.ai_beta);
+    proNotice.style.display = 'none';
+  } else {
+    proNotice.style.display = 'block';
+  }
+
+  // Add data notice if present
+  if (data.data && data.data.msg) {
+    addDataNotice(data.data.msg);
+  }
   
   showDashboard();
+}
+
+function addDataNotice(message) {
+  const dashboardSection = document.getElementById('dashboard-section');
+  
+  const noticeDiv = document.createElement('div');
+  noticeDiv.style.cssText = `
+    background: var(--link-item-bg);
+    backdrop-filter: blur(15px);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid var(--warning-color);
+    margin-top: 2rem;
+    text-align: center;
+    border-left: 4px solid var(--warning-color);
+  `;
+  
+  noticeDiv.innerHTML = `
+    <div style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
+      <span style="font-size: 1.5rem;">ℹ️</span>
+      <p style="margin: 0; color: var(--text-primary); font-size: 1rem; font-weight: 500;">
+        ${message}
+      </p>
+    </div>
+  `;
+  
+  dashboardSection.appendChild(noticeDiv);
+}
+
+// AI Insights Section
+function addAIInsightsSection(aiInsights) {
+  const dashboardSection = document.getElementById('dashboard-section');
+  
+  // Create AI Insights section
+  const aiSection = document.createElement('div');
+  aiSection.style.marginTop = '3rem';
+  
+  const aiTitle = document.createElement('div');
+  aiTitle.className = 'section-title';
+  aiTitle.innerHTML = '🤖 AI Insights & Recommendations';
+  
+  const aiContainer = document.createElement('div');
+  aiContainer.className = 'ai-insights-container';
+  aiContainer.style.cssText = `
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  `;
+  
+  aiInsights.forEach((insight, index) => {
+    const insightCard = document.createElement('div');
+    insightCard.className = 'ai-insight-card';
+    insightCard.style.cssText = `
+      background: var(--link-item-bg);
+      backdrop-filter: blur(15px);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid var(--card-border);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      border-left: 4px solid var(--accent-color);
+    `;
+    
+    insightCard.innerHTML = `
+      <div style="display: flex; align-items: flex-start; gap: 1rem;">
+        <div style="font-size: 1.5rem; opacity: 0.8; flex-shrink: 0;">
+          ${getInsightIcon(insight)}
+        </div>
+        <div style="flex: 1;">
+          <p style="
+            color: var(--text-primary); 
+            font-size: 1rem; 
+            line-height: 1.5; 
+            margin: 0;
+            font-weight: ${insight.includes('risk') || insight.includes('drift') ? '600' : '500'};
+          ">${insight}</p>
+        </div>
+      </div>
+    `;
+    
+    // Add hover effect
+    insightCard.addEventListener('mouseenter', () => {
+      insightCard.style.transform = 'translateY(-2px)';
+      insightCard.style.boxShadow = '0 8px 25px var(--shadow-primary)';
+    });
+    
+    insightCard.addEventListener('mouseleave', () => {
+      insightCard.style.transform = 'translateY(0)';
+      insightCard.style.boxShadow = 'none';
+    });
+    
+    aiContainer.appendChild(insightCard);
+  });
+  
+  aiSection.appendChild(aiTitle);
+  aiSection.appendChild(aiContainer);
+  dashboardSection.appendChild(aiSection);
+}
+
+function getInsightIcon(insight) {
+  const text = insight.toLowerCase();
+  if (text.includes('healthy') || text.includes('boost')) return '✅';
+  if (text.includes('risk') || text.includes('drift')) return '⚠️';
+  if (text.includes('account') || text.includes('linked')) return '🔗';
+  if (text.includes('pro') || text.includes('priority')) return '⭐';
+  if (text.includes('turbo') || text.includes('gud')) return '🚀';
+  return '💡';
 }
 
 function createDataCard(data) {
@@ -1443,50 +1425,11 @@ function createDataCard(data) {
 }
 
 // Status helper functions
-function getHashRateStatus(hashRate) {
-  if (!hashRate || hashRate === '0') return 'danger';
-  const rate = parseFloat(hashRate);
-  if (rate >= 1000) return 'healthy';
-  if (rate >= 500) return 'warning';
-  return 'danger';
-}
-
 function getHealthStatus(health) {
-  if (!health) return 'danger';
-  if (health >= 80) return 'healthy';
-  if (health >= 60) return 'warning';
+  if (!health || health < 2) return 'danger';
+  if (health >= 6) return 'healthy';
+  if (health >= 3) return 'warning';
   return 'danger';
-}
-
-function getBoostStatus(boost) {
-  if (!boost) return 'info';
-  const level = parseFloat(boost);
-  if (level >= 2) return 'healthy';
-  if (level >= 1.5) return 'warning';
-  return 'info';
-}
-
-function getEfficiencyStatus(efficiency) {
-  if (!efficiency) return 'danger';
-  if (efficiency >= 85) return 'healthy';
-  if (efficiency >= 70) return 'warning';
-  return 'danger';
-}
-
-function getTempStatus(temp) {
-  if (!temp || temp === 'N/A') return 'info';
-  if (temp.includes('Normal') || temp.includes('Good')) return 'healthy';
-  if (temp.includes('Warm') || temp.includes('High')) return 'warning';
-  return 'danger';
-}
-
-function formatDate(dateString) {
-  try {
-    const date = new Date(dateString);
-    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-  } catch (e) {
-    return dateString;
-  }
 }
 
 function toggleBubbles() {
