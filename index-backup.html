@@ -1405,7 +1405,7 @@
   </div>
 
   <div class="card">
-    <h2>POND🤝X Mining Health Dashboard</h2>
+    <h2>POND🤝X MINING HEALTH DASHBOARD</h2>
     
     <div class="input-section">
       <div class="wallet-input-wrapper" id="wallet-input-wrapper">
@@ -1444,7 +1444,7 @@
     <!-- Dashboard Section -->
     <div id="dashboard-section" class="dashboard-section">
       <div class="section-title">
-        ⛏️ Your Mining Health Overview
+        ⛏️ YOUR MINING HEALTH OVERVIEW
       </div>
       
       <div class="data-grid" id="data-grid">
@@ -2166,7 +2166,7 @@ if (data.cope) {
 }
 
 manifestSection.innerHTML = `
-  <h2 style="margin:0 0 1rem 0; font-size:3rem; color:var(--text-primary);">🪪 Passport</h2>
+  <h2 style="margin:0 0 1rem 0; font-size:clamp(2rem, 5vw, 3rem); color:var(--text-primary);">🪪 PASSPORT</h2>
 
   <!-- Big Emoji Line -->
   <div style="
@@ -2309,13 +2309,13 @@ function displayMiningData(data) {
   const detailedMetrics = [
     {
       title: 'SOL Price (USD)',
-      value: `${estimates.sol_usd ? estimates.sol_usd.toFixed(2) : '0.00'}`,
+      value: `$${estimates.sol_usd ? estimates.sol_usd.toFixed(2) : '0.00'}`,
       description: 'Current SOL price in USD',
       icon: '◎'
     },
     {
       title: 'wPOND Price (USD)',
-      value: `${estimates.wpond_usd ? estimates.wpond_usd.toFixed(8) : '0.00000000'}`,
+      value: `$${estimates.wpond_usd ? estimates.wpond_usd.toFixed(8) : '0.00000000'}`,
       description: 'Current wPOND price in USD',
       icon: '🪷'
     },
@@ -2327,7 +2327,7 @@ function displayMiningData(data) {
     },
     {
       title: 'Drift Risk Value',
-      value: `${estimates.drift_risk_usd ? estimates.drift_risk_usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}`,
+      value: `$${estimates.drift_risk_usd ? estimates.drift_risk_usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}`,
       description: 'USD value of claims at drift risk',
       icon: '💸'
     },
@@ -2351,7 +2351,7 @@ function displayMiningData(data) {
     },
     {
       title: 'Max Claim Estimate',
-      value: `${estimates.max_claim_estimate_usd ? estimates.max_claim_estimate_usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}`,
+      value: `$${estimates.max_claim_estimate_usd ? estimates.max_claim_estimate_usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}`,
       description: 'Maximum estimated claim value in USD',
       icon: '🏆'
     }
@@ -2420,7 +2420,7 @@ function addAIInsightsSection(aiInsights) {
 
   const aiTitle = document.createElement('div');
   aiTitle.className = 'section-title';
-  aiTitle.innerHTML = '🤖 AI Insights & Recommendations';
+  aiTitle.innerHTML = '🤖 AI INSIGHTS & RECOMMENDATIONS';
 
   const aiContainer = document.createElement('div');
   aiContainer.className = 'ai-insights-container';
