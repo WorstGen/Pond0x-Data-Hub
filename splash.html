@@ -1189,7 +1189,7 @@ function displayMiningData(data) {
       title: 'Health Score',
       value: `${stats.health || 0}`,
       description: 'Overall mining rig health rating',
-      icon: '🏥',
+      icon: '❤️',
       status: getHealthStatus(stats.health),
       progress: Math.min((stats.health || 0) * (100 / 7), 100) // Full bar at health 7
     },
@@ -1197,13 +1197,13 @@ function displayMiningData(data) {
       title: 'In Mempool',
       value: stats.in_mempool?.toLocaleString() || '0',
       description: 'Claims currently in the mempool queue',
-      icon: '📊'
+      icon: '⏳'
     },
     {
       title: 'Priority Level',
       value: `${stats.priority || 1}x`,
       description: 'Your claim priority multiplier in the queue',
-      icon: '🚀'
+      icon: '🌟'
     }
   ];
   
@@ -1218,13 +1218,13 @@ function displayMiningData(data) {
       title: 'SOL Price (USD)',
       value: `${estimates.sol_usd ? estimates.sol_usd.toFixed(2) : '0.00'}`,
       description: 'Current SOL price in USD',
-      icon: '💵'
+      icon: '◎'
     },
     {
       title: 'wPOND Price (USD)',
       value: `${estimates.wpond_usd ? estimates.wpond_usd.toFixed(8) : '0.00000000'}`,
       description: 'Current wPOND price in USD',
-      icon: '🪙'
+      icon: '🪷'
     },
     {
       title: 'Drift Risk Claims',
@@ -1262,7 +1262,7 @@ function displayMiningData(data) {
       title: 'Max Claim Estimate',
       value: `${estimates.max_claim_estimate_usd ? estimates.max_claim_estimate_usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}`,
       description: 'Maximum estimated claim value in USD',
-      icon: '🎯'
+      icon: '🏆'
     }
   ];
   
@@ -1391,11 +1391,11 @@ function addAIInsightsSection(aiInsights) {
 
 function getInsightIcon(insight) {
   const text = insight.toLowerCase();
-  if (text.includes('healthy') || text.includes('boost')) return '✅';
-  if (text.includes('risk') || text.includes('drift')) return '⚠️';
-  if (text.includes('account') || text.includes('linked')) return '🔗';
-  if (text.includes('pro') || text.includes('priority')) return '⭐';
-  if (text.includes('turbo') || text.includes('gud')) return '🚀';
+  if (text.includes('healthy') || text.includes('boost')) return '✨';
+  if (text.includes('risk') || text.includes('drift')) return '✨';
+  if (text.includes('account') || text.includes('linked')) return '✨';
+  if (text.includes('pro') || text.includes('priority')) return '✨';
+  if (text.includes('turbo') || text.includes('gud')) return '✨';
   return '💡';
 }
 
