@@ -290,7 +290,7 @@
     }
 
     .container {
-      max-width: 1500px;
+      max-width: 1150px;
       width: 100%;
       margin: 0 auto;
       padding: 1rem;
@@ -318,7 +318,7 @@
     }
 
     .card {
-      max-width: 1400px;
+      max-width: 1100px;
       background: var(--card-bg);
       backdrop-filter: blur(10px);
       border-radius: 20px;
@@ -2415,7 +2415,7 @@ function addAIInsightsSection(aiInsights) {
   aiTitle.innerHTML = '🤖 AI INSIGHTS & RECOMMENDATIONS';
   const aiContainer = document.createElement('div');
   aiContainer.className = 'ai-insights-container';
-  aiContainer.style.cssText = `display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1rem; margin-top: 1.5rem; width: 100%;`;
+  aiContainer.style.cssText = `display: grid; grid-template-columns: repeat(auto-fill, 1fr)); gap: 1rem; margin-top: 1.5rem; width: 100%;`;
   aiInsights.forEach((insight) => {
     const insightCard = document.createElement('div');
     insightCard.className = 'ai-insight-card';
