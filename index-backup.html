@@ -2429,14 +2429,14 @@ function addAIInsightsSection(aiInsights) {
 
   const aiContainer = document.createElement('div');
   aiContainer.className = 'ai-insights-container';
-  aiContainer.style.cssText = `display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 1.5rem;`;
+  aiContainer.style.cssText = `display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1rem; margin-top: 1.5rem;`;
 
   aiInsights.forEach((insight) => {
     const insightCard = document.createElement('div');
     insightCard.className = 'ai-insight-card';
     insightCard.style.cssText = `
       background: var(--link-item-bg);
-      max-width: 350px;
+      max-width: 100%;
       backdrop-filter: blur(15px);
       border-radius: 12px;
       padding: 1.5rem;
@@ -2445,6 +2445,11 @@ function addAIInsightsSection(aiInsights) {
       position: relative;
       overflow: hidden;
     `;
+
+    /* make last lonely card span all columns */
+.ai-insight-card:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
 
     insightCard.innerHTML = `
       <div style="display: flex; align-items: flex-start; gap: 1rem;">
