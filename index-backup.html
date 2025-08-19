@@ -1004,80 +1004,151 @@
     }
 
     .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background-color: var(--navbar-bg);
-      z-index: 1000;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--navbar-bg);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-    [data-theme="dark"] .navbar {
-      box-shadow: 
-        0 4px 10px rgba(0, 0, 0, 0.4),
-        0 0 20px rgba(189, 124, 253, 0.1);
-    }
+[data-theme="dark"] .navbar {
+  box-shadow: 
+    0 4px 10px rgba(0, 0, 0, 0.4),
+    0 0 20px rgba(189, 124, 253, 0.1);
+}
 
-    .nav-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0.3rem 1rem;
-      flex-wrap: wrap;
-      position: relative;
-    }
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0.75rem 1rem;
+  height: 60px;
+  position: relative;
+}
 
-    .nav-toggle {
-      display: none;
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      color: white;
-      cursor: pointer;
-      margin-right: auto;
-    }
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--nav-text);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
 
-    .nav-title {
-      color: var(--accent-color);
-      font-weight: bold;
-      font-size: 1.1rem;
-      text-align: center;
-      width: 100%;
-      margin-bottom: 0.5rem;
-      display: none;
-    }
+.nav-toggle:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
 
-    .nav-links {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
+.nav-title {
+  color: var(--accent-color);
+  font-weight: bold;
+  font-size: 1.3rem;
+  text-decoration: none;
+  flex-shrink: 0;
+}
 
-    .nav-links a {
-      color: var(--nav-text);
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 1rem;
-      padding: 0.5rem;
-      border-radius: 5px;
-      transition: all 0.3s ease;
-    }
+.nav-links {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--navbar-bg);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  flex-direction: column;
+  padding: 1rem 0;
+}
 
-    .nav-links a:hover {
-      background-color: rgba(19, 255, 34, 0.15);
-      color: white;
-      transform: translateY(-2px);
-    }
+.nav-links.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
 
-    [data-theme="dark"] .nav-links a:hover {
-      background-color: rgba(0, 255, 136, 0.2);
-      box-shadow: 0 4px 15px rgba(0, 255, 136, 0.2);
-    }
+.nav-links a {
+  color: var(--nav-text);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 0.8rem 1.5rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  width: 100%;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.nav-links a:last-child {
+  border-bottom: none;
+}
+
+.nav-links a:hover {
+  background-color: rgba(19, 255, 34, 0.15);
+  color: white;
+  padding-left: 2rem;
+}
+
+[data-theme="dark"] .nav-links a:hover {
+  background-color: rgba(0, 255, 136, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 255, 136, 0.2);
+}
+
+@media (min-width: 769px) {
+  .nav-links {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    background: none;
+    backdrop-filter: none;
+    box-shadow: none;
+    flex-direction: row;
+    padding: 0;
+    gap: 0.5rem;
+  }
+
+  .nav-links a {
+    padding: 0.5rem 0.8rem;
+    width: auto;
+    border-bottom: none;
+    white-space: nowrap;
+  }
+
+  .nav-links a:hover {
+    padding: 0.5rem 0.8rem;
+    transform: translateY(-2px);
+  }
+
+  .nav-toggle {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-toggle {
+    display: block;
+  }
+
+  .nav-container {
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+  }
 
     .container {
       max-width: 1200px;
