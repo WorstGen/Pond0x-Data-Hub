@@ -2039,6 +2039,10 @@ function clearAllDashboardContent() {
   const dashboardSection = document.getElementById('dashboard-section');
   if (!dashboardSection) return;
   
+  // Clear global data storage
+  window.currentManifestData = null;
+  window.currentHealthStats = null;
+  
   // Clear the main data grids
   const dataGrid = document.getElementById('data-grid');
   const detailedGrid = document.getElementById('detailed-grid');
@@ -2050,6 +2054,7 @@ function clearAllDashboardContent() {
     '.manifest-section',
     '.ai-insights-section',
     '.data-notice',
+    '.swap-boost-section',
     '.additional-content'
   ];
   
@@ -2100,6 +2105,9 @@ async function fetchWalletManifest(walletAddress) {
 function displayWalletManifest(data) {
   const dashboardSection = document.getElementById('dashboard-section');
   if (!dashboardSection) return;
+
+  // Store manifest data globally for swap/boost calculation
+  window.currentManifestData = data;
 
   const manifestSection = document.createElement('div');
   manifestSection.className = 'manifest-section';
@@ -2192,6 +2200,11 @@ manifestSection.innerHTML = `
   `;
 
   dashboardSection.prepend(manifestSection);
+
+  // NEW: If we already have health stats, add the swap/boost calculator
+  if (window.currentHealthStats) {
+    addSwapBoostCalculator(data, window.currentHealthStats);
+  }
 }
 
 // ──────────────────────────────────────────────────────────────
@@ -2218,7 +2231,7 @@ async function fetchMiningData(walletAddress) {
 }
 
 // ──────────────────────────────────────────────────────────────
-// NEW: Parallel initializer — calls both manifest + mining
+// NEW: Parallel initializer – calls both manifest + mining
 // ──────────────────────────────────────────────────────────────
 async function initDashboard() {
   const walletInput = document.getElementById('wallet-input');
@@ -2248,7 +2261,324 @@ async function initDashboard() {
 }
 
 // ──────────────────────────────────────────────────────────────
-// UPDATED: Display Mining Data (with enhanced clearing)
+// NEW: Swap/Boost Calculator Section
+// ──────────────────────────────────────────────────────────────
+function calculateSwapBoost(manifestData, healthStats) {
+  // Extract data from both sources
+  const proSwapsSol = manifestData?.proSwapsSol || 0;
+  const miningSessions = healthStats?.mining_sessions || 0;
+  
+  // Core calculation logic from the second paste
+  const totalSwapBoost = proSwapsSol / 6;
+  const totalSessionBoost = miningSessions * -3;
+  const currentBoost = totalSwapBoost + totalSessionBoost;
+  const targetBoost = 615;
+  const cappedBoost = Math.min(Math.max(currentBoost, 0), targetBoost);
+  
+  // Calculate recommendations
+  const swapsNeededFor615 = currentBoost >= targetBoost ? 0 : Math.max(0, Math.ceil((targetBoost - currentBoost) * 6));
+  const sessionsUntil615 = currentBoost <= targetBoost ? 0 : Math.max(0, Math.floor((currentBoost - targetBoost) / 3));
+  const sessionsUntil0 = Math.max(0, Math.ceil(currentBoost / 3));
+  
+  return {
+    proSwapsSol,
+    miningSessions,
+    totalSwapBoost,
+    totalSessionBoost,
+    currentBoost,
+    targetBoost,
+    cappedBoost: Math.round(cappedBoost),
+    swapsNeededFor615,
+    sessionsUntil615,
+    sessionsUntil0
+  };
+}
+
+function addSwapBoostCalculator(manifestData, healthStats) {
+  const dashboardSection = document.getElementById('dashboard-section');
+  if (!dashboardSection) return;
+
+  // Calculate all the boost metrics
+  const calculations = calculateSwapBoost(manifestData, healthStats);
+  
+  // Create the calculator section
+  const calculatorSection = document.createElement('div');
+  calculatorSection.className = 'swap-boost-section';
+  calculatorSection.style.cssText = `
+    margin-top: 3rem;
+    padding: 1.5rem;
+    background: var(--link-item-bg);
+    backdrop-filter: blur(15px);
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+    box-shadow: 0 8px 25px var(--shadow-primary);
+  `;
+
+  // Warning notice
+  const warningNotice = `
+    <div style="
+      margin-bottom: 1.5rem; 
+      padding: 1rem; 
+      background: rgba(251, 191, 36, 0.1); 
+      border: 1px solid var(--warning-color); 
+      border-radius: 8px; 
+      border-left: 4px solid var(--warning-color);
+    ">
+      <p style="
+        margin: 0; 
+        color: var(--text-primary); 
+        font-size: 0.9rem; 
+        display: flex; 
+        align-items: center; 
+        gap: 0.5rem;
+      ">
+        <span style="font-size: 1.2rem;">⚠️</span>
+        The calculation is an approximation and actual boost may vary due to additional factors.
+      </p>
+    </div>
+  `;
+
+  // Current stats grid
+  const currentStatsGrid = `
+    <div style="
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+      gap: 1rem; 
+      margin-bottom: 1.5rem;
+    ">
+      <div style="
+        padding: 1rem; 
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 197, 253, 0.05)); 
+        border: 1px solid rgba(59, 130, 246, 0.3); 
+        border-radius: 8px;
+      ">
+        <div style="
+          display: flex; 
+          align-items: center; 
+          gap: 0.5rem; 
+          margin-bottom: 0.5rem; 
+          color: var(--text-primary); 
+          font-weight: 600;
+        ">
+          <span>⛏️</span>
+          <span>Mining Sessions</span>
+        </div>
+        <div style="
+          font-size: 1.5rem; 
+          font-weight: 700; 
+          color: var(--accent-color);
+        ">
+          ${calculations.miningSessions.toLocaleString()}
+        </div>
+        <div style="
+          font-size: 0.75rem; 
+          color: var(--text-secondary); 
+          opacity: 0.8;
+        ">
+          ✅ Real API Data
+        </div>
+      </div>
+      
+      <div style="
+        padding: 1rem; 
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(134, 239, 172, 0.05)); 
+        border: 1px solid rgba(34, 197, 94, 0.3); 
+        border-radius: 8px;
+      ">
+        <div style="
+          display: flex; 
+          align-items: center; 
+          gap: 0.5rem; 
+          margin-bottom: 0.5rem; 
+          color: var(--text-primary); 
+          font-weight: 600;
+        ">
+          <span>🤝</span>
+          <span>Total Swaps</span>
+        </div>
+        <div style="
+          font-size: 1.5rem; 
+          font-weight: 700; 
+          color: var(--accent-color);
+        ">
+          ${calculations.proSwapsSol.toLocaleString()}
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Boost breakdown
+  const boostBreakdown = `
+    <div style="
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+      gap: 0.5rem; 
+      margin-bottom: 1.5rem; 
+      font-size: 0.9rem;
+    ">
+      <div style="
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        padding: 0.75rem; 
+        background: rgba(34, 197, 94, 0.1); 
+        border-radius: 6px;
+      ">
+        <span style="color: var(--text-primary);">Total Swap Boost:</span>
+        <span style="font-weight: 700; color: var(--text-primary);">${calculations.totalSwapBoost.toFixed(0)}</span>
+      </div>
+      <div style="
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        padding: 0.75rem; 
+        background: rgba(59, 130, 246, 0.1); 
+        border-radius: 6px;
+      ">
+        <span style="color: var(--text-primary);">Total Session Boost:</span>
+        <span style="font-weight: 700; color: var(--text-primary);">${calculations.totalSessionBoost.toFixed(0)}</span>
+      </div>
+      <div style="
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        padding: 0.75rem; 
+        background: rgba(139, 92, 246, 0.1); 
+        border: 2px solid var(--accent-color); 
+        border-radius: 6px;
+      ">
+        <span style="color: var(--text-primary); font-weight: 600;">Current Boost:</span>
+        <span style="font-weight: 700; color: var(--accent-color);">
+          ~${calculations.currentBoost.toFixed(0)}
+          ${calculations.currentBoost > calculations.targetBoost ? `<span style="font-size: 0.75rem; color: var(--success-color); margin-left: 0.25rem;">(capped at ${calculations.targetBoost})</span>` : ''}
+        </span>
+      </div>
+    </div>
+  `;
+
+  // Results grid
+  const resultsGrid = `
+    <div style="
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+      gap: 1rem;
+    ">
+      <div style="
+        padding: 1rem; 
+        background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(254, 240, 138, 0.05)); 
+        border-radius: 8px; 
+        text-align: center; 
+        border: 1px solid rgba(251, 191, 36, 0.3);
+      ">
+        <div style="
+          font-weight: 600; 
+          color: var(--text-primary); 
+          margin-bottom: 0.5rem; 
+          font-size: 0.9rem;
+        ">
+          Swaps for 615
+        </div>
+        <div style="
+          font-size: 1.25rem; 
+          font-weight: 700; 
+          color: var(--warning-color);
+        ">
+          ${calculations.swapsNeededFor615.toLocaleString()}
+        </div>
+      </div>
+      
+      <div style="
+        padding: 1rem; 
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 197, 253, 0.05)); 
+        border-radius: 8px; 
+        text-align: center; 
+        border: 1px solid rgba(59, 130, 246, 0.3);
+      ">
+        <div style="
+          font-weight: 600; 
+          color: var(--text-primary); 
+          margin-bottom: 0.5rem; 
+          font-size: 0.9rem;
+        ">
+          Sessions to 615
+        </div>
+        <div style="
+          font-size: 1.25rem; 
+          font-weight: 700; 
+          color: var(--info-color);
+        ">
+          ${calculations.sessionsUntil615}
+        </div>
+      </div>
+      
+      <div style="
+        padding: 1rem; 
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 197, 253, 0.05)); 
+        border-radius: 8px; 
+        text-align: center; 
+        border: 1px solid rgba(59, 130, 246, 0.3);
+      ">
+        <div style="
+          font-weight: 600; 
+          color: var(--text-primary); 
+          margin-bottom: 0.5rem; 
+          font-size: 0.9rem;
+        ">
+          Sessions to 0
+        </div>
+        <div style="
+          font-size: 1.25rem; 
+          font-weight: 700; 
+          color: var(--info-color);
+        ">
+          ${calculations.sessionsUntil0}
+        </div>
+      </div>
+    </div>
+  `;
+
+  calculatorSection.innerHTML = `
+    <div style="
+      display: flex; 
+      align-items: center; 
+      gap: 1rem; 
+      margin-bottom: 1.5rem; 
+      justify-content: center;
+    ">
+      <div style="
+        background: linear-gradient(135deg, var(--secondary-accent), var(--accent-color)); 
+        border-radius: 12px; 
+        padding: 0.75rem;
+      ">
+        <span style="font-size: 1.5rem;">🚀</span>
+      </div>
+      <h2 style="
+        margin: 0; 
+        font-size: 1.5rem; 
+        font-weight: 700; 
+        color: var(--text-primary);
+      ">
+        Swap/Boost Calculator
+      </h2>
+    </div>
+    
+    ${warningNotice}
+    ${currentStatsGrid}
+    ${boostBreakdown}
+    ${resultsGrid}
+  `;
+
+  // Insert the calculator section after the detailed grid
+  const detailedGrid = document.getElementById('detailed-grid');
+  if (detailedGrid && detailedGrid.parentNode) {
+    detailedGrid.parentNode.insertBefore(calculatorSection, detailedGrid.nextSibling);
+  } else {
+    dashboardSection.appendChild(calculatorSection);
+  }
+}
+
+// ──────────────────────────────────────────────────────────────
+// UPDATED: Display Mining Data (now includes swap/boost calculator)
 // ──────────────────────────────────────────────────────────────
 function displayMiningData(data) {
   const dataGrid = document.getElementById('data-grid');
@@ -2257,7 +2587,7 @@ function displayMiningData(data) {
 
   if (!dataGrid || !detailedGrid || !proNotice) return;
 
-  // Clear existing data in the grids (redundant but safe)
+  // Clear existing data in the grids
   dataGrid.innerHTML = '';
   detailedGrid.innerHTML = '';
 
@@ -2302,13 +2632,13 @@ function displayMiningData(data) {
   const detailedMetrics = [
     {
       title: 'SOL Price (USD)',
-      value: `$${estimates.sol_usd ? estimates.sol_usd.toFixed(2) : '0.00'}`,
+      value: `${estimates.sol_usd ? estimates.sol_usd.toFixed(2) : '0.00'}`,
       description: 'Current SOL price in USD',
       icon: '◎'
     },
     {
       title: 'wPOND Price (USD)',
-      value: `$${estimates.wpond_usd ? estimates.wpond_usd.toFixed(8) : '0.00000000'}`,
+      value: `${estimates.wpond_usd ? estimates.wpond_usd.toFixed(8) : '0.00000000'}`,
       description: 'Current wPOND price in USD',
       icon: '🪷'
     },
@@ -2320,7 +2650,7 @@ function displayMiningData(data) {
     },
     {
       title: 'Drift Risk Value',
-      value: `$${estimates.drift_risk_usd ? estimates.drift_risk_usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}`,
+      value: `${estimates.drift_risk_usd ? estimates.drift_risk_usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}`,
       description: 'USD value of claims at drift risk',
       icon: '💸'
     },
@@ -2344,7 +2674,7 @@ function displayMiningData(data) {
     },
     {
       title: 'Max Claim Estimate',
-      value: `$${estimates.max_claim_estimate_usd ? estimates.max_claim_estimate_usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}`,
+      value: `${estimates.max_claim_estimate_usd ? estimates.max_claim_estimate_usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}`,
       description: 'Maximum estimated claim value in USD',
       icon: '🏆'
     }
@@ -2366,6 +2696,15 @@ function displayMiningData(data) {
 
   if (data.data && data.data.msg) {
     addDataNotice(data.data.msg);
+  }
+
+  // NEW: Add the swap/boost calculator at the bottom
+  // We need to wait for manifest data, so let's store the health stats globally
+  window.currentHealthStats = stats;
+  
+  // Check if we already have manifest data
+  if (window.currentManifestData) {
+    addSwapBoostCalculator(window.currentManifestData, stats);
   }
 
   showDashboard();
@@ -2476,10 +2815,12 @@ function addAIInsightsSection(aiInsights) {
     }
   }, 0);
 }
+
 function getInsightIcon(insight) {
   const text = insight.toLowerCase();
   return '✨';
 }
+
 function createDataCard(data) {
   const card = document.createElement('div');
   card.className = 'data-card';
