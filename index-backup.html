@@ -2194,12 +2194,11 @@ manifestSection.innerHTML = `
   <div><strong>Pro User:</strong> ${data.isPro ? '✅' : '❌'}</div>
   <div><strong>Pro Since:</strong> ${data.proAgo ?? 'N/A'}</div>
   <div><strong>Pro Expiry:</strong> ${data.proExpiry ?? 'N/A'}</div>
-
   <div style="margin-top:0.75rem;"></div>
-
   <div><strong>Pro Swaps (Bx):</strong> ${Number(data.proSwapsBx ?? 0).toLocaleString()}</div>
   <div><strong>Pro Swaps (SOL):</strong> ${Number(data.proSwapsSol ?? 0).toLocaleString()}</div>
-`;
+
+  `;
 
   dashboardSection.prepend(manifestSection);
 }
