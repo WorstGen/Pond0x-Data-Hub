@@ -1110,7 +1110,6 @@
       border: 1px solid var(--warning-color);
       margin-top: 2rem;
       text-align: center;
-      border-left: 4px solid var(--warning-color);
     }
 
     @media (max-width: 768px) {
@@ -2319,10 +2318,9 @@ function addSwapBoostCalculator(manifestData, healthStats) {
     <div style="
       margin-bottom: 1.5rem; 
       padding: 1rem; 
-      background: rgba(251, 191, 36, 0.1); 
+      background: var(--warning-bg); 
       border: 1px solid var(--warning-color); 
-      border-radius: 8px; 
-      border-left: 4px solid var(--warning-color);
+      border-radius: 8px;
     ">
       <p style="
         margin: 0; 
@@ -2348,8 +2346,8 @@ function addSwapBoostCalculator(manifestData, healthStats) {
     ">
       <div style="
         padding: 1rem; 
-        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 197, 253, 0.05)); 
-        border: 1px solid rgba(59, 130, 246, 0.3); 
+        background: var(--card-bg); 
+        border: 1px solid var(--card-border); 
         border-radius: 8px;
       ">
         <div style="
@@ -2375,14 +2373,13 @@ function addSwapBoostCalculator(manifestData, healthStats) {
           color: var(--text-secondary); 
           opacity: 0.8;
         ">
-          ✅ Real API Data
         </div>
       </div>
       
       <div style="
         padding: 1rem; 
-        background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(134, 239, 172, 0.05)); 
-        border: 1px solid rgba(34, 197, 94, 0.3); 
+        background: var(--card-bg); 
+        border: 1px solid var(--card-border); 
         border-radius: 8px;
       ">
         <div style="
@@ -2421,7 +2418,7 @@ function addSwapBoostCalculator(manifestData, healthStats) {
         justify-content: space-between; 
         align-items: center; 
         padding: 0.75rem; 
-        background: rgba(34, 197, 94, 0.1); 
+        background: var(--success-bg); 
         border-radius: 6px;
       ">
         <span style="color: var(--text-primary);">Total Swap Boost:</span>
@@ -2432,7 +2429,7 @@ function addSwapBoostCalculator(manifestData, healthStats) {
         justify-content: space-between; 
         align-items: center; 
         padding: 0.75rem; 
-        background: rgba(59, 130, 246, 0.1); 
+        background: var(--info-bg); 
         border-radius: 6px;
       ">
         <span style="color: var(--text-primary);">Total Session Boost:</span>
@@ -2443,7 +2440,7 @@ function addSwapBoostCalculator(manifestData, healthStats) {
         justify-content: space-between; 
         align-items: center; 
         padding: 0.75rem; 
-        background: rgba(139, 92, 246, 0.1); 
+        background: var(--link-item-bg); 
         border: 2px solid var(--accent-color); 
         border-radius: 6px;
       ">
@@ -2465,10 +2462,10 @@ function addSwapBoostCalculator(manifestData, healthStats) {
     ">
       <div style="
         padding: 1rem; 
-        background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(254, 240, 138, 0.05)); 
+        background: var(--warning-bg); 
         border-radius: 8px; 
         text-align: center; 
-        border: 1px solid rgba(251, 191, 36, 0.3);
+        border: 1px solid var(--warning-color);
       ">
         <div style="
           font-weight: 600; 
@@ -2489,10 +2486,10 @@ function addSwapBoostCalculator(manifestData, healthStats) {
       
       <div style="
         padding: 1rem; 
-        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 197, 253, 0.05)); 
+        background: var(--info-bg); 
         border-radius: 8px; 
         text-align: center; 
-        border: 1px solid rgba(59, 130, 246, 0.3);
+        border: 1px solid var(--info-color);
       ">
         <div style="
           font-weight: 600; 
@@ -2513,10 +2510,10 @@ function addSwapBoostCalculator(manifestData, healthStats) {
       
       <div style="
         padding: 1rem; 
-        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 197, 253, 0.05)); 
+        background: var(--info-bg); 
         border-radius: 8px; 
         text-align: center; 
-        border: 1px solid rgba(59, 130, 246, 0.3);
+        border: 1px solid var(--info-color);
       ">
         <div style="
           font-weight: 600; 
