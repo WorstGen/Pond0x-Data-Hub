@@ -2190,12 +2190,15 @@ manifestSection.innerHTML = `
       background-color:rgba(0,0,0,0.05); 
       box-shadow:0 2px 8px rgba(0,0,0,0.15);
   ">
-    <div><strong>Pro User:</strong> ${data.isPro ? '✅' : '❌'}</div>
-    <div><strong>Pro Since:</strong> ${data.proAgo ?? 'N/A'}</div>
-    <div><strong>Pro Expiry:</strong> ${data.proExpiry ?? 'N/A'}</div><br>
-    <div><strong>Pro Swaps (Bx):</strong> ${Number(data.proSwapsBx ?? 0).toLocaleString()}</div>
-    <div><strong>Pro Swaps (SOL):</strong> ${Number(data.proSwapsSol ?? 0).toLocaleString()}</div>
-  </div>
+    container.innerHTML = `
+  <div><strong>Pro User:</strong> ${data.isPro ? '✅' : '❌'}</div>
+  <div><strong>Pro Since:</strong> ${data.proAgo ?? 'N/A'}</div>
+  <div><strong>Pro Expiry:</strong> ${data.proExpiry ?? 'N/A'}</div>
+
+  <div style="margin-top:0.75rem;"></div>
+
+  <div><strong>Pro Swaps (Bx):</strong> ${Number(data.proSwapsBx ?? 0).toLocaleString()}</div>
+  <div><strong>Pro Swaps (SOL):</strong> ${Number(data.proSwapsSol ?? 0).toLocaleString()}</div>
 `;
 
   dashboardSection.prepend(manifestSection);
