@@ -2426,7 +2426,7 @@ function addSwapBoostCalculator(manifestData, healthStats) {
         <span style="color: var(--text-primary); font-weight: 600;">Current Boost:</span>
         <span style="font-weight: 700; color: var(--accent-color);">
           ~${calculations.currentBoost.toFixed(0)}
-          ${calculations.currentBoost > calculations.targetBoost ? `<span style="font-size: 0.75rem; color: var(--success-color); margin-left: 0.25rem;">(capped at ${calculations.targetBoost})</span>` : ''}
+          ${calculations.currentBoost > calculations.targetBoost ? `<span style="font-size: 0.75rem; color: var(--primary-color); margin-left: 0.25rem;">(capped at ${calculations.targetBoost})</span>` : ''}
         </span>
       </div>
     </div>
@@ -2457,7 +2457,7 @@ function addSwapBoostCalculator(manifestData, healthStats) {
         <div style="
           font-size: 1.25rem; 
           font-weight: 700; 
-          color: var(--warning-color);
+          color: var(--card-color);
         ">
           ${calculations.swapsNeededFor615.toLocaleString()}
         </div>
@@ -2481,7 +2481,7 @@ function addSwapBoostCalculator(manifestData, healthStats) {
         <div style="
           font-size: 1.25rem; 
           font-weight: 700; 
-          color: var(--info-color);
+          color: var(--card-color);
         ">
           ${calculations.sessionsUntil615}
         </div>
@@ -2505,7 +2505,7 @@ function addSwapBoostCalculator(manifestData, healthStats) {
         <div style="
           font-size: 1.25rem; 
           font-weight: 700; 
-          color: var(--info-color);
+          color: var(--card-color);
         ">
           ${calculations.sessionsUntil0}
         </div>
