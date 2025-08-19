@@ -2419,14 +2419,6 @@ function addAIInsightsSection(aiInsights) {
   const dashboardSection = document.getElementById('dashboard-section');
   if (!dashboardSection) return;
   
-  const style = document.createElement('style');
-  style.textContent = `
-    .ai-insight-card:last-child:nth-child(odd) {
-      grid-column: 1 / -1;
-    }
-  `;
-  document.head.appendChild(style);
-  
   const aiSection = document.createElement('div');
   aiSection.className = 'ai-insights-section'; // Class for easier clearing
   aiSection.style.marginTop = '3rem';
@@ -2477,17 +2469,29 @@ function addAIInsightsSection(aiInsights) {
     
     aiContainer.appendChild(insightCard);
   });
-
   aiSection.appendChild(aiTitle);
   aiSection.appendChild(aiContainer);
   dashboardSection.appendChild(aiSection);
+  
+  // Check if last card is alone on its row and make it span full width
+  setTimeout(() => {
+    const cards = aiContainer.querySelectorAll('.ai-insight-card');
+    if (cards.length > 1) {
+      const lastCard = cards[cards.length - 1];
+      const secondLastCard = cards[cards.length - 2];
+      const lastCardTop = lastCard.getBoundingClientRect().top;
+      const secondLastCardTop = secondLastCard.getBoundingClientRect().top;
+      
+      if (Math.abs(lastCardTop - secondLastCardTop) > 10) {
+        lastCard.style.gridColumn = '1 / -1';
+      }
+    }
+  }, 0);
 }
-
 function getInsightIcon(insight) {
   const text = insight.toLowerCase();
   return '✨';
 }
-
 function createDataCard(data) {
   const card = document.createElement('div');
   card.className = 'data-card';
