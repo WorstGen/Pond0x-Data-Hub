@@ -1608,7 +1608,8 @@ const walletManager = {
       return;
     }
     
-    container.innerHTML = wallets.map(wallet => {
+    const filteredWallets = wallets.filter(wallet => wallet.type === 'solana');
+      container.innerHTML = filteredWallets.map(wallet => {
       const isSelected = this.selectedWallet && this.selectedWallet.address.toLowerCase() === wallet.address.toLowerCase();
       const autoLabel = this.generateLabel(wallet.address, wallet.type);
       const hasCustomName = wallet.label && wallet.label !== autoLabel;
@@ -1645,12 +1646,14 @@ const walletManager = {
     const content = document.getElementById('inputDropdownContent');
     const wallets = this.loadWallets();
     
-    if (wallets.length === 0) {
+    const filteredWallets = wallets.filter(wallet => wallet.type === 'solana');
+    if (filteredWallets.length === 0) {
       content.innerHTML = '<div class="input-dropdown-empty">No saved wallets</div>';
       return;
     }
     
-    content.innerHTML = wallets.map(wallet => {
+    const filteredWallets = wallets.filter(wallet => wallet.type === 'solana');
+      content.innerHTML = filteredWallets.map(wallet => {
       const autoLabel = this.generateLabel(wallet.address, wallet.type);
       const hasCustomName = wallet.label && wallet.label !== autoLabel;
       
