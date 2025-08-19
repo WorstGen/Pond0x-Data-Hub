@@ -28,7 +28,7 @@
       --text-primary: #5b2a86;
       --text-secondary: #7b3aad;
       --success-color: #22c55e;
-      --warning-color: #f59e0b;
+      --warning-color: #d9d9d9;
       --error-color: #ef4444;
       --info-color: #3b82f6;
 }
@@ -1602,13 +1602,14 @@ const walletManager = {
   updateSavedWalletsList() {
     const container = document.getElementById('savedWalletsList');
     const wallets = this.loadWallets();
-    
-    if (wallets.length === 0) {
-      container.innerHTML = '<div class="no-saved-wallets">No saved wallets yet</div>';
-      return;
-    }
-    
-    container.innerHTML = wallets.map(wallet => {
+const filteredWallets = wallets.filter(wallet => wallet.type === 'solana');
+
+if (filteredWallets.length === 0) {
+  container.innerHTML = '<div class="no-saved-wallets">No saved wallets yet</div>';
+  return;
+}
+
+      container.innerHTML = filteredWallets.map(wallet => {
       const isSelected = this.selectedWallet && this.selectedWallet.address.toLowerCase() === wallet.address.toLowerCase();
       const autoLabel = this.generateLabel(wallet.address, wallet.type);
       const hasCustomName = wallet.label && wallet.label !== autoLabel;
@@ -1645,12 +1646,13 @@ const walletManager = {
     const content = document.getElementById('inputDropdownContent');
     const wallets = this.loadWallets();
     
-    if (wallets.length === 0) {
-      content.innerHTML = '<div class="input-dropdown-empty">No saved wallets</div>';
-      return;
+    const filteredWallets = wallets.filter(wallet => wallet.type === 'solana');
+    if (filteredWallets.length === 0) {
+    content.innerHTML = '<div class="input-dropdown-empty">No saved wallets</div>';
+    return;
     }
-    
-    content.innerHTML = wallets.map(wallet => {
+
+      content.innerHTML = filteredWallets.map(wallet => {
       const autoLabel = this.generateLabel(wallet.address, wallet.type);
       const hasCustomName = wallet.label && wallet.label !== autoLabel;
       
