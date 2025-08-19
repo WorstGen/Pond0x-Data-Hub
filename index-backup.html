@@ -2313,73 +2313,77 @@ function addSwapBoostCalculator(manifestData, healthStats) {
     box-shadow: 0 8px 25px var(--shadow-primary);
   `;
 
-  // Current stats grid
-  const currentStatsGrid = `
+  // Current stats grid with centered content
+const currentStatsGrid = `
+  <div style="
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+    gap: 1rem; 
+    margin-bottom: 1.5rem;
+  ">
     <div style="
-      display: grid; 
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
-      gap: 1rem; 
-      margin-bottom: 1.5rem;
+      padding: 1rem; 
+      background: var(--card-bg); 
+      border: 1px solid var(--card-border); 
+      border-radius: 8px;
+      text-align: center;
     ">
       <div style="
-        padding: 1rem; 
-        background: var(--card-bg); 
-        border: 1px solid var(--card-border); 
-        border-radius: 8px;
+        display: flex; 
+        align-items: center; 
+        justify-content: center;
+        gap: 0.5rem; 
+        margin-bottom: 0.5rem; 
+        color: var(--text-primary); 
+        font-weight: 600;
       ">
-        <div style="
-          display: flex; 
-          align-items: center; 
-          gap: 0.5rem; 
-          margin-bottom: 0.5rem; 
-          color: var(--text-primary); 
-          font-weight: 600;
-        ">
-          <span>⛏️</span>
-          <span>Mining Sessions</span>
-        </div>
-        <div style="
-          font-size: 1.5rem; 
-          font-weight: 700; 
-          color: var(--accent-color);
-        ">
-          ${calculations.miningSessions.toLocaleString()}
-        </div>
-        <div style="
-          font-size: 0.75rem; 
-          color: var(--text-secondary); 
-          opacity: 0.8;
-        ">
-        </div>
+        <span>⛏️</span>
+        <span>Mining Sessions</span>
       </div>
-      
       <div style="
-        padding: 1rem; 
-        background: var(--card-bg); 
-        border: 1px solid var(--card-border); 
-        border-radius: 8px;
+        font-size: 1.5rem; 
+        font-weight: 700; 
+        color: var(--accent-color);
       ">
-        <div style="
-          display: flex; 
-          align-items: center; 
-          gap: 0.5rem; 
-          margin-bottom: 0.5rem; 
-          color: var(--text-primary); 
-          font-weight: 600;
-        ">
-          <span>🤝</span>
-          <span>Total Swaps</span>
-        </div>
-        <div style="
-          font-size: 1.5rem; 
-          font-weight: 700; 
-          color: var(--accent-color);
-        ">
-          ${calculations.proSwapsSol.toLocaleString()}
-        </div>
+        ${calculations.miningSessions.toLocaleString()}
+      </div>
+      <div style="
+        font-size: 0.75rem; 
+        color: var(--text-secondary); 
+        opacity: 0.8;
+      ">
       </div>
     </div>
-  `;
+    
+    <div style="
+      padding: 1rem; 
+      background: var(--card-bg); 
+      border: 1px solid var(--card-border); 
+      border-radius: 8px;
+      text-align: center;
+    ">
+      <div style="
+        display: flex; 
+        align-items: center; 
+        justify-content: center;
+        gap: 0.5rem; 
+        margin-bottom: 0.5rem; 
+        color: var(--text-primary); 
+        font-weight: 600;
+      ">
+        <span>🤝</span>
+        <span>Total Swaps</span>
+      </div>
+      <div style="
+        font-size: 1.5rem; 
+        font-weight: 700; 
+        color: var(--accent-color);
+      ">
+        ${calculations.proSwapsSol.toLocaleString()}
+      </div>
+    </div>
+  </div>
+`;
 
   // Boost breakdown
   const boostBreakdown = `
