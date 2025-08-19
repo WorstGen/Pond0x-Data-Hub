@@ -2419,63 +2419,50 @@ function addAIInsightsSection(aiInsights) {
   const dashboardSection = document.getElementById('dashboard-section');
   if (!dashboardSection) return;
   
+  const style = document.createElement('style');
+  style.textContent = `
+    .ai-insight-card:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+    }
+  `;
+  document.head.appendChild(style);
+  
   const aiSection = document.createElement('div');
   aiSection.className = 'ai-insights-section'; // Class for easier clearing
   aiSection.style.marginTop = '3rem';
-
   const aiTitle = document.createElement('div');
   aiTitle.className = 'section-title';
   aiTitle.innerHTML = '🤖 AI INSIGHTS & RECOMMENDATIONS';
-
-  // Inject the CSS rule for the "lonely last card"
-const style = document.createElement('style');
-style.textContent = `
-  .ai-insight-card:last-child:nth-child(odd) {
-    grid-column: 1 / -1;
-  }
-`;
-document.head.appendChild(style);
-
-const aiContainer = document.createElement('div');
-aiContainer.className = 'ai-insights-container';
-aiContainer.style.cssText = `
-  display: grid; 
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
-  gap: 1rem; 
-  margin-top: 1.5rem;
-`;
-
-aiInsights.forEach((insight) => {
-  const insightCard = document.createElement('div');
-  insightCard.className = 'ai-insight-card';
-  insightCard.style.cssText = `
-    background: var(--link-item-bg);
-    max-width: 100%;
-    backdrop-filter: blur(15px);
-    border-radius: 12px;
-    padding: 1.5rem;
-    border: 1px solid var(--card-border);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-  `;
-
-  insightCard.innerHTML = `
-    <div style="display: flex; align-items: flex-start; gap: 1rem;">
-      <div style="font-size: 1.5rem; opacity: 0.8; flex-shrink: 0;">
-        ${getInsightIcon(insight)}
+  const aiContainer = document.createElement('div');
+  aiContainer.className = 'ai-insights-container';
+  aiContainer.style.cssText = `display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1rem; margin-top: 1.5rem;`;
+  aiInsights.forEach((insight) => {
+    const insightCard = document.createElement('div');
+    insightCard.className = 'ai-insight-card';
+    insightCard.style.cssText = `
+      background: var(--link-item-bg);
+      max-width: 100%;
+      backdrop-filter: blur(15px);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid var(--card-border);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    `;
+    insightCard.innerHTML = `
+      <div style="display: flex; align-items: flex-start; gap: 1rem;">
+        <div style="font-size: 1.5rem; opacity: 0.8; flex-shrink: 0;">
+          ${getInsightIcon(insight)}
+        </div>
+        <div style="flex: 1;">
+          <p style="color: var(--text-primary); font-size: 1rem; line-height: 1.5; margin: 0;
+            font-weight: ${insight.includes('risk') || insight.includes('drift') ? '600' : '500'};">
+            ${insight}
+          </p>
+        </div>
       </div>
-      <div style="flex: 1;">
-        <p style="color: var(--text-primary); font-size: 1rem; line-height: 1.5; margin: 0;
-          font-weight: ${insight.includes('risk') || insight.includes('drift') ? '600' : '500'};">
-          ${insight}
-        </p>
-      </div>
-    </div>
-  `;
-
-  aiContainer.appendChild(insightCard);
-});
+    `;
     
     // Add hover effect
     insightCard.addEventListener('mouseenter', () => {
