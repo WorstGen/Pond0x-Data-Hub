@@ -2313,29 +2313,6 @@ function addSwapBoostCalculator(manifestData, healthStats) {
     box-shadow: 0 8px 25px var(--shadow-primary);
   `;
 
-  // Warning notice
-  const warningNotice = `
-    <div style="
-      margin-bottom: 1.5rem; 
-      padding: 1rem; 
-      background: var(--warning-bg); 
-      border: 1px solid var(--warning-color); 
-      border-radius: 8px;
-    ">
-      <p style="
-        margin: 0; 
-        color: var(--text-primary); 
-        font-size: 0.9rem; 
-        display: flex; 
-        align-items: center; 
-        gap: 0.5rem;
-      ">
-        <span style="font-size: 1.2rem;">⚠️</span>
-        The calculation is an approximation and actual boost may vary due to additional factors.
-      </p>
-    </div>
-  `;
-
   // Current stats grid
   const currentStatsGrid = `
     <div style="
@@ -2419,7 +2396,8 @@ function addSwapBoostCalculator(manifestData, healthStats) {
         align-items: center; 
         padding: 0.75rem; 
         background: var(--success-bg); 
-        border-radius: 6px;
+        border: 1px solid var(--card-border); 
+        border-radius: 8px;
       ">
         <span style="color: var(--text-primary);">Total Swap Boost:</span>
         <span style="font-weight: 700; color: var(--text-primary);">${calculations.totalSwapBoost.toFixed(0)}</span>
@@ -2430,7 +2408,8 @@ function addSwapBoostCalculator(manifestData, healthStats) {
         align-items: center; 
         padding: 0.75rem; 
         background: var(--info-bg); 
-        border-radius: 6px;
+        border: 1px solid var(--card-border); 
+        border-radius: 8px;
       ">
         <span style="color: var(--text-primary);">Total Session Boost:</span>
         <span style="font-weight: 700; color: var(--text-primary);">${calculations.totalSessionBoost.toFixed(0)}</span>
@@ -2441,8 +2420,8 @@ function addSwapBoostCalculator(manifestData, healthStats) {
         align-items: center; 
         padding: 0.75rem; 
         background: var(--link-item-bg); 
-        border: 2px solid var(--accent-color); 
-        border-radius: 6px;
+        border: 1px solid var(--card-border); 
+        border-radius: 8px;
       ">
         <span style="color: var(--text-primary); font-weight: 600;">Current Boost:</span>
         <span style="font-weight: 700; color: var(--accent-color);">
