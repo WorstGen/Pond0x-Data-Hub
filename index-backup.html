@@ -2166,7 +2166,7 @@ if (data.cope) {
 }
 
 manifestSection.innerHTML = `
-  <h2 style="margin:0 0 1rem 0; font-size:clamp(1.5rem, 5vw, 2.5rem); color:var(--text-primary);">🪪 PASSPORT</h2>
+  <h2 style="margin:0 0 1rem 0; margin-bottom:1rem; font-size:clamp(1.5rem, 5vw, 2.5rem); color:var(--text-primary);">🪪 PASSPORT</h2>
 
   <!-- Big Emoji Line -->
   <div style="
@@ -2184,7 +2184,7 @@ manifestSection.innerHTML = `
       flex-wrap:wrap; 
       gap:1rem; 
       justify-content:center; 
-      font-size:clamp(.08rem, 2.5vw, 1.2rem); 
+      font-size:clamp(1rem, 2.5vw, 1.2rem); 
       padding:1rem; 
       border-radius:12px; 
       background-color:rgba(0,0,0,0.05); 
@@ -2195,7 +2195,7 @@ manifestSection.innerHTML = `
   <div><strong>Pro Since:</strong> ${data.proAgo ?? 'N/A'}</div>
   <div><strong>Pro Expiry:</strong> ${data.proExpiry ?? 'N/A'}</div>
   
-  <hr style="width:100%; border:0; border-top:1px solid rgba(0,0,0,0.2); margin:0.75rem 0;">
+  <hr style="width:100%; border:0; border-top:1px solid rgba(0,0,0,0.2);">
   
   <div><strong>Pro Swaps (Bx):</strong> ${Number(data.proSwapsBx ?? 0).toLocaleString()}</div>
   <div><strong>Pro Swaps (SOL):</strong> ${Number(data.proSwapsSol ?? 0).toLocaleString()}</div>
