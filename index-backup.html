@@ -2446,86 +2446,86 @@ const formatNumber = (num) => {
   return Math.round(num).toLocaleString();
 };
 
-  // Results grid
-  const resultsGrid = `
+// Results grid
+const resultsGrid = `
+  <div style="
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+    gap: 1rem;
+  ">
     <div style="
-      display: grid; 
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
-      gap: 1rem;
+      padding: 1rem; 
+      background: var(--card-bg);
+      border-radius: 8px; 
+      text-align: center; 
+      border: 1px solid var(--card-border);
     ">
       <div style="
-        padding: 1rem; 
-        background: var(--card-bg);
-        border-radius: 8px; 
-        text-align: center; 
-        border: 1px solid var(--card-border);
+        font-weight: 600; 
+        color: var(--text-accent-color); 
+        margin-bottom: 0.5rem; 
+        font-size: 0.9rem;
       ">
-        <div style="
-          font-weight: 600; 
-          color: var(--text-accent-color); 
-          margin-bottom: 0.5rem; 
-          font-size: 0.9rem;
-        ">
-          Swaps for 615
-        </div>
-        <div style="
-          font-size: 1.25rem; 
-          font-weight: 700; 
-          color: var(--accent-color);
-        ">
-          ${calculations.swapsNeededFor615.toLocaleString()}
-        </div>
+        Swaps for 615
       </div>
-      
       <div style="
-        padding: 1rem; 
-        background: var(--card-bg); 
-        border-radius: 8px; 
-        text-align: center; 
-        border: 1px solid var(--card-border);
+        font-size: 1.25rem; 
+        font-weight: 700; 
+        color: var(--accent-color);
       ">
-        <div style="
-          font-weight: 600; 
-          color: var(--text-accent-color); 
-          margin-bottom: 0.5rem; 
-          font-size: 0.9rem;
-        ">
-          Sessions to 615
-        </div>
-        <div style="
-          font-size: 1.25rem; 
-          font-weight: 700; 
-          color: var(--accent-color);
-        ">
-          ${calculations.sessionsUntil615}
-        </div>
-      </div>
-      
-      <div style="
-        padding: 1rem; 
-        background: var(--card-bg); 
-        border-radius: 8px; 
-        text-align: center; 
-        border: 1px solid var(--card-border);
-      ">
-        <div style="
-          font-weight: 600; 
-          color: var(--text-accent-color); 
-          margin-bottom: 0.5rem; 
-          font-size: 0.9rem;
-        ">
-          Sessions to 0
-        </div>
-        <div style="
-          font-size: 1.25rem; 
-          font-weight: 700; 
-          color: var(--accent-color);
-        ">
-          ${calculations.sessionsUntil0}
-        </div>
+        ${formatNumber(calculations.swapsNeededFor615)}
       </div>
     </div>
-  `;
+    
+    <div style="
+      padding: 1rem; 
+      background: var(--card-bg); 
+      border-radius: 8px; 
+      text-align: center; 
+      border: 1px solid var(--card-border);
+    ">
+      <div style="
+        font-weight: 600; 
+        color: var(--text-accent-color); 
+        margin-bottom: 0.5rem; 
+        font-size: 0.9rem;
+      ">
+        Sessions to 615
+      </div>
+      <div style="
+        font-size: 1.25rem; 
+        font-weight: 700; 
+        color: var(--accent-color);
+      ">
+        ${formatNumber(calculations.sessionsUntil615)}
+      </div>
+    </div>
+    
+    <div style="
+      padding: 1rem; 
+      background: var(--card-bg); 
+      border-radius: 8px; 
+      text-align: center; 
+      border: 1px solid var(--card-border);
+    ">
+      <div style="
+        font-weight: 600; 
+        color: var(--text-accent-color); 
+        margin-bottom: 0.5rem; 
+        font-size: 0.9rem;
+      ">
+        Sessions to 0
+      </div>
+      <div style="
+        font-size: 1.25rem; 
+        font-weight: 700; 
+        color: var(--accent-color);
+      ">
+        ${formatNumber(calculations.sessionsUntil0)}
+      </div>
+    </div>
+  </div>
+`;
 
   calculatorSection.innerHTML = `
     <div style="
