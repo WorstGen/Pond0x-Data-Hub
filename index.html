@@ -1602,13 +1602,13 @@ const walletManager = {
   updateSavedWalletsList() {
     const container = document.getElementById('savedWalletsList');
     const wallets = this.loadWallets();
-    
-    if (wallets.length === 0) {
-      container.innerHTML = '<div class="no-saved-wallets">No saved wallets yet</div>';
-      return;
-    }
-    
-    const filteredWallets = wallets.filter(wallet => wallet.type === 'solana');
+const filteredWallets = wallets.filter(wallet => wallet.type === 'solana');
+
+if (filteredWallets.length === 0) {
+  container.innerHTML = '<div class="no-saved-wallets">No saved wallets yet</div>';
+  return;
+}
+
       container.innerHTML = filteredWallets.map(wallet => {
       const isSelected = this.selectedWallet && this.selectedWallet.address.toLowerCase() === wallet.address.toLowerCase();
       const autoLabel = this.generateLabel(wallet.address, wallet.type);
