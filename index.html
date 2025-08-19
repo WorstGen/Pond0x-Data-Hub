@@ -1648,11 +1648,10 @@ if (filteredWallets.length === 0) {
     
     const filteredWallets = wallets.filter(wallet => wallet.type === 'solana');
     if (filteredWallets.length === 0) {
-      content.innerHTML = '<div class="input-dropdown-empty">No saved wallets</div>';
-      return;
+    content.innerHTML = '<div class="input-dropdown-empty">No saved wallets</div>';
+    return;
     }
-    
-    const filteredWallets = wallets.filter(wallet => wallet.type === 'solana');
+
       content.innerHTML = filteredWallets.map(wallet => {
       const autoLabel = this.generateLabel(wallet.address, wallet.type);
       const hasCustomName = wallet.label && wallet.label !== autoLabel;
