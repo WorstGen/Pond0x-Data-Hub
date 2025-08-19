@@ -2424,7 +2424,7 @@ function addSwapBoostCalculator(manifestData, healthStats) {
         border-radius: 8px;
       ">
         <span style="color: var(--text-primary); font-weight: 600;">Current Boost:</span>
-        <span style="font-weight: 700; color: var(--text-accent);
+        <span style="font-weight: 700; color: var(--accent-color);">
           ~${calculations.currentBoost.toFixed(0)}
           ${calculations.currentBoost > calculations.targetBoost ? `<span style="font-size: 0.75rem; color: var(--primary-color); margin-left: 0.25rem;">(capped at ${calculations.targetBoost})</span>` : ''}
         </span>
