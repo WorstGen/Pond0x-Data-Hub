@@ -2427,7 +2427,7 @@ function addAIInsightsSection(aiInsights) {
   aiTitle.innerHTML = '🤖 AI INSIGHTS & RECOMMENDATIONS';
   const aiContainer = document.createElement('div');
   aiContainer.className = 'ai-insights-container';
-  aiContainer.style.cssText = `display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1rem; margin-top: 1.5rem;`;
+  aiContainer.style.cssText = `display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1rem; margin-top: 1.5rem; width: 100%;`;
   aiInsights.forEach((insight) => {
     const insightCard = document.createElement('div');
     insightCard.className = 'ai-insight-card';
