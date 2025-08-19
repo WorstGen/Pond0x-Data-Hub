@@ -2436,6 +2436,7 @@ function addAIInsightsSection(aiInsights) {
     insightCard.className = 'ai-insight-card';
     insightCard.style.cssText = `
       background: var(--link-item-bg);
+      max-width: 350px;
       backdrop-filter: blur(15px);
       border-radius: 12px;
       padding: 1.5rem;
@@ -2443,7 +2444,6 @@ function addAIInsightsSection(aiInsights) {
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
-      border-left: 4px solid var(--accent-color);
     `;
 
     insightCard.innerHTML = `
