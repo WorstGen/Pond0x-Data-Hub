@@ -892,95 +892,90 @@
     }
 
     /* Dashboard Section */
-    .dashboard-section {
-      display: none;
-    }
+.dashboard-section {
+  display: none;
+}
+.dashboard-section.show {
+  display: block;
+  animation: fadeIn 0.5s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.data-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.data-card {
+  background: var(--link-item-bg);
+  max-width: 350px;
+  backdrop-filter: blur(15px);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid var(--card-border);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+.data-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px var(--shadow-primary);
+  border-color: var(--accent-color);
+}
+.data-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+.data-card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.data-card-icon {
+  font-size: 1.2rem;
+  opacity: 0.8;
+}
+.data-card-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent-color);
+  text-align: center;
+  margin: 1rem 0;
+  text-shadow: 0 0 10px var(--shadow-accent);
+}
+.data-card-description {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  opacity: 0.8;
+  text-align: center;
+  line-height: 1.4;
+}
 
-    .dashboard-section.show {
-      display: block;
-      animation: fadeIn 0.5s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .section-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 1.5rem;
-      text-align: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-
-    .data-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .data-card {
-      background: var(--link-item-bg);
-      max-width: 350px
-      backdrop-filter: blur(15px);
-      border-radius: 12px;
-      padding: 1.5rem;
-      border: 1px solid var(--card-border);
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      text-align: center;
-    }
-
-    .data-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px var(--shadow-primary);
-      border-color: var(--accent-color);
-    }
-
-    .data-card-header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1rem;
-    }
-
-    .data-card-title {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .data-card-icon {
-      font-size: 1.2rem;
-      opacity: 0.8;
-    }
-
-    .data-card-value {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--accent-color);
-      text-align: center;
-      margin: 1rem 0;
-      text-shadow: 0 0 10px var(--shadow-accent);
-    }
-
-    .data-card-description {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      opacity: 0.8;
-      text-align: center;
-      line-height: 1.4;
-    }
+/* Grid behavior: last card spans full width only when alone on its row */
+.data-grid:has(.data-card:last-child:nth-last-child(1)) .data-card:last-child,
+.ai-insights-container:has(.ai-insight-card:last-child:nth-last-child(1)) .ai-insight-card:last-child {
+  grid-column: 1 / -1;
+}
 
     .progress-bar {
       width: 100%;
