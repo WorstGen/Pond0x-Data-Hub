@@ -67,19 +67,24 @@
     }
 
     /* Flowing wave animation for light mode */
-    body {
-      background: 
-        linear-gradient(0deg, 
-          rgba(19, 255, 34, 0.4) 0%, 
-          rgba(37, 219, 15, 0.3) 50%, 
-          rgba(14, 196, 4, 0.35) 100%),
-        linear-gradient(180deg, 
-          rgba(25, 200, 20, 0.25) 0%, 
-          rgba(19, 255, 34, 0.2) 100%),
-        linear-gradient(135deg, #0ec404 0%, #25db0f 25%, #13FF22 50%, #25db0f 75%, #0ec404 100%);
-      background-size: 100% 200%, 100% 150%, 100% 100%;
-      animation: smoothLiquidFlow 6s ease-in-out infinite;
-    }
+body {
+  background: 
+    linear-gradient(0deg, 
+      rgba(189, 124, 253, 0.35) 0%,   /* soft lavender shimmer */
+      rgba(224, 179, 255, 0.25) 50%,  /* light pastel purple */
+      rgba(255, 61, 240, 0.25) 100%), /* pink accent wash */
+    linear-gradient(180deg, 
+      rgba(224, 179, 255, 0.2) 0%, 
+      rgba(189, 124, 253, 0.15) 100%),
+    linear-gradient(135deg, 
+      #f9f5ff 0%, 
+      #f6edff 25%, 
+      #f3e8ff 50%, 
+      #f6edff 75%, 
+      #f9f5ff 100%);
+  background-size: 100% 200%, 100% 150%, 100% 100%;
+  animation: smoothLiquidFlow 6s ease-in-out infinite;
+}
 
     @keyframes smoothLiquidFlow {
       0%, 100% {
