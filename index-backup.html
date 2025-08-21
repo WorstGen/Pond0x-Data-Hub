@@ -1089,14 +1089,19 @@ body {
 }
 
 .x-modal-content {
-  background: white;
-  border-radius: 12px;
-  padding: 2rem;
-  max-width: 500px;
-  width: 90%;
-  max-height: 80vh;
-  overflow-y: auto;
-}
+  background: var(--card-bg);
+  backdrop-filter: blur(15px);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 2px solid var(--card-border);
+      box-shadow: 0 20px 60px var(--shadow-primary);
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+      animation: modalSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
 .x-modal-image {
   width: 100%;
