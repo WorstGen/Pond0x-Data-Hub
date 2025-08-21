@@ -1074,6 +1074,74 @@ body {
   100% { transform: rotate(360deg); }
 }
 
+    /* X Modal styling */
+.x-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.x-modal-content {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.x-modal-image {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.x-modal-textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 0.75rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  resize: vertical;
+  margin-bottom: 1rem;
+}
+
+.x-modal-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.x-modal-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.x-modal-btn-cancel {
+  background: #6c757d;
+  color: white;
+}
+
+.x-modal-btn-share {
+  background: #1da1f2;
+  color: white;
+}
+
     .navbar {
       position: fixed;
       top: 0;
@@ -2333,7 +2401,7 @@ function downloadPassportCard() {
     });
 }
 
-// Share to X function
+// Share to X function with x-modal
 function shareToX() {
   if (!window.currentManifestData) {
     alert('No passport data available to share');
@@ -2349,22 +2417,14 @@ function shareToX() {
   button.disabled = true;
   buttonText.innerHTML = '<span class="spinner"></span>Generating...';
 
-  // Generate the card and share to X
+  // Generate the card and show x-modal
   generatePassportCard(window.currentManifestData)
     .then(blob => {
-      // Create download link for the image (user can save it locally)
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'pond0x-passport.png';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-
-      // Open X (Twitter) share dialog
-      const twitterText = encodeURIComponent('Check out my POND0X mining passport! 🚀⛏️\n\n#POND0X #CryptoMining #DataHub');
-      window.open(`https://twitter.com/intent/tweet?text=${twitterText}`, '_blank');
+      // Create image URL for preview
+      const imageUrl = URL.createObjectURL(blob);
+      
+      // Show x-modal with image and tweet composer
+      showXShareModal(imageUrl, blob);
     })
     .catch(error => {
       console.error('Error generating passport card:', error);
@@ -2375,6 +2435,104 @@ function shareToX() {
       button.disabled = false;
       buttonText.textContent = 'Share to X';
     });
+}
+
+// Show X share modal function
+function showXShareModal(imageUrl, imageBlob) {
+  // Default tweet text
+  const defaultTweet = 'Check out my POND0X mining passport! 🚀⛏️\n\n#POND0X #CryptoMining #DataHub';
+  
+  // Create x-modal HTML
+  const xModalHtml = `
+    <div class="x-modal-overlay" id="xShareModal" onclick="closeXShareModal(event)">
+      <div class="x-modal-content" onclick="event.stopPropagation()">
+        <h3 style="margin-top: 0; text-align: center;">Share to X (Twitter)</h3>
+        <img src="${imageUrl}" alt="Passport Preview" class="x-modal-image">
+        <textarea 
+          class="x-modal-textarea" 
+          id="xTweetText" 
+          placeholder="Write your tweet..."
+          maxlength="280"
+        >${defaultTweet}</textarea>
+        <div style="text-align: right; font-size: 12px; color: #666; margin-bottom: 1rem;">
+          <span id="xCharCount">${defaultTweet.length}</span>/280 characters
+        </div>
+        <div class="x-modal-buttons">
+          <button class="x-modal-btn x-modal-btn-cancel" onclick="closeXShareModal()">Cancel</button>
+          <button class="x-modal-btn x-modal-btn-share" onclick="postToX()">Share to X</button>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // Add x-modal to page
+  document.body.insertAdjacentHTML('beforeend', xModalHtml);
+  
+  // Store image blob for later use
+  window.xShareImageBlob = imageBlob;
+  
+  // Add character counter
+  const textarea = document.getElementById('xTweetText');
+  const charCount = document.getElementById('xCharCount');
+  
+  textarea.addEventListener('input', function() {
+    charCount.textContent = this.value.length;
+    if (this.value.length > 280) {
+      charCount.style.color = 'red';
+    } else {
+      charCount.style.color = '#666';
+    }
+  });
+}
+
+// Close X modal function
+function closeXShareModal(event) {
+  if (event && event.target !== event.currentTarget) return;
+  
+  const xModal = document.getElementById('xShareModal');
+  if (xModal) {
+    // Clean up image URL
+    const img = xModal.querySelector('.x-modal-image');
+    if (img && img.src.startsWith('blob:')) {
+      URL.revokeObjectURL(img.src);
+    }
+    
+    // Clean up stored blob
+    if (window.xShareImageBlob) {
+      delete window.xShareImageBlob;
+    }
+    
+    xModal.remove();
+  }
+}
+
+// Post to X function
+function postToX() {
+  const tweetText = document.getElementById('xTweetText').value;
+  
+  if (tweetText.length > 280) {
+    alert('Tweet is too long! Please keep it under 280 characters.');
+    return;
+  }
+  
+  // Download the image first (so user can attach it manually)
+  if (window.xShareImageBlob) {
+    const url = URL.createObjectURL(window.xShareImageBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'pond0x-passport.png';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+  
+  // Open X with the custom tweet
+  const encodedTweet = encodeURIComponent(tweetText);
+  window.open(`https://twitter.com/intent/tweet?text=${encodedTweet}`, '_blank');
+  
+  // Close x-modal
+  closeXShareModal();
 }
 
 // Updated generatePassportCard function with new text
