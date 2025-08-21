@@ -1,0 +1,1897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DATA🤝HUB</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      /* Light mode variables */
+      --bg-gradient: linear-gradient(135deg, #f9f5ff 0%, #f6edff 35%, #f3e8ff 65%, #f9f5ff 100%);
+      --primary-color: #9b5de5;
+      --accent-color: #ff3df0;
+      --secondary-accent: #bd7cfd;
+      --navbar-bg: #FF13F0;
+      --nav-text: #f6edff;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(155, 93, 229, 0.2);
+      --input-bg: rgba(255, 255, 255, 0.4);
+      --link-item-bg: rgba(155, 93, 229, 0.08);
+      --shadow-primary: rgba(155, 93, 229, 0.15);
+      --shadow-accent: rgba(255, 61, 240, 0.25);
+      --text-primary: #5b2a86;
+      --text-secondary: #7b3aad;
+      --success-color: #22c55e;
+      --warning-color: #f59e0b;
+      --error-color: #ef4444;
+      --info-color: #3b82f6;
+}
+
+    [data-theme="dark"] {
+      /* Dark mode variables */
+      --bg-gradient: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 20%, #16213e 40%, #1a1a2e 60%, #0f0f0f 80%, #0a0a0a 100%);
+      --primary-color: #e0b3ff;
+      --accent-color: #ff3df0;
+      --secondary-accent: #bd7cfd;
+      --navbar-bg: #1a1a2e;
+      --nav-text: #e5ddfb;
+      --card-bg: rgba(26, 26, 46, 0.8);
+      --card-border: rgba(189, 124, 253, 0.4);
+      --input-bg: rgba(26, 26, 46, 0.6);
+      --link-item-bg: rgba(26, 26, 46, 0.5);
+      --shadow-primary: rgba(189, 124, 253, 0.3);
+      --shadow-accent: rgba(255, 61, 240, 0.5);
+      --text-primary: #e0b3ff;
+      --text-secondary: #c9a3ff;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding-top: 60px;
+      position: relative;
+      overflow-x: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Flowing wave animation for light mode */
+body {
+  background: 
+    linear-gradient(0deg, 
+      rgba(189, 124, 253, 0.35) 0%,   /* soft lavender shimmer */
+      rgba(224, 179, 255, 0.25) 50%,  /* light pastel purple */
+      rgba(255, 61, 240, 0.25) 100%), /* pink accent wash */
+    linear-gradient(180deg, 
+      rgba(224, 179, 255, 0.2) 0%, 
+      rgba(189, 124, 253, 0.15) 100%),
+    linear-gradient(135deg, 
+      #f9f5ff 0%, 
+      #f6edff 25%, 
+      #f3e8ff 50%, 
+      #f6edff 75%, 
+      #f9f5ff 100%);
+  background-size: 100% 200%, 100% 150%, 100% 100%;
+  animation: smoothLiquidFlow 6s ease-in-out infinite;
+}
+
+    @keyframes smoothLiquidFlow {
+      0%, 100% {
+        background-position: 0% 100%, 0% 0%, 0% 0%;
+      }
+      50% {
+        background-position: 0% 0%, 0% 100%, 0% 0%;
+      }
+    }
+
+    /* Flowing wave animation for dark mode */
+    [data-theme="dark"] body {
+      background: 
+        linear-gradient(0deg, 
+          rgba(189, 124, 253, 0.15) 0%, 
+          rgba(255, 61, 240, 0.1) 50%, 
+          rgba(26, 26, 46, 0.2) 100%),
+        linear-gradient(180deg, 
+          rgba(26, 26, 46, 0.15) 0%, 
+          rgba(189, 124, 253, 0.08) 100%),
+        linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #1a1a2e 75%, #0f0f0f 100%);
+      background-size: 100% 180%, 100% 140%, 100% 100%;
+      animation: smoothLiquidFlowDark 8s ease-in-out infinite;
+    }
+
+    @keyframes smoothLiquidFlowDark {
+      0%, 100% {
+        background-position: 0% 100%, 0% 0%, 0% 0%;
+      }
+      50% {
+        background-position: 0% 0%, 0% 100%, 0% 0%;
+      }
+    }
+
+    /* Bubble container - can be hidden */
+    .bubble-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+      transition: opacity 0.3s ease;
+    }
+
+    .bubble-container.hidden {
+      opacity: 0;
+    }
+
+    /* Cook button styling - bottom right position */
+    .cook-button {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: linear-gradient(135deg, var(--secondary-accent) 0%, var(--accent-color) 100%);
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 
+        0 6px 20px var(--shadow-accent),
+        inset 2px 2px 10px rgba(255, 255, 255, 0.2),
+        inset -2px -2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1002;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .cook-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 
+        0 10px 30px var(--shadow-accent),
+        inset 2px 2px 10px rgba(255, 255, 255, 0.3),
+        inset -2px -2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .cook-button.bubbles-off {
+      background: linear-gradient(135deg, #666 0%, #999 100%);
+      box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.3),
+        inset 2px 2px 10px rgba(255, 255, 255, 0.1),
+        inset -2px -2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .cook-button.bubbles-off:hover {
+      box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.4),
+        inset 2px 2px 10px rgba(255, 255, 255, 0.2),
+        inset -2px -2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Dark mode toggle button */
+    .theme-toggle {
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1.5rem;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1001;
+      padding: 5px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.2);
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+    }
+
+    [data-theme="dark"] .theme-toggle {
+      filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.2));
+    }
+
+    [data-theme="dark"] .theme-toggle:hover {
+      transform: scale(1.2);
+      filter: drop-shadow(0 4px 8px rgba(255, 255, 255, 0.3));
+    }
+
+    @media (max-width: 768px) {
+      .cook-button {
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        font-size: 1rem;
+      }
+      
+      .theme-toggle {
+        top: 65px;
+        right: 15px;
+        font-size: 1.3rem;
+      }
+    }
+
+    /* Enhanced dark mode bubbles */
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      animation: bubble-rise linear infinite;
+      opacity: 0;
+      background: 
+        radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.3) 30%, transparent 70%),
+        radial-gradient(circle at 80% 80%, rgba(0, 0, 0, 0.1) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 
+        0 0 20px rgba(255, 255, 255, 0.2),
+        inset 3px 3px 15px rgba(255, 255, 255, 0.4),
+        inset -3px -3px 15px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(1px);
+    }
+
+    [data-theme="dark"] .bubble {
+      background: 
+        radial-gradient(circle at 25% 25%, rgba(189, 124, 253, 0.6) 0%, rgba(255, 61, 240, 0.3) 30%, transparent 70%),
+        radial-gradient(circle at 80% 80%, rgba(26, 26, 46, 0.3) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(189, 124, 253, 0.2), rgba(255, 61, 240, 0.1));
+      border: 1px solid rgba(189, 124, 253, 0.4);
+      box-shadow: 
+        0 0 25px rgba(189, 124, 253, 0.3),
+        inset 3px 3px 15px rgba(189, 124, 253, 0.2),
+        inset -3px -3px 15px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(189, 124, 253, 0.2);
+    }
+
+    /* Bubble animations with smooth wobble/wave motion */
+    @keyframes bubble-rise {
+      0% {
+        opacity: 0;
+        transform: translateY(100vh) translateX(0px) scale(0.3);
+      }
+      10% {
+        opacity: 0.8;
+        transform: translateY(90vh) translateX(15px) scale(0.5);
+      }
+      20% {
+        opacity: 0.9;
+        transform: translateY(80vh) translateX(-10px) scale(0.6);
+      }
+      30% {
+        opacity: 0.9;
+        transform: translateY(70vh) translateX(20px) scale(0.7);
+      }
+      40% {
+        opacity: 0.9;
+        transform: translateY(60vh) translateX(-5px) scale(0.8);
+      }
+      50% {
+        opacity: 0.9;
+        transform: translateY(50vh) translateX(12px) scale(0.9);
+      }
+      60% {
+        opacity: 0.9;
+        transform: translateY(40vh) translateX(-15px) scale(0.95);
+      }
+      70% {
+        opacity: 0.9;
+        transform: translateY(30vh) translateX(8px) scale(1);
+      }
+      80% {
+        opacity: 0.8;
+        transform: translateY(20vh) translateX(-12px) scale(1);
+      }
+      90% {
+        opacity: 0.7;
+        transform: translateY(10vh) translateX(6px) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-10vh) translateX(0px) scale(1);
+      }
+    }
+
+    .container {
+      max-width: 1010px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .header h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 20px var(--shadow-primary);
+      color: var(--text-primary);
+    }
+
+    .header p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      color: var(--text-primary);
+    }
+
+    .header img {
+      max-width: 69%;
+      height: auto;
+      transition: all 0.3s ease;
+      margin-top: 1.2em;
+    }
+
+    [data-theme="dark"] .header img {
+      filter: brightness(1.1) contrast(1.1) drop-shadow(0 0 20px rgba(189, 124, 253, 0.3));
+    }
+
+    .card {
+      max-width: 1010px;
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 1.5rem;
+      border: 2px solid var(--card-border);
+      box-shadow: 0 12px 40px var(--shadow-primary);
+      transition: all 0.3s ease;
+      margin: 0 auto;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 50px var(--shadow-primary);
+      border-color: var(--card-border);
+    }
+
+    [data-theme="dark"] .card:hover {
+      box-shadow: 
+        0 16px 50px var(--shadow-primary),
+        0 0 30px rgba(189, 124, 253, 0.2);
+    }
+
+    .card h2 {
+      font-size: 1.6rem;
+      margin-bottom: 2rem;
+      color: var(--text-primary);
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 2rem;
+      padding: 1rem;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+    }
+
+    .footer-subtitle {
+      margin: 0.5rem 0 1rem 0; 
+      font-size: 0.9rem; 
+      color: var(--text-primary); 
+      opacity: 0.8;
+    }
+
+    .mirrored {
+      display: inline-block;
+      transform: scaleX(-1);
+    }
+
+    /* MOBILE SPECIFIC OPTIMIZATIONS */
+    @media (max-width: 768px) {
+      
+      .header h1 {
+        font-size: 2.2rem;
+      }
+      
+      .card {
+        padding: 1rem;
+        margin: 0 0.5rem; /* Side margins for mobile */
+        border-radius: 15px;
+      }
+      
+      .card h2 {
+        font-size: 1.3rem;
+        margin-bottom: 1.5rem;
+      }
+      
+      /* Better mobile padding */
+      .container {
+        padding: 0.5rem;
+      }
+      
+      /* Optimize header image for mobile - keep at 69% */
+      .header img {
+        max-width: 69%;
+        margin-top: 1rem;
+      }
+      
+      .header {
+        margin-bottom: 2rem;
+      }
+    }
+
+    /* EXTRA SMALL MOBILE DEVICES */
+    @media (max-width: 480px) {
+      .card {
+        padding: 1rem;
+        margin: 0 0.25rem; /* Smaller side margins for extra small screens */
+      }
+      
+      .header h1 {
+        font-size: 1.8rem;
+      }
+      
+      .card h2 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+      }
+    }
+
+    /* LANDSCAPE MOBILE OPTIMIZATION */
+    @media (max-width: 768px) and (orientation: landscape) {
+      .header {
+        margin-bottom: 1.5rem;
+      }
+      
+      .card {
+        padding: 1rem;
+      }
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: var(--navbar-bg);
+      z-index: 1000;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="dark"] .navbar {
+      box-shadow: 
+        0 4px 10px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(189, 124, 253, 0.1);
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0.3rem 1rem;
+      flex-wrap: wrap;
+      position: relative;
+    }
+
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: white;
+      cursor: pointer;
+      margin-right: auto;
+    }
+
+    .nav-title {
+      color: var(--accent-color);
+      font-weight: bold;
+      font-size: 1.1rem;
+      text-align: center;
+      width: 100%;
+      margin-bottom: 0.5rem;
+      display: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .nav-links a {
+      color: var(--nav-text);
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1rem;
+      padding: 0.5rem;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      background-color: rgba(19, 255, 34, 0.15);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    [data-theme="dark"] .nav-links a:hover {
+      background-color: rgba(211, 178, 252, 0.2);
+      box-shadow: 0 4px 15px rgba(255, 19, 240, 0.2);
+    }
+
+    @media (max-width: 952px) {
+      .nav-container {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0.5rem 1rem;
+      }
+
+      .nav-toggle {
+        display: block;
+        align-self: flex-start;
+        margin: 0.25rem 0;
+      }
+
+      .nav-title {
+        display: block;
+      }
+
+      .nav-links {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        width: 100%;
+        display: none;
+      }
+
+      .nav-links.show {
+        display: flex;
+      }
+      
+      .nav-links a {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.6rem;
+      }
+    }
+
+    .people-like-section {
+      text-align: center;
+      margin-top: 2rem;
+      padding: 1rem;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+    }
+
+    .people-like-subtitle {
+      margin: 0.5rem 0 1rem 0;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      opacity: 0.8;
+    }
+
+    #plw-content {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 768px) {
+      #plw-content {
+        gap: 1.5rem;
+      }
+    }
+
+    .people-like-section .link-url {
+      color: var(--accent-color);
+      text-decoration: none;
+      opacity: 0.8;
+      transition: all 0.3s ease;
+    }
+
+    .people-like-section .link-url:hover {
+      color: var(--text-primary);
+      opacity: 1;
+      text-shadow: 0 0 10px var(--shadow-accent);
+    }
+
+    /* Enhanced transitions for theme switching */
+    * {
+      transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                  background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                  border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                  box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Calculator specific styles */
+    .calculator-container {
+      max-width: 1010px;
+      margin: 0 auto;
+    }
+
+    .calculator-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+
+    .calculator-icon {
+      padding: 12px;
+      border-radius: 50%;
+      margin-right: 12px;
+      color: white;
+      font-size: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #FEA7DD 0%, #FF69B4 100%);
+    }
+
+    .token-selector {
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border-radius: 16px;
+      border: 2px solid var(--card-border);
+      box-shadow: 0 12px 40px var(--shadow-primary);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      z-index: 30;
+    }
+
+    .token-selector h3 {
+      color: var(--text-primary);
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .dropdown-container {
+      position: relative;
+    }
+
+    .token-dropdown-btn {
+      width: 100%;
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.3s ease;
+      background: linear-gradient(135deg, #FEA7DD 0%, #FF69B4 100%);
+    }
+
+    .token-dropdown-btn:hover {
+      opacity: 0.9;
+    }
+
+    .token-info {
+      display: flex;
+      align-items: center;
+      text-align: left;
+    }
+
+    .token-network {
+      font-size: 0.875rem;
+      opacity: 0.8;
+    }
+
+    .chevron-icon {
+      width: 20px;
+      height: 20px;
+      transition: transform 0.3s ease;
+    }
+
+    .chevron-icon.rotated {
+      transform: rotate(180deg);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(16px);
+      border-radius: 12px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      overflow: hidden;
+      z-index: 50;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    }
+
+    .dropdown-item {
+      width: 100%;
+      text-align: left;
+      padding: 1rem 1.5rem;
+      color: white;
+      border: none;
+      background: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown-item:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .dropdown-item.active {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .token-item {
+      display: flex;
+      align-items: center;
+    }
+
+    .token-color-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 12px;
+    }
+
+    .token-details {
+      font-weight: 600;
+    }
+
+    .token-supply {
+      font-size: 0.875rem;
+      color: #d1d5db;
+    }
+
+    .calculator-main {
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border-radius: 16px;
+      border: 2px solid var(--card-border);
+      box-shadow: 0 12px 40px var(--shadow-primary);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      z-index: 20;
+    }
+
+    .tab-nav {
+      display: flex;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 1.5rem;
+    }
+
+    .tab-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 16px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      color: #d1d5db;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .tab-btn:hover {
+      color: white;
+    }
+
+    .tab-btn.active {
+      color: white;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      background: linear-gradient(135deg, #FEA7DD 0%, #FF69B4 100%);
+    }
+
+    .tab-icon {
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+    }
+
+    .calculator-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .calculator-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+    }
+
+    .input-section {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .input-label {
+      display: block;
+      color: var(--text-primary);
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .input-icon {
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    .calculator-input {
+      width: 100%;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      color: var(--text-primary);
+      font-size: 1.125rem;
+      transition: all 0.3s ease;
+    }
+
+    .calculator-input::placeholder {
+      color: rgba(128, 128, 128, 0.6);
+    }
+
+    .calculator-input:focus {
+      border-color: #ff3df0;
+      box-shadow: 0 0 0 4px rgba(255, 61, 240, 0.2);
+      outline: none;
+    }
+
+    .input-info {
+      font-size: 0.875rem;
+      color: #d1d5db;
+    }
+
+    .price-unit-selector {
+      position: relative;
+      margin-bottom: 8px;
+      z-index: 10;
+    }
+
+    .price-unit-btn {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: var(--text-primary);
+      padding: 8px 16px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .price-unit-btn:hover {
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .preset-buttons {
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border-radius: 16px;
+      border: 2px solid var(--card-border);
+      box-shadow: 0 12px 40px var(--shadow-primary);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    .preset-buttons h3 {
+      color: var(--text-primary);
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    @media (min-width: 768px) {
+      .preset-grid {
+        grid-template-columns: repeat(5, 1fr);
+      }
+    }
+
+    .preset-btn {
+      color: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      background: linear-gradient(135deg, #FEA7DD 0%, #FF69B4 100%);
+    }
+
+    .preset-btn:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+
+    .token-info-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border-radius: 16px;
+      border: 2px solid var(--card-border);
+      box-shadow: 0 12px 40px var(--shadow-primary);
+      padding: 1.5rem;
+    }
+
+    .token-info-card h3 {
+      color: var(--text-primary);
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .info-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+    }
+
+    .info-item {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .info-item.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .info-label {
+      color: #d1d5db;
+      font-size: 0.875rem;
+    }
+
+    .info-value {
+      color: var(--text-primary);
+      font-size: 1.125rem;
+      font-weight: 700;
+    }
+
+    .info-value.mono {
+      font-family: 'Courier New', monospace;
+      font-size: 0.875rem;
+      word-break: break-all;
+    }
+
+    .calculator-footer {
+      text-align: center;
+      margin-top: 2rem;
+      color: rgba(128, 128, 128, 0.8);
+      font-size: 0.875rem;
+    }
+
+    .calculator-footer p {
+      margin: 4px 0;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <!-- Dark mode toggle button -->
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle dark mode">
+    ☀️
+  </button>
+
+  <!-- Cook button for toggling bubbles -->
+  <button class="cook-button" id="cookButton" onclick="toggleBubbles()">
+    👨‍🍳 Cook
+  </button>
+
+  <!-- Bubble container for animation -->
+  <div class="bubble-container" id="bubbleContainer"></div>
+
+  <!-- Responsive Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <button class="nav-toggle" onclick="toggleNav()">☰</button>
+      
+      <div class="nav-links" id="navLinks">
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/">PASSPORT</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/MiningClaims.html">MINING CLAIMS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/HashBoosts.html">HASH BOOSTS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/wPONDReceived.html">wPOND RECEIVED</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigActivations.html">RIG ACTIVATIONS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/Calculator.html">CALCULATOR</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/genLinks">GENERATE LINKS</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="header">
+      <img src="https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/refs/heads/main/pond0xdatahub.png" alt="POND0X Data Hub Logo">
+    </div>
+
+    <div class="card">
+      <h2 style="text-align:center; margin-bottom: 1rem;">🏛️ MARKET CAP CALCULATOR 🏛️</h2>
+      
+      <div class="calculator-container">
+        <!-- Calculator Header -->
+        <div class="calculator-header">
+          <div>
+            <p style="color: var(--text-primary); font-size: 1rem; margin: 0; opacity: 0.9;">Market Cap ↔ Price Calculator for Multiple Tokens</p>
+          </div>
+        </div>
+
+        <!-- Token Selector -->
+        <div class="token-selector">
+          <h3>Select Token</h3>
+          <div class="dropdown-container">
+            <button class="token-dropdown-btn" id="tokenDropdownBtn" onclick="toggleTokenDropdown()">
+              <div class="token-info">
+                <div style="margin-right: 12px;">⛃</div>
+                <div>
+                  <div id="selectedTokenName" style="font-size: 1.125rem;">PepeFork (PORK)</div>
+                  <div id="selectedTokenNetwork" class="token-network">Ethereum</div>
+                </div>
+              </div>
+              <div class="chevron-icon" id="tokenChevron">▼</div>
+            </button>
+            
+            <div class="dropdown-menu hidden" id="tokenDropdownMenu">
+              <button class="dropdown-item" onclick="selectToken('PORK')">
+                <div class="token-item">
+                  <div class="token-color-dot" style="background-color: #FEA7DD;"></div>
+                  <div>
+                    <div class="token-details">PepeFork (PORK)</div>
+                    <div class="token-supply">Ethereum • Supply: 420.69T</div>
+                  </div>
+                </div>
+              </button>
+              <button class="dropdown-item" onclick="selectToken('PNDC')">
+                <div class="token-item">
+                  <div class="token-color-dot" style="background-color: #96D557;"></div>
+                  <div>
+                    <div class="token-details">Pond Coin (PNDC)</div>
+                    <div class="token-supply">Ethereum • Supply: 420.69T</div>
+                  </div>
+                </div>
+              </button>
+              <button class="dropdown-item" onclick="selectToken('WPOND')">
+                <div class="token-item">
+                  <div class="token-color-dot" style="background-color: #96D557;"></div>
+                  <div>
+                    <div class="token-details">Warped Pond Coin (wPOND)</div>
+                    <div class="token-supply">Solana • Supply: 27.77T</div>
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Calculator -->
+        <div class="calculator-main">
+          <!-- Tab Navigation -->
+          <div class="tab-nav">
+            <button class="tab-btn active" id="mcToPriceTab" onclick="setActiveTab('mcToPrice')">
+              <span class="tab-icon">📈</span>
+              MC → Price
+            </button>
+            <button class="tab-btn" id="priceToMcTab" onclick="setActiveTab('priceToMc')">
+              <span class="tab-icon">💲</span>
+              Price → MC
+            </button>
+          </div>
+
+          <div class="calculator-grid">
+            <!-- Market Cap Input -->
+            <div class="input-section">
+              <label class="input-label">
+                <span class="input-icon">💰</span>
+                Market Cap ($)
+              </label>
+              <input
+                type="number"
+                id="marketCapInput"
+                class="calculator-input"
+                placeholder="Enter market cap..."
+                oninput="handleMarketCapChange(this.value)"
+                onclick="closeDropdowns()"
+              />
+              <div id="marketCapInfo" class="input-info hidden"></div>
+            </div>
+
+            <!-- Price Output -->
+            <div class="input-section">
+              <label class="input-label">
+                <span class="input-icon">🎯</span>
+                Token Price ($)
+              </label>
+              
+              <!-- Price Unit Selector -->
+              <div class="price-unit-selector dropdown-container">
+                <button class="price-unit-btn" id="priceUnitBtn" onclick="togglePriceUnitDropdown()">
+                  <span id="selectedPriceUnit">Per Token</span>
+                  <span class="chevron-icon" id="priceUnitChevron">▼</span>
+                </button>
+                
+                <div class="dropdown-menu hidden" id="priceUnitDropdownMenu">
+                  <button class="dropdown-item" onclick="selectPriceUnit('per_token')">Per Token</button>
+                  <button class="dropdown-item" onclick="selectPriceUnit('per_thousand')">Per 1K Tokens</button>
+                  <button class="dropdown-item" onclick="selectPriceUnit('per_million')">Per 1M Tokens</button>
+                  <button class="dropdown-item" onclick="selectPriceUnit('per_billion')">Per 1B Tokens</button>
+                </div>
+              </div>
+
+              <input
+                type="number"
+                id="priceInput"
+                class="calculator-input"
+                placeholder="Enter token price..."
+                oninput="handlePriceChange(this.value)"
+                onclick="closeDropdowns()"
+                step="0.000000000001"
+              />
+              <div id="priceInfo" class="input-info hidden"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Preset Buttons -->
+        <div class="preset-buttons">
+          <h3>Quick Market Cap Presets</h3>
+          <div class="preset-grid">
+            <button class="preset-btn" onclick="handlePresetClick(1000000)">$1M</button>
+            <button class="preset-btn" onclick="handlePresetClick(10000000)">$10M</button>
+            <button class="preset-btn" onclick="handlePresetClick(100000000)">$100M</button>
+            <button class="preset-btn" onclick="handlePresetClick(1000000000)">$1B</button>
+            <button class="preset-btn" onclick="handlePresetClick(10000000000)">$10B</button>
+          </div>
+        </div>
+
+        <!-- Token Info -->
+        <div class="token-info-card">
+          <h3>Current Token Information</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="info-label">Token Name</div>
+              <div class="info-value" id="infoTokenName">PepeFork (PORK)</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Network</div>
+              <div class="info-value" id="infoTokenNetwork">Ethereum</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Total Supply</div>
+              <div class="info-value" id="infoTokenSupply">420.69T PORK</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Price Unit</div>
+              <div class="info-value" id="infoPriceUnit">Per Token</div>
+            </div>
+            <div class="info-item full-width">
+              <div class="info-label">Contract Address</div>
+              <div class="info-value mono" id="infoContractAddress">0xb9f599ce614Feb2e1BBe58F180F370D05b39344E</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="calculator-footer">
+          <p>Calculate token price from market cap and vice versa</p>
+          <p>Formula: Price = Market Cap ÷ Total Supply × Unit Multiplier</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="people-like-section">
+      <p><b>Built for <a href="https://cary0x.github.io/community/" target="_blank" class="link-url">the POND🤝X community</a> ❤️</b></p>
+      <p class="people-like-subtitle"><b>People like</b></p>
+      <div id="plw-content">Loading...</div>
+    </div>
+  </div>
+
+<script>
+// Theme management with cross-page persistence
+const themeManager = {
+  storageKey: 'pond0x_theme_preference',
+  
+  init() {
+    const savedTheme = this.loadTheme();
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+    
+    this.setTheme(initialTheme);
+    
+    // Listen for system theme changes only if no manual preference is set
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      if (!this.loadTheme()) { // Only auto-switch if user hasn't manually set preference
+        this.setTheme(e.matches ? 'dark' : 'light');
+      }
+    });
+
+    // Listen for storage changes from other tabs/pages
+    window.addEventListener('storage', (e) => {
+      if (e.key === this.storageKey && e.newValue) {
+        const newTheme = e.newValue;
+        if (newTheme && newTheme !== this.getCurrentTheme()) {
+          this.setTheme(newTheme);
+        }
+      }
+    });
+  },
+  
+  loadTheme() {
+    try {
+      return localStorage.getItem(this.storageKey);
+    } catch (e) {
+      console.warn('Could not load theme preference:', e);
+      return null;
+    }
+  },
+  
+  saveTheme(theme) {
+    try {
+      localStorage.setItem(this.storageKey, theme);
+      console.log('Theme saved:', theme);
+    } catch (e) {
+      console.warn('Could not save theme preference:', e);
+    }
+  },
+
+  getCurrentTheme() {
+    return document.documentElement.getAttribute('data-theme') || 'light';
+  },
+  
+  setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    const button = document.getElementById('themeToggle');
+    if (button) {
+      button.textContent = theme === 'dark' ? '🌙' : '☀️';
+      button.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+    }
+    this.saveTheme(theme);
+  },
+  
+  toggle() {
+    const currentTheme = this.getCurrentTheme();
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    this.setTheme(newTheme);
+  }
+};
+
+// GLOBAL FUNCTIONS - Declared at the very top
+function toggleTheme() {
+  themeManager.toggle();
+}
+
+function toggleNav() {
+  const navLinks = document.getElementById('navLinks');
+  navLinks.classList.toggle('show');
+}
+
+function toggleBubbles() {
+  const container = document.getElementById('bubbleContainer');
+  const button = document.getElementById('cookButton');
+  const body = document.body;
+  
+  if (bubbleSystem.animationRunning) {
+    bubbleSystem.stop();
+    container.classList.add('hidden');
+    body.classList.add('glass-off');
+    button.classList.add('bubbles-off');
+    button.innerHTML = '👨‍🍳 Cook';
+    bubbleStateManager.saveState(false);
+  } else {
+    bubbleSystem.start();
+    container.classList.remove('hidden');
+    body.classList.remove('glass-off');
+    button.classList.remove('bubbles-off');
+    button.innerHTML = '👨‍🍳 Cook';
+    bubbleStateManager.saveState(true);
+  }
+}
+
+// Enhanced bubble state management system
+const bubbleStateManager = {
+  storageKey: 'pond0x_bubble_state',
+  
+  saveState(isEnabled) {
+    try {
+      localStorage.setItem(this.storageKey, JSON.stringify({
+        enabled: isEnabled,
+        timestamp: Date.now()
+      }));
+      console.log('Bubble state saved:', isEnabled);
+    } catch (e) {
+      console.warn('Could not save bubble state:', e);
+    }
+  },
+  
+  loadState() {
+    try {
+      const stored = localStorage.getItem(this.storageKey);
+      if (stored) {
+        const state = JSON.parse(stored);
+        console.log('Bubble state loaded:', state.enabled);
+        return state.enabled;
+      }
+    } catch (e) {
+      console.warn('Could not load bubble state:', e);
+    }
+    return true;
+  },
+  
+  init() {
+    const savedState = this.loadState();
+    console.log('Initializing bubble state:', savedState);
+    
+    if (!savedState) {
+      bubbleSystem.animationRunning = false;
+      const container = document.getElementById('bubbleContainer');
+      const button = document.getElementById('cookButton');
+      const body = document.body;
+      
+      container.classList.add('hidden');
+      body.classList.add('glass-off');
+      button.classList.add('bubbles-off');
+      button.innerHTML = '👨‍🍳 Cook';
+    }
+    
+    return savedState;
+  }
+};
+
+// Optimized bubble animation system
+const bubbleSystem = {
+  container: null,
+  bubbles: [],
+  maxBubbles: 25,
+  initialized: false,
+  animationRunning: true,
+  animationInterval: null,
+  
+  init() {
+    if (this.initialized) return;
+    this.container = document.getElementById('bubbleContainer');
+    this.createBubblePool();
+    
+    const shouldRun = bubbleStateManager.init();
+    if (shouldRun) {
+      this.startAnimation();
+    } else {
+      this.animationRunning = false;
+    }
+    
+    this.initialized = true;
+  },
+
+  stop() {
+    this.animationRunning = false;
+    if (this.animationInterval) {
+      clearInterval(this.animationInterval);
+    }
+    this.bubbles.forEach(bubble => {
+      if (bubble.timer) {
+        clearTimeout(bubble.timer);
+      }
+      bubble.element.style.display = 'none';
+      bubble.active = false;
+    });
+  },
+
+  start() {
+    if (!this.animationRunning) {
+      this.animationRunning = true;
+      this.startAnimation();
+    }
+  },
+  
+  createBubblePool() {
+    for (let i = 0; i < this.maxBubbles; i++) {
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      bubble.style.display = 'none';
+      this.container.appendChild(bubble);
+      this.bubbles.push({
+        element: bubble,
+        active: false,
+        timer: 0
+      });
+    }
+  },
+  
+  getRandomBubble() {
+    return this.bubbles.find(b => !b.active) || this.bubbles[0];
+  },
+  
+  createBubble() {
+    const bubble = this.getRandomBubble();
+    if (!bubble || bubble.active) return;
+    
+    const size = Math.random() * 40 + 10;
+    const left = Math.random() * 100;
+    const duration = Math.random() * 4 + 6;
+    const delay = Math.random() * 2;
+    
+    const element = bubble.element;
+    element.style.cssText = `
+      width: ${size}px;
+      height: ${size}px;
+      left: ${left}%;
+      animation: bubble-rise ${duration}s linear ${delay}s forwards;
+      display: block;
+    `;
+    
+    bubble.active = true;
+    bubble.timer = setTimeout(() => {
+      element.style.display = 'none';
+      bubble.active = false;
+    }, (duration + delay) * 1000);
+  },
+  
+  startAnimation() {
+    if (!this.animationRunning) return;
+    
+    for (let i = 0; i < 8; i++) {
+      setTimeout(() => {
+        if (this.animationRunning) this.createBubble();
+      }, i * 600);
+    }
+    
+    this.animationInterval = setInterval(() => {
+      if (this.animationRunning && Math.random() < 0.8) {
+        this.createBubble();
+      }
+    }, 900);
+  }
+};
+
+// Calculator system
+const calculatorSystem = {
+  marketCap: '',
+  price: '',
+  selectedToken: 'PORK',
+  priceUnit: 'per_token',
+  activeTab: 'mcToPrice',
+  
+  tokens: {
+    PORK: {
+      name: 'PepeFork',
+      symbol: 'PORK',
+      address: '0xb9f599ce614Feb2e1BBe58F180F370D05b39344E',
+      supply: 420690000000000,
+      network: 'Ethereum',
+      color: '#FEA7DD',
+      gradient: 'linear-gradient(135deg, #FEA7DD 0%, #FF69B4 100%)'
+    },
+    PNDC: {
+      name: 'Pond Coin',
+      symbol: 'PNDC', 
+      address: '0x423f4e6138E475D85CF7Ea071AC92097Ed631eea',
+      supply: 420689000000000,
+      network: 'Ethereum',
+      color: '#96D557',
+      gradient: 'linear-gradient(135deg, #96D557 0%, #7CB342 100%)'
+    },
+    WPOND: {
+      name: 'Warped Pond Coin',
+      symbol: 'wPOND',
+      address: '3JgFwoYV74f6LwWjQWnr3YDPFnmBdwQfNyubv99jqUoq',
+      supply: 1000000000000,
+      network: 'Solana',
+      color: '#96D557',
+      gradient: 'linear-gradient(135deg, #96D557 0%, #7CB342 100%)'
+    }
+  },
+
+  priceUnits: {
+    per_token: { label: 'Per Token', multiplier: 1 },
+    per_thousand: { label: 'Per 1K Tokens', multiplier: 1000 },
+    per_million: { label: 'Per 1M Tokens', multiplier: 1000000 },
+    per_billion: { label: 'Per 1B Tokens', multiplier: 1000000000 }
+  },
+
+  init() {
+    this.updateTokenInfo();
+    this.updateActiveTabStyles();
+  },
+
+  getCurrentToken() {
+    return this.tokens[this.selectedToken];
+  },
+
+  formatNumber(num) {
+    if (num >= 1e12) return (num / 1e12).toFixed(2) + 'T';
+    if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
+    if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
+    if (num >= 1e3) return (num / 1e3).toFixed(2) + 'K';
+    return num.toFixed(6);
+  },
+
+  calculatePrice(mc) {
+    if (!mc || isNaN(mc) || mc <= 0) return '';
+    const basePrice = parseFloat(mc) / this.getCurrentToken().supply;
+    const adjustedPrice = basePrice * this.priceUnits[this.priceUnit].multiplier;
+    return adjustedPrice.toFixed(12);
+  },
+
+  calculateMarketCap(p) {
+    if (!p || isNaN(p) || p <= 0) return '';
+    const basePrice = parseFloat(p) / this.priceUnits[this.priceUnit].multiplier;
+    return (basePrice * this.getCurrentToken().supply).toFixed(2);
+  },
+
+  updateTokenInfo() {
+    const token = this.getCurrentToken();
+    const priceUnit = this.priceUnits[this.priceUnit];
+    
+    document.getElementById('selectedTokenName').textContent = `${token.name} (${token.symbol})`;
+    document.getElementById('selectedTokenNetwork').textContent = token.network;
+    document.getElementById('infoTokenName').textContent = `${token.name} (${token.symbol})`;
+    document.getElementById('infoTokenNetwork').textContent = token.network;
+    document.getElementById('infoTokenSupply').textContent = `${this.formatNumber(token.supply)} ${token.symbol}`;
+    document.getElementById('infoPriceUnit').textContent = priceUnit.label;
+    document.getElementById('infoContractAddress').textContent = token.address;
+    
+    // Update button colors
+    const tokenBtn = document.getElementById('tokenDropdownBtn');
+    const tabBtns = document.querySelectorAll('.tab-btn.active');
+    const presetBtns = document.querySelectorAll('.preset-btn');
+    
+    if (tokenBtn) tokenBtn.style.background = token.gradient;
+    tabBtns.forEach(btn => btn.style.background = token.gradient);
+    presetBtns.forEach(btn => btn.style.background = token.gradient);
+  },
+
+  updateActiveTabStyles() {
+    const token = this.getCurrentToken();
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.classList.remove('active');
+      btn.style.background = 'transparent';
+    });
+    
+    const activeBtn = document.getElementById(this.activeTab + 'Tab');
+    if (activeBtn) {
+      activeBtn.classList.add('active');
+      activeBtn.style.background = token.gradient;
+    }
+  }
+};
+
+// Global calculator functions
+function toggleTokenDropdown() {
+  const menu = document.getElementById('tokenDropdownMenu');
+  const chevron = document.getElementById('tokenChevron');
+  const isOpen = !menu.classList.contains('hidden');
+  
+  closeDropdowns();
+  
+  if (!isOpen) {
+    menu.classList.remove('hidden');
+    chevron.classList.add('rotated');
+  }
+}
+
+function togglePriceUnitDropdown() {
+  const menu = document.getElementById('priceUnitDropdownMenu');
+  const chevron = document.getElementById('priceUnitChevron');
+  const isOpen = !menu.classList.contains('hidden');
+  
+  closeDropdowns();
+  
+  if (!isOpen) {
+    menu.classList.remove('hidden');
+    chevron.classList.add('rotated');
+  }
+}
+
+function closeDropdowns() {
+  document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.add('hidden'));
+  document.querySelectorAll('.chevron-icon').forEach(chevron => chevron.classList.remove('rotated'));
+}
+
+function selectToken(tokenKey) {
+  calculatorSystem.selectedToken = tokenKey;
+  calculatorSystem.updateTokenInfo();
+  closeDropdowns();
+  
+  // Recalculate based on current input
+  if (calculatorSystem.marketCap && calculatorSystem.activeTab === 'mcToPrice') {
+    const newPrice = calculatorSystem.calculatePrice(calculatorSystem.marketCap);
+    calculatorSystem.price = newPrice;
+    document.getElementById('priceInput').value = newPrice;
+    updatePriceInfo(newPrice);
+  } else if (calculatorSystem.price && calculatorSystem.activeTab === 'priceToMc') {
+    const newMarketCap = calculatorSystem.calculateMarketCap(calculatorSystem.price);
+    calculatorSystem.marketCap = newMarketCap;
+    document.getElementById('marketCapInput').value = newMarketCap;
+    updateMarketCapInfo(newMarketCap);
+  }
+}
+
+function selectPriceUnit(unit) {
+  calculatorSystem.priceUnit = unit;
+  document.getElementById('selectedPriceUnit').textContent = calculatorSystem.priceUnits[unit].label;
+  document.getElementById('infoPriceUnit').textContent = calculatorSystem.priceUnits[unit].label;
+  closeDropdowns();
+  
+  // Recalculate based on current input
+  if (calculatorSystem.marketCap && calculatorSystem.activeTab === 'mcToPrice') {
+    const newPrice = calculatorSystem.calculatePrice(calculatorSystem.marketCap);
+    calculatorSystem.price = newPrice;
+    document.getElementById('priceInput').value = newPrice;
+    updatePriceInfo(newPrice);
+  } else if (calculatorSystem.price && calculatorSystem.activeTab === 'priceToMc') {
+    const newMarketCap = calculatorSystem.calculateMarketCap(calculatorSystem.price);
+    calculatorSystem.marketCap = newMarketCap;
+    document.getElementById('marketCapInput').value = newMarketCap;
+    updateMarketCapInfo(newMarketCap);
+  }
+}
+
+function setActiveTab(tab) {
+  calculatorSystem.activeTab = tab;
+  calculatorSystem.updateActiveTabStyles();
+}
+
+function handleMarketCapChange(value) {
+  calculatorSystem.marketCap = value;
+  updateMarketCapInfo(value);
+  
+  if (calculatorSystem.activeTab === 'mcToPrice') {
+    const newPrice = calculatorSystem.calculatePrice(value);
+    calculatorSystem.price = newPrice;
+    document.getElementById('priceInput').value = newPrice;
+    updatePriceInfo(newPrice);
+  }
+}
+
+function handlePriceChange(value) {
+  calculatorSystem.price = value;
+  updatePriceInfo(value);
+  
+  if (calculatorSystem.activeTab === 'priceToMc') {
+    const newMarketCap = calculatorSystem.calculateMarketCap(value);
+    calculatorSystem.marketCap = newMarketCap;
+    document.getElementById('marketCapInput').value = newMarketCap;
+    updateMarketCapInfo(newMarketCap);
+  }
+}
+
+function updateMarketCapInfo(value) {
+  const infoEl = document.getElementById('marketCapInfo');
+  if (value && !isNaN(value) && value > 0) {
+    infoEl.textContent = `Formatted: ${calculatorSystem.formatNumber(parseFloat(value))}`;
+    infoEl.classList.remove('hidden');
+  } else {
+    infoEl.classList.add('hidden');
+  }
+}
+
+function updatePriceInfo(value) {
+  const infoEl = document.getElementById('priceInfo');
+  if (value && !isNaN(value) && value > 0) {
+    infoEl.textContent = `Scientific: ${parseFloat(value).toExponential(2)}`;
+    infoEl.classList.remove('hidden');
+  } else {
+    infoEl.classList.add('hidden');
+  }
+}
+
+function handlePresetClick(value) {
+  calculatorSystem.marketCap = value;
+  calculatorSystem.price = calculatorSystem.calculatePrice(value);
+  calculatorSystem.activeTab = 'mcToPrice';
+  
+  document.getElementById('marketCapInput').value = value;
+  document.getElementById('priceInput').value = calculatorSystem.price;
+  
+  updateMarketCapInfo(value);
+  updatePriceInfo(calculatorSystem.price);
+  calculatorSystem.updateActiveTabStyles();
+  
+  closeDropdowns();
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', function(event) {
+  if (!event.target.closest('.dropdown-container')) {
+    closeDropdowns();
+  }
+});
+
+// Community data loading
+const mdxUrl = 'https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/main/src/community.mdx';
+
+fetch(mdxUrl)
+  .then(res => res.text())
+  .then(text => {
+    let communityMembers = [];
+    
+    const pondSectionMatch = text.match(/## The Pond[\s\S]*?<FallbackImageList[^>]*data=\{(\[[\s\S]*?\])\}[^>]*\/>/);
+    
+    if (pondSectionMatch) {
+      try {
+        let dataArrayString = pondSectionMatch[1];
+        
+        dataArrayString = dataArrayString
+          .replace(/(\w+):/g, '"$1":')
+          .replace(/,\s*}/g, '}')
+          .replace(/,\s*]/g, ']');
+        
+        const membersArray = JSON.parse(dataArrayString);
+        communityMembers = membersArray;
+        console.log(`Found ${communityMembers.length} members from The Pond section`);
+      } catch (e) {
+        console.error('Error parsing The Pond FallbackImageList:', e);
+      }
+    }
+    
+    if (communityMembers.length === 0) {
+      const communityMembersMatch = text.match(/## Community Members([\s\S]*?)(?=##|$)/);
+      if (communityMembersMatch) {
+        const fallbackImageMatches = [...communityMembersMatch[1].matchAll(/<FallbackImage[^>]*data="([^"]+)"[^>]*refc="([^"]+)"[^>]*\/>/g)];
+        communityMembers = fallbackImageMatches.map(match => ({
+          name: match[1],
+          ref: match[2]
+        }));
+        console.log(`Found ${communityMembers.length} members from Community Members section`);
+      }
+    }
+
+    if (!communityMembers || communityMembers.length === 0) {
+      document.getElementById('plw-content').textContent = "No community members found.";
+      return;
+    }
+
+    const selectedMembers = [];
+    const totalMembers = communityMembers.length;
+    const usedIndices = new Set();
+    const seed = Date.now();
+    
+    while (selectedMembers.length < 3 && selectedMembers.length < totalMembers) {
+      const randomIndex = Math.floor((Math.random() + seed * selectedMembers.length) % 1 * totalMembers);
+      if (!usedIndices.has(randomIndex)) {
+        usedIndices.add(randomIndex);
+        selectedMembers.push(communityMembers[randomIndex]);
+      }
+    }
+
+    const container = document.getElementById('plw-content');
+    container.innerHTML = '';
+    container.style.cssText = 'display:flex; gap:2rem; justify-content:center; flex-wrap:wrap; align-items:flex-start;';
+
+    selectedMembers.forEach(member => {
+      const username = member.name;
+      const referral = member.ref;
+      const profile = `https://x.com/${username}`;
+      const referralLink = `https://pond0x.com/referral/${referral}`;
+
+      const memberContainer = document.createElement('div');
+      memberContainer.style.cssText = 'display:flex; flex-direction:column; align-items:center; min-width:120px; max-width:150px;';
+      
+      const loadingDiv = document.createElement('div');
+      loadingDiv.style.cssText = 'width:64px; height:64px; border-radius:50%; margin-bottom:0.75rem; background:linear-gradient(135deg,#7b3aad,#FF13F0); display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; font-size:18px;';
+      loadingDiv.textContent = username.substring(0, 2).toUpperCase();
+      
+      const avatar = document.createElement('img');
+      avatar.style.cssText = 'width:64px; height:64px; border-radius:50%; margin-bottom:0.75rem; object-fit:cover;';
+      avatar.alt = `@${username}`;
+      
+      const avatarSources = [
+        `https://unavatar.io/twitter/${username}?fallback=false`,
+        `https://github.com/${username}.png?size=64`,
+        `https://avatars.dicebear.com/api/initials/${username}.svg?background=%237b3aad&color=fff`,
+        `https://ui-avatars.com/api/?name=${username}&size=64&background=7b3aad&color=fff&rounded=true`
+      ];
+      
+      let currentSourceIndex = 0;
+      let avatarLoaded = false;
+      
+      const tryNextAvatar = () => {
+        if (currentSourceIndex < avatarSources.length && !avatarLoaded) {
+          avatar.src = avatarSources[currentSourceIndex];
+          currentSourceIndex++;
+        }
+      };
+      
+      avatar.onload = () => {
+        if (!avatarLoaded) {
+          avatarLoaded = true;
+          loadingDiv.replaceWith(avatar);
+        }
+      };
+      
+      avatar.onerror = tryNextAvatar;
+      
+      tryNextAvatar();
+
+      const profileLink = document.createElement('a');
+      profileLink.href = profile;
+      profileLink.target = '_blank';
+      profileLink.rel = 'noopener noreferrer';
+      profileLink.style.cssText = 'font-size:0.9rem; color:#FF13F0; text-decoration:none; margin-bottom:0.5rem; text-align:center; word-break:break-word; line-height:1.2;';
+      profileLink.textContent = `@${username}`;
+
+      const referralButton = document.createElement('a');
+      referralButton.href = referralLink;
+      referralButton.target = '_blank';
+      referralButton.rel = 'noopener noreferrer';
+      referralButton.style.cssText = 'padding:0.4rem 0.8rem; background:linear-gradient(135deg, #f19cfd 0%, #FF13F0 100%); color:white; border-radius:6px; text-decoration:none; font-weight:bold; font-size:0.8rem; text-align:center; white-space:nowrap; box-shadow: 0 2px 8px rgba(241, 156, 253, 0.3); transition: all 0.3s ease;';
+      referralButton.textContent = 'Referral';
+
+      memberContainer.appendChild(loadingDiv);
+      memberContainer.appendChild(profileLink);
+      memberContainer.appendChild(referralButton);
+
+      container.appendChild(memberContainer);
+    });
+  }).catch(err => {
+    console.error('Error loading community data:', err);
+    document.getElementById('plw-content').textContent = "Couldn't load community.";
+  });
+
+// Initialize everything when page loads
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize theme first
+  themeManager.init();
+  
+  // Then initialize bubble system
+  bubbleSystem.init();
+  
+  // Initialize calculator
+  calculatorSystem.init();
+});
+
+</script>
+
+</body>
+</html>
