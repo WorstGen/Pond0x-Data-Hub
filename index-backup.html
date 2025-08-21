@@ -1090,18 +1090,13 @@ body {
 
 .x-modal-content {
   background: var(--card-bg);
-  backdrop-filter: blur(15px);
-      border-radius: 12px;
-      padding: 1.5rem;
-      border: 2px solid var(--card-border);
-      box-shadow: 0 20px 60px var(--shadow-primary);
-      max-width: 500px;
-      width: 90%;
-      max-height: 80vh;
-      overflow-y: auto;
-      position: relative;
-      animation: modalSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
 
 .x-modal-image {
   width: 100%;
@@ -2341,6 +2336,8 @@ manifestSection.innerHTML = `
   
   <div><strong>Pro Swaps (Bx):</strong> ${Number(data.proSwapsBx ?? 0).toLocaleString()}</div>
   <div><strong>Pro Swaps (SOL):</strong> ${Number(data.proSwapsSol ?? 0).toLocaleString()}</div>
+
+  <hr style="width:100%; border:0; border-top:1px solid rgba(0,0,0,0.2);">
 
   <!-- Add this before the closing div of your manifestSection.innerHTML -->
 <!-- Share Button -->
