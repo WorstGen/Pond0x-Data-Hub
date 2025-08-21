@@ -1008,36 +1008,58 @@ body {
       100% { transform: translateX(100%); }
     }
 
-    /* Share button styling */
-.share-passport-btn {
+    /* Share buttons styling */
+.share-passport-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.passport-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.25rem;
-  background: linear-gradient(135deg, #1DA1F2 0%, #0084b4 100%);
-  color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 600;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(29, 161, 242, 0.3);
-  margin-top: 1rem;
+  text-decoration: none;
 }
 
-.share-passport-btn:hover {
+.download-btn {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.download-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(29, 161, 242, 0.4);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
 }
 
-.share-passport-btn:disabled {
+.share-btn {
+  background: linear-gradient(135deg, #000000 0%, #333333 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.share-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.passport-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
 }
 
-.share-passport-btn .spinner {
+.passport-btn .spinner {
   display: inline-block;
   width: 16px;
   height: 16px;
@@ -1047,11 +1069,9 @@ body {
   animation: spin 1s linear infinite;
 }
 
-.hidden-canvas {
-  position: fixed;
-  top: -9999px;
-  left: -9999px;
-  pointer-events: none;
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
     .navbar {
@@ -2251,10 +2271,15 @@ manifestSection.innerHTML = `
 
   <!-- Add this before the closing div of your manifestSection.innerHTML -->
 <!-- Share Button -->
-<div style="text-align: center; margin-top: 1.5rem;">
-  <button id="sharePassportBtn" class="share-passport-btn" onclick="sharePassportCard()">
-    <span>📤</span>
-    <span id="shareButtonText">Share Passport</span>
+<!-- Add this before the closing div of your manifestSection.innerHTML -->
+<div class="share-passport-container">
+  <button id="downloadPassportBtn" class="passport-btn download-btn" onclick="downloadPassportCard()">
+    <span>💾</span>
+    <span id="downloadButtonText">Download Image</span>
+  </button>
+  <button id="sharePassportBtn" class="passport-btn share-btn" onclick="shareToX()">
+    <span>𝕏</span>
+    <span id="shareButtonText">Share to X</span>
   </button>
 </div>
 
@@ -2268,15 +2293,15 @@ manifestSection.innerHTML = `
   }
 }
 
-  // Passport Card Generation and Sharing
-function sharePassportCard() {
+  // Download passport card function
+function downloadPassportCard() {
   if (!window.currentManifestData) {
-    alert('No passport data available to share');
+    alert('No passport data available to download');
     return;
   }
 
-  const button = document.getElementById('sharePassportBtn');
-  const buttonText = document.getElementById('shareButtonText');
+  const button = document.getElementById('downloadPassportBtn');
+  const buttonText = document.getElementById('downloadButtonText');
   
   if (!button || !buttonText) return;
 
@@ -2296,20 +2321,6 @@ function sharePassportCard() {
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
-
-      // Try to share via Web Share API if supported
-      if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], 'pond0x-passport.png', { type: 'image/png' })] })) {
-        const file = new File([blob], 'pond0x-passport.png', { type: 'image/png' });
-        navigator.share({
-          title: 'My POND0X Passport',
-          text: 'Check out my POND0X mining passport! 🚀',
-          files: [file]
-        }).catch(err => console.log('Share cancelled:', err));
-      } else {
-        // Fallback: Open Twitter share dialog
-        const twitterText = encodeURIComponent('Check out my POND0X mining passport! 🚀\n\n#POND0X #CryptoMining');
-        window.open(`https://twitter.com/intent/tweet?text=${twitterText}`, '_blank');
-      }
     })
     .catch(error => {
       console.error('Error generating passport card:', error);
@@ -2318,10 +2329,55 @@ function sharePassportCard() {
     .finally(() => {
       // Reset button state
       button.disabled = false;
-      buttonText.textContent = 'Share Passport';
+      buttonText.textContent = 'Download Image';
     });
 }
 
+// Share to X function
+function shareToX() {
+  if (!window.currentManifestData) {
+    alert('No passport data available to share');
+    return;
+  }
+
+  const button = document.getElementById('sharePassportBtn');
+  const buttonText = document.getElementById('shareButtonText');
+  
+  if (!button || !buttonText) return;
+
+  // Show loading state
+  button.disabled = true;
+  buttonText.innerHTML = '<span class="spinner"></span>Generating...';
+
+  // Generate the card and share to X
+  generatePassportCard(window.currentManifestData)
+    .then(blob => {
+      // Create download link for the image (user can save it locally)
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'pond0x-passport.png';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      // Open X (Twitter) share dialog
+      const twitterText = encodeURIComponent('Check out my POND0X mining passport! 🚀⛏️\n\n#POND0X #CryptoMining #DataHub');
+      window.open(`https://twitter.com/intent/tweet?text=${twitterText}`, '_blank');
+    })
+    .catch(error => {
+      console.error('Error generating passport card:', error);
+      alert('Failed to generate passport card. Please try again.');
+    })
+    .finally(() => {
+      // Reset button state
+      button.disabled = false;
+      buttonText.textContent = 'Share to X';
+    });
+}
+
+// Updated generatePassportCard function with new text
 async function generatePassportCard(data) {
   return new Promise((resolve, reject) => {
     const canvas = document.createElement('canvas');
@@ -2423,12 +2479,14 @@ async function generatePassportCard(data) {
         yPos += 35;
       });
 
-      // Footer
-      ctx.font = '16px Arial';
+      // Updated Footer
+      ctx.font = 'bold 18px Arial';
       ctx.fillStyle = colors.secondary;
       ctx.textAlign = 'center';
-      ctx.fillText('Generated by POND0X Data Hub', canvas.width / 2, canvas.height - 80);
-      ctx.fillText('pond0x.com', canvas.width / 2, canvas.height - 60);
+      ctx.fillText('Generated by DATA🤝HUB', canvas.width / 2, canvas.height - 80);
+      
+      ctx.font = '16px Arial';
+      ctx.fillText('Visit Pond0x.com to start your mining journey today!', canvas.width / 2, canvas.height - 50);
 
       // Convert to blob
       canvas.toBlob(resolve, 'image/png');
