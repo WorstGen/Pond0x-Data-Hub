@@ -1008,6 +1008,52 @@ body {
       100% { transform: translateX(100%); }
     }
 
+    /* Share button styling */
+.share-passport-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(135deg, #1DA1F2 0%, #0084b4 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(29, 161, 242, 0.3);
+  margin-top: 1rem;
+}
+
+.share-passport-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(29, 161, 242, 0.4);
+}
+
+.share-passport-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.share-passport-btn .spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 2px solid white;
+  animation: spin 1s linear infinite;
+}
+
+.hidden-canvas {
+  position: fixed;
+  top: -9999px;
+  left: -9999px;
+  pointer-events: none;
+}
+
     .navbar {
       position: fixed;
       top: 0;
