@@ -2249,6 +2249,15 @@ manifestSection.innerHTML = `
   <div><strong>Pro Swaps (Bx):</strong> ${Number(data.proSwapsBx ?? 0).toLocaleString()}</div>
   <div><strong>Pro Swaps (SOL):</strong> ${Number(data.proSwapsSol ?? 0).toLocaleString()}</div>
 
+  <!-- Add this before the closing div of your manifestSection.innerHTML -->
+<!-- Share Button -->
+<div style="text-align: center; margin-top: 1.5rem;">
+  <button id="sharePassportBtn" class="share-passport-btn" onclick="sharePassportCard()">
+    <span>📤</span>
+    <span id="shareButtonText">Share Passport</span>
+  </button>
+</div>
+
   `;
 
   dashboardSection.prepend(manifestSection);
@@ -2259,6 +2268,192 @@ manifestSection.innerHTML = `
   }
 }
 
+  // Passport Card Generation and Sharing
+function sharePassportCard() {
+  if (!window.currentManifestData) {
+    alert('No passport data available to share');
+    return;
+  }
+
+  const button = document.getElementById('sharePassportBtn');
+  const buttonText = document.getElementById('shareButtonText');
+  
+  if (!button || !buttonText) return;
+
+  // Show loading state
+  button.disabled = true;
+  buttonText.innerHTML = '<span class="spinner"></span>Generating...';
+
+  // Generate the card
+  generatePassportCard(window.currentManifestData)
+    .then(blob => {
+      // Create download link
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'pond0x-passport.png';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      // Try to share via Web Share API if supported
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], 'pond0x-passport.png', { type: 'image/png' })] })) {
+        const file = new File([blob], 'pond0x-passport.png', { type: 'image/png' });
+        navigator.share({
+          title: 'My POND0X Passport',
+          text: 'Check out my POND0X mining passport! 🚀',
+          files: [file]
+        }).catch(err => console.log('Share cancelled:', err));
+      } else {
+        // Fallback: Open Twitter share dialog
+        const twitterText = encodeURIComponent('Check out my POND0X mining passport! 🚀\n\n#POND0X #CryptoMining');
+        window.open(`https://twitter.com/intent/tweet?text=${twitterText}`, '_blank');
+      }
+    })
+    .catch(error => {
+      console.error('Error generating passport card:', error);
+      alert('Failed to generate passport card. Please try again.');
+    })
+    .finally(() => {
+      // Reset button state
+      button.disabled = false;
+      buttonText.textContent = 'Share Passport';
+    });
+}
+
+async function generatePassportCard(data) {
+  return new Promise((resolve, reject) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Set canvas size
+    canvas.width = 800;
+    canvas.height = 600;
+    
+    // Get current theme
+    const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+    
+    // Color scheme based on theme
+    const colors = isDarkMode ? {
+      bg: '#1a1a2e',
+      cardBg: '#16213e',
+      primary: '#e0b3ff',
+      accent: '#ff3df0',
+      secondary: '#c9a3ff',
+      text: '#e5ddfb',
+      border: '#bd7cfd'
+    } : {
+      bg: '#f9f5ff',
+      cardBg: '#ffffff',
+      primary: '#7b3aad',
+      accent: '#ff3df0',
+      secondary: '#9b5de5',
+      text: '#5b2a86',
+      border: '#bd7cfd'
+    };
+
+    try {
+      // Background gradient
+      const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      gradient.addColorStop(0, colors.bg);
+      gradient.addColorStop(0.5, colors.cardBg);
+      gradient.addColorStop(1, colors.bg);
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Card background
+      const cardX = 50;
+      const cardY = 50;
+      const cardWidth = canvas.width - 100;
+      const cardHeight = canvas.height - 100;
+      
+      // Draw card with rounded corners
+      ctx.fillStyle = colors.cardBg;
+      ctx.strokeStyle = colors.border;
+      ctx.lineWidth = 3;
+      roundRect(ctx, cardX, cardY, cardWidth, cardHeight, 20);
+      ctx.fill();
+      ctx.stroke();
+
+      // Title
+      ctx.fillStyle = colors.primary;
+      ctx.font = 'bold 36px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('🪪 POND0X PASSPORT', canvas.width / 2, 120);
+
+      // Get badges and convert to emojis
+      const badgeMap = {
+        void: "🐇", diamond: "💎", pork: "🐽", chef: "👨🏻‍🍳",
+        points: "✨", swap: "🤝", stand: "✊", insider: "🥼",
+        water: "💧", king: "👑", unicorn: "🦄", miner: "⛏️",
+        topswap: "🥇", ygn: "🟪", slashed: "🤕", spawner: "🧪",
+        staker: "🪷", covid: "💉", wrapped: "🎁", quest: "🧩",
+        recap: "🎁"
+      };
+
+      const badges = Array.isArray(data.badges) ? data.badges : (data.badges ? data.badges.split(',') : []);
+      let badgeEmojis = badges.map(b => badgeMap[b.trim()] || "").filter(Boolean);
+      
+      if (data.hasTwitter) badgeEmojis.unshift("𝕏");
+      if (data.cope) badgeEmojis.push("🤡");
+
+      // Draw badge emojis
+      ctx.font = '48px Arial';
+      ctx.textAlign = 'center';
+      const badgeText = badgeEmojis.join(' ');
+      ctx.fillText(badgeText, canvas.width / 2, 190);
+
+      // Passport details
+      ctx.font = 'bold 20px Arial';
+      ctx.fillStyle = colors.text;
+      ctx.textAlign = 'left';
+      
+      const details = [
+        `Pro User: ${data.isPro ? '✅' : '❌'}`,
+        `Pro Since: ${data.proAgo || 'N/A'}`,
+        `Pro Expiry: ${data.proExpiry || 'N/A'}`,
+        `Pro Swaps (Bx): ${Number(data.proSwapsBx || 0).toLocaleString()}`,
+        `Pro Swaps (SOL): ${Number(data.proSwapsSol || 0).toLocaleString()}`
+      ];
+
+      let yPos = 260;
+      details.forEach(detail => {
+        ctx.fillText(detail, 100, yPos);
+        yPos += 35;
+      });
+
+      // Footer
+      ctx.font = '16px Arial';
+      ctx.fillStyle = colors.secondary;
+      ctx.textAlign = 'center';
+      ctx.fillText('Generated by POND0X Data Hub', canvas.width / 2, canvas.height - 80);
+      ctx.fillText('pond0x.com', canvas.width / 2, canvas.height - 60);
+
+      // Convert to blob
+      canvas.toBlob(resolve, 'image/png');
+      
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+// Helper function to draw rounded rectangles
+function roundRect(ctx, x, y, width, height, radius) {
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+  ctx.lineTo(x + radius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
+}
+  
 // ──────────────────────────────────────────────────────────────
 // REPLACEMENT: Mining Data Fetcher (parallel-safe version)
 // ──────────────────────────────────────────────────────────────
