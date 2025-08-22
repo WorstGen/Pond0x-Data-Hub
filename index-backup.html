@@ -2887,7 +2887,7 @@ async function generatePassportCard(manifestData, healthStats = null, aiInsights
       ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
       ctx.shadowBlur = 4;
       ctx.shadowOffsetY = 2;
-      ctx.fillText('POND0X PASSPORT', canvas.width / 2, cardY + headerHeight / 2 - 10);
+      ctx.fillText('POND🤝X PASSPORT', canvas.width / 2, cardY + headerHeight / 2 - 10);
       ctx.shadowColor = 'transparent';
 
       // Subtitle with better positioning
@@ -3084,7 +3084,7 @@ async function generatePassportCard(manifestData, healthStats = null, aiInsights
           `Max Claim: $${estimates.max_claim_estimate_usd ? estimates.max_claim_estimate_usd.toFixed(2) : '0.00'}`,
           `Risk Value: $${estimates.drift_risk_usd ? estimates.drift_risk_usd.toFixed(2) : '0.00'}`,
           `SOL Price: $${estimates.sol_usd ? estimates.sol_usd.toFixed(2) : 'N/A'}`,
-          `wPOND: $${estimates.wpond_usd ? estimates.wpond_usd.toFixed(6) : 'N/A'}`
+          `wPOND: $${estimates.wpond_usd ? estimates.wpond_usd.toFixed(8) : 'N/A'}`
         ];
         
         const performanceHeight = createPremiumSection(col3X, col3Y, columnWidth, '📊 PERFORMANCE', performanceContent, colors.secondary);
