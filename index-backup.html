@@ -2729,64 +2729,76 @@ function postToX() {
   closeXShareModal();
 }
 
-// Updated generatePassportCard function with new text
-async function generatePassportCard(data) {
+// Enhanced generatePassportCard function with mining stats and AI insights
+async function generatePassportCard(manifestData, healthStats = null, aiInsights = null) {
   return new Promise((resolve, reject) => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     
-    // Set canvas size
-    canvas.width = 800;
-    canvas.height = 600;
+    // Set larger canvas size for more content
+    canvas.width = 1000;
+    canvas.height = 800;
     
     // Get current theme
     const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
     
-    // Color scheme based on theme
+    // Enhanced color scheme based on theme
     const colors = isDarkMode ? {
-      bg: '#1a1a2e',
-      cardBg: '#16213e',
+      bg: '#0a0a0a',
+      cardBg: '#1a1a2e',
+      accentBg: '#16213e',
       primary: '#e0b3ff',
       accent: '#ff3df0',
-      secondary: '#c9a3ff',
+      secondary: '#bd7cfd',
       text: '#e5ddfb',
-      border: '#bd7cfd'
+      textSecondary: '#c9a3ff',
+      border: '#bd7cfd',
+      highlight: '#ff3df0'
     } : {
       bg: '#f9f5ff',
       cardBg: '#ffffff',
+      accentBg: '#f6edff',
       primary: '#7b3aad',
       accent: '#ff3df0',
       secondary: '#9b5de5',
       text: '#5b2a86',
-      border: '#bd7cfd'
+      textSecondary: '#7b3aad',
+      border: '#bd7cfd',
+      highlight: '#ff3df0'
     };
 
     try {
-      // Background gradient
-      const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-      gradient.addColorStop(0, colors.bg);
-      gradient.addColorStop(0.5, colors.cardBg);
-      gradient.addColorStop(1, colors.bg);
-      ctx.fillStyle = gradient;
+      // Background with gradient
+      const bgGradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      bgGradient.addColorStop(0, colors.bg);
+      bgGradient.addColorStop(0.3, colors.cardBg);
+      bgGradient.addColorStop(0.7, colors.accentBg);
+      bgGradient.addColorStop(1, colors.bg);
+      ctx.fillStyle = bgGradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Card background
-      const cardX = 50;
-      const cardY = 50;
-      const cardWidth = canvas.width - 100;
-      const cardHeight = canvas.height - 100;
+      // Main card background with rounded corners
+      const cardX = 40;
+      const cardY = 40;
+      const cardWidth = canvas.width - 80;
+      const cardHeight = canvas.height - 80;
       
-      // Draw card with rounded corners
+      // Card shadow
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+      roundRect(ctx, cardX + 5, cardY + 5, cardWidth, cardHeight, 25);
+      ctx.fill();
+      
+      // Main card
       ctx.fillStyle = colors.cardBg;
       ctx.strokeStyle = colors.border;
-      ctx.lineWidth = 3;
-      roundRect(ctx, cardX, cardY, cardWidth, cardHeight, 20);
+      ctx.lineWidth = 4;
+      roundRect(ctx, cardX, cardY, cardWidth, cardHeight, 25);
       ctx.fill();
       ctx.stroke();
 
-      // Title
+      // Header section with title
       ctx.fillStyle = colors.primary;
-      ctx.font = 'bold 36px Arial';
+      ctx.font = 'bold 42px Arial';
       ctx.textAlign = 'center';
       ctx.fillText('🪪 POND🤝X PASSPORT', canvas.width / 2, 120);
 
@@ -2800,45 +2812,182 @@ async function generatePassportCard(data) {
         recap: "🎁"
       };
 
-      const badges = Array.isArray(data.badges) ? data.badges : (data.badges ? data.badges.split(',') : []);
+      const badges = Array.isArray(manifestData.badges) ? manifestData.badges : (manifestData.badges ? manifestData.badges.split(',') : []);
       let badgeEmojis = badges.map(b => badgeMap[b.trim()] || "").filter(Boolean);
       
-      if (data.hasTwitter) badgeEmojis.unshift("𝕏");
-      if (data.cope) badgeEmojis.push("🤡");
+      if (manifestData.hasTwitter) badgeEmojis.unshift("𝕏");
+      if (manifestData.cope) badgeEmojis.push("🤡");
 
-      // Draw badge emojis
+      // Draw badge emojis in a nice layout
       ctx.font = '48px Arial';
       ctx.textAlign = 'center';
       const badgeText = badgeEmojis.join(' ');
       ctx.fillText(badgeText, canvas.width / 2, 190);
 
-      // Passport details
-      ctx.font = 'bold 20px Arial';
-      ctx.fillStyle = colors.text;
-      ctx.textAlign = 'left';
-      
-      const details = [
-        `Pro User: ${data.isPro ? '✅' : '❌'}`,
-        `Pro Since: ${data.proAgo || 'N/A'}`,
-        `Pro Expiry: ${data.proExpiry || 'N/A'}`,
-        `Pro Swaps (Bx): ${Number(data.proSwapsBx || 0).toLocaleString()}`,
-        `Pro Swaps (SOL): ${Number(data.proSwapsSol || 0).toLocaleString()}`
-        ];
+      // Create sections
+      let yPos = 250;
+      const sectionSpacing = 40;
+      const lineHeight = 28;
 
-      let yPos = 260;
-      details.forEach(detail => {
+      // PASSPORT INFO Section
+      ctx.fillStyle = colors.accent;
+      ctx.font = 'bold 24px Arial';
+      ctx.textAlign = 'left';
+      ctx.fillText('📋 PASSPORT INFO', 80, yPos);
+      yPos += sectionSpacing;
+
+      ctx.font = '18px Arial';
+      ctx.fillStyle = colors.text;
+      const passportDetails = [
+        `Pro Status: ${manifestData.isPro ? '✅ Active' : '❌ Inactive'}`,
+        `Pro Since: ${manifestData.proAgo || 'N/A'}`,
+        `Pro Expires: ${manifestData.proExpiry || 'N/A'}`,
+        `Pro Swaps (Bx): ${Number(manifestData.proSwapsBx || 0).toLocaleString()}`,
+        `Pro Swaps (SOL): ${Number(manifestData.proSwapsSol || 0).toLocaleString()}`
+      ];
+
+      passportDetails.forEach(detail => {
         ctx.fillText(detail, 100, yPos);
-        yPos += 35;
+        yPos += lineHeight;
       });
 
-      // Updated Footer
-      ctx.font = 'bold 18px Arial';
+      yPos += 20; // Extra spacing
+
+      // MINING STATS Section (if available)
+      if (healthStats && Object.keys(healthStats).length > 0) {
+        ctx.fillStyle = colors.accent;
+        ctx.font = 'bold 24px Arial';
+        ctx.fillText('⛏️ MINING HEALTH', 80, yPos);
+        yPos += sectionSpacing;
+
+        ctx.font = '18px Arial';
+        ctx.fillStyle = colors.text;
+        const miningDetails = [
+          `Health Score: ${healthStats.health || 0}/7`,
+          `Mining Sessions: ${(healthStats.mining_sessions || 0).toLocaleString()}`,
+          `Claims in Mempool: ${(healthStats.in_mempool || 0).toLocaleString()}`,
+          `Priority Level: ${healthStats.priority || 1}x`,
+          `Successfully Sent: ${(healthStats.sent || 0).toLocaleString()}`,
+          `Failed Claims: ${(healthStats.failed || 0).toLocaleString()}`
+        ];
+
+        miningDetails.forEach(detail => {
+          ctx.fillText(detail, 100, yPos);
+          yPos += lineHeight;
+        });
+
+        yPos += 20;
+      }
+
+      // AI INSIGHTS Section (if available)
+      if (aiInsights && Array.isArray(aiInsights) && aiInsights.length > 0) {
+        ctx.fillStyle = colors.accent;
+        ctx.font = 'bold 24px Arial';
+        ctx.fillText('🤖 AI INSIGHTS', 80, yPos);
+        yPos += sectionSpacing;
+
+        ctx.font = '16px Arial';
+        ctx.fillStyle = colors.textSecondary;
+        
+        // Show up to 3 insights to fit on card
+        const displayInsights = aiInsights.slice(0, 3);
+        displayInsights.forEach((insight, index) => {
+          const maxWidth = cardWidth - 120;
+          const words = insight.split(' ');
+          let line = '';
+          
+          for (let i = 0; i < words.length; i++) {
+            const testLine = line + words[i] + ' ';
+            const metrics = ctx.measureText(testLine);
+            const testWidth = metrics.width;
+            
+            if (testWidth > maxWidth && i > 0) {
+              ctx.fillText(`• ${line}`, 100, yPos);
+              line = words[i] + ' ';
+              yPos += 22;
+            } else {
+              line = testLine;
+            }
+          }
+          ctx.fillText(`• ${line}`, 100, yPos);
+          yPos += 22;
+          
+          if (index < displayInsights.length - 1) yPos += 5;
+        });
+
+        yPos += 15;
+      }
+
+      // PERFORMANCE METRICS Section (if we have stats)
+      if (healthStats && healthStats.estimates) {
+        const estimates = healthStats.estimates;
+        
+        ctx.fillStyle = colors.accent;
+        ctx.font = 'bold 24px Arial';
+        ctx.fillText('📊 PERFORMANCE', 80, yPos);
+        yPos += sectionSpacing;
+
+        ctx.font = '18px Arial';
+        ctx.fillStyle = colors.text;
+        const performanceDetails = [
+          `Max Claim Estimate: $${estimates.max_claim_estimate_usd ? estimates.max_claim_estimate_usd.toFixed(2) : '0.00'}`,
+          `Drift Risk Value: $${estimates.drift_risk_usd ? estimates.drift_risk_usd.toFixed(2) : '0.00'}`,
+          `SOL Price: $${estimates.sol_usd ? estimates.sol_usd.toFixed(2) : 'N/A'}`,
+          `wPOND Price: $${estimates.wpond_usd ? estimates.wpond_usd.toFixed(6) : 'N/A'}`
+        ];
+
+        performanceDetails.forEach(detail => {
+          ctx.fillText(detail, 100, yPos);
+          yPos += lineHeight;
+        });
+      }
+
+      // Footer with branding
+      const footerY = canvas.height - 80;
       ctx.fillStyle = colors.secondary;
+      ctx.font = 'bold 20px Arial';
       ctx.textAlign = 'center';
-      ctx.fillText('Generated by DATA🤝HUB', canvas.width / 2, canvas.height - 80);
+      ctx.fillText('Generated by DATA🤝HUB', canvas.width / 2, footerY);
       
       ctx.font = '16px Arial';
-      ctx.fillText('Visit Pond0x.com to start your mining journey today!', canvas.width / 2, canvas.height - 60);
+      ctx.fillStyle = colors.textSecondary;
+      ctx.fillText('Visit Pond0x.com to start your mining journey!', canvas.width / 2, footerY + 25);
+
+      // Decorative border elements
+      ctx.strokeStyle = colors.highlight;
+      ctx.lineWidth = 2;
+      
+      // Top-left corner accent
+      ctx.beginPath();
+      ctx.moveTo(60, 80);
+      ctx.lineTo(100, 80);
+      ctx.moveTo(60, 80);
+      ctx.lineTo(60, 120);
+      ctx.stroke();
+      
+      // Top-right corner accent
+      ctx.beginPath();
+      ctx.moveTo(canvas.width - 60, 80);
+      ctx.lineTo(canvas.width - 100, 80);
+      ctx.moveTo(canvas.width - 60, 80);
+      ctx.lineTo(canvas.width - 60, 120);
+      ctx.stroke();
+      
+      // Bottom-left corner accent
+      ctx.beginPath();
+      ctx.moveTo(60, canvas.height - 80);
+      ctx.lineTo(100, canvas.height - 80);
+      ctx.moveTo(60, canvas.height - 80);
+      ctx.lineTo(60, canvas.height - 120);
+      ctx.stroke();
+      
+      // Bottom-right corner accent
+      ctx.beginPath();
+      ctx.moveTo(canvas.width - 60, canvas.height - 80);
+      ctx.lineTo(canvas.width - 100, canvas.height - 80);
+      ctx.moveTo(canvas.width - 60, canvas.height - 80);
+      ctx.lineTo(canvas.width - 60, canvas.height - 120);
+      ctx.stroke();
 
       // Convert to blob
       canvas.toBlob(resolve, 'image/png');
@@ -2849,19 +2998,170 @@ async function generatePassportCard(data) {
   });
 }
 
-// Helper function to draw rounded rectangles
-function roundRect(ctx, x, y, width, height, radius) {
-  ctx.beginPath();
-  ctx.moveTo(x + radius, y);
-  ctx.lineTo(x + width - radius, y);
-  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-  ctx.lineTo(x + width, y + height - radius);
-  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-  ctx.lineTo(x + radius, y + height);
-  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-  ctx.lineTo(x, y + radius);
-  ctx.quadraticCurveTo(x, y, x + radius, y);
-  ctx.closePath();
+// Updated download function to pass all available data
+function downloadPassportCard() {
+  if (!window.currentManifestData) {
+    alert('No passport data available to download');
+    return;
+  }
+
+  const button = document.getElementById('downloadPassportBtn');
+  const buttonText = document.getElementById('downloadButtonText');
+  
+  if (!button || !buttonText) return;
+
+  // Show loading state
+  button.disabled = true;
+  buttonText.innerHTML = '<span class="spinner"></span>Generating...';
+
+  // Get current health stats and AI insights if available
+  const healthStats = window.currentHealthStats || null;
+  const aiInsights = window.currentAIInsights || null;
+
+  // Generate the enhanced card
+  generatePassportCard(window.currentManifestData, healthStats, aiInsights)
+    .then(blob => {
+      // Create download link
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'pond0x-passport-enhanced.png';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    })
+    .catch(error => {
+      console.error('Error generating passport card:', error);
+      alert('Failed to generate passport card. Please try again.');
+    })
+    .finally(() => {
+      // Reset button state
+      button.disabled = false;
+      buttonText.textContent = 'Download Image';
+    });
+}
+
+// Updated share function to pass all available data
+function shareToX() {
+  if (!window.currentManifestData) {
+    alert('No passport data available to share');
+    return;
+  }
+
+  const button = document.getElementById('sharePassportBtn');
+  const buttonText = document.getElementById('shareButtonText');
+  
+  if (!button || !buttonText) return;
+
+  // Show loading state
+  button.disabled = true;
+  buttonText.innerHTML = '<span class="spinner"></span>Generating...';
+
+  // Get current health stats and AI insights if available
+  const healthStats = window.currentHealthStats || null;
+  const aiInsights = window.currentAIInsights || null;
+
+  // Generate the enhanced card
+  generatePassportCard(window.currentManifestData, healthStats, aiInsights)
+    .then(blob => {
+      // Create image URL for preview
+      const imageUrl = URL.createObjectURL(blob);
+      
+      // Show x-modal with image and tweet composer
+      showXShareModal(imageUrl, blob);
+    })
+    .catch(error => {
+      console.error('Error generating passport card:', error);
+      alert('Failed to generate passport card. Please try again.');
+    })
+    .finally(() => {
+      // Reset button state
+      button.disabled = false;
+      buttonText.textContent = 'Share to X';
+    });
+}
+
+// Helper function to store AI insights globally when they're displayed
+function addAIInsightsSection(aiInsights) {
+  // Store AI insights globally for passport card generation
+  window.currentAIInsights = aiInsights;
+  
+  const dashboardSection = document.getElementById('dashboard-section');
+  if (!dashboardSection) return;
+  
+  const aiSection = document.createElement('div');
+  aiSection.className = 'ai-insights-section';
+  aiSection.style.marginTop = '3rem';
+  
+  const aiTitle = document.createElement('div');
+  aiTitle.className = 'section-title';
+  aiTitle.innerHTML = '🤖 AI INSIGHTS & RECOMMENDATIONS';
+  
+  const aiContainer = document.createElement('div');
+  aiContainer.className = 'ai-insights-container';
+  aiContainer.style.cssText = `display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1rem; margin-top: 1.5rem; width: 100%;`;
+  
+  aiInsights.forEach((insight) => {
+    const insightCard = document.createElement('div');
+    insightCard.className = 'ai-insight-card';
+    insightCard.style.cssText = `
+      background: var(--link-item-bg);
+      max-width: 100%;
+      backdrop-filter: blur(15px);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid var(--card-border);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    `;
+    insightCard.innerHTML = `
+      <div style="display: flex; align-items: flex-start; gap: 1rem;">
+        <div style="font-size: 1.5rem; opacity: 0.8; flex-shrink: 0;">
+          ✨
+        </div>
+        <div style="flex: 1;">
+          <p style="color: var(--text-primary); font-size: 1rem; line-height: 1.5; margin: 0;
+            font-weight: ${insight.includes('risk') || insight.includes('drift') ? '600' : '500'};">
+            ${insight}
+          </p>
+        </div>
+      </div>
+    `;
+    
+    // Add hover effect
+    insightCard.addEventListener('mouseenter', () => {
+      insightCard.style.transform = 'translateY(-2px)';
+      insightCard.style.boxShadow = '0 8px 25px var(--shadow-primary)';
+    });
+    
+    insightCard.addEventListener('mouseleave', () => {
+      insightCard.style.transform = 'translateY(0)';
+      insightCard.style.boxShadow = 'none';
+    });
+    
+    aiContainer.appendChild(insightCard);
+  });
+  
+  aiSection.appendChild(aiTitle);
+  aiSection.appendChild(aiContainer);
+  dashboardSection.appendChild(aiSection);
+  
+  // Check if last card is alone on its row and make it span full width
+  setTimeout(() => {
+    const cards = aiContainer.querySelectorAll('.ai-insight-card');
+    if (cards.length > 1) {
+      const lastCard = cards[cards.length - 1];
+      const secondLastCard = cards[cards.length - 2];
+      const lastCardTop = lastCard.getBoundingClientRect().top;
+      const secondLastCardTop = secondLastCard.getBoundingClientRect().top;
+      
+      if (Math.abs(lastCardTop - secondLastCardTop) > 10) {
+        lastCard.style.gridColumn = '1 / -1';
+      }
+    }
+  }, 0);
 }
   
 // ──────────────────────────────────────────────────────────────
