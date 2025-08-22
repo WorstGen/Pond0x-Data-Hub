@@ -2731,7 +2731,7 @@ function postToX() {
 
 // Fixed generatePassportCard function with proper error handling and canvas utilities
 
-// Helper function for rounded rectangles (this was missing in your code)
+// Helper function for rounded rectangles
 function roundRect(ctx, x, y, width, height, radius) {
   if (width < 2 * radius) radius = width / 2;
   if (height < 2 * radius) radius = height / 2;
@@ -2745,7 +2745,7 @@ function roundRect(ctx, x, y, width, height, radius) {
   ctx.closePath();
 }
 
-// Enhanced generatePassportCard function with better error handling
+// Enhanced generatePassportCard function with better layout and formatting
 async function generatePassportCard(manifestData, healthStats = null, aiInsights = null) {
   return new Promise((resolve, reject) => {
     try {
@@ -2756,14 +2756,14 @@ async function generatePassportCard(manifestData, healthStats = null, aiInsights
         throw new Error('Could not get canvas 2D context');
       }
       
-      // Set canvas size
-      canvas.width = 1000;
-      canvas.height = 800;
+      // Set canvas size - made taller to accommodate content
+      canvas.width = 1200;
+      canvas.height = 1000;
       
       // Get current theme
       const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
       
-      // Color scheme based on theme
+      // Color scheme
       const colors = isDarkMode ? {
         bg: '#0a0a0a',
         cardBg: '#1a1a2e',
@@ -2774,7 +2774,8 @@ async function generatePassportCard(manifestData, healthStats = null, aiInsights
         text: '#e5ddfb',
         textSecondary: '#c9a3ff',
         border: '#bd7cfd',
-        highlight: '#ff3df0'
+        highlight: '#ff3df0',
+        sectionBg: '#252545'
       } : {
         bg: '#f9f5ff',
         cardBg: '#ffffff',
@@ -2785,7 +2786,8 @@ async function generatePassportCard(manifestData, healthStats = null, aiInsights
         text: '#5b2a86',
         textSecondary: '#7b3aad',
         border: '#bd7cfd',
-        highlight: '#ff3df0'
+        highlight: '#ff3df0',
+        sectionBg: '#f0e8ff'
       };
 
       // Background with gradient
@@ -2797,11 +2799,12 @@ async function generatePassportCard(manifestData, healthStats = null, aiInsights
       ctx.fillStyle = bgGradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Main card background with rounded corners
-      const cardX = 40;
-      const cardY = 40;
-      const cardWidth = canvas.width - 80;
-      const cardHeight = canvas.height - 80;
+      // Main card background
+      const cardPadding = 50;
+      const cardX = cardPadding;
+      const cardY = cardPadding;
+      const cardWidth = canvas.width - (cardPadding * 2);
+      const cardHeight = canvas.height - (cardPadding * 2);
       
       // Card shadow
       ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
@@ -2816,11 +2819,11 @@ async function generatePassportCard(manifestData, healthStats = null, aiInsights
       ctx.fill();
       ctx.stroke();
 
-      // Header section with title
+      // Header section
       ctx.fillStyle = colors.primary;
-      ctx.font = 'bold 42px Arial, sans-serif';
+      ctx.font = 'bold 48px Arial, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('POND0X PASSPORT', canvas.width / 2, 120);
+      ctx.fillText('POND0X PASSPORT', canvas.width / 2, 140);
 
       // Get badges and convert to emojis
       const badgeMap = {
@@ -2843,57 +2846,89 @@ async function generatePassportCard(manifestData, healthStats = null, aiInsights
       }
 
       let badgeEmojis = badges.map(b => badgeMap[b] || "").filter(Boolean);
-      
       if (manifestData.hasTwitter) badgeEmojis.unshift("𝕏");
       if (manifestData.cope) badgeEmojis.push("🤡");
 
-      // Draw badge emojis
-      ctx.font = '48px Arial, sans-serif';
+      // Draw badge emojis in a more spaced layout
+      ctx.font = '56px Arial, sans-serif';
       ctx.textAlign = 'center';
-      const badgeText = badgeEmojis.join(' ') || '🪪';
-      ctx.fillText(badgeText, canvas.width / 2, 190);
+      const badgeText = badgeEmojis.join('  ') || '🪪';
+      ctx.fillText(badgeText, canvas.width / 2, 220);
 
-      // Create sections
-      let yPos = 250;
-      const sectionSpacing = 40;
-      const lineHeight = 28;
+      // Create two-column layout
+      const leftColumnX = cardX + 60;
+      const rightColumnX = cardX + (cardWidth / 2) + 30;
+      const columnWidth = (cardWidth / 2) - 90;
+      let leftY = 300;
+      let rightY = 300;
 
-      // PASSPORT INFO Section
-      ctx.fillStyle = colors.accent;
-      ctx.font = 'bold 24px Arial, sans-serif';
-      ctx.textAlign = 'left';
-      ctx.fillText('📋 PASSPORT INFO', 80, yPos);
-      yPos += sectionSpacing;
+      // Helper function to create section boxes
+      function createSectionBox(x, y, width, title, content, isRightColumn = false) {
+        const padding = 20;
+        const titleHeight = 40;
+        const lineHeight = 28;
+        const contentHeight = content.length * lineHeight + padding * 2;
+        const totalHeight = titleHeight + contentHeight + 20;
 
-      ctx.font = '18px Arial, sans-serif';
-      ctx.fillStyle = colors.text;
-      
-      // Safely access manifest data
-      const passportDetails = [
+        // Section background
+        ctx.fillStyle = colors.sectionBg;
+        ctx.strokeStyle = colors.border;
+        ctx.lineWidth = 2;
+        roundRect(ctx, x, y, width, totalHeight, 12);
+        ctx.fill();
+        ctx.stroke();
+
+        // Section title
+        ctx.fillStyle = colors.accent;
+        ctx.font = 'bold 20px Arial, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText(title, x + padding, y + 35);
+
+        // Section content
+        ctx.fillStyle = colors.text;
+        ctx.font = '16px Arial, sans-serif';
+        let contentY = y + titleHeight + 40;
+        
+        content.forEach(line => {
+          // Handle long lines by wrapping them
+          const maxWidth = width - (padding * 2);
+          const words = line.split(' ');
+          let currentLine = '';
+          
+          for (let i = 0; i < words.length; i++) {
+            const testLine = currentLine + words[i] + ' ';
+            const metrics = ctx.measureText(testLine);
+            
+            if (metrics.width > maxWidth && i > 0) {
+              ctx.fillText(currentLine.trim(), x + padding, contentY);
+              currentLine = words[i] + ' ';
+              contentY += lineHeight;
+            } else {
+              currentLine = testLine;
+            }
+          }
+          ctx.fillText(currentLine.trim(), x + padding, contentY);
+          contentY += lineHeight;
+        });
+
+        return totalHeight + 30; // Return height including margin
+      }
+
+      // PASSPORT INFO Section (Left Column)
+      const passportContent = [
         `Pro Status: ${manifestData.isPro ? '✅ Active' : '❌ Inactive'}`,
         `Pro Since: ${manifestData.proAgo || 'N/A'}`,
         `Pro Expires: ${manifestData.proExpiry || 'N/A'}`,
-        `Pro Swaps (Bx): ${Number(manifestData.proSwapsBx || 0).toLocaleString()}`,
-        `Pro Swaps (SOL): ${Number(manifestData.proSwapsSol || 0).toLocaleString()}`
+        `Swaps (Bx): ${Number(manifestData.proSwapsBx || 0).toLocaleString()}`,
+        `Swaps (SOL): ${Number(manifestData.proSwapsSol || 0).toLocaleString()}`
       ];
+      
+      const passportHeight = createSectionBox(leftColumnX, leftY, columnWidth, '📋 PASSPORT INFO', passportContent);
+      leftY += passportHeight;
 
-      passportDetails.forEach(detail => {
-        ctx.fillText(detail, 100, yPos);
-        yPos += lineHeight;
-      });
-
-      yPos += 20;
-
-      // MINING STATS Section (if available)
+      // MINING STATS Section (Right Column)
       if (healthStats && Object.keys(healthStats).length > 0) {
-        ctx.fillStyle = colors.accent;
-        ctx.font = 'bold 24px Arial, sans-serif';
-        ctx.fillText('⛏️ MINING HEALTH', 80, yPos);
-        yPos += sectionSpacing;
-
-        ctx.font = '18px Arial, sans-serif';
-        ctx.fillStyle = colors.text;
-        const miningDetails = [
+        const miningContent = [
           `Health Score: ${healthStats.health || 0}/7`,
           `Mining Sessions: ${(healthStats.mining_sessions || 0).toLocaleString()}`,
           `Claims in Mempool: ${(healthStats.in_mempool || 0).toLocaleString()}`,
@@ -2901,128 +2936,92 @@ async function generatePassportCard(manifestData, healthStats = null, aiInsights
           `Successfully Sent: ${(healthStats.sent || 0).toLocaleString()}`,
           `Failed Claims: ${(healthStats.failed || 0).toLocaleString()}`
         ];
-
-        miningDetails.forEach(detail => {
-          ctx.fillText(detail, 100, yPos);
-          yPos += lineHeight;
-        });
-
-        yPos += 20;
-      }
-
-      // AI INSIGHTS Section (if available)
-      if (aiInsights && Array.isArray(aiInsights) && aiInsights.length > 0) {
-        ctx.fillStyle = colors.accent;
-        ctx.font = 'bold 24px Arial, sans-serif';
-        ctx.fillText('🤖 AI INSIGHTS', 80, yPos);
-        yPos += sectionSpacing;
-
-        ctx.font = '16px Arial, sans-serif';
-        ctx.fillStyle = colors.textSecondary;
         
-        const displayInsights = aiInsights.slice(0, 3);
-        displayInsights.forEach((insight, index) => {
-          const maxWidth = cardWidth - 120;
-          const words = insight.split(' ');
-          let line = '';
-          
-          for (let i = 0; i < words.length; i++) {
-            const testLine = line + words[i] + ' ';
-            const metrics = ctx.measureText(testLine);
-            const testWidth = metrics.width;
-            
-            if (testWidth > maxWidth && i > 0) {
-              ctx.fillText(`• ${line}`, 100, yPos);
-              line = words[i] + ' ';
-              yPos += 22;
-            } else {
-              line = testLine;
-            }
-          }
-          ctx.fillText(`• ${line}`, 100, yPos);
-          yPos += 22;
-          
-          if (index < displayInsights.length - 1) yPos += 5;
-        });
-
-        yPos += 15;
+        const miningHeight = createSectionBox(rightColumnX, rightY, columnWidth, '⛏️ MINING HEALTH', miningContent, true);
+        rightY += miningHeight;
       }
 
-      // PERFORMANCE METRICS Section
+      // PERFORMANCE METRICS Section (Left Column)
       if (healthStats && healthStats.estimates) {
         const estimates = healthStats.estimates;
-        
-        ctx.fillStyle = colors.accent;
-        ctx.font = 'bold 24px Arial, sans-serif';
-        ctx.fillText('📊 PERFORMANCE', 80, yPos);
-        yPos += sectionSpacing;
-
-        ctx.font = '18px Arial, sans-serif';
-        ctx.fillStyle = colors.text;
-        const performanceDetails = [
-          `Max Claim Estimate: $${estimates.max_claim_estimate_usd ? estimates.max_claim_estimate_usd.toFixed(2) : '0.00'}`,
-          `Drift Risk Value: $${estimates.drift_risk_usd ? estimates.drift_risk_usd.toFixed(2) : '0.00'}`,
+        const performanceContent = [
+          `Max Claim: $${estimates.max_claim_estimate_usd ? estimates.max_claim_estimate_usd.toFixed(2) : '0.00'}`,
+          `Drift Risk: $${estimates.drift_risk_usd ? estimates.drift_risk_usd.toFixed(2) : '0.00'}`,
           `SOL Price: $${estimates.sol_usd ? estimates.sol_usd.toFixed(2) : 'N/A'}`,
           `wPOND Price: $${estimates.wpond_usd ? estimates.wpond_usd.toFixed(6) : 'N/A'}`
         ];
-
-        performanceDetails.forEach(detail => {
-          ctx.fillText(detail, 100, yPos);
-          yPos += lineHeight;
-        });
+        
+        const performanceHeight = createSectionBox(leftColumnX, leftY, columnWidth, '📊 PERFORMANCE', performanceContent);
+        leftY += performanceHeight;
       }
 
-      // Footer with branding
-      const footerY = canvas.height - 80;
+      // AI INSIGHTS Section (Right Column or full width if only section)
+      if (aiInsights && Array.isArray(aiInsights) && aiInsights.length > 0) {
+        const maxInsights = 4;
+        const displayInsights = aiInsights.slice(0, maxInsights).map(insight => {
+          // Truncate very long insights
+          return insight.length > 80 ? insight.substring(0, 80) + '...' : insight;
+        });
+        
+        // Check if we have space in right column, otherwise use full width
+        const useFullWidth = rightY > leftY + 200;
+        
+        if (useFullWidth) {
+          const fullWidth = cardWidth - 120;
+          const insightsHeight = createSectionBox(leftColumnX, Math.max(leftY, rightY), fullWidth, '🤖 AI INSIGHTS', displayInsights);
+        } else {
+          const insightsHeight = createSectionBox(rightColumnX, rightY, columnWidth, '🤖 AI INSIGHTS', displayInsights, true);
+          rightY += insightsHeight;
+        }
+      }
+
+      // Footer
+      const footerY = canvas.height - 120;
       ctx.fillStyle = colors.secondary;
-      ctx.font = 'bold 20px Arial, sans-serif';
+      ctx.font = 'bold 24px Arial, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('Generated by DATA HUB', canvas.width / 2, footerY);
       
-      ctx.font = '16px Arial, sans-serif';
+      ctx.font = '18px Arial, sans-serif';
       ctx.fillStyle = colors.textSecondary;
-      ctx.fillText('Visit Pond0x.com to start your mining journey!', canvas.width / 2, footerY + 25);
+      ctx.fillText('Visit Pond0x.com to start your mining journey!', canvas.width / 2, footerY + 35);
 
-      // Decorative border elements
+      // Decorative corner elements
       ctx.strokeStyle = colors.highlight;
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 3;
+      const cornerLength = 50;
       
-      // Corner accents
-      const cornerLength = 40;
-      
-      // Top-left
+      // Top corners
       ctx.beginPath();
-      ctx.moveTo(60, 80);
-      ctx.lineTo(60 + cornerLength, 80);
-      ctx.moveTo(60, 80);
-      ctx.lineTo(60, 80 + cornerLength);
+      ctx.moveTo(80, 80);
+      ctx.lineTo(80 + cornerLength, 80);
+      ctx.moveTo(80, 80);
+      ctx.lineTo(80, 80 + cornerLength);
       ctx.stroke();
       
-      // Top-right
       ctx.beginPath();
-      ctx.moveTo(canvas.width - 60, 80);
-      ctx.lineTo(canvas.width - 60 - cornerLength, 80);
-      ctx.moveTo(canvas.width - 60, 80);
-      ctx.lineTo(canvas.width - 60, 80 + cornerLength);
+      ctx.moveTo(canvas.width - 80, 80);
+      ctx.lineTo(canvas.width - 80 - cornerLength, 80);
+      ctx.moveTo(canvas.width - 80, 80);
+      ctx.lineTo(canvas.width - 80, 80 + cornerLength);
       ctx.stroke();
       
-      // Bottom-left
+      // Bottom corners
       ctx.beginPath();
-      ctx.moveTo(60, canvas.height - 80);
-      ctx.lineTo(60 + cornerLength, canvas.height - 80);
-      ctx.moveTo(60, canvas.height - 80);
-      ctx.lineTo(60, canvas.height - 80 - cornerLength);
+      ctx.moveTo(80, canvas.height - 80);
+      ctx.lineTo(80 + cornerLength, canvas.height - 80);
+      ctx.moveTo(80, canvas.height - 80);
+      ctx.lineTo(80, canvas.height - 80 - cornerLength);
       ctx.stroke();
       
-      // Bottom-right
       ctx.beginPath();
-      ctx.moveTo(canvas.width - 60, canvas.height - 80);
-      ctx.lineTo(canvas.width - 60 - cornerLength, canvas.height - 80);
-      ctx.moveTo(canvas.width - 60, canvas.height - 80);
-      ctx.lineTo(canvas.width - 60, canvas.height - 80 - cornerLength);
+      ctx.moveTo(canvas.width - 80, canvas.height - 80);
+      ctx.lineTo(canvas.width - 80 - cornerLength, canvas.height - 80);
+      ctx.moveTo(canvas.width - 80, canvas.height - 80);
+      ctx.lineTo(canvas.width - 80, canvas.height - 80 - cornerLength);
       ctx.stroke();
 
-      // Convert to blob with error handling
+      // Convert to blob
       try {
         canvas.toBlob((blob) => {
           if (blob) {
@@ -3040,6 +3039,66 @@ async function generatePassportCard(manifestData, healthStats = null, aiInsights
       reject(new Error(`Passport card generation failed: ${error.message}`));
     }
   });
+}
+
+// Fixed download function with better error handling
+function downloadPassportCard() {
+  console.log('Download passport card called');
+  
+  if (!window.currentManifestData) {
+    console.error('No manifest data available');
+    alert('No passport data available to download');
+    return;
+  }
+
+  const button = document.getElementById('downloadPassportBtn');
+  const buttonText = document.getElementById('downloadButtonText');
+  
+  if (!button || !buttonText) {
+    console.error('Download button elements not found');
+    return;
+  }
+
+  // Show loading state
+  button.disabled = true;
+  buttonText.innerHTML = '<span class="spinner"></span>Generating...';
+
+  console.log('Starting passport card generation...');
+
+  // Get current data
+  const healthStats = window.currentHealthStats || null;
+  const aiInsights = window.currentAIInsights || null;
+
+  // Generate the enhanced card
+  generatePassportCard(window.currentManifestData, healthStats, aiInsights)
+    .then(blob => {
+      console.log('Passport card generated successfully, size:', blob.size);
+      
+      // Create download link
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'pond0x-passport.png';
+      
+      // Add to DOM, click, and remove
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up
+      URL.revokeObjectURL(url);
+      
+      console.log('Download initiated successfully');
+    })
+    .catch(error => {
+      console.error('Error generating passport card:', error);
+      alert(`Failed to generate passport card: ${error.message}`);
+    })
+    .finally(() => {
+      // Reset button state
+      button.disabled = false;
+      buttonText.textContent = 'Download Image';
+    });
 }
 
 // Fixed download function with better error handling
