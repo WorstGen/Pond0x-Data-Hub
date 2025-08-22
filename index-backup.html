@@ -3077,36 +3077,56 @@ async function generatePassportCard(manifestData, healthStats = null, aiInsights
         col3Y += performanceHeight;
       }
 
-      // AI INSIGHTS Section (Full width if available) - guaranteed to fit
+      // AI INSIGHTS Section (Full width at bottom) - improved fitting
       if (aiInsights && Array.isArray(aiInsights) && aiInsights.length > 0) {
         const maxY = Math.max(col1Y, col2Y, col3Y);
         const fullSectionWidth = cardWidth - (columnPadding * 2);
+        const sectionPadding = 20;
+        const titleHeight = 38;
+        const lineHeight = 24; // Reduced line height for better fit
+        const footerReserve = 100; // Space reserved for footer
         
-        // Calculate exact available space
-        const footerY = canvas.height - 90;
-        const availableHeight = footerY - maxY - 20;
-        const maxLines = Math.max(2, Math.floor((availableHeight - 58) / 28));
+        // Calculate exactly how much space we have
+        const availableSpace = cardHeight - (maxY - cardY) - footerReserve;
+        const maxContentHeight = availableSpace - titleHeight - (sectionPadding * 2) - 20;
+        const maxLines = Math.floor(maxContentHeight / lineHeight);
         
-        // Fit insights aggressively
+        // Process insights to fit within available lines
         let displayInsights = [];
-        const maxCharsPerLine = Math.floor((fullSectionWidth - 40) / 7);
+        const maxCharsPerLine = Math.floor((fullSectionWidth - (sectionPadding * 2)) / 8); // More conservative char estimate
         
         for (let i = 0; i < aiInsights.length && displayInsights.length < maxLines; i++) {
           const insight = aiInsights[i];
           
+          // If this is the last line and there are more insights, show count
           if (displayInsights.length === maxLines - 1 && i < aiInsights.length - 1) {
             const remaining = aiInsights.length - i;
-            const truncated = insight.substring(0, maxCharsPerLine - 15) + `... (+${remaining})`;
+            const truncated = insight.length > maxCharsPerLine - 20 ? 
+              insight.substring(0, maxCharsPerLine - 20) + `... (+${remaining} more)` :
+              insight + ` (+${remaining} more)`;
             displayInsights.push(truncated);
             break;
           } else {
-            const truncated = insight.length > maxCharsPerLine ? 
-              insight.substring(0, maxCharsPerLine - 3) + '...' : insight;
-            displayInsights.push(truncated);
+            // Wrap long insights into multiple lines if needed
+            if (insight.length > maxCharsPerLine) {
+              const wrapped = insight.substring(0, maxCharsPerLine - 3) + '...';
+              displayInsights.push(wrapped);
+            } else {
+              displayInsights.push(insight);
+            }
           }
         }
         
-        createPremiumSection(col1X, maxY, fullSectionWidth, '🤖 AI INSIGHTS', displayInsights, '#6366f1');
+        // Ensure we have at least one insight to display
+        if (displayInsights.length === 0 && aiInsights.length > 0) {
+          displayInsights.push(aiInsights[0].substring(0, maxCharsPerLine - 3) + '...');
+        }
+        
+        // Create the section with calculated height
+        const insightsHeight = titleHeight + (displayInsights.length * lineHeight) + (sectionPadding * 2) + 20;
+        
+        createPremiumSection(col1X, maxY, fullSectionWidth, '🤖 AI INSIGHTS', 
+          displayInsights.map(insight => `• ${insight}`), '#6366f1');
       }
 
       // Premium footer with gradient background
