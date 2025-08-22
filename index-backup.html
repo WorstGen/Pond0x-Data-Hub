@@ -2960,76 +2960,36 @@ if (aiInsights && Array.isArray(aiInsights) && aiInsights.length > 0) {
  const maxY = Math.max(col1Y, col2Y, col3Y);
  const fullSectionWidth = cardWidth - (columnPadding * 2);
  
- // Calculate available space for insights
- const availableHeight = (canvas.height - 110) - maxY - 50; // Footer space - current Y - margin
- const insightLineHeight = 32;
- const sectionOverhead = 70; // Title + padding
- const maxInsightLines = Math.floor((availableHeight - sectionOverhead) / insightLineHeight);
+ // Force fit by calculating exact available space
+ const footerStartY = canvas.height - 110;
+ const availableHeight = footerStartY - maxY - 30; // 30px margin from footer
+ const insightLineHeight = 28; // Reduced line height
+ const sectionTitleHeight = 50; // Title + padding
+ const maxLines = Math.max(1, Math.floor((availableHeight - sectionTitleHeight) / insightLineHeight));
  
- // Smart insight formatting to fit available space
+ // Aggressively fit insights
  let displayInsights = [];
- let currentLines = 0;
+ const maxCharsPerLine = Math.floor((fullSectionWidth - 50) / 7.5); // Conservative char estimate
  
- for (let i = 0; i < aiInsights.length && currentLines < maxInsightLines; i++) {
+ for (let i = 0; i < aiInsights.length && displayInsights.length < maxLines; i++) {
    const insight = aiInsights[i];
-   const maxCharsPerLine = Math.floor(fullSectionWidth / 8); // Approximate chars per line
    
-   if (insight.length <= maxCharsPerLine) {
-     // Short insight - fits on one line
-     if (currentLines < maxInsightLines) {
-       displayInsights.push(`• ${insight}`);
-       currentLines++;
-     }
+   if (displayInsights.length === maxLines - 1 && i < aiInsights.length - 1) {
+     // Last line - truncate and add count
+     const remaining = aiInsights.length - i;
+     const truncated = insight.substring(0, maxCharsPerLine - 20) + `... (+${remaining} more)`;
+     displayInsights.push(truncated);
+     break;
    } else {
-     // Long insight - needs wrapping or truncation
-     const remainingLines = maxInsightLines - currentLines;
-     if (remainingLines >= 2) {
-       // We have space for at least 2 lines, so wrap
-       const words = insight.split(' ');
-       let currentLine = '• ';
-       let lines = [];
-       
-       for (let word of words) {
-         if ((currentLine + word).length <= maxCharsPerLine) {
-           currentLine += word + ' ';
-         } else {
-           lines.push(currentLine.trim());
-           currentLine = '  ' + word + ' '; // Indent continuation
-         }
-       }
-       if (currentLine.trim().length > 2) {
-         lines.push(currentLine.trim());
-       }
-       
-       // Add lines if we have space
-       const linesToAdd = Math.min(lines.length, remainingLines);
-       displayInsights.push(...lines.slice(0, linesToAdd));
-       currentLines += linesToAdd;
-       
-       // Add truncation indicator if needed
-       if (lines.length > linesToAdd) {
-         displayInsights[displayInsights.length - 1] += '...';
-       }
-     } else if (remainingLines === 1) {
-       // Only one line left - truncate
-       const truncatedInsight = insight.substring(0, maxCharsPerLine - 4) + '...';
-       displayInsights.push(`• ${truncatedInsight}`);
-       currentLines++;
-     }
+     // Regular line - truncate if needed
+     const truncated = insight.length > maxCharsPerLine ? 
+       insight.substring(0, maxCharsPerLine - 3) + '...' : insight;
+     displayInsights.push(truncated);
    }
  }
  
- // Add indicator if there are more insights
- if (aiInsights.length > displayInsights.length) {
-   const remaining = aiInsights.length - displayInsights.length;
-   if (currentLines < maxInsightLines) {
-     displayInsights.push(`  ... and ${remaining} more insight${remaining === 1 ? '' : 's'}`);
-   }
- }
- 
- if (displayInsights.length > 0) {
-   createPremiumSection(col1X, maxY, fullSectionWidth, '🤖 AI INSIGHTS', displayInsights, '#6366f1');
- }
+ // Always create the section with whatever fits
+ createPremiumSection(col1X, maxY, fullSectionWidth, '🤖 AI INSIGHTS', displayInsights, '#6366f1');
 }
 
       // Footer
