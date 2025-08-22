@@ -3077,104 +3077,37 @@ async function generatePassportCard(manifestData, healthStats = null, aiInsights
         col3Y += performanceHeight;
       }
 
-      // AI INSIGHTS Section (Full width at bottom) - improved fitting
+      // AI INSIGHTS Section (Full width if available) - guaranteed to fit
 if (aiInsights && Array.isArray(aiInsights) && aiInsights.length > 0) {
   const maxY = Math.max(col1Y, col2Y, col3Y);
   const fullSectionWidth = cardWidth - (columnPadding * 2);
-  const sectionPadding = 20;
-  const titleHeight = 38;
-  const lineHeight = 24; // Reduced line height for better fit
-  const footerReserve = 100; // Space reserved for footer
   
-  // Calculate exactly how much space we have
-  const availableSpace = cardHeight - (maxY - cardY) - footerReserve;
-  const maxContentHeight = availableSpace - titleHeight - (sectionPadding * 2) - 20;
-  const maxLines = Math.floor(maxContentHeight / lineHeight);
+  // Calculate exact available space
+  const footerY = canvas.height - 90;
+  const availableHeight = footerY - maxY - 20;
+  const maxLines = Math.max(2, Math.floor((availableHeight - 58) / 28));
   
-  // Process insights to fit within available lines
+  // Fit insights aggressively
   let displayInsights = [];
-  const maxCharsPerLine = Math.floor((fullSectionWidth - (sectionPadding * 2)) / 8); // More conservative char estimate
+  const maxCharsPerLine = Math.floor((fullSectionWidth - 40) / 7);
   
   for (let i = 0; i < aiInsights.length && displayInsights.length < maxLines; i++) {
     const insight = aiInsights[i];
     
-    // If this is the last line and there are more insights, show count
     if (displayInsights.length === maxLines - 1 && i < aiInsights.length - 1) {
       const remaining = aiInsights.length - i;
-      const truncated = insight.length > maxCharsPerLine - 20 ? 
-        insight.substring(0, maxCharsPerLine - 20) + `... (+${remaining} more)` :
-        insight + ` (+${remaining} more)`;
+      const truncated = insight.substring(0, maxCharsPerLine - 15) + `... (+${remaining})`;
       displayInsights.push(truncated);
       break;
     } else {
-      // Wrap long insights into multiple lines if needed
-      if (insight.length > maxCharsPerLine) {
-        const wrapped = insight.substring(0, maxCharsPerLine - 3) + '...';
-        displayInsights.push(wrapped);
-      } else {
-        displayInsights.push(insight);
-      }
+      const truncated = insight.length > maxCharsPerLine ? 
+        insight.substring(0, maxCharsPerLine - 3) + '...' : insight;
+      displayInsights.push(truncated);
     }
   }
   
-  // Ensure we have at least one insight to display
-  if (displayInsights.length === 0 && aiInsights.length > 0) {
-    displayInsights.push(aiInsights[0].substring(0, maxCharsPerLine - 3) + '...');
-  }
-  
-  // Create AI insights section with custom rendering
-  const insightsY = maxY;
-  const padding = 20;
-  const titleHeight = 38;
-  const lineHeight = 24;
-  const contentHeight = displayInsights.length * lineHeight + padding;
-  const totalHeight = titleHeight + contentHeight + 20;
-
-  // Section shadow
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-  roundRect(ctx, col1X + 2, insightsY + 2, fullSectionWidth, totalHeight, 12);
-  ctx.fill();
-
-  // Section background with subtle gradient
-  const sectionGradient = createGradient(ctx, col1X, insightsY, col1X, insightsY + totalHeight, 
-    [colors.sectionBg, isDarkMode ? '#2a2a4a' : '#fafaff']);
-  ctx.fillStyle = sectionGradient;
-  roundRect(ctx, col1X, insightsY, fullSectionWidth, totalHeight, 12);
-  ctx.fill();
-
-  // Section border
-  ctx.strokeStyle = colors.sectionBorder;
-  ctx.lineWidth = 1.5;
-  roundRect(ctx, col1X, insightsY, fullSectionWidth, totalHeight, 12);
-  ctx.stroke();
-
-  // Title bar with accent color
-  ctx.fillStyle = '#6366f1';
-  roundRect(ctx, col1X, insightsY, fullSectionWidth, titleHeight, 12);
-  ctx.fill();
-  
-  // Mask bottom corners of title bar
-  ctx.fillRect(col1X, insightsY + titleHeight - 12, fullSectionWidth, 12);
-
-  // Section title
-  ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 16px "Segoe UI", Arial, sans-serif';
-  ctx.textAlign = 'left';
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
-  ctx.shadowBlur = 2;
-  ctx.fillText('🤖 AI INSIGHTS', col1X + padding, insightsY + 26);
-  ctx.shadowColor = 'transparent';
-
-  // Insights content
-  let contentY = insightsY + titleHeight + 25;
-  ctx.fillStyle = colors.text;
-  ctx.font = '13px "Segoe UI", Arial, sans-serif';
-  ctx.textAlign = 'left';
-  
-  displayInsights.forEach((insight, index) => {
-    ctx.fillText(`• ${insight}`, col1X + padding, contentY);
-    contentY += lineHeight;
-  });
+  createPremiumSection(col1X, maxY, fullSectionWidth, '🤖 AI INSIGHTS', 
+  displayInsights.map(insight => `Insight: ${insight}`), '#6366f1');
 }
 
       // Premium footer with gradient background
