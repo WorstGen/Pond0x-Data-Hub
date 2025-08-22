@@ -2745,7 +2745,30 @@ function roundRect(ctx, x, y, width, height, radius) {
   ctx.closePath();
 }
 
-// Enhanced generatePassportCard function with better layout and formatting
+// Helper function for drawing professional gradients
+function createGradient(ctx, x1, y1, x2, y2, colors) {
+  const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
+  colors.forEach((color, index) => {
+    gradient.addColorStop(index / (colors.length - 1), color);
+  });
+  return gradient;
+}
+
+// Helper function for drawing glowing effects
+function drawGlow(ctx, x, y, width, height, radius, color, glowSize = 20) {
+  ctx.save();
+  ctx.shadowColor = color;
+  ctx.shadowBlur = glowSize;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+  
+  ctx.fillStyle = 'rgba(0, 0, 0, 0)';
+  roundRect(ctx, x, y, width, height, radius);
+  ctx.fill();
+  ctx.restore();
+}
+
+// Enhanced generatePassportCard function with premium design
 async function generatePassportCard(manifestData, healthStats = null, aiInsights = null) {
   return new Promise((resolve, reject) => {
     try {
@@ -2756,76 +2779,123 @@ async function generatePassportCard(manifestData, healthStats = null, aiInsights
         throw new Error('Could not get canvas 2D context');
       }
       
-      // Set canvas size - made taller to accommodate content
-      canvas.width = 1200;
-      canvas.height = 1000;
+      // Set canvas size with better proportions - made more compact
+      canvas.width = 1400;
+      canvas.height = 900;
       
       // Get current theme
       const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
       
-      // Color scheme
+      // Enhanced color schemes with more sophisticated palettes
       const colors = isDarkMode ? {
-        bg: '#0a0a0a',
-        cardBg: '#1a1a2e',
-        accentBg: '#16213e',
+        bg: ['#0a0a0f', '#1a1a2e', '#16213e', '#0a0a0f'],
+        cardBg: '#1e1e2e',
+        cardBorder: '#2a2a3e',
+        headerBg: ['#7b3aad', '#9b5de5', '#bd7cfd'],
         primary: '#e0b3ff',
         accent: '#ff3df0',
         secondary: '#bd7cfd',
-        text: '#e5ddfb',
+        text: '#f8f8fc',
         textSecondary: '#c9a3ff',
-        border: '#bd7cfd',
+        textMuted: '#9b9bab',
+        sectionBg: '#252545',
+        sectionBorder: '#3a3a5e',
         highlight: '#ff3df0',
-        sectionBg: '#252545'
+        success: '#4ade80',
+        warning: '#fbbf24',
+        error: '#f87171'
       } : {
-        bg: '#f9f5ff',
+        bg: ['#faf7ff', '#f0ebff', '#e6d9ff', '#faf7ff'],
         cardBg: '#ffffff',
-        accentBg: '#f6edff',
-        primary: '#7b3aad',
+        cardBorder: '#e5d4ff',
+        headerBg: ['#7b3aad', '#9b5de5', '#bd7cfd'],
+        primary: '#5b2a86',
         accent: '#ff3df0',
-        secondary: '#9b5de5',
-        text: '#5b2a86',
-        textSecondary: '#7b3aad',
-        border: '#bd7cfd',
+        secondary: '#7b3aad',
+        text: '#2d1b42',
+        textSecondary: '#5b2a86',
+        textMuted: '#6b7280',
+        sectionBg: '#f9f7ff',
+        sectionBorder: '#e5d4ff',
         highlight: '#ff3df0',
-        sectionBg: '#f0e8ff'
+        success: '#059669',
+        warning: '#d97706',
+        error: '#dc2626'
       };
 
-      // Background with gradient
-      const bgGradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-      bgGradient.addColorStop(0, colors.bg);
-      bgGradient.addColorStop(0.3, colors.cardBg);
-      bgGradient.addColorStop(0.7, colors.accentBg);
-      bgGradient.addColorStop(1, colors.bg);
+      // Premium background with sophisticated gradient
+      const bgGradient = createGradient(ctx, 0, 0, canvas.width, canvas.height, colors.bg);
       ctx.fillStyle = bgGradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Main card background
-      const cardPadding = 50;
+      // Add subtle background pattern
+      ctx.save();
+      ctx.globalAlpha = isDarkMode ? 0.05 : 0.03;
+      ctx.fillStyle = colors.primary;
+      for (let i = 0; i < canvas.width; i += 100) {
+        for (let j = 0; j < canvas.height; j += 100) {
+          ctx.fillRect(i, j, 2, 2);
+        }
+      }
+      ctx.restore();
+
+      // Main card with enhanced shadows and borders
+      const cardPadding = 70;
       const cardX = cardPadding;
       const cardY = cardPadding;
       const cardWidth = canvas.width - (cardPadding * 2);
       const cardHeight = canvas.height - (cardPadding * 2);
       
-      // Card shadow
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-      roundRect(ctx, cardX + 5, cardY + 5, cardWidth, cardHeight, 25);
+      // Multi-layer shadow effect
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+      roundRect(ctx, cardX + 8, cardY + 8, cardWidth, cardHeight, 30);
       ctx.fill();
       
-      // Main card
-      ctx.fillStyle = colors.cardBg;
-      ctx.strokeStyle = colors.border;
-      ctx.lineWidth = 4;
-      roundRect(ctx, cardX, cardY, cardWidth, cardHeight, 25);
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+      roundRect(ctx, cardX + 4, cardY + 4, cardWidth, cardHeight, 30);
       ctx.fill();
+      
+      // Main card background with gradient
+      const cardGradient = createGradient(ctx, cardX, cardY, cardX, cardY + cardHeight, 
+        [colors.cardBg, isDarkMode ? '#1a1a2e' : '#fefefe']);
+      ctx.fillStyle = cardGradient;
+      roundRect(ctx, cardX, cardY, cardWidth, cardHeight, 30);
+      ctx.fill();
+      
+      // Card border with glow effect
+      drawGlow(ctx, cardX, cardY, cardWidth, cardHeight, 30, colors.accent, 15);
+      ctx.strokeStyle = colors.cardBorder;
+      ctx.lineWidth = 3;
+      roundRect(ctx, cardX, cardY, cardWidth, cardHeight, 30);
       ctx.stroke();
 
-      // Header section
-      ctx.fillStyle = colors.primary;
-      ctx.font = 'bold 48px Arial, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('POND🤝X PASSPORT', canvas.width / 2, 140);
+      // Premium header section with gradient background
+      const headerHeight = 160;
+      const headerGradient = createGradient(ctx, cardX, cardY, cardX + cardWidth, cardY + headerHeight, colors.headerBg);
+      ctx.fillStyle = headerGradient;
+      roundRect(ctx, cardX, cardY, cardWidth, headerHeight, 30);
+      ctx.fill();
+      
+      // Mask the bottom of the header
+      ctx.fillStyle = colors.cardBg;
+      ctx.fillRect(cardX, cardY + headerHeight - 30, cardWidth, 30);
 
-      // Get badges and convert to emojis
+      // Main title with better typography
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 52px "Segoe UI", Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+      ctx.shadowBlur = 4;
+      ctx.shadowOffsetY = 2;
+      ctx.fillText('POND🤝X PASSPORT', canvas.width / 2, 110);
+      ctx.shadowColor = 'transparent';
+
+      // Subtitle
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+      ctx.font = '20px "Segoe UI", Arial, sans-serif';
+      ctx.fillText('Mining Status & Performance Report', canvas.width / 2, 140);
+
+      // Get badges and convert to emojis with better spacing
       const badgeMap = {
         void: "🐇", diamond: "💎", pork: "🐽", chef: "👨‍🍳",
         points: "✨", swap: "🤝", stand: "✊", insider: "🥼",
@@ -2835,7 +2905,6 @@ async function generatePassportCard(manifestData, healthStats = null, aiInsights
         recap: "🎁"
       };
 
-      // Safely handle badges
       let badges = [];
       if (manifestData.badges) {
         if (Array.isArray(manifestData.badges)) {
@@ -2849,196 +2918,247 @@ async function generatePassportCard(manifestData, healthStats = null, aiInsights
       if (manifestData.hasTwitter) badgeEmojis.unshift("𝕏");
       if (manifestData.cope) badgeEmojis.push("🤡");
 
-      // Draw badge emojis in a more spaced layout
-      ctx.font = '56px Arial, sans-serif';
-      ctx.textAlign = 'center';
-      const badgeText = badgeEmojis.join('  ') || '🪪';
-      ctx.fillText(badgeText, canvas.width / 2, 220);
+      // Enhanced badge display with background circles - made more compact
+      const badgeY = 200;
+      const badgeSize = 45;
+      const badgeSpacing = 60;
+      const startX = (canvas.width - (badgeEmojis.length - 1) * badgeSpacing) / 2;
 
-      // Create two-column layout
-      const leftColumnX = cardX + 60;
-      const rightColumnX = cardX + (cardWidth / 2) + 30;
-      const columnWidth = (cardWidth / 2) - 90;
-      let leftY = 300;
-      let rightY = 300;
-
-      // Helper function to create section boxes
-      function createSectionBox(x, y, width, title, content, isRightColumn = false) {
-        const padding = 20;
-        const titleHeight = 40;
-        const lineHeight = 28;
-        const contentHeight = content.length * lineHeight + padding * 2;
-        const totalHeight = titleHeight + contentHeight + 20;
-
-        // Section background
+      badgeEmojis.forEach((emoji, index) => {
+        const x = startX + (index * badgeSpacing);
+        
+        // Badge background circle
         ctx.fillStyle = colors.sectionBg;
-        ctx.strokeStyle = colors.border;
+        ctx.strokeStyle = colors.accent;
         ctx.lineWidth = 2;
-        roundRect(ctx, x, y, width, totalHeight, 12);
+        ctx.beginPath();
+        ctx.arc(x, badgeY, badgeSize / 2, 0, Math.PI * 2);
         ctx.fill();
         ctx.stroke();
-
-        // Section title
-        ctx.fillStyle = colors.accent;
-        ctx.font = 'bold 20px Arial, sans-serif';
-        ctx.textAlign = 'left';
-        ctx.fillText(title, x + padding, y + 35);
-
-        // Section content
-        ctx.fillStyle = colors.text;
-        ctx.font = '16px Arial, sans-serif';
-        let contentY = y + titleHeight + 40;
         
-        content.forEach(line => {
-          // Handle long lines by wrapping them
+        // Badge emoji
+        ctx.font = '28px Arial, sans-serif';
+        ctx.fillStyle = colors.text;
+        ctx.textAlign = 'center';
+        ctx.fillText(emoji, x, badgeY + 6);
+      });
+
+      // Enhanced three-column layout - moved up
+      const columnPadding = 40;
+      const columnSpacing = 30;
+      const columnWidth = (cardWidth - (columnPadding * 2) - (columnSpacing * 2)) / 3;
+      
+      const col1X = cardX + columnPadding;
+      const col2X = col1X + columnWidth + columnSpacing;
+      const col3X = col2X + columnWidth + columnSpacing;
+      
+      let col1Y = 270;
+      let col2Y = 270;
+      let col3Y = 270;
+
+      // Enhanced section box with premium styling - made more compact
+      function createPremiumSection(x, y, width, title, content, iconColor = colors.accent) {
+        const padding = 20;
+        const titleHeight = 38;
+        const lineHeight = 28;
+        const contentHeight = content.length * lineHeight + padding;
+        const totalHeight = titleHeight + contentHeight + 20;
+
+        // Section shadow
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+        roundRect(ctx, x + 2, y + 2, width, totalHeight, 12);
+        ctx.fill();
+
+        // Section background with subtle gradient
+        const sectionGradient = createGradient(ctx, x, y, x, y + totalHeight, 
+          [colors.sectionBg, isDarkMode ? '#2a2a4a' : '#fafaff']);
+        ctx.fillStyle = sectionGradient;
+        roundRect(ctx, x, y, width, totalHeight, 12);
+        ctx.fill();
+
+        // Section border
+        ctx.strokeStyle = colors.sectionBorder;
+        ctx.lineWidth = 1.5;
+        roundRect(ctx, x, y, width, totalHeight, 12);
+        ctx.stroke();
+
+        // Title bar with accent color
+        ctx.fillStyle = iconColor;
+        roundRect(ctx, x, y, width, titleHeight, 12);
+        ctx.fill();
+        
+        // Mask bottom corners of title bar
+        ctx.fillRect(x, y + titleHeight - 12, width, 12);
+
+        // Section title with better typography
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 16px "Segoe UI", Arial, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+        ctx.shadowBlur = 2;
+        ctx.fillText(title, x + padding, y + 26);
+        ctx.shadowColor = 'transparent';
+
+        // Section content with improved readability
+        let contentY = y + titleHeight + 25;
+        
+        content.forEach((line, index) => {
+          const [label, value] = line.split(':');
           const maxWidth = width - (padding * 2);
-          const words = line.split(' ');
-          let currentLine = '';
           
-          for (let i = 0; i < words.length; i++) {
-            const testLine = currentLine + words[i] + ' ';
-            const metrics = ctx.measureText(testLine);
-            
-            if (metrics.width > maxWidth && i > 0) {
-              ctx.fillText(currentLine.trim(), x + padding, contentY);
-              currentLine = words[i] + ' ';
-              contentY += lineHeight;
-            } else {
-              currentLine = testLine;
-            }
-          }
-          ctx.fillText(currentLine.trim(), x + padding, contentY);
+          // Label
+          ctx.fillStyle = colors.textMuted;
+          ctx.font = '12px "Segoe UI", Arial, sans-serif';
+          ctx.textAlign = 'left';
+          ctx.fillText(label + ':', x + padding, contentY);
+          
+          // Value with color coding
+          let valueColor = colors.text;
+          if (line.includes('✅')) valueColor = colors.success;
+          if (line.includes('❌')) valueColor = colors.error;
+          if (line.includes('$') && parseFloat(line.match(/\$([\d,.]+)/)?.[1]) > 0) valueColor = colors.success;
+          
+          ctx.fillStyle = valueColor;
+          ctx.font = 'bold 14px "Segoe UI", Arial, sans-serif';
+          ctx.textAlign = 'right';
+          
+          const valueText = value ? value.trim() : '';
+          ctx.fillText(valueText, x + width - padding, contentY);
+          
           contentY += lineHeight;
         });
 
-        return totalHeight + 30; // Return height including margin
+        return totalHeight + 20;
       }
 
-      // PASSPORT INFO Section (Left Column)
+      // PASSPORT STATUS Section (Column 1)
       const passportContent = [
         `Pro Status: ${manifestData.isPro ? '✅ Active' : '❌ Inactive'}`,
-        `Pro Since: ${manifestData.proAgo || 'N/A'}`,
-        `Pro Expires: ${manifestData.proExpiry || 'N/A'}`,
-        `Swaps (Bx): ${Number(manifestData.proSwapsBx || 0).toLocaleString()}`,
-        `Swaps (SOL): ${Number(manifestData.proSwapsSol || 0).toLocaleString()}`
+        `Member Since: ${manifestData.proAgo || 'N/A'}`,
+        `Expires: ${manifestData.proExpiry || 'Never'}`,
+        `Total Swaps: ${Number(manifestData.proSwapsBx || 0).toLocaleString()}`,
+        `SOL Swaps: ${Number(manifestData.proSwapsSol || 0).toLocaleString()}`
       ];
       
-      const passportHeight = createSectionBox(leftColumnX, leftY, columnWidth, '📋 PASSPORT INFO', passportContent);
-      leftY += passportHeight;
+      const passportHeight = createPremiumSection(col1X, col1Y, columnWidth, '📋 PASSPORT STATUS', passportContent, colors.accent);
+      col1Y += passportHeight;
 
-      // MINING STATS Section (Right Column)
+      // MINING HEALTH Section (Column 2)
       if (healthStats && Object.keys(healthStats).length > 0) {
+        const healthScore = healthStats.health || 0;
+        let healthColor = colors.error;
+        if (healthScore >= 6) healthColor = colors.success;
+        else if (healthScore >= 4) healthColor = colors.warning;
+
         const miningContent = [
-          `Health Score: ${healthStats.health || 0}/7`,
+          `Health Score: ${healthScore}/7`,
           `Mining Sessions: ${(healthStats.mining_sessions || 0).toLocaleString()}`,
-          `Claims in Mempool: ${(healthStats.in_mempool || 0).toLocaleString()}`,
-          `Priority Level: ${healthStats.priority || 1}x`,
-          `Successfully Sent: ${(healthStats.sent || 0).toLocaleString()}`,
-          `Failed Claims: ${(healthStats.failed || 0).toLocaleString()}`
+          `In Mempool: ${(healthStats.in_mempool || 0).toLocaleString()}`,
+          `Priority: ${healthStats.priority || 1}x`,
+          `Successful: ${(healthStats.sent || 0).toLocaleString()}`,
+          `Failed: ${(healthStats.failed || 0).toLocaleString()}`
         ];
         
-        const miningHeight = createSectionBox(rightColumnX, rightY, columnWidth, '⛏️ MINING HEALTH', miningContent, true);
-        rightY += miningHeight;
+        const miningHeight = createPremiumSection(col2X, col2Y, columnWidth, '⛏️ MINING HEALTH', miningContent, healthColor);
+        col2Y += miningHeight;
       }
 
-      // PERFORMANCE METRICS Section (Left Column)
+      // PERFORMANCE METRICS Section (Column 3)
       if (healthStats && healthStats.estimates) {
         const estimates = healthStats.estimates;
         const performanceContent = [
           `Max Claim: $${estimates.max_claim_estimate_usd ? estimates.max_claim_estimate_usd.toFixed(2) : '0.00'}`,
-          `Drift Risk: $${estimates.drift_risk_usd ? estimates.drift_risk_usd.toFixed(2) : '0.00'}`,
+          `Risk Value: $${estimates.drift_risk_usd ? estimates.drift_risk_usd.toFixed(2) : '0.00'}`,
           `SOL Price: $${estimates.sol_usd ? estimates.sol_usd.toFixed(2) : 'N/A'}`,
-          `wPOND Price: $${estimates.wpond_usd ? estimates.wpond_usd.toFixed(6) : 'N/A'}`
+          `wPOND: $${estimates.wpond_usd ? estimates.wpond_usd.toFixed(6) : 'N/A'}`
         ];
         
-        const performanceHeight = createSectionBox(leftColumnX, leftY, columnWidth, '📊 PERFORMANCE', performanceContent);
-        leftY += performanceHeight;
+        const performanceHeight = createPremiumSection(col3X, col3Y, columnWidth, '📊 PERFORMANCE', performanceContent, colors.secondary);
+        col3Y += performanceHeight;
       }
 
-      // AI INSIGHTS Section (Full width if available)
-if (aiInsights && Array.isArray(aiInsights) && aiInsights.length > 0) {
- const maxY = Math.max(col1Y, col2Y, col3Y);
- const fullSectionWidth = cardWidth - (columnPadding * 2);
- 
- // Force fit by calculating exact available space
- const footerStartY = canvas.height - 110;
- const availableHeight = footerStartY - maxY - 30; // 30px margin from footer
- const insightLineHeight = 28; // Reduced line height
- const sectionTitleHeight = 50; // Title + padding
- const maxLines = Math.max(1, Math.floor((availableHeight - sectionTitleHeight) / insightLineHeight));
- 
- // Aggressively fit insights
- let displayInsights = [];
- const maxCharsPerLine = Math.floor((fullSectionWidth - 50) / 7.5); // Conservative char estimate
- 
- for (let i = 0; i < aiInsights.length && displayInsights.length < maxLines; i++) {
-   const insight = aiInsights[i];
-   
-   if (displayInsights.length === maxLines - 1 && i < aiInsights.length - 1) {
-     // Last line - truncate and add count
-     const remaining = aiInsights.length - i;
-     const truncated = insight.substring(0, maxCharsPerLine - 20) + `... (+${remaining} more)`;
-     displayInsights.push(truncated);
-     break;
-   } else {
-     // Regular line - truncate if needed
-     const truncated = insight.length > maxCharsPerLine ? 
-       insight.substring(0, maxCharsPerLine - 3) + '...' : insight;
-     displayInsights.push(truncated);
-   }
- }
- 
- // Always create the section with whatever fits
- createPremiumSection(col1X, maxY, fullSectionWidth, '🤖 AI INSIGHTS', displayInsights, '#6366f1');
-}
+      // AI INSIGHTS Section (Full width if available) - guaranteed to fit
+      if (aiInsights && Array.isArray(aiInsights) && aiInsights.length > 0) {
+        const maxY = Math.max(col1Y, col2Y, col3Y);
+        const fullSectionWidth = cardWidth - (columnPadding * 2);
+        
+        // Calculate exact available space
+        const footerY = canvas.height - 90;
+        const availableHeight = footerY - maxY - 20;
+        const maxLines = Math.max(2, Math.floor((availableHeight - 58) / 28));
+        
+        // Fit insights aggressively
+        let displayInsights = [];
+        const maxCharsPerLine = Math.floor((fullSectionWidth - 40) / 7);
+        
+        for (let i = 0; i < aiInsights.length && displayInsights.length < maxLines; i++) {
+          const insight = aiInsights[i];
+          
+          if (displayInsights.length === maxLines - 1 && i < aiInsights.length - 1) {
+            const remaining = aiInsights.length - i;
+            const truncated = insight.substring(0, maxCharsPerLine - 15) + `... (+${remaining})`;
+            displayInsights.push(truncated);
+            break;
+          } else {
+            const truncated = insight.length > maxCharsPerLine ? 
+              insight.substring(0, maxCharsPerLine - 3) + '...' : insight;
+            displayInsights.push(truncated);
+          }
+        }
+        
+        createPremiumSection(col1X, maxY, fullSectionWidth, '🤖 AI INSIGHTS', displayInsights, '#6366f1');
+      }
 
-      // Footer
-      const footerY = canvas.height - 120;
-      ctx.fillStyle = colors.secondary;
-      ctx.font = 'bold 24px Arial, sans-serif';
+      // Premium footer with gradient background
+      const footerY = canvas.height - 90;
+      const footerHeight = 50;
+      
+      const footerGradient = createGradient(ctx, cardX, footerY, cardX + cardWidth, footerY + footerHeight,
+        [colors.sectionBg, colors.cardBg]);
+      ctx.fillStyle = footerGradient;
+      roundRect(ctx, cardX, footerY, cardWidth, footerHeight, 0);
+      ctx.fill();
+
+      // Footer content with better typography
+      ctx.fillStyle = colors.primary;
+      ctx.font = 'bold 20px "Segoe UI", Arial, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('Generated by DATA🤝HUB', canvas.width / 2, footerY);
+      ctx.fillText('Generated by DATA🤝HUB', canvas.width / 2, footerY + 25);
       
-      ctx.font = '18px Arial, sans-serif';
+      ctx.font = '14px "Segoe UI", Arial, sans-serif';
       ctx.fillStyle = colors.textSecondary;
-      ctx.fillText('Visit Pond0x.com to start your mining journey!', canvas.width / 2, footerY + 35);
+      const currentDate = new Date().toLocaleDateString();
+      ctx.fillText(`Visit pond0x.com today to begin your own mining journey! • Generated on ${currentDate}`, canvas.width / 2, footerY + 45);
 
-      // Decorative corner elements
+      // Premium corner decorations with animated feel
       ctx.strokeStyle = colors.highlight;
-      ctx.lineWidth = 3;
-      const cornerLength = 50;
+      ctx.lineWidth = 4;
+      const cornerLength = 60;
+      const cornerOffset = 50;
       
-      // Top corners
-      ctx.beginPath();
-      ctx.moveTo(80, 80);
-      ctx.lineTo(80 + cornerLength, 80);
-      ctx.moveTo(80, 80);
-      ctx.lineTo(80, 80 + cornerLength);
-      ctx.stroke();
+      // Animate corner lines with gradient effect
+      const cornerGradient = createGradient(ctx, 0, 0, cornerLength, cornerLength, 
+        [colors.highlight, colors.secondary]);
+      ctx.strokeStyle = cornerGradient;
       
-      ctx.beginPath();
-      ctx.moveTo(canvas.width - 80, 80);
-      ctx.lineTo(canvas.width - 80 - cornerLength, 80);
-      ctx.moveTo(canvas.width - 80, 80);
-      ctx.lineTo(canvas.width - 80, 80 + cornerLength);
-      ctx.stroke();
-      
-      // Bottom corners
-      ctx.beginPath();
-      ctx.moveTo(80, canvas.height - 80);
-      ctx.lineTo(80 + cornerLength, canvas.height - 80);
-      ctx.moveTo(80, canvas.height - 80);
-      ctx.lineTo(80, canvas.height - 80 - cornerLength);
-      ctx.stroke();
-      
-      ctx.beginPath();
-      ctx.moveTo(canvas.width - 80, canvas.height - 80);
-      ctx.lineTo(canvas.width - 80 - cornerLength, canvas.height - 80);
-      ctx.moveTo(canvas.width - 80, canvas.height - 80);
-      ctx.lineTo(canvas.width - 80, canvas.height - 80 - cornerLength);
-      ctx.stroke();
+      // Top corners with enhanced design
+      [
+        {x: cornerOffset, y: cornerOffset, dx: 1, dy: 0},
+        {x: cornerOffset, y: cornerOffset, dx: 0, dy: 1},
+        {x: canvas.width - cornerOffset, y: cornerOffset, dx: -1, dy: 0},
+        {x: canvas.width - cornerOffset, y: cornerOffset, dx: 0, dy: 1},
+        {x: cornerOffset, y: canvas.height - cornerOffset, dx: 1, dy: 0},
+        {x: cornerOffset, y: canvas.height - cornerOffset, dx: 0, dy: -1},
+        {x: canvas.width - cornerOffset, y: canvas.height - cornerOffset, dx: -1, dy: 0},
+        {x: canvas.width - cornerOffset, y: canvas.height - cornerOffset, dx: 0, dy: -1}
+      ].forEach(corner => {
+        ctx.beginPath();
+        ctx.moveTo(corner.x, corner.y);
+        ctx.lineTo(corner.x + corner.dx * cornerLength, corner.y + corner.dy * cornerLength);
+        ctx.stroke();
+      });
 
-      // Convert to blob
+      // Convert to blob with high quality
       try {
         canvas.toBlob((blob) => {
           if (blob) {
@@ -3046,7 +3166,7 @@ if (aiInsights && Array.isArray(aiInsights) && aiInsights.length > 0) {
           } else {
             reject(new Error('Failed to create blob from canvas'));
           }
-        }, 'image/png', 0.95);
+        }, 'image/png', 1.0);
       } catch (error) {
         reject(new Error(`Canvas to blob conversion failed: ${error.message}`));
       }
@@ -3058,7 +3178,7 @@ if (aiInsights && Array.isArray(aiInsights) && aiInsights.length > 0) {
   });
 }
 
-// Fixed download function with better error handling
+// Enhanced download function with better UX
 function downloadPassportCard() {
   console.log('Download passport card called');
   
@@ -3076,26 +3196,29 @@ function downloadPassportCard() {
     return;
   }
 
-  // Show loading state
+  // Show enhanced loading state
   button.disabled = true;
-  buttonText.innerHTML = '<span class="spinner"></span>Generating...';
+  button.style.opacity = '0.7';
+  buttonText.innerHTML = '<span class="spinner"></span>Creating premium passport...';
 
-  console.log('Starting passport card generation...');
+  console.log('Starting premium passport card generation...');
 
   // Get current data
   const healthStats = window.currentHealthStats || null;
   const aiInsights = window.currentAIInsights || null;
 
-  // Generate the enhanced card
+  // Generate the premium card
   generatePassportCard(window.currentManifestData, healthStats, aiInsights)
     .then(blob => {
-      console.log('Passport card generated successfully, size:', blob.size);
+      console.log('Premium passport card generated successfully, size:', blob.size);
       
-      // Create download link
+      // Create download link with timestamp
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = 'pond0x-passport.png';
+      
+      const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+      link.download = `pond0x-passport-${timestamp}.png`;
       
       // Add to DOM, click, and remove
       document.body.appendChild(link);
@@ -3105,16 +3228,23 @@ function downloadPassportCard() {
       // Clean up
       URL.revokeObjectURL(url);
       
-      console.log('Download initiated successfully');
+      // Show success feedback
+      buttonText.textContent = '✓ Downloaded!';
+      setTimeout(() => {
+        buttonText.textContent = 'Download Premium Passport';
+      }, 2000);
+      
+      console.log('Premium passport download completed successfully');
     })
     .catch(error => {
-      console.error('Error generating passport card:', error);
-      alert(`Failed to generate passport card: ${error.message}`);
+      console.error('Error generating premium passport card:', error);
+      alert(`Failed to generate premium passport: ${error.message}`);
+      buttonText.textContent = 'Download Premium Passport';
     })
     .finally(() => {
       // Reset button state
       button.disabled = false;
-      buttonText.textContent = 'Download Image';
+      button.style.opacity = '1';
     });
 }
 
