@@ -2880,20 +2880,20 @@ async function generatePassportCard(manifestData, healthStats = null, aiInsights
       ctx.fillStyle = colors.cardBg;
       ctx.fillRect(cardX, cardY + headerHeight - 30, cardWidth, 30);
 
-      // Main title with better typography
+      // Main title with better vertical centering
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 52px "Segoe UI", Arial, sans-serif';
       ctx.textAlign = 'center';
       ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
       ctx.shadowBlur = 4;
       ctx.shadowOffsetY = 2;
-      ctx.fillText('POND🤝X PASSPORT', canvas.width / 2, 110);
+      ctx.fillText('POND0X PASSPORT', canvas.width / 2, cardY + headerHeight / 2 - 10);
       ctx.shadowColor = 'transparent';
 
-      // Subtitle
+      // Subtitle with better positioning
       ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
       ctx.font = '20px "Segoe UI", Arial, sans-serif';
-      ctx.fillText('Mining Status & Performance Report', canvas.width / 2, 140);
+      ctx.fillText('Mining Status & Performance Report', canvas.width / 2, cardY + headerHeight / 2 + 25);
 
       // Get badges and convert to emojis with better spacing
       const badgeMap = {
@@ -2918,8 +2918,8 @@ async function generatePassportCard(manifestData, healthStats = null, aiInsights
       if (manifestData.hasTwitter) badgeEmojis.unshift("𝕏");
       if (manifestData.cope) badgeEmojis.push("🤡");
 
-      // Enhanced badge display with background circles - made more compact
-      const badgeY = 200;
+      // Enhanced badge display with better vertical positioning
+      const badgeY = cardY + headerHeight + 60; // Better positioning relative to header
       const badgeSize = 45;
       const badgeSpacing = 60;
       const startX = (canvas.width - (badgeEmojis.length - 1) * badgeSpacing) / 2;
@@ -2936,14 +2936,18 @@ async function generatePassportCard(manifestData, healthStats = null, aiInsights
         ctx.fill();
         ctx.stroke();
         
-        // Badge emoji
+        // Badge emoji with better vertical centering
         ctx.font = '28px Arial, sans-serif';
         ctx.fillStyle = colors.text;
         ctx.textAlign = 'center';
-        ctx.fillText(emoji, x, badgeY + 6);
+        ctx.textBaseline = 'middle'; // This centers vertically
+        ctx.fillText(emoji, x, badgeY);
       });
 
-      // Enhanced three-column layout - moved up
+      // Reset text baseline for other text
+      ctx.textBaseline = 'alphabetic';
+
+      // Enhanced three-column layout with better vertical centering
       const columnPadding = 40;
       const columnSpacing = 30;
       const columnWidth = (cardWidth - (columnPadding * 2) - (columnSpacing * 2)) / 3;
@@ -2952,9 +2956,19 @@ async function generatePassportCard(manifestData, healthStats = null, aiInsights
       const col2X = col1X + columnWidth + columnSpacing;
       const col3X = col2X + columnWidth + columnSpacing;
       
-      let col1Y = 270;
-      let col2Y = 270;
-      let col3Y = 270;
+      // Calculate better starting Y position to center the content vertically
+      const contentStartY = badgeY + 80; // Start after badges with more space
+      const footerStartY = cardY + cardHeight - 90; // Footer position
+      const availableContentHeight = footerStartY - contentStartY;
+      
+      // Calculate total content height to center it
+      const estimatedSectionHeight = 200; // Approximate height per section
+      const totalContentHeight = estimatedSectionHeight * 3; // Assuming 3 sections max per column
+      const verticalOffset = Math.max(0, (availableContentHeight - totalContentHeight) / 4); // Distribute extra space
+      
+      let col1Y = contentStartY + verticalOffset;
+      let col2Y = contentStartY + verticalOffset;
+      let col3Y = contentStartY + verticalOffset;
 
       // Enhanced section box with premium styling - made more compact
       function createPremiumSection(x, y, width, title, content, iconColor = colors.accent) {
@@ -3111,7 +3125,9 @@ if (aiInsights && Array.isArray(aiInsights) && aiInsights.length > 0) {
 }
 
       // Premium footer with gradient background
-      const footerY = canvas.height - 90;
+      // Premium footer with better positioning
+      const maxContentY = Math.max(col1Y, col2Y, col3Y);
+      const footerY = Math.max(maxContentY + 40, cardY + cardHeight - 90);
       const footerHeight = 50;
       
       const footerGradient = createGradient(ctx, cardX, footerY, cardX + cardWidth, footerY + footerHeight,
