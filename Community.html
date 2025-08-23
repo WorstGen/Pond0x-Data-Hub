@@ -704,46 +704,6 @@
             <span class="link-emoji">𝕏</span>
             <div class="link-content">
               <div class="link-title">X Account</div>
-              <a href="https://x.com/BnSamX" target="_blank" class="link-url">https://x.com/BnSamX</a>
-            </div>
-          </div>
-          <div class="link-item">
-            <span class="link-emoji">🤖</span>
-            <div class="link-content">
-              <div class="link-title">Rig Health Bot</div>
-              <a href="https://t.me/RigHealthMainBot" target="_blank" class="link-url">https://t.me/RigHealthMainBot</a>
-            </div>
-          </div>
-          <div class="link-item">
-            <span class="link-emoji">🤖</span>
-            <div class="link-content">
-              <div class="link-title">Meme Bot on X</div>
-              <a href="https://x.com/ShowMeThatPink" target="_blank" class="link-url">https://x.com/ShowMeThatPink</a>
-            </div>
-          </div>
-          <div class="link-item">
-            <span class="link-emoji">🤝</span>
-            <div class="link-content">
-              <div class="link-title">Referral Link</div>
-              <a href="https://www.pond0x.com/swap/solana?ref=KLJ5LHQsSkC3EKqNiVrphETFrjKcRxHZq2RwEkD3bJnDPv1psVU799R6sNQf" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=KLJ5LHQsSkC3EKqNiVrphETFrjKcRxHZq2RwEkD3bJnDPv1psVU799R6sNQf</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- BrewLee -->
-      <div class="contributor-card">
-        <div class="contributor-header">
-          <div>
-            <h3 class="contributor-name">BrewLee</h3>
-            <p class="contributor-description">Videos and music content</p>
-          </div>
-        </div>
-        <div class="contributor-links">
-          <div class="link-item">
-            <span class="link-emoji">𝕏</span>
-            <div class="link-content">
-              <div class="link-title">X Account</div>
               <a href="https://x.com/TapuBulu0x" target="_blank" class="link-url">https://x.com/TapuBulu0x</a>
             </div>
           </div>
@@ -1316,7 +1276,7 @@
       </div>
 
       <!-- Mogie -->
-      <div class="contributor-card">
+      <div class="contributor-card special-contributor">
         <div class="contributor-header">
           <div>
             <h3 class="contributor-name">Mogie</h3>
@@ -1331,7 +1291,6 @@
               <a href="https://x.com/@mogie__" target="_blank" class="link-url">https://x.com/@mogie__</a>
             </div>
           </div>
-        <div class="contributor-links">
           <div class="link-item">
             <span class="link-emoji">📊</span>
             <div class="link-content">
@@ -1671,90 +1630,6 @@
         try {
           return localStorage.getItem(this.storageKey);
         } catch (e) {
-          console.warn('Could not load theme preference:', e);
-          return null;
-        }
-      },
-      
-      saveTheme(theme) {
-        try {
-          localStorage.setItem(this.storageKey, theme);
-        } catch (e) {
-          console.warn('Could not save theme preference:', e);
-        }
-      },
-
-      getCurrentTheme() {
-        return document.documentElement.getAttribute('data-theme') || 'light';
-      },
-      
-      setTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        const button = document.getElementById('themeToggle');
-        if (button) {
-          button.textContent = theme === 'dark' ? '🌙' : '☀️';
-          button.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
-        }
-        this.saveTheme(theme);
-      },
-      
-      toggle() {
-        const currentTheme = this.getCurrentTheme();
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        this.setTheme(newTheme);
-      }
-    };
-
-    function toggleTheme() {
-      themeManager.toggle();
-    }
-
-    function toggleMobileNav() {
-      const mobileNav = document.getElementById('mobileNav');
-      const toggleIcon = document.getElementById('nav-toggle-icon');
-      
-      if (mobileNav.classList.contains('active')) {
-        mobileNav.classList.remove('active');
-        toggleIcon.textContent = '☰';
-      } else {
-        mobileNav.classList.add('active');
-        toggleIcon.textContent = '✕';
-      }
-    }
-
-    function toggleBubbles() {
-      const container = document.getElementById('bubbleContainer');
-      const button = document.getElementById('cookButton');
-      const body = document.body;
-      
-      if (bubbleSystem.animationRunning) {
-        bubbleSystem.stop();
-        container.classList.add('hidden');
-        body.classList.add('glass-off');
-        button.classList.add('bubbles-off');
-        button.innerHTML = '👨‍🍳 Cook';
-        bubbleStateManager.saveState(false);
-      } else {
-        bubbleSystem.start();
-        container.classList.remove('hidden');
-        body.classList.remove('glass-off');
-        button.classList.remove('bubbles-off');
-        button.innerHTML = '👨‍🍳 Cook';
-        bubbleStateManager.saveState(true);
-      }
-    }
-
-    // Bubble state management
-    const bubbleStateManager = {
-      storageKey: 'pond0x_bubble_state',
-      
-      saveState(isEnabled) {
-        try {
-          localStorage.setItem(this.storageKey, JSON.stringify({
-            enabled: isEnabled,
-            timestamp: Date.now()
-          }));
-        } catch (e) {
           console.warn('Could not save bubble state:', e);
         }
       },
@@ -1926,4 +1801,128 @@
     });
   </script>
 </body>
-</html>
+</html>) {
+          console.warn('Could not load theme preference:', e);
+          return null;
+        }
+      },
+      
+      saveTheme(theme) {
+        try {
+          localStorage.setItem(this.storageKey, theme);
+        } catch (e) {
+          console.warn('Could not save theme preference:', e);
+        }
+      },
+
+      getCurrentTheme() {
+        return document.documentElement.getAttribute('data-theme') || 'light';
+      },
+      
+      setTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        const button = document.getElementById('themeToggle');
+        if (button) {
+          button.textContent = theme === 'dark' ? '🌙' : '☀️';
+          button.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+        }
+        this.saveTheme(theme);
+      },
+      
+      toggle() {
+        const currentTheme = this.getCurrentTheme();
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        this.setTheme(newTheme);
+      }
+    };
+
+    function toggleTheme() {
+      themeManager.toggle();
+    }
+
+    function toggleMobileNav() {
+      const mobileNav = document.getElementById('mobileNav');
+      const toggleIcon = document.getElementById('nav-toggle-icon');
+      
+      if (mobileNav.classList.contains('active')) {
+        mobileNav.classList.remove('active');
+        toggleIcon.textContent = '☰';
+      } else {
+        mobileNav.classList.add('active');
+        toggleIcon.textContent = '✕';
+      }
+    }
+
+    function toggleBubbles() {
+      const container = document.getElementById('bubbleContainer');
+      const button = document.getElementById('cookButton');
+      const body = document.body;
+      
+      if (bubbleSystem.animationRunning) {
+        bubbleSystem.stop();
+        container.classList.add('hidden');
+        body.classList.add('glass-off');
+        button.classList.add('bubbles-off');
+        button.innerHTML = '👨‍🍳 Cook';
+        bubbleStateManager.saveState(false);
+      } else {
+        bubbleSystem.start();
+        container.classList.remove('hidden');
+        body.classList.remove('glass-off');
+        button.classList.remove('bubbles-off');
+        button.innerHTML = '👨‍🍳 Cook';
+        bubbleStateManager.saveState(true);
+      }
+    }
+
+    // Bubble state management
+    const bubbleStateManager = {
+      storageKey: 'pond0x_bubble_state',
+      
+      saveState(isEnabled) {
+        try {
+          localStorage.setItem(this.storageKey, JSON.stringify({
+            enabled: isEnabled,
+            timestamp: Date.now()
+          }));
+        } catch (e)link-title">X Account</div>
+              <a href="https://x.com/BnSamX" target="_blank" class="link-url">https://x.com/BnSamX</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤖</span>
+            <div class="link-content">
+              <div class="link-title">Rig Health Bot</div>
+              <a href="https://t.me/RigHealthMainBot" target="_blank" class="link-url">https://t.me/RigHealthMainBot</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤖</span>
+            <div class="link-content">
+              <div class="link-title">Meme Bot on X</div>
+              <a href="https://x.com/ShowMeThatPink" target="_blank" class="link-url">https://x.com/ShowMeThatPink</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=KLJ5LHQsSkC3EKqNiVrphETFrjKcRxHZq2RwEkD3bJnDPv1psVU799R6sNQf" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=KLJ5LHQsSkC3EKqNiVrphETFrjKcRxHZq2RwEkD3bJnDPv1psVU799R6sNQf</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BrewLee -->
+      <div class="contributor-card">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">BrewLee</h3>
+            <p class="contributor-description">Videos and music content</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="
