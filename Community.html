@@ -1318,10 +1318,11 @@
 
     /* Member container styles for People Like section */
     .member-container {
-      display: inline-block;
-      margin: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       text-align: center;
-      vertical-align: top;
+      flex-shrink: 0;
     }
 
     .member-avatar {
@@ -2018,6 +2019,7 @@
         const avatar = document.createElement('img');
         avatar.className = 'member-avatar';
         avatar.alt = `@${username}`;
+        avatar.style.display = 'none'; // Initially hidden
 
         // Avatar sources to try in order
         const avatarSources = [
@@ -2045,7 +2047,13 @@
         };
 
         avatar.onerror = function() {
-          tryNextAvatar();
+          if (currentSourceIndex < avatarSources.length) {
+            tryNextAvatar();
+          } else {
+            // All avatar sources failed, hide the loading div and keep avatar hidden
+            loadingDiv.style.display = 'none';
+            avatar.style.display = 'none';
+          }
         };
 
         // Create member name link
