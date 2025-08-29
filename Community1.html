@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>DATA🤝HUB</title>
   <!-- Open Graph (Facebook, LinkedIn, etc.) -->
-  <meta property="og:title" content="DATA🤝HUB - Community">
+  <meta property="og:title" content="DATA🤝HUB">
   <meta property="og:description" content="Meet the amazing POND🤝X community members">
   <meta property="og:image" content="https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/refs/heads/main/hubcard.png">
   <meta property="og:url" content="https://worstgen.github.io/Pond0x-Data-Hub/Community-new.html"> <meta property="og:type" content="website">
   <!-- Twitter Cards -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="DATA🤝HUB - Community">
+  <meta name="twitter:title" content="DATA🤝HUB">
   <meta name="twitter:description" content="Meet the amazing POND🤝X community members">
   <meta name="twitter:image" content="https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/refs/heads/main/hubcard.png">
   <style>
@@ -229,226 +229,258 @@
         inset -2px -2px 8px rgba(0, 0, 0, 0.1);
     }
 
-    /* Header/Navbar Styles */
+    .container {
+      max-width: 1125px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
     .header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .header h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 20px var(--shadow-primary);
+      color: var(--text-primary);
+    }
+
+    .header img {
+      max-width: 50%;
+      height: auto;
+      transition: all 0.3s ease;
+      margin-top: 1.2em;
+    }
+
+    [data-theme="dark"] .header img {
+      filter: brightness(1.1) contrast(1.1) drop-shadow(0 0 20px rgba(189, 124, 253, 0.3));
+    }
+
+    /* Modern Navbar */
+    .navbar {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
-      background: linear-gradient(135deg, var(--topbar-bg) 0%, var(--secondary-accent) 100%);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      height: 70px;
+      background: var(--navbar-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       z-index: 1000;
-      padding: 0;
-      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     }
 
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 20px;
+    [data-theme="dark"] .navbar {
+      background: rgba(26, 26, 46, 0.95);
+      border-bottom: 1px solid rgba(189, 124, 253, 0.2);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .nav-container {
       max-width: 1200px;
       margin: 0 auto;
-    }
-
-    .logo {
+      height: 100%;
       display: flex;
       align-items: center;
-      gap: 15px;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+    }
+
+    .nav-brand {
+      font-size: 1rem;
+      font-weight: 800;
+      color: white;
       text-decoration: none;
-    }
-
-    .logo img {
-      height: 50px;
-      width: auto;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      transition: transform 0.3s ease;
-    }
-
-    .logo img:hover {
-      transform: scale(1.05);
-    }
-
-    .logo h1 {
-      color: var(--topbar-text);
-      font-size: 1.8rem;
-      font-weight: 700;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
     }
 
     .nav-links {
       display: flex;
-      gap: 20px;
       align-items: center;
+      gap: 0.5rem;
+      list-style: none;
     }
 
     .nav-links a {
-      color: var(--topbar-text);
+      color: var(--nav-text);
       text-decoration: none;
-      padding: 8px 16px;
-      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.65rem;
+      border-radius: 12px;
       transition: all 0.3s ease;
-      font-weight: 500;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .nav-links a::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: left 0.5s;
-    }
-
-    .nav-links a:hover::before {
-      left: 100%;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
     }
 
     .nav-links a:hover {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.15);
       transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      color: white;
     }
 
-    /* Mobile navigation */
+    /* Mobile nav toggle */
     .nav-toggle {
       display: none;
       background: none;
       border: none;
-      color: var(--topbar-text);
+      color: white;
       font-size: 1.5rem;
       cursor: pointer;
-      padding: 10px;
-      border-radius: 5px;
-      transition: background 0.3s ease;
-    }
-
-    .nav-toggle:hover {
-      background: rgba(255, 255, 255, 0.1);
     }
 
     .nav-mobile {
-      display: none;
-      position: absolute;
-      top: 100%;
+      position: fixed;
+      top: 70px;
       left: 0;
       right: 0;
-      background: var(--topbar-bg);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 20px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      background: var(--navbar-bg);
+      backdrop-filter: blur(20px);
+      transform: translateY(-100%);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s ease;
+      z-index: 999;
     }
 
     .nav-mobile.active {
-      display: block;
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
     }
 
     .nav-mobile-links {
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      padding: 2rem 1.5rem;
+      gap: 0.5rem;
     }
 
     .nav-mobile-links a {
-      color: var(--topbar-text);
+      color: var(--nav-text);
       text-decoration: none;
-      padding: 12px 20px;
-      border-radius: 10px;
+      font-weight: 600;
+      padding: 1rem;
+      border-radius: 12px;
       transition: all 0.3s ease;
-      font-weight: 500;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+      text-transform: uppercase;
     }
 
     .nav-mobile-links a:hover {
-      background: rgba(255, 255, 255, 0.1);
-      transform: translateX(5px);
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
     }
 
-    /* Main content container */
-    .container {
-      max-width: 1200px;
+    /* Community content */
+    .intro-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 2rem;
+      border: 2px solid var(--card-border);
+      box-shadow: 0 12px 40px var(--shadow-primary);
+      margin-bottom: 2rem;
+      transition: all 0.3s ease;
+    }
+
+    .intro-card h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .intro-card p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: var(--text-primary);
+      text-align: center;
+      max-width: 900px;
       margin: 0 auto;
-      padding: 20px;
-      position: relative;
-      z-index: 1;
     }
 
-    /* Contributor card styles */
+    .contributors-grid {
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    }
+
     .contributor-card {
       background: var(--card-bg);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--card-border);
+      backdrop-filter: blur(15px);
       border-radius: 15px;
-      padding: 20px;
-      margin-bottom: 20px;
+      padding: 1.5rem;
+      border: 2px solid var(--card-border);
+      box-shadow: 0 8px 30px var(--shadow-primary);
       transition: all 0.3s ease;
-      box-shadow: 0 4px 20px var(--shadow-primary);
+      position: relative;
     }
 
     .contributor-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 8px 30px var(--shadow-accent);
-      border-color: var(--accent-color);
-    }
-
-    .contributor-card.special-contributor {
-      background: linear-gradient(135deg, var(--card-bg) 0%, rgba(255, 61, 240, 0.1) 100%);
-      border: 2px solid var(--accent-color);
-      box-shadow: 0 6px 25px var(--shadow-accent);
+      box-shadow: 0 12px 40px var(--shadow-primary);
     }
 
     .contributor-header {
       display: flex;
       align-items: center;
-      margin-bottom: 15px;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--card-border);
     }
 
     .contributor-name {
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       font-weight: 700;
       color: var(--text-primary);
       margin: 0;
     }
 
     .contributor-description {
+      font-size: 0.9rem;
       color: var(--text-secondary);
-      margin: 0;
-      font-size: 0.95rem;
+      opacity: 0.8;
+      margin-top: 0.25rem;
+      font-style: italic;
     }
 
     .contributor-links {
-      display: grid;
-      gap: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
     }
 
     .link-item {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 12px;
+      gap: 0.75rem;
+      padding: 0.75rem;
       background: var(--link-item-bg);
-      border-radius: 10px;
+      border-radius: 8px;
       transition: all 0.3s ease;
       border: 1px solid transparent;
     }
 
     .link-item:hover {
-      background: var(--primary-color);
-      color: white;
-      transform: translateX(5px);
+      background: rgba(255, 61, 240, 0.1);
       border-color: var(--accent-color);
+      transform: translateX(5px);
     }
 
     .link-emoji {
-      font-size: 1.2rem;
-      min-width: 25px;
+      font-size: 1.1rem;
+      min-width: 24px;
+      text-align: center;
     }
 
     .link-content {
@@ -457,19 +489,122 @@
 
     .link-title {
       font-weight: 600;
-      font-size: 0.9rem;
-      margin-bottom: 2px;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+      font-size: 0.95rem;
     }
 
     .link-url {
-      color: var(--primary-color);
+      color: var(--accent-color);
       text-decoration: none;
       font-size: 0.85rem;
+      transition: all 0.3s ease;
       word-break: break-all;
     }
 
-    .link-item:hover .link-url {
-      color: white;
+    .link-url:hover {
+      color: var(--text-primary);
+      text-shadow: 0 0 10px var(--shadow-accent);
+    }
+
+    .special-contributor {
+      border-color: var(--accent-color);
+      box-shadow: 0 8px 30px var(--shadow-accent);
+    }
+
+    .special-contributor:hover {
+      box-shadow: 0 12px 40px var(--shadow-accent);
+    }
+
+    .footer {
+      margin-top: 3rem;
+      padding: 2rem 0;
+      text-align: center;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .footer p {
+      margin-bottom: 0.5rem;
+    }
+
+    .footer a {
+      color: var(--accent-color);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .footer a:hover {
+      text-shadow: 0 0 10px var(--shadow-accent);
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 1095px) {
+      .nav-toggle {
+        display: block;
+      }
+
+      .nav-links {
+        display: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2.2rem;
+      }
+
+      .intro-card {
+        padding: 1.5rem;
+      }
+
+      .intro-card h2 {
+        font-size: 1.6rem;
+      }
+
+      .intro-card p {
+        font-size: 1rem;
+      }
+
+      .contributor-card {
+        padding: 1rem;
+      }
+
+      .contributor-name {
+        font-size: 1.1rem;
+      }
+
+      .link-item {
+        padding: 0.5rem;
+        gap: 0.5rem;
+      }
+
+      .link-title {
+        font-size: 0.9rem;
+      }
+
+      .link-url {
+        font-size: 0.8rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .contributors-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header h1 {
+        font-size: 1.8rem;
+      }
+
+      .intro-card h2 {
+        font-size: 1.4rem;
+      }
+
+      .contributor-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
     }
 
     /* Pagination styles */
@@ -749,51 +884,53 @@
   <!-- Bubble container for animations -->
   <div id="bubbleContainer" class="bubble-container"></div>
 
-  <!-- Header/Navbar -->
-  <header class="header">
-    <nav class="navbar">
-      <a href="index-5.html" class="logo">
-        <img src="pond0xdatahub-2.png" alt="DATA🤝HUB Logo">
-        <h1>DATA🤝HUB</h1>
+  <!-- Modern Responsive Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="https://worstgen.github.io/Pond0x-Data-Hub/" class="nav-brand">
+        DATA🤝HUB
       </a>
 
       <div class="nav-links">
-        <a href="index-5.html">Dashboard</a>
-        <a href="Calculator.html">Calculator</a>
-        <a href="MiningClaims.html">Mining Claims</a>
-        <a href="HashBoosts.html">Hash Boosts</a>
-        <a href="RigActivations.html">Rig Activations</a>
-        <a href="wPONDReceived.html">wPOND Received</a>
-        <a href="genLinks.html">Referral Links</a>
-        <a href="Community-new.html" class="active">Community</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/">PASSPORT</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/MiningClaims.html">MINING CLAIMS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/HashBoosts.html">HASH BOOSTS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/wPONDReceived.html">wPOND RECEIVED</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigActivations.html">RIG ACTIVATIONS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/Calculator.html">CALCULATOR</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/genLinks">GENERATE LINKS</a>
       </div>
 
-      <button class="nav-toggle" id="nav-toggle" onclick="toggleMobileNav()">☰</button>
-    </nav>
+      <button class="nav-toggle" onclick="toggleMobileNav()">
+        <span id="nav-toggle-icon">☰</span>
+      </button>
+    </div>
 
     <div class="nav-mobile" id="mobileNav">
       <div class="nav-mobile-links">
-        <a href="index-5.html" onclick="toggleMobileNav()">Dashboard</a>
-        <a href="Calculator.html" onclick="toggleMobileNav()">Calculator</a>
-        <a href="MiningClaims.html" onclick="toggleMobileNav()">Mining Claims</a>
-        <a href="HashBoosts.html" onclick="toggleMobileNav()">Hash Boosts</a>
-        <a href="RigActivations.html" onclick="toggleMobileNav()">Rig Activations</a>
-        <a href="wPONDReceived.html" onclick="toggleMobileNav()">wPOND Received</a>
-        <a href="genLinks.html" onclick="toggleMobileNav()">Referral Links</a>
-        <a href="Community-new.html" onclick="toggleMobileNav()" class="active">Community</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/">PASSPORT</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/MiningClaims.html">MINING CLAIMS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/HashBoosts.html">HASH BOOSTS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/wPONDReceived.html">wPOND RECEIVED</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigActivations.html">RIG ACTIVATIONS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/Calculator.html">CALCULATOR</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/genLinks">GENERATE LINKS</a>
       </div>
     </div>
-  </header>
+  </nav>
 
   <!-- Theme toggle button -->
   <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">☀️</button>
 
-  <!-- Main content -->
   <div class="container">
-    <h1 style="text-align: center; margin-bottom: 10px; color: var(--text-primary);">🤝 Community</h1>
-    <p style="text-align: center; margin-bottom: 30px; color: var(--text-secondary); font-size: 1.1rem;">
-      Meet the amazing contributors building the POND🤝X ecosystem
-    </p>
+    <div class="header">
+      <img src="https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/refs/heads/main/pond0xdatahub.png" alt="Data Hub Logo">
+    </div>
+
+    <div class="intro-card">
+      <h2>Community Contributions</h2>
+      <p>Welcome to the heart of POND🤝X's vibrant community! The Community Contributions channel celebrates the creativity and ingenuity of our fellow members, showcasing an inspiring array of tools, data, dashboards, merch sites, meme libraries, and even original songs crafted for the POND🤝X ecosystem. Dive in to explore the incredible work of these community heroes, complete with links to their X profiles and their unique contributions. Join us in celebrating collaboration, innovation, and the spirit of POND🤝X! 🐸✨</p>
+    </div>
 
     <!-- Search functionality -->
     <div class="search-container">
@@ -801,7 +938,7 @@
     </div>
 
     <!-- Contributors container -->
-    <div id="contributorsContainer">
+    <div class="contributors-grid" id="contributorsContainer">
       <div class="loading">Loading community members...</div>
     </div>
 
@@ -814,7 +951,7 @@
 
     <!-- PEOPLE LIKE SECTION - START -->
     <div class="people-like-section">
-      <p><b>Built for <a href="https://worstgen.github.io/Pond0x-Data-Hub/Community-new.html" style="color: #FF13F0 !important;">the POND🤝X community</a> ❤️</b></p>
+      <p><b>Built for <a href="https://cary0x.github.io/community/" target="_blank">the POND🤝X community</a> ❤️</b></p>
       <p class="people-like-subtitle"><b>People like</b></p>
       <div id="plw-content">Loading...</div>
     </div>
@@ -836,6 +973,8 @@
 
   <!-- Load community data script -->
   <script src="community-data.js"></script>
+
+
 
   <script>
     // Global variables
