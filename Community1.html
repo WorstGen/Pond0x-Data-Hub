@@ -868,7 +868,7 @@
       box-shadow: 0 8px 30px var(--shadow-primary);
       transition: all 0.3s ease;
       position: relative;
-      height: 340px;
+      height: 320px;
       display: flex;
       flex-direction: column;
       box-sizing: border-box;
@@ -915,7 +915,7 @@
     }
 
     .links-content {
-      flex: 1;
+      height: 140px;
       position: relative;
       overflow: hidden;
       display: flex;
@@ -931,7 +931,7 @@
       width: 100%;
     }
 
-    .primary-links, .additional-links {
+    .slide-links {
       display: none;
       flex-direction: column;
       gap: 0.5rem;
@@ -941,7 +941,7 @@
       box-sizing: border-box;
     }
 
-    .primary-links.active, .additional-links.active {
+    .slide-links.active {
       display: flex;
       opacity: 1;
     }
@@ -1385,7 +1385,7 @@
 
       .contributor-card {
         padding: 15px;
-        height: 320px;
+        height: 300px;
         box-sizing: border-box;
         overflow: hidden;
       }
@@ -1654,7 +1654,7 @@
       const card = document.createElement('div');
       card.className = 'contributor-card special-contributor';
 
-      // Find X profile and referral link
+      // Find X profile and referral link for priority placement
       const xLink = contributor.links.find(link => 
         link.emoji === '𝕏' || link.title.toLowerCase().includes('x account')
       );
@@ -1662,13 +1662,22 @@
         link.title.toLowerCase().includes('referral')
       );
 
-      // Create primary links (X + Referral)
-      const primaryLinks = [xLink, referralLink].filter(Boolean);
+      // Create ordered links with X and referral prioritized
+      let orderedLinks = [];
+      if (xLink) orderedLinks.push(xLink);
+      if (referralLink) orderedLinks.push(referralLink);
       
-      // Get additional links (everything except X and referral)
-      const additionalLinks = contributor.links.filter(link => 
+      // Add remaining links
+      const remainingLinks = contributor.links.filter(link => 
         link !== xLink && link !== referralLink
       );
+      orderedLinks = orderedLinks.concat(remainingLinks);
+
+      // Split links into slides of 2 links each
+      const slides = [];
+      for (let i = 0; i < orderedLinks.length; i += 2) {
+        slides.push(orderedLinks.slice(i, i + 2));
+      }
 
       const createLinkHtml = (link) => `
         <div class="link-item">
@@ -1680,11 +1689,15 @@
         </div>
       `;
 
-      const primaryLinksHtml = primaryLinks.map(createLinkHtml).join('');
-      const additionalLinksHtml = additionalLinks.map(createLinkHtml).join('');
+      const createSlideHtml = (slideLinks, index) => `
+        <div class="slide-links ${index === 0 ? 'active' : ''}" data-slide="${index}">
+          ${slideLinks.map(createLinkHtml).join('')}
+        </div>
+      `;
 
-      const hasAdditionalLinks = additionalLinks.length > 0;
-      const totalSlides = hasAdditionalLinks ? 2 : 1;
+      const slidesHtml = slides.map(createSlideHtml).join('');
+      const totalSlides = slides.length;
+      const hasMultipleSlides = totalSlides > 1;
 
       card.innerHTML = `
         <div class="contributor-header">
@@ -1695,18 +1708,11 @@
         </div>
         <div class="contributor-links">
           <div class="links-content">
-            <div class="links-slider" data-current-slide="0">
-              <div class="primary-links active">
-                ${primaryLinksHtml}
-              </div>
-              ${hasAdditionalLinks ? `
-                <div class="additional-links">
-                  ${additionalLinksHtml}
-                </div>
-              ` : ''}
+            <div class="links-slider" data-current-slide="0" data-total-slides="${totalSlides}">
+              ${slidesHtml}
             </div>
           </div>
-          ${hasAdditionalLinks ? `
+          ${hasMultipleSlides ? `
             <div class="slide-controls">
               <button class="slide-btn prev-btn" onclick="slideLinks(this, -1)" disabled>‹</button>
               <span class="slide-indicator">1/${totalSlides}</span>
@@ -1725,29 +1731,27 @@
     function slideLinks(button, direction) {
       const card = button.closest('.contributor-card');
       const slider = card.querySelector('.links-slider');
-      const primaryLinks = card.querySelector('.primary-links');
-      const additionalLinks = card.querySelector('.additional-links');
+      const allSlides = card.querySelectorAll('.slide-links');
       const indicator = card.querySelector('.slide-indicator');
       const prevBtn = card.querySelector('.prev-btn');
       const nextBtn = card.querySelector('.next-btn');
 
-      if (!additionalLinks) return; // No additional links to slide to
+      if (allSlides.length <= 1) return; // No slides to navigate
 
       let currentSlide = parseInt(slider.getAttribute('data-current-slide'));
-      const totalSlides = 2;
+      const totalSlides = parseInt(slider.getAttribute('data-total-slides'));
 
       // Calculate new slide
       currentSlide += direction;
       if (currentSlide < 0) currentSlide = 0;
       if (currentSlide >= totalSlides) currentSlide = totalSlides - 1;
 
-      // Update display with CSS classes
-      if (currentSlide === 0) {
-        primaryLinks.classList.add('active');
-        if (additionalLinks) additionalLinks.classList.remove('active');
-      } else {
-        primaryLinks.classList.remove('active');
-        if (additionalLinks) additionalLinks.classList.add('active');
+      // Update display - hide all slides first
+      allSlides.forEach(slide => slide.classList.remove('active'));
+      
+      // Show current slide
+      if (allSlides[currentSlide]) {
+        allSlides[currentSlide].classList.add('active');
       }
 
       // Update controls
