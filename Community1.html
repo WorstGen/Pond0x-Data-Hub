@@ -16,29 +16,6 @@
   <meta name="twitter:image" content="https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/refs/heads/main/hubcard.png">
 
   <!-- Load community data script in head -->
-  <script>
-    // Inline community data as fallback
-    if (typeof communityData === 'undefined') {
-      console.log('Using inline community data fallback');
-      var communityData = [
-        {
-          "name": "WorstGen",
-          "description": "Data hub, claims bot and analytics aka THIS VERY SITE",
-          "links": [
-            {"emoji": "𝕏", "title": "X Account", "url": "https://x.com/WorstGen0x"},
-            {"emoji": "📊", "title": "Data Hub", "url": "https://worstgen.github.io/Pond0x-Data-Hub"}
-          ]
-        },
-        {
-          "name": "Test Contributor",
-          "description": "Test contributor for loading verification",
-          "links": [
-            {"emoji": "🤝", "title": "Referral Link", "url": "https://pond0x.com"}
-          ]
-        }
-      ];
-    }
-  </script>
   <script src="community-data.js?v=1"></script>
 
   <style>
@@ -54,6 +31,8 @@
       --primary-color: #9b5de5;
       --accent-color: #ff3df0;
       --secondary-accent: #bd7cfd;
+      --navbar-bg: #FF13F0;
+      --nav-text: #f6edff;
       --topbar-bg: #FF13F0;
       --topbar-text: #ffffff;
       --card-bg: rgba(255, 255, 255, 0.05);
@@ -1519,13 +1498,21 @@
       bubbleSystem.init();
 
       // Load community contributors
-      if (typeof communityData !== 'undefined') {
+      console.log('Checking communityData:', typeof communityData, communityData);
+
+      if (typeof communityData !== 'undefined' && Array.isArray(communityData) && communityData.length > 0) {
         console.log('Community data loaded successfully:', communityData.length, 'contributors');
+        console.log('First contributor:', communityData[0]);
+        console.log('Last contributor:', communityData[communityData.length - 1]);
         allContributors = communityData;
         filteredContributors = [...allContributors];
         displayContributors(filteredContributors, currentPage);
       } else {
-        console.error('Community data not loaded');
+        console.error('Community data not loaded or invalid:', {
+          type: typeof communityData,
+          isArray: Array.isArray(communityData),
+          length: communityData ? communityData.length : 'undefined'
+        });
         document.getElementById('contributorsContainer').innerHTML = '<div class="loading">Error loading community data. Please refresh the page.</div>';
       }
 
