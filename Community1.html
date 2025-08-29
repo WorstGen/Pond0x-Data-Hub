@@ -907,57 +907,35 @@
       position: relative;
       display: flex;
       flex-direction: column;
+      min-height: 0; /* Allow flexbox to shrink */
     }
 
     .links-content {
       flex: 1;
       position: relative;
-      height: 160px; /* Fixed height for content */
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
     }
 
     .links-slider {
+      flex: 1;
       position: relative;
-      height: 100%;
+      width: 100%;
     }
 
     .primary-links, .additional-links {
-      display: flex;
+      display: none;
       flex-direction: column;
-      gap: 0.6rem;
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 100%;
+      gap: 0.75rem;
       opacity: 0;
-      transform: translateX(100%);
       transition: all 0.3s ease;
-      overflow-y: auto;
-      padding-right: 5px; /* Space for scrollbar if needed */
     }
 
     .primary-links.active, .additional-links.active {
+      display: flex;
       opacity: 1;
-      transform: translateX(0);
-    }
-
-    /* Hide scrollbars while keeping functionality */
-    .primary-links::-webkit-scrollbar,
-    .additional-links::-webkit-scrollbar {
-      width: 2px;
-    }
-
-    .primary-links::-webkit-scrollbar-track,
-    .additional-links::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .primary-links::-webkit-scrollbar-thumb,
-    .additional-links::-webkit-scrollbar-thumb {
-      background: var(--accent-color);
-      border-radius: 2px;
-      opacity: 0.3;
     }
 
     .slide-controls {
@@ -1013,15 +991,12 @@
     .link-item {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
-      padding: 0.6rem;
+      gap: 0.75rem;
+      padding: 0.75rem;
       background: var(--link-item-bg);
       border-radius: 8px;
       transition: all 0.3s ease;
       border: 1px solid transparent;
-      flex-shrink: 0;
-      min-height: 60px;
-      max-height: 70px;
     }
 
     .link-item:hover {
@@ -1043,21 +1018,16 @@
     .link-title {
       font-weight: 600;
       color: var(--text-primary);
-      margin-bottom: 0.2rem;
-      font-size: 0.9rem;
-      line-height: 1.2;
+      margin-bottom: 0.25rem;
+      font-size: 0.95rem;
     }
 
     .link-url {
       color: var(--accent-color);
       text-decoration: none;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       transition: all 0.3s ease;
       word-break: break-all;
-      line-height: 1.1;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
     }
 
     .link-url:hover {
@@ -1746,10 +1716,10 @@
       // Update display with CSS classes
       if (currentSlide === 0) {
         primaryLinks.classList.add('active');
-        additionalLinks.classList.remove('active');
+        if (additionalLinks) additionalLinks.classList.remove('active');
       } else {
         primaryLinks.classList.remove('active');
-        additionalLinks.classList.add('active');
+        if (additionalLinks) additionalLinks.classList.add('active');
       }
 
       // Update controls
