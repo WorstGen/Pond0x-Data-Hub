@@ -868,6 +868,9 @@
       box-shadow: 0 8px 30px var(--shadow-primary);
       transition: all 0.3s ease;
       position: relative;
+      height: 280px;
+      display: flex;
+      flex-direction: column;
     }
 
     .contributor-card:hover {
@@ -900,9 +903,71 @@
     }
 
     .contributor-links {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .links-slider {
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
+      transition: transform 0.3s ease;
+    }
+
+    .primary-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .additional-links {
+      display: none;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .slide-controls {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      align-items: center;
+    }
+
+    .slide-btn {
+      background: var(--accent-color);
+      color: white;
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      transition: all 0.3s ease;
+      opacity: 0.7;
+    }
+
+    .slide-btn:hover {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+
+    .slide-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .slide-indicator {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      opacity: 0.6;
+      min-width: 40px;
+      text-align: center;
     }
 
     .link-item {
@@ -1276,6 +1341,7 @@
 
       .contributor-card {
         padding: 15px;
+        height: 260px;
       }
 
       .contributor-name {
@@ -1542,15 +1608,37 @@
       const card = document.createElement('div');
       card.className = 'contributor-card special-contributor';
 
-      const linksHtml = contributor.links.map(link =>
-        `<div class="link-item">
+      // Find X profile and referral link
+      const xLink = contributor.links.find(link => 
+        link.emoji === '𝕏' || link.title.toLowerCase().includes('x account')
+      );
+      const referralLink = contributor.links.find(link => 
+        link.title.toLowerCase().includes('referral')
+      );
+
+      // Create primary links (X + Referral)
+      const primaryLinks = [xLink, referralLink].filter(Boolean);
+      
+      // Get additional links (everything except X and referral)
+      const additionalLinks = contributor.links.filter(link => 
+        link !== xLink && link !== referralLink
+      );
+
+      const createLinkHtml = (link) => `
+        <div class="link-item">
           <span class="link-emoji">${link.emoji}</span>
           <div class="link-content">
             <div class="link-title">${link.title}</div>
             <a href="${link.url}" target="_blank" class="link-url">${link.url}</a>
           </div>
-        </div>`
-      ).join('');
+        </div>
+      `;
+
+      const primaryLinksHtml = primaryLinks.map(createLinkHtml).join('');
+      const additionalLinksHtml = additionalLinks.map(createLinkHtml).join('');
+
+      const hasAdditionalLinks = additionalLinks.length > 0;
+      const totalSlides = hasAdditionalLinks ? 2 : 1;
 
       card.innerHTML = `
         <div class="contributor-header">
@@ -1560,11 +1648,62 @@
           </div>
         </div>
         <div class="contributor-links">
-          ${linksHtml}
+          <div class="links-slider" data-current-slide="0">
+            <div class="primary-links">
+              ${primaryLinksHtml}
+            </div>
+            ${hasAdditionalLinks ? `
+              <div class="additional-links" style="display: none;">
+                ${additionalLinksHtml}
+              </div>
+            ` : ''}
+          </div>
+          ${hasAdditionalLinks ? `
+            <div class="slide-controls">
+              <button class="slide-btn prev-btn" onclick="slideLinks(this, -1)">‹</button>
+              <span class="slide-indicator">1/${totalSlides}</span>
+              <button class="slide-btn next-btn" onclick="slideLinks(this, 1)">›</button>
+            </div>
+          ` : ''}
         </div>
       `;
 
       return card;
+    }
+
+    // Slide functionality for contributor links
+    function slideLinks(button, direction) {
+      const card = button.closest('.contributor-card');
+      const slider = card.querySelector('.links-slider');
+      const primaryLinks = card.querySelector('.primary-links');
+      const additionalLinks = card.querySelector('.additional-links');
+      const indicator = card.querySelector('.slide-indicator');
+      const prevBtn = card.querySelector('.prev-btn');
+      const nextBtn = card.querySelector('.next-btn');
+
+      let currentSlide = parseInt(slider.getAttribute('data-current-slide'));
+      const totalSlides = additionalLinks ? 2 : 1;
+
+      // Calculate new slide
+      currentSlide += direction;
+      if (currentSlide < 0) currentSlide = 0;
+      if (currentSlide >= totalSlides) currentSlide = totalSlides - 1;
+
+      // Update display
+      if (currentSlide === 0) {
+        primaryLinks.style.display = 'flex';
+        if (additionalLinks) additionalLinks.style.display = 'none';
+      } else {
+        primaryLinks.style.display = 'none';
+        if (additionalLinks) additionalLinks.style.display = 'flex';
+      }
+
+      // Update controls
+      slider.setAttribute('data-current-slide', currentSlide);
+      indicator.textContent = `${currentSlide + 1}/${totalSlides}`;
+      
+      prevBtn.disabled = currentSlide === 0;
+      nextBtn.disabled = currentSlide === totalSlides - 1;
     }
 
     function displayContributors(contributors, page = 1) {
@@ -1712,7 +1851,7 @@
         const username = member.name;
         const referral = member.ref;
         const profile = `https://x.com/${username}`;
-        const referralLink = `https://pond0x.com/referral/${referral}`;
+        const referralLink = `https://www.pond0x.com/swap/solana?ref=${referral}`;
 
         const memberContainer = document.createElement('div');
         memberContainer.className = 'member-container';
