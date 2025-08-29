@@ -1226,6 +1226,20 @@
       opacity: 0.8;
     }
 
+    #plw-content {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 768px) {
+      #plw-content {
+        gap: 1.5rem;
+      }
+    }
+
     .people-like-section .link-url {
       color: var(--accent-color);
       text-decoration: none;
