@@ -1,0 +1,2657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DATA🤝HUB</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      /* Light mode variables */
+      --bg-gradient: linear-gradient(135deg, #f9f5ff 0%, #f6edff 35%, #f3e8ff 65%, #f9f5ff 100%);
+      --primary-color: #9b5de5;
+      --accent-color: #ff3df0;
+      --secondary-accent: #bd7cfd;
+      --navbar-bg: #FF13F0;
+      --nav-text: #f6edff;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(155, 93, 229, 0.2);
+      --input-bg: rgba(255, 255, 255, 0.4);
+      --link-item-bg: rgba(155, 93, 229, 0.08);
+      --shadow-primary: rgba(155, 93, 229, 0.15);
+      --shadow-accent: rgba(255, 61, 240, 0.25);
+      --text-primary: #5b2a86;
+      --text-secondary: #7b3aad;
+      --success-color: #22c55e;
+      --warning-color: #f59e0b;
+      --error-color: #ef4444;
+      --info-color: #3b82f6;
+    }
+
+    [data-theme="dark"] {
+      /* Dark mode variables */
+      --bg-gradient: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 20%, #16213e 40%, #1a1a2e 60%, #0f0f0f 80%, #0a0a0a 100%);
+      --primary-color: #e0b3ff;
+      --accent-color: #ff3df0;
+      --secondary-accent: #bd7cfd;
+      --navbar-bg: #1a1a2e;
+      --nav-text: #e5ddfb;
+      --card-bg: rgba(26, 26, 46, 0.8);
+      --card-border: rgba(189, 124, 253, 0.4);
+      --input-bg: rgba(26, 26, 46, 0.6);
+      --link-item-bg: rgba(26, 26, 46, 0.5);
+      --shadow-primary: rgba(189, 124, 253, 0.3);
+      --shadow-accent: rgba(255, 61, 240, 0.5);
+      --text-primary: #e0b3ff;
+      --text-secondary: #c9a3ff;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding-top: 70px;
+      position: relative;
+      overflow-x: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Flowing wave animation for light mode */
+    body {
+      background: 
+        linear-gradient(0deg, 
+          rgba(189, 124, 253, 0.35) 0%,
+          rgba(224, 179, 255, 0.25) 50%,
+          rgba(255, 61, 240, 0.25) 100%),
+        linear-gradient(180deg, 
+          rgba(224, 179, 255, 0.2) 0%, 
+          rgba(189, 124, 253, 0.15) 100%),
+        linear-gradient(135deg, 
+          #f9f5ff 0%, 
+          #f6edff 25%, 
+          #f3e8ff 50%, 
+          #f6edff 75%, 
+          #f9f5ff 100%);
+      background-size: 100% 200%, 100% 150%, 100% 100%;
+      animation: smoothLiquidFlow 6s ease-in-out infinite;
+    }
+
+    @keyframes smoothLiquidFlow {
+      0%, 100% {
+        background-position: 0% 100%, 0% 0%, 0% 0%;
+      }
+      50% {
+        background-position: 0% 0%, 0% 100%, 0% 0%;
+      }
+    }
+
+    /* Flowing wave animation for dark mode */
+    [data-theme="dark"] body {
+      background: 
+        linear-gradient(0deg, 
+          rgba(189, 124, 253, 0.15) 0%, 
+          rgba(255, 61, 240, 0.1) 50%, 
+          rgba(26, 26, 46, 0.2) 100%),
+        linear-gradient(180deg, 
+          rgba(26, 26, 46, 0.15) 0%, 
+          rgba(189, 124, 253, 0.08) 100%),
+        linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #1a1a2e 75%, #0f0f0f 100%);
+      background-size: 100% 180%, 100% 140%, 100% 100%;
+      animation: smoothLiquidFlowDark 8s ease-in-out infinite;
+    }
+
+    @keyframes smoothLiquidFlowDark {
+      0%, 100% {
+        background-position: 0% 100%, 0% 0%, 0% 0%;
+      }
+      50% {
+        background-position: 0% 0%, 0% 100%, 0% 0%;
+      }
+    }
+
+    /* Bubble container */
+    .bubble-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+      transition: opacity 0.3s ease;
+    }
+
+    .bubble-container.hidden {
+      opacity: 0;
+    }
+
+    /* Cook button styling */
+    .cook-button {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: linear-gradient(135deg, var(--secondary-accent) 0%, var(--accent-color) 100%);
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 
+        0 6px 20px var(--shadow-accent),
+        inset 2px 2px 10px rgba(255, 255, 255, 0.2),
+        inset -2px -2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1002;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .cook-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 
+        0 10px 30px var(--shadow-accent),
+        inset 2px 2px 10px rgba(255, 255, 255, 0.3),
+        inset -2px -2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .cook-button.bubbles-off {
+      background: linear-gradient(135deg, #666 0%, #999 100%);
+      box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.3),
+        inset 2px 2px 10px rgba(255, 255, 255, 0.1),
+        inset -2px -2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Dark mode toggle button */
+    .theme-toggle {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1.5rem;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1001;
+      padding: 5px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.2);
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+    }
+
+    /* Enhanced bubbles */
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      animation: bubble-rise linear infinite;
+      opacity: 0;
+      background: 
+        radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.3) 30%, transparent 70%),
+        radial-gradient(circle at 80% 80%, rgba(0, 0, 0, 0.1) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 
+        0 0 20px rgba(255, 255, 255, 0.2),
+        inset 3px 3px 15px rgba(255, 255, 255, 0.4),
+        inset -3px -3px 15px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(1px);
+    }
+
+    [data-theme="dark"] .bubble {
+      background: 
+        radial-gradient(circle at 25% 25%, rgba(189, 124, 253, 0.6) 0%, rgba(255, 61, 240, 0.3) 30%, transparent 70%),
+        radial-gradient(circle at 80% 80%, rgba(26, 26, 46, 0.3) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(189, 124, 253, 0.2), rgba(255, 61, 240, 0.1));
+      border: 1px solid rgba(189, 124, 253, 0.4);
+      box-shadow: 
+        0 0 25px rgba(189, 124, 253, 0.3),
+        inset 3px 3px 15px rgba(189, 124, 253, 0.2),
+        inset -3px -3px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    @keyframes bubble-rise {
+      0% {
+        opacity: 0;
+        transform: translateY(100vh) translateX(0px) scale(0.3);
+      }
+      10% {
+        opacity: 0.8;
+        transform: translateY(90vh) translateX(15px) scale(0.5);
+      }
+      50% {
+        opacity: 0.9;
+        transform: translateY(50vh) translateX(12px) scale(0.9);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-10vh) translateX(0px) scale(1);
+      }
+    }
+
+    .container {
+      max-width: 1125px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .header h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 20px var(--shadow-primary);
+      color: var(--text-primary);
+    }
+
+    .header img {
+      max-width: 50%;
+      height: auto;
+      transition: all 0.3s ease;
+      margin-top: 1.2em;
+    }
+
+    [data-theme="dark"] .header img {
+      filter: brightness(1.1) contrast(1.1) drop-shadow(0 0 20px rgba(189, 124, 253, 0.3));
+    }
+
+    /* Modern Navbar */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      background: var(--navbar-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      z-index: 1000;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    [data-theme="dark"] .navbar {
+      background: rgba(26, 26, 46, 0.95);
+      border-bottom: 1px solid rgba(189, 124, 253, 0.2);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+    }
+
+    .nav-brand {
+      font-size: 1rem;
+      font-weight: 800;
+      color: white;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--nav-text);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.65rem;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .nav-links a:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+      color: white;
+    }
+
+    /* Mobile nav toggle */
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .nav-mobile {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      right: 0;
+      background: var(--navbar-bg);
+      backdrop-filter: blur(20px);
+      transform: translateY(-100%);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s ease;
+      z-index: 999;
+    }
+
+    .nav-mobile.active {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .nav-mobile-links {
+      display: flex;
+      flex-direction: column;
+      padding: 2rem 1.5rem;
+      gap: 0.5rem;
+    }
+
+    .nav-mobile-links a {
+      color: var(--nav-text);
+      text-decoration: none;
+      font-weight: 600;
+      padding: 1rem;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .nav-mobile-links a:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+    }
+
+    /* Community content */
+    .intro-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 2rem;
+      border: 2px solid var(--card-border);
+      box-shadow: 0 12px 40px var(--shadow-primary);
+      margin-bottom: 2rem;
+      transition: all 0.3s ease;
+    }
+
+    .intro-card h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .intro-card p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: var(--text-primary);
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .contributors-grid {
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    }
+
+    .contributor-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border-radius: 15px;
+      padding: 1.5rem;
+      border: 2px solid var(--card-border);
+      box-shadow: 0 8px 30px var(--shadow-primary);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .contributor-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 40px var(--shadow-primary);
+    }
+
+    .contributor-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .contributor-name {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .contributor-description {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      opacity: 0.8;
+      margin-top: 0.25rem;
+      font-style: italic;
+    }
+
+    .contributor-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .link-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      background: var(--link-item-bg);
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      border: 1px solid transparent;
+    }
+
+    .link-item:hover {
+      background: rgba(255, 61, 240, 0.1);
+      border-color: var(--accent-color);
+      transform: translateX(5px);
+    }
+
+    .link-emoji {
+      font-size: 1.1rem;
+      min-width: 24px;
+      text-align: center;
+    }
+
+    .link-content {
+      flex: 1;
+    }
+
+    .link-title {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+      font-size: 0.95rem;
+    }
+
+    .link-url {
+      color: var(--accent-color);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+      word-break: break-all;
+    }
+
+    .link-url:hover {
+      color: var(--text-primary);
+      text-shadow: 0 0 10px var(--shadow-accent);
+    }
+
+    .special-contributor {
+      border-color: var(--accent-color);
+      box-shadow: 0 8px 30px var(--shadow-accent);
+    }
+
+    .special-contributor:hover {
+      box-shadow: 0 12px 40px var(--shadow-accent);
+    }
+
+    .footer {
+      margin-top: 3rem;
+      padding: 2rem 0;
+      text-align: center;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .footer p {
+      margin-bottom: 0.5rem;
+    }
+
+    .footer a {
+      color: var(--accent-color);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .footer a:hover {
+      text-shadow: 0 0 10px var(--shadow-accent);
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 1095px) {
+      .nav-toggle {
+        display: block;
+      }
+      
+      .nav-links {
+        display: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2.2rem;
+      }
+      
+      .intro-card {
+        padding: 1.5rem;
+      }
+      
+      .intro-card h2 {
+        font-size: 1.6rem;
+      }
+      
+      .intro-card p {
+        font-size: 1rem;
+      }
+      
+      .contributors-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      
+      .contributor-card {
+        padding: 1.25rem;
+      }
+      
+      .cook-button {
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        font-size: 1rem;
+      }
+      
+      .theme-toggle {
+        top: 75px;
+        right: 15px;
+        font-size: 1.3rem;
+      }
+      
+      .header img {
+        max-width: 69%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .contributor-card {
+        padding: 1rem;
+      }
+      
+      .contributor-name {
+        font-size: 1.1rem;
+      }
+      
+      .link-item {
+        padding: 0.6rem;
+      }
+    }
+
+    /* Enhanced transitions */
+    * {
+      transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                  background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                  border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                  box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  </style>
+</head>
+<body>
+  <!-- Dark mode toggle button -->
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle dark mode">
+    ☀️
+  </button>
+
+  <!-- Cook button for toggling bubbles -->
+  <button class="cook-button" id="cookButton" onclick="toggleBubbles()">
+    👨‍🍳 Cook
+  </button>
+
+  <!-- Bubble container for animation -->
+  <div class="bubble-container" id="bubbleContainer"></div>
+
+  <!-- Modern Responsive Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="https://worstgen.github.io/Pond0x-Data-Hub/" class="nav-brand">
+        DATA🤝HUB
+      </a>
+      
+      <div class="nav-links">
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/">PASSPORT</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/MiningClaims.html">MINING CLAIMS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/HashBoosts.html">HASH BOOSTS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/wPONDReceived.html">wPOND RECEIVED</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigActivations.html">RIG ACTIVATIONS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/Calculator.html">CALCULATOR</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/genLinks">GENERATE LINKS</a>
+      </div>
+      
+      <button class="nav-toggle" onclick="toggleMobileNav()">
+        <span id="nav-toggle-icon">☰</span>
+      </button>
+    </div>
+    
+    <div class="nav-mobile" id="mobileNav">
+      <div class="nav-mobile-links">
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/">PASSPORT</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/MiningClaims.html">MINING CLAIMS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/HashBoosts.html">HASH BOOSTS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/wPONDReceived.html">wPOND RECEIVED</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigActivations.html">RIG ACTIVATIONS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/Calculator.html">CALCULATOR</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/genLinks">GENERATE LINKS</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="header">
+      <img src="https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/refs/heads/main/pond0xdatahub.png" alt="Data Hub Logo">
+    </div>
+
+    <div class="intro-card">
+      <h2>Community Contributions</h2>
+      <p>Welcome to the heart of POND🤝X's vibrant community! The Community Contributions channel celebrates the creativity and ingenuity of our fellow members, showcasing an inspiring array of tools, data, dashboards, merch sites, meme libraries, and even original songs crafted for the POND🤝X ecosystem. Dive in to explore the incredible work of these community heroes, complete with links to their X profiles and their unique contributions. Join us in celebrating collaboration, innovation, and the spirit of POND🤝X! 🐸✨</p>
+    </div>
+
+    <div class="contributors-grid">
+      <!-- Aces (Ø,G) 💎 -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">Aces (Ø,G) 💎</h3>
+            <p class="contributor-description">Spaces host and community manager</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/Aces_TFB" target="_blank" class="link-url">https://x.com/Aces_TFB</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">💬</span>
+            <div class="link-content">
+              <div class="link-title">POND UNHINGED Discord</div>
+              <a href="https://discord.com/invite/evFetsJ4nZ" target="_blank" class="link-url">https://discord.com/invite/evFetsJ4nZ</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=R8VNKxyCuW9BpCFdBot5qAXLBYQatGTxoxpudVhupctF7wW5UAGyyx3YoSfL" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=R8VNKxyCuW9BpCFdBot5qAXLBYQatGTxoxpudVhupctF7wW5UAGyyx3YoSfL</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- theartofkula (babble/acc) -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">theartofkula (babble/acc)</h3>
+            <p class="contributor-description">Artist and memer</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/theartofkula" target="_blank" class="link-url">https://x.com/theartofkula</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🌐</span>
+            <div class="link-content">
+              <div class="link-title">Website</div>
+              <a href="https://theartofkula.com" target="_blank" class="link-url">https://theartofkula.com</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=QYbv8dMFTP1oakSSSm6LNF2ZUejgVc7TM6N6QAkNWm3tm8nXbehTCM" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=QYbv8dMFTP1oakSSSm6LNF2ZUejgVc7TM6N6QAkNWm3tm8nXbehTCM</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Atlantis™ 🐸 -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">Atlantis™ 🐸</h3>
+            <p class="contributor-description">Spaces host, games master and artist</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/Altcoin_Q" target="_blank" class="link-url">https://x.com/Altcoin_Q</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🌐</span>
+            <div class="link-content">
+              <div class="link-title">Website</div>
+              <a href="https://knightsofdegen.netlify.app" target="_blank" class="link-url">https://knightsofdegen.netlify.app</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=79dJYEo4WUYfFPApwPZWMTS4GWHHoc6Yxgbyb8kHmKkDYSoEidVKyWCNAm3" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=79dJYEo4WUYfFPApwPZWMTS4GWHHoc6Yxgbyb8kHmKkDYSoEidVKyWCNAm3</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- BnSam -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">BnSam</h3>
+            <p class="contributor-description">Mining tools and bots</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/BnSamX" target="_blank" class="link-url">https://x.com/BnSamX</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤖</span>
+            <div class="link-content">
+              <div class="link-title">Rig Health Bot</div>
+              <a href="https://t.me/RigHealthMainBot" target="_blank" class="link-url">https://t.me/RigHealthMainBot</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤖</span>
+            <div class="link-content">
+              <div class="link-title">Meme Bot on X</div>
+              <a href="https://x.com/ShowMeThatPink" target="_blank" class="link-url">https://x.com/ShowMeThatPink</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=KLJ5LHQsSkC3EKqNiVrphETFrjKcRxHZq2RwEkD3bJnDPv1psVU799R6sNQf" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=KLJ5LHQsSkC3EKqNiVrphETFrjKcRxHZq2RwEkD3bJnDPv1psVU799R6sNQf</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BrewLee -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">BrewLee</h3>
+            <p class="contributor-description">Videos and music content</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/TapuBulu0x" target="_blank" class="link-url">https://x.com/TapuBulu0x</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🧵</span>
+            <div class="link-content">
+              <div class="link-title">Videos & Songs Thread</div>
+              <a href="https://x.com/TapuBulu0x/status/1957139598481531089" target="_blank" class="link-url">X Thread</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=JP7XyLZ2QccPGJceekCjQsopPsNh7HZhYAwAXbW6nGo4MnxnqvwdNWPpwXcm" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=JP7XyLZ2QccPGJceekCjQsopPsNh7HZhYAwAXbW6nGo4MnxnqvwdNWPpwXcm</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cary -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">Cary</h3>
+            <p class="contributor-description">Community documentation and tools</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/Cary0x2" target="_blank" class="link-url">https://x.com/Cary0x2</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🏠</span>
+            <div class="link-content">
+              <div class="link-title">Home Page</div>
+              <a href="https://cary0x.github.io/" target="_blank" class="link-url">https://cary0x.github.io/</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">📚</span>
+            <div class="link-content">
+              <div class="link-title">Pond0x Docs</div>
+              <a href="https://cary0x.github.io/docs/" target="_blank" class="link-url">https://cary0x.github.io/docs/</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">⛏️</span>
+            <div class="link-content">
+              <div class="link-title">Mining Dashboard</div>
+              <a href="https://cary0x.github.io/dashboard" target="_blank" class="link-url">https://cary0x.github.io/dashboard</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🔄</span>
+            <div class="link-content">
+              <div class="link-title">Swap Manifest</div>
+              <a href="https://cary0x.github.io/docs/info/manifest" target="_blank" class="link-url">https://cary0x.github.io/docs/info/manifest</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">💚</span>
+            <div class="link-content">
+              <div class="link-title">Mining Health Data</div>
+              <a href="https://cary0x.github.io/docs/info/health" target="_blank" class="link-url">https://cary0x.github.io/docs/info/health</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=7WTPWhjEfyDrJA5crD9naahKgMDKQUqoXTMpLW4T3kkGkmUFVWsFj2opZoM" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=7WTPWhjEfyDrJA5crD9naahKgMDKQUqoXTMpLW4T3kkGkmUFVWsFj2opZoM</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chef Winters [$BTC] -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">Chef Winters [$BTC]</h3>
+            <p class="contributor-description">Graphic design</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/WintersChef" target="_blank" class="link-url">https://x.com/WintersChef</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🎨</span>
+            <div class="link-content">
+              <div class="link-title">Telegram Sticker Pack</div>
+              <a href="https://t.me/addstickers/porketh" target="_blank" class="link-url">PORKETH Sticker Pack</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=NYbYyjuGsFaQetL2yiGDf4yxuxVwDbxHbzzdL1JDVS8xTJ2E4vAuVJh4ActH" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=NYbYyjuGsFaQetL2yiGDf4yxuxVwDbxHbzzdL1JDVS8xTJ2E4vAuVJh4ActH</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DankMyMeme -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">DankMyMeme</h3>
+            <p class="contributor-description">Automation tools and website</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/DankMyMeme_" target="_blank" class="link-url">https://x.com/DankMyMeme_</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🌐</span>
+            <div class="link-content">
+              <div class="link-title">Website</div>
+              <a href="https://www.dankmymeme.xyz/create" target="_blank" class="link-url">https://www.dankmymeme.xyz/create</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤖</span>
+            <div class="link-content">
+              <div class="link-title">AutoPond Tool</div>
+              <a href="https://github.com/drewbie1234/AUTOPOND_V1" target="_blank" class="link-url">https://github.com/drewbie1234/AUTOPOND_V1</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=JNp6Qzei1n1MpLKAoQcE6LQaWVnkYDoPo9buoocCQU1SaYVYLsL79V9gu79Z" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=JNp6Qzei1n1MpLKAoQcE6LQaWVnkYDoPo9buoocCQU1SaYVYLsL79V9gu79Z</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DANNY (Ø,G) -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">DANNY (Ø,G)</h3>
+            <p class="contributor-description">Memer and space host</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/Danny_Zav" target="_blank" class="link-url">https://x.com/Danny_Zav</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=KdSy8rJwsNjcJuZ6gyYCdaYAL1x77xSrhsBKboQtPtoAoB2ieW3hnPrHq1qv" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=KdSy8rJwsNjcJuZ6gyYCdaYAL1x77xSrhsBKboQtPtoAoB2ieW3hnPrHq1qv</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 💎 -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">💎</h3>
+            <p class="contributor-description">Merchandise store</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/Contributionist" target="_blank" class="link-url">https://x.com/Contributionist</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🛒</span>
+            <div class="link-content">
+              <div class="link-title">Pond X Shop</div>
+              <a href="https://pondxshop.square.site/s/shop" target="_blank" class="link-url">https://pondxshop.square.site/s/shop</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/?ref=NXmT9mrRcCByTUYM9TN6o7QaA2MTDztNL6yGyFsLExwUnLkLK2MTZfTPmVFi" target="_blank" class="link-url">https://www.pond0x.com/?ref=NXmT9mrRcCByTUYM9TN6o7QaA2MTDztNL6yGyFsLExwUnLkLK2MTZfTPmVFi</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dustin 2.0 -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">Dustin 2.0</h3>
+            <p class="contributor-description">How-to videos and songs</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/ThatDustinShow" target="_blank" class="link-url">https://x.com/ThatDustinShow</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🎥</span>
+            <div class="link-content">
+              <div class="link-title">How-to Videos Thread</div>
+              <a href="https://x.com/ThatDustinShow/status/1944929666441130227" target="_blank" class="link-url">X Thread</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=7aTaUrhrwwvE9puSEg8ZwAbmzfszxsFnGKj5dQ3BLjw2SzhWRKhUmWp9VpK" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=7aTaUrhrwwvE9puSEg8ZwAbmzfszxsFnGKj5dQ3BLjw2SzhWRKhUmWp9VpK</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 𝖊𝖕𝖔𝖉𝖔 -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">𝖊𝖕𝖔𝖉𝖔</h3>
+            <p class="contributor-description">Artist</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/0xepodo" target="_blank" class="link-url">https://x.com/0xepodo</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=QA188Tqs5TwLLNnB5WpwPweP98WfKc35YfE2X21nvnqKtShxB93eABoBhnL9" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=QA188Tqs5TwLLNnB5WpwPweP98WfKc35YfE2X21nvnqKtShxB93eABoBhnL9</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fool Me Once 🚷 -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">Fool Me Once 🚷</h3>
+            <p class="contributor-description">Referral link tools</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/SaanMills" target="_blank" class="link-url">https://x.com/SaanMills</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🔗</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link Generator</div>
+              <a href="https://foolmeonetime.github.io" target="_blank" class="link-url">https://foolmeonetime.github.io</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=NZ7JpcAQAds6nB9WAM4ymhT1iKYT3YCFDLDBuJuNKgbe24i6uGSmiNGqQ97z" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=NZ7JpcAQAds6nB9WAM4ymhT1iKYT3YCFDLDBuJuNKgbe24i6uGSmiNGqQ97z</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FR€NCH¥£ -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">FR€NCH¥£</h3>
+            <p class="contributor-description">Memelord</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/aifrenchie1" target="_blank" class="link-url">https://x.com/aifrenchie1</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🌐</span>
+            <div class="link-content">
+              <div class="link-title">Website</div>
+              <a href="https://www.porkmeme.com/aifrenchie" target="_blank" class="link-url">https://www.porkmeme.com/aifrenchie</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=Jy5kAM5a4xU62eoYJEcTUo8aZHth5NzbohUUKuoCJrGc3MpEmGxhoPrgnDhR" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=Jy5kAM5a4xU62eoYJEcTUo8aZHth5NzbohUUKuoCJrGc3MpEmGxhoPrgnDhR</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- G$HMONEY 🌍 #SAVETHEPLANET -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">G$HMONEY 🌍 #SAVETHEPLANET</h3>
+            <p class="contributor-description">Music on Spotify and X</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/gshmoneyb" target="_blank" class="link-url">https://x.com/gshmoneyb</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🎵</span>
+            <div class="link-content">
+              <div class="link-title">X Song Post</div>
+              <a href="https://x.com/gshmoneyb/status/1779709388057387108" target="_blank" class="link-url">X Song Post</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🎧</span>
+            <div class="link-content">
+              <div class="link-title">Spotify</div>
+              <a href="https://open.spotify.com/track/6zKi3jTPVW4rNLFM3FWFIC" target="_blank" class="link-url">Spotify Track</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=HyQAtbRiS32EWSCGVYt1meYhzUTgJHb8aGaQs5zVoS86VsFXK5fspHmWChKj" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=HyQAtbRiS32EWSCGVYt1meYhzUTgJHb8aGaQs5zVoS86VsFXK5fspHmWChKj</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GemStateStacker -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">GemStateStacker</h3>
+            <p class="contributor-description">Dune dashboards</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/GemStateStacker" target="_blank" class="link-url">https://x.com/GemStateStacker</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">📊</span>
+            <div class="link-content">
+              <div class="link-title">The Plug Dashboard</div>
+              <a href="https://dune.com/gemstatestacker/plug" target="_blank" class="link-url">https://dune.com/gemstatestacker/plug</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">📊</span>
+            <div class="link-content">
+              <div class="link-title">Pond Solana Data</div>
+              <a href="https://dune.com/gemstatestacker/pond-solana-data" target="_blank" class="link-url">https://dune.com/gemstatestacker/pond-solana-data</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=J35p6BX3cX26S72qtQ3MnzApSYELmMhMRFsTzhokbCaGwXk5nynDoP9YNEyT" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=J35p6BX3cX26S72qtQ3MnzApSYELmMhMRFsTzhokbCaGwXk5nynDoP9YNEyT</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- janybuny9🐷🟪 (Ø,G) -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">janybuny9🐷🟪 (Ø,G)</h3>
+            <p class="contributor-description">Merch and interactive tools</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/janybuny9" target="_blank" class="link-url">https://x.com/janybuny9</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🛒</span>
+            <div class="link-content">
+              <div class="link-title">Merch</div>
+              <a href="https://www.redbubble.com/people/janybuny9/shop?asc=u" target="_blank" class="link-url">https://www.redbubble.com/people/janybuny9/shop</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🎰</span>
+            <div class="link-content">
+              <div class="link-title">Spin a Wheel Referral Picker</div>
+              <a href="https://spiniverse-app.vercel.app" target="_blank" class="link-url">https://spiniverse-app.vercel.app</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=NXrhuTuLgevP6MiMErqvC6q2M1kgQoWub51aFjfJDDjGSTTcmGWwedDUJ5GQ" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=NXrhuTuLgevP6MiMErqvC6q2M1kgQoWub51aFjfJDDjGSTTcmGWwedDUJ5GQ</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- JayFeezy -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">JayFeezy</h3>
+            <p class="contributor-description">Meme collections</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/JayFeezy" target="_blank" class="link-url">https://x.com/JayFeezy</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">😂</span>
+            <div class="link-content">
+              <div class="link-title">Memes Collection</div>
+              <a href="https://x.com/JayFeezy/status/1957972005933777228" target="_blank" class="link-url">Memes Quote Thread</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=Kghj7EiEguu1zBGo4Y5W23Txm2G7gHf8LYcGDMf8RSsqC7CNLb1vRLLCtiUm" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=Kghj7EiEguu1zBGo4Y5W23Txm2G7gHf8LYcGDMf8RSsqC7CNLb1vRLLCtiUm</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- JayKayes -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">JayKayes</h3>
+            <p class="contributor-description">Graffiti artist</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/jay_kayes" target="_blank" class="link-url">https://x.com/jay_kayes</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=NceBw3ordXQqnTLBjz4Vd47kB83d7gwENLFc1Ssgn93dWzeggtHANZ6XHiCF" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=NceBw3ordXQqnTLBjz4Vd47kB83d7gwENLFc1Ssgn93dWzeggtHANZ6XHiCF</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- JayRa.Art -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">JayRa.Art</h3>
+            <p class="contributor-description">Community mega threads</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/JayRaTheRu" target="_blank" class="link-url">https://x.com/JayRaTheRu</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🧵</span>
+            <div class="link-content">
+              <div class="link-title">Mega Thread</div>
+              <a href="https://x.com/JayRaTheRu/status/1873759799093162430" target="_blank" class="link-url">X Mega Thread</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=K1j6puYhi48NGE1teEpvrbjbfNvYLJoU4mkNnNKNH7YTQbsnnZMhRTEUu8Ja" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=K1j6puYhi48NGE1teEpvrbjbfNvYLJoU4mkNnNKNH7YTQbsnnZMhRTEUu8Ja</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🎙️JLΞΞ -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">🎙️JLΞΞ</h3>
+            <p class="contributor-description">Space host and musician</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/JLEEWALLS1" target="_blank" class="link-url">https://x.com/JLEEWALLS1</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=KKd5FSK8wtagoSvzvkicAJgqrnxQumcyX8vfCgWymVz18TGtFtMm55t6WNxd" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=KKd5FSK8wtagoSvzvkicAJgqrnxQumcyX8vfCgWymVz18TGtFtMm55t6WNxd</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kasper 🫡👻💜🐸⛏️🌋⛏️🐷💜👻🫡 -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">Kasper 🫡👻💜🐸⛏️🌋⛏️🐷💜👻🫡</h3>
+            <p class="contributor-description">Game development</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/Antartican2000" target="_blank" class="link-url">https://x.com/Antartican2000</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🎮</span>
+            <div class="link-content">
+              <div class="link-title">Frog Balls Pinball Game</div>
+              <a href="https://kasperv.itch.io/frog-balls" target="_blank" class="link-url">https://kasperv.itch.io/frog-balls</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=Jfd3Sb4swYvct8pxobGNXEKuofuDVUm53m9a34F57oC8RoHaVvfxdLYiswFq" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=Jfd3Sb4swYvct8pxobGNXEKuofuDVUm53m9a34F57oC8RoHaVvfxdLYiswFq</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kargyra -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">Kargyra</h3>
+            <p class="contributor-description">Memer and content creator</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/Kargyra" target="_blank" class="link-url">https://x.com/Kargyra</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=PG4tRFZSo8G6t6Jkga1ESHwPBryU41f3663Jo1WWa7bVRadQqM2cARwgfNMo" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=PG4tRFZSo8G6t6Jkga1ESHwPBryU41f3663Jo1WWa7bVRadQqM2cARwgfNMo</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kenobi -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">Kenobi</h3>
+            <p class="contributor-description">Educator, space host, and meme</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/Cobain0x" target="_blank" class="link-url">https://x.com/Cobain0x</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=JfU1cSBZxsdjrTWfpkBXfZCdJSSP3zdtVdAirV36Uxr14H3H8ms9Lk2FVULY" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=JfU1cSBZxsdjrTWfpkBXfZCdJSSP3zdtVdAirV36Uxr14H3H8ms9Lk2FVULY</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 👑𝕶𝖎𝖓𝖌𝕾𝖆𝖒 (ØG) -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">👑𝕶𝖎𝖓𝖌𝕾𝖆𝖒 (ØG)</h3>
+            <p class="contributor-description">Memer and artist</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/Kingsam0x_" target="_blank" class="link-url">https://x.com/Kingsam0x_</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=Nv6sRKY2Aq18CeQY2iPZyRtYSrXASnAq8eWUra9bRUB4mqXdsVceKmNtvS6e" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=Nv6sRKY2Aq18CeQY2iPZyRtYSrXASnAq8eWUra9bRUB4mqXdsVceKmNtvS6e</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LILPORK -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">LILPORK</h3>
+            <p class="contributor-description">Memelord, info, and merch</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/LilPork07" target="_blank" class="link-url">https://x.com/LilPork07</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🌐</span>
+            <div class="link-content">
+              <div class="link-title">Website</div>
+              <a href="https://www.porkmeme.com" target="_blank" class="link-url">https://www.porkmeme.com</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=HgTtjVDh2btZkzgkEptuxzdU3Rz9Pv1UMZHULHxXyRUcidSCzngjxT3LQppC" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=HgTtjVDh2btZkzgkEptuxzdU3Rz9Pv1UMZHULHxXyRUcidSCzngjxT3LQppC</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- liss -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">liss</h3>
+            <p class="contributor-description">Artist and memer</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/fr3nchfry03" target="_blank" class="link-url">https://x.com/fr3nchfry03</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🌐</span>
+            <div class="link-content">
+              <div class="link-title">Website</div>
+              <a href="https://www.porkmeme.com/liss" target="_blank" class="link-url">https://www.porkmeme.com/liss</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🧵</span>
+            <div class="link-content">
+              <div class="link-title">Thread</div>
+              <a href="https://x.com/fr3nchfry03/status/1957969737826119727" target="_blank" class="link-url">Art Dump Thread</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=QW2PjaYL8KwsroFDYKsS9q98MbJ2osNi5W6nQjNdbobsTavXuncXxgsBTWEs" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=QW2PjaYL8KwsroFDYKsS9q98MbJ2osNi5W6nQjNdbobsTavXuncXxgsBTWEs</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lucid Creationz Ltd -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">Lucid Creationz Ltd</h3>
+            <p class="contributor-description">Merchandise</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/Lucidfo20" target="_blank" class="link-url">https://x.com/Lucidfo20</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🛒</span>
+            <div class="link-content">
+              <div class="link-title">Merch Store</div>
+              <a href="https://www.bonfire.com/store/da-pork-chop/" target="_blank" class="link-url">https://www.bonfire.com/store/da-pork-chop/</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=QVekUVJjxS7GvspNjkDK1TiR18ZSgPqA22N8hAzWvPPAKKr6PrTH6gTyfMsu" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=QVekUVJjxS7GvspNjkDK1TiR18ZSgPqA22N8hAzWvPPAKKr6PrTH6gTyfMsu</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- magick -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">magick</h3>
+            <p class="contributor-description">Mining visualizations</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/bitshrooms1" target="_blank" class="link-url">https://x.com/bitshrooms1</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">📊</span>
+            <div class="link-content">
+              <div class="link-title">Mining Visualizer</div>
+              <a href="https://bitshrooms.github.io/pondstream" target="_blank" class="link-url">https://bitshrooms.github.io/pondstream</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=KMQTkZPpSyPXK52kb5NNMcRMxmj7b5g2h3MvhrzLnEuQ7iYkvKVEoZHJHHst" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=KMQTkZPpSyPXK52kb5NNMcRMxmj7b5g2h3MvhrzLnEuQ7iYkvKVEoZHJHHst</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Marathonbill -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">Marathonbill</h3>
+            <p class="contributor-description">Custom merch store</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/marathonbill" target="_blank" class="link-url">https://x.com/marathonbill</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🛒</span>
+            <div class="link-content">
+              <div class="link-title">Merch Store</div>
+              <a href="https://marathonbill.store/" target="_blank" class="link-url">https://marathonbill.store/</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=PurQBeVGXoXSfKthejWmdsHz2qkYNHXEzDxx2sBUW3sZffNNKSG3AfM5WiLU" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=PurQBeVGXoXSfKthejWmdsHz2qkYNHXEzDxx2sBUW3sZffNNKSG3AfM5WiLU</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MASSTERWORKS🔋 -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">MASSTERWORKS🔋</h3>
+            <p class="contributor-description">Artist</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/MASSTERWORKS" target="_blank" class="link-url">https://x.com/MASSTERWORKS</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">📷</span>
+            <div class="link-content">
+              <div class="link-title">Instagram</div>
+              <a href="https://www.instagram.com/massterworks" target="_blank" class="link-url">https://www.instagram.com/massterworks</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🛒</span>
+            <div class="link-content">
+              <div class="link-title">Website</div>
+              <a href="https://massterworks.printify.me" target="_blank" class="link-url">https://massterworks.printify.me</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=NsX1xVac92xdzBoPJEwQnHzW3uSEhUzfcorcRFfiaapryTvFf8skZ9GtMJrP" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=NsX1xVac92xdzBoPJEwQnHzW3uSEhUzfcorcRFfiaapryTvFf8skZ9GtMJrP</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ⓜ️emorama.eth 🐷🟪🧩🔜 -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">Ⓜ️emorama.eth 🐷🟪🧩🔜</h3>
+            <p class="contributor-description">Educator and space host</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/GuillermoDiazGr" target="_blank" class="link-url">https://x.com/GuillermoDiazGr</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=Nc3zM6g2idmmDFEDjXXBf8pxxoUUWWCer51tNPaqR1FWXa9KpfMdStZFYVGT" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=Nc3zM6g2idmmDFEDjXXBf8pxxoUUWWCer51tNPaqR1FWXa9KpfMdStZFYVGT</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mogie -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">Mogie</h3>
+            <p class="contributor-description">Dune dashboards</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/mogie__" target="_blank" class="link-url">https://x.com/mogie__</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">📊</span>
+            <div class="link-content">
+              <div class="link-title">Pond DEX Dashboard</div>
+              <a href="https://dune.com/pond_dex_dashboard/pond-dex" target="_blank" class="link-url">https://dune.com/pond_dex_dashboard/pond-dex</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=JKb8trD1QDTPPAV3Jnh9NdJvi3bDS4W3G33SLZwWDtyqeQqWQ8dZzEsbaTaA" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=JKb8trD1QDTPPAV3Jnh9NdJvi3bDS4W3G33SLZwWDtyqeQqWQ8dZzEsbaTaA</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mogwai -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">Mogwai</h3>
+            <p class="contributor-description">Memer</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/midnight_mogwai" target="_blank" class="link-url">https://x.com/midnight_mogwai</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=Jhu2FjSn9McghSKkNqjFw5xBL6ecfgjzy4qjPrvHv5Jr7ByB4wr6mU4cn3ZK" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=Jhu2FjSn9McghSKkNqjFw5xBL6ecfgjzy4qjPrvHv5Jr7ByB4wr6mU4cn3ZK</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🌸palefairy🧚🏻‍♀️ -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">🌸palefairy🧚🏻‍♀️</h3>
+            <p class="contributor-description">Artist and memer</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/palefairy0x_" target="_blank" class="link-url">https://x.com/palefairy0x_</a>
+            </div>
+          </div>
+           <div class="link-item">
+            <span class="link-emoji">📷</span>
+            <div class="link-content">
+              <div class="link-title">Instagram</div>
+              <a href="https://www.instagram.com/palefairy0x_" target="_blank" class="link-url">https://www.instagram.com/palefairy0x_</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🌐</span>
+            <div class="link-content">
+              <div class="link-title">Website</div>
+              <a href="https://www.porkmeme.com/palefairy" target="_blank" class="link-url">https://www.porkmeme.com/palefairy</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=JiCs1LHu92eMLzmE7tvQu5t1YcSzT7BxoBBkgAAfimbm1hBnQferri7GPhkm" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=JiCs1LHu92eMLzmE7tvQu5t1YcSzT7BxoBBkgAAfimbm1hBnQferri7GPhkm</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PapaPepe🐷🟪 -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">PapaPepe🐷🟪</h3>
+            <p class="contributor-description">Memer</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/KLieblingsnoob" target="_blank" class="link-url">https://x.com/KLieblingsnoob</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=NGtnaqb14QnQVYGj2JXYbhn1Cy5eNJ2AhvS87EtAHt1tpwfJPFnTNdV2P1tj" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=NGtnaqb14QnQVYGj2JXYbhn1Cy5eNJ2AhvS87EtAHt1tpwfJPFnTNdV2P1tj</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paragone.eth -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">Paragone.eth</h3>
+            <p class="contributor-description">Designer/artist</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/celestialprod" target="_blank" class="link-url">https://x.com/celestialprod</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🌐</span>
+            <div class="link-content">
+              <div class="link-title">Website</div>
+              <a href="https://celestialproductions.com" target="_blank" class="link-url">https://celestialproductions.com</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=NrhzFZ488LuX9yLnvnfxoVYkEcxP22wFAgPCnivnt9SVmKWCpwHzi4XKLzKQ" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=NrhzFZ488LuX9yLnvnfxoVYkEcxP22wFAgPCnivnt9SVmKWCpwHzi4XKLzKQ</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- The P.I.G. -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">The P.I.G.</h3>
+            <p class="contributor-description">X live broadcasts</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/boudahh" target="_blank" class="link-url">https://x.com/boudahh</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">📺</span>
+            <div class="link-content">
+              <div class="link-title">X Live Broadcasts</div>
+              <a href="https://x.com/i/broadcasts/1vAGRQagPyXKl" target="_blank" class="link-url">https://x.com/i/broadcasts/1vAGRQagPyXKl</a>
+            </div>
+          </div>
+           <div class="link-item">
+            <span class="link-emoji">🎵🧵</span>
+            <div class="link-content">
+              <div class="link-title">Music Thread</div>
+              <a href="https://x.com/boudahh/status/1951743683671314573" target="_blank" class="link-url">52 Crypto 2.0 songs</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=K1wRCmX9M7H91wnkpjwWehURMM6CF6UZ9Hu7Nobt2Zq4khKPM3qdeAL5cUYQ" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=K1wRCmX9M7H91wnkpjwWehURMM6CF6UZ9Hu7Nobt2Zq4khKPM3qdeAL5cUYQ</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 𓃟 -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">𓃟</h3>
+            <p class="contributor-description">Online games</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/ReignBoat" target="_blank" class="link-url">https://x.com/ReignBoat</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🎮</span>
+            <div class="link-content">
+              <div class="link-title">Pork Droid Game</div>
+              <a href="https://www.porkdroid.com/" target="_blank" class="link-url">https://www.porkdroid.com/</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🌐</span>
+            <div class="link-content">
+              <div class="link-title">Website</div>
+              <a href="https://www.porkmeme.com/reignboat" target="_blank" class="link-url">https://www.porkmeme.com/reignboat</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=Nri2C7eZkTszHUpJgVqyzoa4RSsTMCxpRAm3W5Kx74ucJqX8JdT8tkV2njGe" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=Nri2C7eZkTszHUpJgVqyzoa4RSsTMCxpRAm3W5Kx74ucJqX8JdT8tkV2njGe</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Raptor -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">Raptor</h3>
+            <p class="contributor-description">Tools, articles, automation and THIS VERY LIST</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/TheRaptorRoost" target="_blank" class="link-url">https://x.com/TheRaptorRoost</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">📝</span>
+            <div class="link-content">
+              <div class="link-title">Articles</div>
+              <a href="https://medium.com/@raptorcapture247" target="_blank" class="link-url">https://medium.com/@raptorcapture247</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤖</span>
+            <div class="link-content">
+              <div class="link-title">EzmodeV2 Tool</div>
+              <a href="https://github.com/RaptorCapture247/EZmodeV2" target="_blank" class="link-url">https://github.com/RaptorCapture247/EZmodeV2</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🖱️</span>
+            <div class="link-content">
+              <div class="link-title">Windows Auto-Clicker</div>
+              <a href="https://github.com/RaptorCapture247/Windows-Pyatuo-Auto-Clicker" target="_blank" class="link-url">https://github.com/RaptorCapture247/Windows-Pyatuo-Auto-Clicker</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🖱️</span>
+            <div class="link-content">
+              <div class="link-title">Mac Auto-Clicker</div>
+              <a href="https://github.com/RaptorCapture247/Mac-PyAuto-Auto-Clicker" target="_blank" class="link-url">https://github.com/RaptorCapture247/Mac-PyAuto-Auto-Clicker</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">📊</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link Spreadsheet</div>
+              <a href="https://docs.google.com/spreadsheets/d/1xtdg3Bcamtu3Rf1eYcv7Kmlu14rjDJu2ZTA7J_n-eb4/edit?usp=drivesdk" target="_blank" class="link-url">Google Sheets Referral Links</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=Jy9TwxBp5WeYeoCJMBaBMX5NfsBqdxnL2jwRJgskscZaSa8EeUgLN5HA5KAv" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=Jy9TwxBp5WeYeoCJMBaBMX5NfsBqdxnL2jwRJgskscZaSa8EeUgLN5HA5KAv</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROYAL☆ -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">ROYAL☆</h3>
+            <p class="contributor-description">Original music</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/RoyalRich4evr" target="_blank" class="link-url">https://x.com/RoyalRich4evr</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🎵</span>
+            <div class="link-content">
+              <div class="link-title">Music Track 1</div>
+              <a href="https://music.youtube.com/watch?v=E0libuqpGOw&si=IikZn1n-wYzxq38T" target="_blank" class="link-url">YouTube Music</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🎵</span>
+            <div class="link-content">
+              <div class="link-title">Music Track 2</div>
+              <a href="https://music.youtube.com/watch?v=yWcbF5HG42A&si=WnQxjopIGajFzcM4" target="_blank" class="link-url">YouTube Music</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🎵</span>
+            <div class="link-content">
+              <div class="link-title">Music Track 3</div>
+              <a href="https://music.youtube.com/watch?v=0JQ1C1JjPeM&si=Fuo8b7eEtaTuJgWq" target="_blank" class="link-url">YouTube Music</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🎵</span>
+            <div class="link-content">
+              <div class="link-title">Music Track 4</div>
+              <a href="https://music.youtube.com/watch?v=OAGmtnjTPrI&si=_pkzB1WNo8yHgTDq" target="_blank" class="link-url">YouTube Music</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=QC8QcrA1kpX3ttnZZSEU5fFyHm1rgd1XTUVTpakXReF8MvfnvhQ3gJArJQvV" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=QC8QcrA1kpX3ttnZZSEU5fFyHm1rgd1XTUVTpakXReF8MvfnvhQ3gJArJQvV</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sally -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">Sally</h3>
+            <p class="contributor-description">Memer</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/zenpondmaxi" target="_blank" class="link-url">https://x.com/zenpondmaxi</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=PXTe61dZtre6N7zcbmLGj5tswUU1Ri2z1VvWXaXjegqurBKTNYGgRZLfDULL" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=PXTe61dZtre6N7zcbmLGj5tswUU1Ri2z1VvWXaXjegqurBKTNYGgRZLfDULL</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SoulMeme0x -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">SoulMeme0x</h3>
+            <p class="contributor-description">Artist</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/Soulmeme0x" target="_blank" class="link-url">https://x.com/Soulmeme0x</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🌐</span>
+            <div class="link-content">
+              <div class="link-title">Website</div>
+              <a href="https://www.porkmeme.com/soul0x" target="_blank" class="link-url">https://www.porkmeme.com/soul0x</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=K2YihJ9YCxPH7fgaVZHsi4Q8EK32Rx89eyX4K4zbtaYz6S89NuAEDYSRNix7" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=K2YihJ9YCxPH7fgaVZHsi4Q8EK32Rx89eyX4K4zbtaYz6S89NuAEDYSRNix7</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sumguy -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">Sumguy</h3>
+            <p class="contributor-description">Pond0x stats dashboard</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/SumguyART" target="_blank" class="link-url">https://x.com/SumguyART</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">📊</span>
+            <div class="link-content">
+              <div class="link-title">Pond0x Stats Dashboard</div>
+              <a href="https://pond0xdash.com/" target="_blank" class="link-url">https://pond0xdash.com/</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=QBqfqasmbCF1gRTYVXyDvAjMgrcgjnVQfe7KVFuw5ePozmZNjdT8BigtbUV3" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=QBqfqasmbCF1gRTYVXyDvAjMgrcgjnVQfe7KVFuw5ePozmZNjdT8BigtbUV3</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- tossi -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">tossi</h3>
+            <p class="contributor-description">Photographer/artist/memer</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/tossi_eth" target="_blank" class="link-url">https://x.com/tossi_eth</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🌐</span>
+            <div class="link-content">
+              <div class="link-title">Website</div>
+              <a href="https://foundation.app/collection/0xMicks?addressOrSlug=0x906edd377de1e7797618F9443a862A7eB39C325b" target="_blank" class="link-url">https://foundation.app/collection/0xMicks</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=QB2jjgj7U4PQ2VodW5YEJqsYxbr1swjSPUprpABgvEzE21RB1kqtVdmzQ8WP" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=QB2jjgj7U4PQ2VodW5YEJqsYxbr1swjSPUprpABgvEzE21RB1kqtVdmzQ8WP</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- unempyd -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">unempyd</h3>
+            <p class="contributor-description">Memer and space host</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/unempyd" target="_blank" class="link-url">https://x.com/unempyd</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=QDPKwbHgkWDAjbF42TJJntgUnR4irhQSVUnkg77a6SNntmfAg4vC4eA6LMSh" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=QDPKwbHgkWDAjbF42TJJntgUnR4irhQSVUnkg77a6SNntmfAg4vC4eA6LMSh</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WorstGen -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">WorstGen</h3>
+            <p class="contributor-description">Data hub, claims bot and analytics aka THIS VERY SITE</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/WorstGen0x" target="_blank" class="link-url">https://x.com/WorstGen0x</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">📊</span>
+            <div class="link-content">
+              <div class="link-title">Data Hub</div>
+              <a href="https://worstgen.github.io/Pond0x-Data-Hub" target="_blank" class="link-url">https://worstgen.github.io/Pond0x-Data-Hub</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤖</span>
+            <div class="link-content">
+              <div class="link-title">Claims Bot (X)</div>
+              <a href="https://x.com/Claimsbot" target="_blank" class="link-url">https://x.com/Claimsbot</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤖</span>
+            <div class="link-content">
+              <div class="link-title">Claims Bot (Telegram)</div>
+              <a href="https://t.me/S53opTbot" target="_blank" class="link-url">https://t.me/S53opTbot</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤖</span>
+            <div class="link-content">
+              <div class="link-title">Claims Bot (Discord)</div>
+              <a href="https://discord.com/oauth2/authorize?client_id=1409886705758109827" target="_blank" class="link-url">https://discord.com/oauth2/authorize?client_id=1409886705758109827</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://pond0x.com/swap/solana?ref=KLfc17WAJMCEuSPpZkcYFqNuPCEUDbPW9ojMmmXeaexVRYtMM4X9sDg2114p" target="_blank" class="link-url">https://pond0x.com/swap/solana?ref=KLfc17WAJMCEuSPpZkcYFqNuPCEUDbPW9ojMmmXeaexVRYtMM4X9sDg2114p</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- yeaprolly 2.0 -->
+      <div class="contributor-card special-contributor">
+        <div class="contributor-header">
+          <div>
+            <h3 class="contributor-name">yeaprolly 2.0</h3>
+            <p class="contributor-description">Amazon merchandise</p>
+          </div>
+        </div>
+        <div class="contributor-links">
+          <div class="link-item">
+            <span class="link-emoji">𝕏</span>
+            <div class="link-content">
+              <div class="link-title">X Account</div>
+              <a href="https://x.com/yeaprolly2" target="_blank" class="link-url">https://x.com/yeaprolly2</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🛒</span>
+            <div class="link-content">
+              <div class="link-title">Amazon Store</div>
+              <a href="https://www.amazon.com/s?rh=n%3A7141123011%2Cp_4%3AWhosPolly&refc=mh_bl_sl_s_ap_mw_7141123011" target="_blank" class="link-url">Amazon WhosPolly Store</a>
+            </div>
+          </div>
+          <div class="link-item">
+            <span class="link-emoji">🤝</span>
+            <div class="link-content">
+              <div class="link-title">Referral Link</div>
+              <a href="https://www.pond0x.com/swap/solana?ref=HjFrAPg4Xr9oo7RJKSE1JGkL8M7rtywFMqLFAYdVEZmQQxbpzB5VnEf44RJQ" target="_blank" class="link-url">https://www.pond0x.com/swap/solana?ref=HjFrAPg4Xr9oo7RJKSE1JGkL8M7rtywFMqLFAYdVEZmQQxbpzB5VnEf44RJQ</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p><b>Built for <a href="https://cary0x.github.io/community/" target="_blank">the POND🤝X community</a> ❤️</b></p>
+      <p style="margin-top: 1rem; opacity: 0.8; font-size: 0.8rem;">
+        TO SEE MORE POND🤝X COMMUNITY PROFILES AND LINKS CLICK THE LINK DIRECTLY ABOVE<br><br>Note: Some community links and information may be speculative. Always DYOR (Do Your Own Research) and verify information independently. 
+        Links are provided as community resources and do not constitute endorsements. If you believe you should be on this list please DM <a href="https://x.com/WorstGen0x" target="_blank" class="link-url">@WorstGen0x</a> or <a href="https://x.com/TheRaptorRoost" target="_blank" class="link-url">@TheRaptorRoost</a> on X with links to your contributions to be considered.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // Theme management
+    const themeManager = {
+      storageKey: 'pond0x_theme_preference',
+      
+      init() {
+        const savedTheme = this.loadTheme();
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+        
+        this.setTheme(initialTheme);
+        
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+          if (!this.loadTheme()) {
+            this.setTheme(e.matches ? 'dark' : 'light');
+          }
+        });
+
+        window.addEventListener('storage', (e) => {
+          if (e.key === this.storageKey && e.newValue) {
+            const newTheme = e.newValue;
+            if (newTheme && newTheme !== this.getCurrentTheme()) {
+              this.setTheme(newTheme);
+            }
+          }
+        });
+      },
+      
+      loadTheme() {
+        try {
+          return localStorage.getItem(this.storageKey);
+        } catch (e) {
+          console.warn('Could not load theme preference:', e);
+          return null;
+        }
+      },
+      
+      saveTheme(theme) {
+        try {
+          localStorage.setItem(this.storageKey, theme);
+        } catch (e) {
+          console.warn('Could not save theme preference:', e);
+        }
+      },
+
+      getCurrentTheme() {
+        return document.documentElement.getAttribute('data-theme') || 'light';
+      },
+      
+      setTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        const button = document.getElementById('themeToggle');
+        if (button) {
+          button.textContent = theme === 'dark' ? '🌙' : '☀️';
+          button.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+        }
+        this.saveTheme(theme);
+      },
+      
+      toggle() {
+        const currentTheme = this.getCurrentTheme();
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        this.setTheme(newTheme);
+      }
+    };
+
+    function toggleTheme() {
+      themeManager.toggle();
+    }
+
+    function toggleMobileNav() {
+      const mobileNav = document.getElementById('mobileNav');
+      const toggleIcon = document.getElementById('nav-toggle-icon');
+      
+      if (mobileNav.classList.contains('active')) {
+        mobileNav.classList.remove('active');
+        toggleIcon.textContent = '☰';
+      } else {
+        mobileNav.classList.add('active');
+        toggleIcon.textContent = '✕';
+      }
+    }
+
+    function toggleBubbles() {
+      const container = document.getElementById('bubbleContainer');
+      const button = document.getElementById('cookButton');
+      const body = document.body;
+      
+      if (bubbleSystem.animationRunning) {
+        bubbleSystem.stop();
+        container.classList.add('hidden');
+        body.classList.add('glass-off');
+        button.classList.add('bubbles-off');
+        button.innerHTML = '👨‍🍳 Cook';
+        bubbleStateManager.saveState(false);
+      } else {
+        bubbleSystem.start();
+        container.classList.remove('hidden');
+        body.classList.remove('glass-off');
+        button.classList.remove('bubbles-off');
+        button.innerHTML = '👨‍🍳 Cook';
+        bubbleStateManager.saveState(true);
+      }
+    }
+
+    // Bubble state management
+    const bubbleStateManager = {
+      storageKey: 'pond0x_bubble_state',
+      
+      saveState(isEnabled) {
+        try {
+          localStorage.setItem(this.storageKey, JSON.stringify({
+            enabled: isEnabled,
+            timestamp: Date.now()
+          }));
+        } catch (e) {
+          console.warn('Could not save bubble state:', e);
+        }
+      },
+      
+      loadState() {
+        try {
+          const stored = localStorage.getItem(this.storageKey);
+          if (stored) {
+            const state = JSON.parse(stored);
+            return state.enabled;
+          }
+        } catch (e) {
+          console.warn('Could not load bubble state:', e);
+        }
+        return true;
+      },
+      
+      init() {
+        const savedState = this.loadState();
+        
+        if (!savedState) {
+          bubbleSystem.animationRunning = false;
+          const container = document.getElementById('bubbleContainer');
+          const button = document.getElementById('cookButton');
+          const body = document.body;
+          
+          container.classList.add('hidden');
+          body.classList.add('glass-off');
+          button.classList.add('bubbles-off');
+          button.innerHTML = '👨‍🍳 Cook';
+        }
+        
+        return savedState;
+      }
+    };
+
+    // Bubble animation system
+    const bubbleSystem = {
+      container: null,
+      bubbles: [],
+      maxBubbles: 25,
+      initialized: false,
+      animationRunning: true,
+      animationInterval: null,
+      
+      init() {
+        if (this.initialized) return;
+        this.container = document.getElementById('bubbleContainer');
+        this.createBubblePool();
+        
+        const shouldRun = bubbleStateManager.init();
+        if (shouldRun) {
+          this.startAnimation();
+        } else {
+          this.animationRunning = false;
+        }
+        
+        this.initialized = true;
+      },
+
+      stop() {
+        this.animationRunning = false;
+        if (this.animationInterval) {
+          clearInterval(this.animationInterval);
+        }
+        this.bubbles.forEach(bubble => {
+          if (bubble.timer) {
+            clearTimeout(bubble.timer);
+          }
+          bubble.element.style.display = 'none';
+          bubble.active = false;
+        });
+      },
+
+      start() {
+        if (!this.animationRunning) {
+          this.animationRunning = true;
+          this.startAnimation();
+        }
+      },
+      
+      createBubblePool() {
+        for (let i = 0; i < this.maxBubbles; i++) {
+          const bubble = document.createElement('div');
+          bubble.className = 'bubble';
+          bubble.style.display = 'none';
+          this.container.appendChild(bubble);
+          this.bubbles.push({
+            element: bubble,
+            active: false,
+            timer: 0
+          });
+        }
+      },
+      
+      getRandomBubble() {
+        return this.bubbles.find(b => !b.active) || this.bubbles[0];
+      },
+      
+      createBubble() {
+        const bubble = this.getRandomBubble();
+        if (!bubble || bubble.active) return;
+        
+        const size = Math.random() * 40 + 10;
+        const left = Math.random() * 100;
+        const duration = Math.random() * 4 + 6;
+        const delay = Math.random() * 2;
+        
+        const element = bubble.element;
+        element.style.cssText = `
+          width: ${size}px;
+          height: ${size}px;
+          left: ${left}%;
+          animation: bubble-rise ${duration}s linear ${delay}s forwards;
+          display: block;
+        `;
+        
+        bubble.active = true;
+        bubble.timer = setTimeout(() => {
+          element.style.display = 'none';
+          bubble.active = false;
+        }, (duration + delay) * 1000);
+      },
+      
+      startAnimation() {
+        if (!this.animationRunning) return;
+        
+        for (let i = 0; i < 8; i++) {
+          setTimeout(() => {
+            if (this.animationRunning) this.createBubble();
+          }, i * 600);
+        }
+        
+        this.animationInterval = setInterval(() => {
+          if (this.animationRunning && Math.random() < 0.8) {
+            this.createBubble();
+          }
+        }, 900);
+      }
+    };
+
+    // Close mobile nav when clicking on links
+    document.addEventListener('DOMContentLoaded', function() {
+      const mobileLinks = document.querySelectorAll('.nav-mobile-links a');
+      mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          const mobileNav = document.getElementById('mobileNav');
+          const toggleIcon = document.getElementById('nav-toggle-icon');
+          mobileNav.classList.remove('active');
+          toggleIcon.textContent = '☰';
+        });
+      });
+      
+      document.addEventListener('click', (e) => {
+        const navbar = document.querySelector('.navbar');
+        const mobileNav = document.getElementById('mobileNav');
+        
+        if (!navbar.contains(e.target) && mobileNav.classList.contains('active')) {
+          mobileNav.classList.remove('active');
+          document.getElementById('nav-toggle-icon').textContent = '☰';
+        }
+      });
+    });
+
+    // Initialize everything when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      themeManager.init();
+      bubbleSystem.init();
+    });
+  </script>
+</body>
+</html>
