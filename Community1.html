@@ -871,6 +871,8 @@
       height: 340px;
       display: flex;
       flex-direction: column;
+      box-sizing: border-box;
+      overflow: hidden;
     }
 
     .contributor-card:hover {
@@ -908,6 +910,8 @@
       display: flex;
       flex-direction: column;
       min-height: 0; /* Allow flexbox to shrink */
+      padding-right: 0.25rem;
+      box-sizing: border-box;
     }
 
     .links-content {
@@ -917,6 +921,8 @@
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
+      padding-right: 0.5rem;
+      box-sizing: border-box;
     }
 
     .links-slider {
@@ -931,7 +937,8 @@
       gap: 0.5rem;
       opacity: 0;
       transition: all 0.3s ease;
-      padding: 0.25rem 0;
+      padding: 0.25rem 0.5rem 0.25rem 0;
+      box-sizing: border-box;
     }
 
     .primary-links.active, .additional-links.active {
@@ -1001,6 +1008,8 @@
       min-height: 50px;
       max-height: 60px;
       overflow: hidden;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .link-item:hover {
@@ -1119,6 +1128,8 @@
       .link-item {
         padding: 0.5rem;
         gap: 0.5rem;
+        width: 100%;
+        box-sizing: border-box;
       }
 
       .link-title {
@@ -1375,6 +1386,8 @@
       .contributor-card {
         padding: 15px;
         height: 320px;
+        box-sizing: border-box;
+        overflow: hidden;
       }
 
       .contributor-name {
