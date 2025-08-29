@@ -913,15 +913,12 @@
       flex: 1;
       position: relative;
       overflow: hidden;
+      min-height: 140px; /* Minimum height for content */
     }
 
     .links-slider {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      transition: transform 0.3s ease;
+      position: relative;
+      height: 100%;
     }
 
     .primary-links, .additional-links {
@@ -946,9 +943,15 @@
       display: flex;
       justify-content: center;
       gap: 0.5rem;
-      margin-top: auto;
+      height: 50px;
       padding-top: 1rem;
       align-items: center;
+      flex-shrink: 0;
+    }
+
+    .slide-controls-placeholder {
+      height: 50px;
+      padding-top: 1rem;
     }
 
     .slide-btn {
@@ -1682,7 +1685,9 @@
               <span class="slide-indicator">1/${totalSlides}</span>
               <button class="slide-btn next-btn" onclick="slideLinks(this, 1)">›</button>
             </div>
-          ` : ''}
+          ` : `
+            <div class="slide-controls-placeholder"></div>
+          `}
         </div>
       `;
 
