@@ -17,15 +17,18 @@
 
   <!-- Load community data script in head -->
   <script>
-    // Initialize communityData as empty array in case script fails
-    if (typeof communityData === 'undefined') {
-      console.log('Initializing communityData as empty array');
-      window.communityData = [];
-    } else {
-      console.log('communityData already defined:', communityData.length, 'contributors');
-    }
+    // Check if communityData already exists before loading script
+    console.log('Before script load - communityData type:', typeof communityData);
   </script>
-  <script src="community-data.js?v=1" onload="console.log('community-data.js loaded successfully');" onerror="console.error('Failed to load community-data.js');"></script>
+  <script src="community-data.js?v=2" onload="
+    console.log('✅ community-data.js loaded successfully');
+    console.log('After script load - communityData type:', typeof communityData);
+    if (typeof communityData !== 'undefined') {
+      console.log('✅ communityData is defined, length:', communityData.length);
+    } else {
+      console.error('❌ communityData still undefined after script load');
+    }
+  " onerror="console.error('❌ Failed to load community-data.js');"></script>
 
   <style>
     * {
@@ -655,33 +658,46 @@
       margin: 0 10px;
     }
 
-    /* People Like Section Styles */
     .people-like-section {
-      background: var(--card-bg);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--card-border);
-      border-radius: 15px;
-      padding: 20px;
-      margin: 30px 0;
       text-align: center;
-      box-shadow: 0 4px 20px var(--shadow-primary);
+      margin-top: 2rem;
+      padding: 1rem;
+      color: var(--text-primary);
+      font-size: 0.9rem;
     }
 
     .people-like-subtitle {
-      color: var(--text-secondary);
-      margin: 10px 0;
-      font-size: 1.1rem;
+      margin: 0.5rem 0 1rem 0;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      opacity: 0.8;
     }
 
     .people-like-section .link-url {
-      color: var(--primary-color);
+      color: var(--accent-color);
       text-decoration: none;
-      transition: color 0.3s ease;
+      opacity: 0.8;
+      transition: all 0.3s ease;
     }
 
     .people-like-section .link-url:hover {
-      color: var(--accent-color);
-      text-decoration: underline;
+      color: var(--text-primary);
+      opacity: 1;
+      text-shadow: 0 0 10px var(--shadow-accent);
+    }
+
+    #plw-content {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 768px) {
+      #plw-content {
+        gap: 1.5rem;
+      }
     }
 
     /* Member container styles for People Like section */
@@ -729,15 +745,18 @@
     .member-link {
       display: block;
       font-size: 0.8rem;
-      color: var(--primary-color);
+      color: var(--accent-color);
       text-decoration: none;
       text-align: center;
       margin: 2px 0;
+      opacity: 0.8;
+      transition: all 0.3s ease;
     }
 
     .member-link:hover {
-      color: var(--accent-color);
-      text-decoration: underline;
+      color: var(--text-primary);
+      opacity: 1;
+      text-shadow: 0 0 10px var(--shadow-accent);
     }
 
     /* Footer styles */
@@ -955,14 +974,11 @@
 
 
     <div class="footer">
-      <p><b>Built for <a href="https://cary0x.github.io/community/" target="_blank">the POND🤝X community</a> ❤️</b></p>
-
-      <!-- PEOPLE LIKE SECTION - START -->
       <div class="people-like-section">
+        <p><b>Built for <a href="https://worstgen.github.io/Pond0x-Data-Hub/Community.html" style="color: #FF13F0 !important;">the POND🤝X community</a> ❤️</b></p>
         <p class="people-like-subtitle"><b>People like</b></p>
         <div id="plw-content">Loading...</div>
       </div>
-      <!-- PEOPLE LIKE SECTION - END -->
 
       <p style="margin-top: 1rem; opacity: 0.8; font-size: 0.8rem;">
         Note: Some community links and information may be speculative. Always DYOR (Do Your Own Research) and verify information independently.
@@ -1533,51 +1549,47 @@
       themeManager.init();
       bubbleSystem.init();
 
-      // Load community contributors with multiple checks
-      let loadAttempts = 0;
-      const maxAttempts = 10;
+      // Load community contributors - wait for script to load
+      const loadCommunityData = () => {
+        console.log('Loading community data...');
+        console.log('Current communityData type:', typeof communityData);
 
-      const checkCommunityData = () => {
-        loadAttempts++;
-        console.log(`Attempt ${loadAttempts} - Checking communityData:`, typeof communityData);
+        // Give the script time to load
+        setTimeout(() => {
+          console.log('Checking communityData after delay...');
+          console.log('Type:', typeof communityData);
 
-        if (typeof communityData !== 'undefined') {
-          console.log('communityData type:', typeof communityData);
-          console.log('communityData isArray:', Array.isArray(communityData));
-          console.log('communityData length:', communityData ? communityData.length : 'null/undefined');
-
-          if (Array.isArray(communityData) && communityData.length > 0) {
+          if (typeof communityData !== 'undefined' && Array.isArray(communityData) && communityData.length > 0) {
             console.log('✅ Community data loaded successfully:', communityData.length, 'contributors');
-            console.log('First contributor:', communityData[0]);
-            console.log('Last contributor:', communityData[communityData.length - 1]);
+            console.log('First contributor:', communityData[0].name);
+            console.log('Last contributor:', communityData[communityData.length - 1].name);
+
             allContributors = communityData;
             filteredContributors = [...allContributors];
             displayContributors(filteredContributors, currentPage);
-            return;
-          } else if (Array.isArray(communityData) && communityData.length === 0) {
-            console.log('Community data is empty array - waiting for data to load...');
-          }
-        } else {
-          console.log('communityData is undefined - waiting for script to load...');
-        }
+          } else {
+            console.error('❌ Community data failed to load properly');
+            console.error('Type:', typeof communityData);
+            console.error('Is Array:', Array.isArray(communityData));
+            console.error('Length:', communityData ? communityData.length : 'null/undefined');
 
-        // Retry if not loaded yet
-        if (loadAttempts < maxAttempts) {
-          setTimeout(checkCommunityData, 200);
-        } else {
-          console.error('❌ Community data failed to load after', maxAttempts, 'attempts');
-          console.error('Final state:', {
-            type: typeof communityData,
-            isArray: Array.isArray(communityData),
-            length: communityData ? communityData.length : 'null/undefined',
-            value: communityData
-          });
-          document.getElementById('contributorsContainer').innerHTML = '<div class="loading">Error loading community data. Please refresh the page.</div>';
-        }
+            // Try one more time with a longer delay
+            setTimeout(() => {
+              if (typeof communityData !== 'undefined' && Array.isArray(communityData) && communityData.length > 0) {
+                console.log('✅ Community data loaded on retry');
+                allContributors = communityData;
+                filteredContributors = [...allContributors];
+                displayContributors(filteredContributors, currentPage);
+              } else {
+                console.error('❌ Community data still failed to load');
+                document.getElementById('contributorsContainer').innerHTML = '<div class="loading">Error loading community data. Please refresh the page.</div>';
+              }
+            }, 1000);
+          }
+        }, 500);
       };
 
-      // Start checking after a brief delay
-      setTimeout(checkCommunityData, 100);
+      loadCommunityData();
 
       // Load People Like section
       CommunityLoader.renderPeopleLike();
