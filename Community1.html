@@ -16,6 +16,12 @@
   <meta name="twitter:image" content="https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/refs/heads/main/hubcard.png">
 
   <!-- Load community data script in head -->
+  <script>
+    // Initialize communityData as empty array in case script fails
+    if (typeof communityData === 'undefined') {
+      window.communityData = [];
+    }
+  </script>
   <script src="community-data.js?v=1"></script>
 
   <style>
@@ -76,7 +82,7 @@
       background: var(--bg-gradient);
       color: var(--text-primary);
       min-height: 100vh;
-      padding-top: 70px;
+      padding-top: 70px !important;
       position: relative;
       overflow-x: hidden;
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -798,7 +804,8 @@
       }
 
       .container {
-        padding: 15px;
+        padding: 1rem;
+        padding-top: 1rem;
       }
 
       .contributor-card {
@@ -1286,6 +1293,7 @@
       },
 
       async renderPeopleLike() {
+        console.log('Starting People Like section rendering');
         const container = document.getElementById('plw-content');
         if (!container) {
           console.error('plw-content container not found');
@@ -1293,7 +1301,9 @@
         }
 
         try {
+          console.log('Loading community data for People Like section');
           const communityMembers = await this.loadCommunityData();
+          console.log('Community members loaded:', communityMembers?.length || 0);
 
           if (!communityMembers || communityMembers.length === 0) {
             container.textContent = "No community members found.";
@@ -1301,6 +1311,7 @@
           }
 
           const selectedMembers = this.selectRandomMembers(communityMembers, 3);
+          console.log('Selected members for People Like:', selectedMembers);
 
           // Clear loading text
           container.innerHTML = '';
@@ -1310,6 +1321,8 @@
             const memberElement = this.createMemberElement(member);
             container.appendChild(memberElement);
           });
+
+          console.log('People Like section rendered successfully');
 
         } catch (error) {
           console.error('Error rendering People Like section:', error);
@@ -1328,14 +1341,25 @@
       animationInterval: null,
 
       init() {
-        if (this.initialized) return;
+        console.log('Initializing bubble system');
+        if (this.initialized) {
+          console.log('Bubble system already initialized');
+          return;
+        }
         this.container = document.getElementById('bubbleContainer');
+        console.log('Bubble container found:', this.container);
+
         this.createBubblePool();
+        console.log('Bubble pool created, bubbles count:', this.bubbles.length);
 
         const shouldRun = bubbleStateManager.init();
+        console.log('Should run bubbles:', shouldRun);
+
         if (shouldRun) {
+          console.log('Starting bubble animation');
           this.startAnimation();
         } else {
+          console.log('Bubbles disabled by user preference');
           this.animationRunning = false;
         }
 
@@ -1471,11 +1495,13 @@
     };
 
     function toggleBubbles() {
+      console.log('Toggling bubbles, current state:', bubbleSystem.animationRunning);
       const container = document.getElementById('bubbleContainer');
       const button = document.getElementById('cookButton');
       const body = document.body;
 
       if (bubbleSystem.animationRunning) {
+        console.log('Stopping bubbles');
         bubbleSystem.stop();
         container.classList.add('hidden');
         body.classList.add('glass-off');
@@ -1483,6 +1509,7 @@
         button.innerHTML = '👨‍🍳 Cook';
         bubbleStateManager.saveState(false);
       } else {
+        console.log('Starting bubbles');
         bubbleSystem.start();
         container.classList.remove('hidden');
         body.classList.remove('glass-off');
@@ -1500,21 +1527,26 @@
       // Load community contributors
       console.log('Checking communityData:', typeof communityData, communityData);
 
-      if (typeof communityData !== 'undefined' && Array.isArray(communityData) && communityData.length > 0) {
-        console.log('Community data loaded successfully:', communityData.length, 'contributors');
-        console.log('First contributor:', communityData[0]);
-        console.log('Last contributor:', communityData[communityData.length - 1]);
-        allContributors = communityData;
-        filteredContributors = [...allContributors];
-        displayContributors(filteredContributors, currentPage);
-      } else {
-        console.error('Community data not loaded or invalid:', {
-          type: typeof communityData,
-          isArray: Array.isArray(communityData),
-          length: communityData ? communityData.length : 'undefined'
-        });
-        document.getElementById('contributorsContainer').innerHTML = '<div class="loading">Error loading community data. Please refresh the page.</div>';
-      }
+      // Small delay to ensure script is fully loaded
+      setTimeout(() => {
+        console.log('Delayed check - communityData:', typeof communityData, communityData);
+
+        if (typeof communityData !== 'undefined' && Array.isArray(communityData) && communityData.length > 0) {
+          console.log('Community data loaded successfully:', communityData.length, 'contributors');
+          console.log('First contributor:', communityData[0]);
+          console.log('Last contributor:', communityData[communityData.length - 1]);
+          allContributors = communityData;
+          filteredContributors = [...allContributors];
+          displayContributors(filteredContributors, currentPage);
+        } else {
+          console.error('Community data not loaded or invalid:', {
+            type: typeof communityData,
+            isArray: Array.isArray(communityData),
+            length: communityData ? communityData.length : 'undefined'
+          });
+          document.getElementById('contributorsContainer').innerHTML = '<div class="loading">Error loading community data. Please refresh the page.</div>';
+        }
+      }, 500);
 
       // Load People Like section
       CommunityLoader.renderPeopleLike();
