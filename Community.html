@@ -462,6 +462,22 @@
       {"emoji": "🤝", "title": "Referral Link", "url": "https://www.pond0x.com/swap/solana?ref=PCtYBTDftoDUzLD7MwS6cm1NqkMgEzUjmxGXHNSL4wVMnCgpF6rCkso5MQr5"}
     ]
   },
+      {
+    "name": "Borednotsure (ØG)",
+    "description": "Memer",
+    "links": [
+      {"emoji": "𝕏", "title": "X Account", "url": "https://x.com/borednotsure123"},
+      {"emoji": "🤝", "title": "Referral Link", "url": "https://www.pond0x.com/swap/solana?ref=HNPxetr4nQfH8PHoL3ywhiVbtjByAvR9z9rBVpGVh9BD1P7fHSGFqgrxKorp"}
+    ]
+  },
+      {
+    "name": "Angry Pork",
+    "description": "Memer",
+    "links": [
+      {"emoji": "𝕏", "title": "X Account", "url": "https://x.com/cryptodudepepe"},
+      {"emoji": "🤝", "title": "Referral Link", "url": "https://www.pond0x.com/swap/solana?ref=Hebs6whLPjKCFEQVuiiUWKoQ4k97YCKQxfb5xXyZhyzNYvsr8LX582uqE7Fh"}
+    ]
+  },
   {
     "name": "SoulMeme0x",
     "description": "Artist",
@@ -1966,6 +1982,18 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    // Fisher-Yates shuffle algorithm for randomizing array order
+    // This randomizes the order once at page load, then pagination works consistently
+    // with the same randomized order throughout the session
+    function shuffleArray(array) {
+      const shuffled = [...array]; // Create a copy to avoid mutating original
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
+
     function filterContributors() {
       const searchTerm = document.getElementById('searchInput').value.toLowerCase();
       filteredContributors = allContributors.filter(contributor =>
@@ -2372,19 +2400,15 @@
       if (window.communityDataLoaded && typeof communityData !== 'undefined' && Array.isArray(communityData) && communityData.length > 0) {
         console.log('✅ Using synchronously loaded community data:', communityData.length, 'contributors');
         
-        // Sort contributors alphabetically by name
-        const sortedData = [...communityData].sort((a, b) => {
-          // Remove special characters and emojis for sorting, convert to lowercase
-          const nameA = a.name.replace(/[^\w\s]/gi, '').toLowerCase().trim();
-          const nameB = b.name.replace(/[^\w\s]/gi, '').toLowerCase().trim();
-          return nameA.localeCompare(nameB);
-        });
+        // Randomize contributors order using Fisher-Yates shuffle
+        const randomizedData = shuffleArray(communityData);
         
-        console.log('✅ Contributors sorted alphabetically');
-        console.log('First contributor:', sortedData[0].name);
-        console.log('Last contributor:', sortedData[sortedData.length - 1].name);
+        console.log('✅ Contributors order randomized');
+        console.log('First contributor:', randomizedData[0].name);
+        console.log('Last contributor:', randomizedData[randomizedData.length - 1].name);
+        console.log('✨ Random seed applied at page load');
         
-        allContributors = sortedData;
+        allContributors = randomizedData;
         filteredContributors = [...allContributors];
         displayContributors(filteredContributors, currentPage);
       } else {
