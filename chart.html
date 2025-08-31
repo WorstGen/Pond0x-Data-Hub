@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Advanced Pond Ecosystem Multi-Contract Chart</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-date-fns/2.0.0/chartjs-adapter-date-fns.bundle.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -1326,18 +1325,23 @@
 
             const scales = {
                 x: {
-                    type: 'time',
-                    time: {
-                        displayFormats: {
-                            minute: 'HH:mm',
-                            hour: 'MMM dd HH:mm',
-                            day: 'MMM dd',
-                            week: 'MMM dd',
-                            month: 'MMM yyyy'
-                        }
-                    },
+                    type: 'linear',
                     grid: { color: '#374151' },
-                    ticks: { color: '#9ca3af' }
+                    ticks: { 
+                        color: '#9ca3af',
+                        callback: function(value) {
+                            const date = new Date(value);
+                            if (timeRange === '1h' || timeRange === '4h') {
+                                return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                            } else if (timeRange === '12h' || timeRange === '24h') {
+                                return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                            } else if (timeRange === '7d' || timeRange === '30d') {
+                                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                            } else {
+                                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' });
+                            }
+                        }
+                    }
                 },
                 y: {
                     type: logScale ? 'logarithmic' : 'linear',
@@ -1383,10 +1387,36 @@
                             borderWidth: 1,
                             cornerRadius: 8,
                             callbacks: {
+                                title: function(tooltipItems) {
+                                    if (tooltipItems.length > 0) {
+                                        const timestamp = tooltipItems[0].parsed.x;
+                                        const date = new Date(timestamp);
+                                        return date.toLocaleString('en-US', {
+                                            weekday: 'short',
+                                            year: 'numeric',
+                                            month: 'short',
+                                            day: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit'
+                                        });
+                                    }
+                                    return '';
+                                },
+                                label: function(context) {
+                                    const label = context.dataset.label || '';
+                                    const value = context.parsed.y;
+                                    
+                                    if (viewMode === 'normalized' || viewMode === 'percentage') {
+                                        return `${label}: ${value.toFixed(2)}%`;
+                                    } else {
+                                        const formattedValue = value < 0.000001 ? value.toExponential(2) : 
+                                                             value < 0.01 ? value.toFixed(8) : value.toFixed(4);
+                                        return `${label}: ${formattedValue}`;
+                                    }
+                                },
                                 afterBody: function(tooltipItems) {
                                     if (showVolatility && tooltipItems.length > 0) {
                                         const index = tooltipItems[0].dataIndex;
-                                        // Add volatility info to tooltip
                                         return `Data point: ${index + 1}/${chartData.length}`;
                                     }
                                     return '';
