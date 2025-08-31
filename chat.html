@@ -86,6 +86,8 @@
             border-radius: 25px;
             transition: all 0.3s;
             align-self: flex-start;
+            border: none;
+            cursor: pointer;
         }
 
         .btn-twitter:hover {
@@ -115,140 +117,6 @@
             padding: 0 15px;
             color: #6c757d;
             font-size: 14px;
-        }
-
-        /* Modal Styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .modal {
-            background: white;
-            border-radius: 20px;
-            padding: 0;
-            max-width: 500px;
-            width: 90%;
-            max-height: 90vh;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            animation: slideIn 0.3s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-50px) scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        .modal-header {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-header h3 {
-            margin: 0;
-            font-size: 20px;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.3s;
-        }
-
-        .close-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .modal-body {
-            padding: 30px;
-            text-align: center;
-        }
-
-        .modal-body p {
-            margin-bottom: 20px;
-            color: #333;
-            line-height: 1.5;
-        }
-
-        .x-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #000000;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            margin: 20px 0;
-            transition: all 0.3s;
-        }
-
-        .x-link:hover {
-            background: #1a1a1a;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .instruction {
-            font-size: 14px !important;
-            color: #666 !important;
-            margin-top: 30px !important;
-        }
-
-        .x-username-input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e9ecef;
-            border-radius: 25px;
-            outline: none;
-            transition: border-color 0.3s;
-            margin: 15px 0;
-            font-size: 16px;
-        }
-
-        .x-username-input:focus {
-            border-color: #4facfe;
-        }
-
-        .verify-btn {
-            width: 100%;
-            padding: 12px;
-            margin-top: 10px;
         }
 
         .room-controls input {
@@ -387,6 +255,142 @@
             text-align: center;
         }
 
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            padding: 0;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-body {
+            padding: 30px;
+            text-align: center;
+        }
+
+        .modal-body p {
+            margin-bottom: 20px;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .x-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #000000;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 20px 0;
+            transition: all 0.3s;
+        }
+
+        .x-link:hover {
+            background: #1a1a1a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .instruction {
+            font-size: 14px !important;
+            color: #666 !important;
+            margin-top: 30px !important;
+        }
+
+        .x-username-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            outline: none;
+            transition: border-color 0.3s;
+            margin: 15px 0;
+            font-size: 16px;
+        }
+
+        .x-username-input:focus {
+            border-color: #4facfe;
+        }
+
+        .verify-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+        }
+
+        .debug-info {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 12px;
+            color: #666;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+
         @media (max-width: 768px) {
             .chat-container {
                 width: 95%;
@@ -423,7 +427,7 @@
 
         <div class="room-controls">
             <div class="login-section" id="loginSection">
-                <button class="btn btn-twitter" id="twitterLoginBtn">
+                <button class="btn-twitter" id="twitterLoginBtn">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                     </svg>
@@ -445,10 +449,17 @@
             👥 Users online: <span id="userCount">0</span>
         </div>
 
+        <div class="debug-info" id="debugInfo" style="display: none;"></div>
+
         <div class="messages-container" id="messagesContainer">
             <div class="message system">
                 Welcome! Enter your username and optionally a room name to start chatting.
                 <br>Leave room name empty to join the default room.
+                <br><br>
+                <strong>Testing Instructions:</strong><br>
+                1. Open this page in multiple browser tabs<br>
+                2. Use the same room name in each tab<br>
+                3. Messages will sync between all tabs in real-time!
             </div>
         </div>
 
@@ -460,20 +471,19 @@
 
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script>
-        class ChatRoom {
+        class SimpleChatRoom {
             constructor() {
                 this.username = '';
                 this.room = 'default';
                 this.peer = null;
-                this.peerId = null;
                 this.connections = new Map();
-                this.roomPeers = new Set();
                 this.isConnected = false;
-                this.heartbeatInterval = null;
-                this.discoveryInterval = null;
+                this.reconnectAttempts = 0;
+                this.maxReconnectAttempts = 3;
                 
                 this.initializeElements();
                 this.bindEvents();
+                this.log('Chat room initialized');
             }
 
             initializeElements() {
@@ -489,15 +499,20 @@
                 this.connectionStatus = document.getElementById('connectionStatus');
                 this.usersOnline = document.getElementById('usersOnline');
                 this.userCount = document.getElementById('userCount');
+                this.debugInfo = document.getElementById('debugInfo');
             }
 
             bindEvents() {
                 this.joinBtn.addEventListener('click', () => this.joinRoom());
                 this.leaveBtn.addEventListener('click', () => this.leaveRoom());
-                this.twitterLoginBtn.addEventListener('click', () => this.initiateTwitterLogin());
+                this.twitterLoginBtn.addEventListener('click', () => this.showXConnectionModal());
                 this.sendBtn.addEventListener('click', () => this.sendMessage());
+                
                 this.messageInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') this.sendMessage();
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        this.sendMessage();
+                    }
                 });
 
                 // Handle page unload
@@ -506,9 +521,318 @@
                 });
             }
 
-            async initiateTwitterLogin() {
-                // Show modal asking user to visit X
-                this.showXConnectionModal();
+            log(message) {
+                console.log(message);
+                const debugInfo = this.debugInfo;
+                debugInfo.style.display = 'block';
+                debugInfo.textContent = new Date().toLocaleTimeString() + ': ' + message + '\n' + debugInfo.textContent;
+                
+                // Keep only last 10 lines
+                const lines = debugInfo.textContent.split('\n');
+                if (lines.length > 10) {
+                    debugInfo.textContent = lines.slice(0, 10).join('\n');
+                }
+            }
+
+            async joinRoom() {
+                const username = this.usernameInput.value.trim();
+                const room = this.roomInput.value.trim() || 'default';
+
+                if (!username) {
+                    alert('Please enter a username');
+                    return;
+                }
+
+                this.username = username;
+                this.room = room;
+
+                this.log(`Attempting to join room: ${room} as ${username}`);
+                this.updateConnectionStatus('Connecting...');
+
+                await this.initializePeer();
+            }
+
+            async initializePeer() {
+                try {
+                    // Create unique peer ID
+                    const timestamp = Date.now();
+                    const random = Math.random().toString(36).substr(2, 5);
+                    const peerId = `${this.room}-${random}-${timestamp}`;
+                    
+                    this.log(`Creating peer with ID: ${peerId}`);
+
+                    // Initialize PeerJS
+                    this.peer = new Peer(peerId, {
+                        debug: 2
+                    });
+
+                    // Set up event handlers
+                    this.peer.on('open', (id) => {
+                        this.log(`Peer opened with ID: ${id}`);
+                        this.onPeerOpen(id);
+                    });
+
+                    this.peer.on('connection', (conn) => {
+                        this.log(`Incoming connection from: ${conn.peer}`);
+                        this.handleConnection(conn);
+                    });
+
+                    this.peer.on('error', (err) => {
+                        this.log(`Peer error: ${err.type} - ${err.message}`);
+                        this.handlePeerError(err);
+                    });
+
+                    this.peer.on('disconnected', () => {
+                        this.log('Peer disconnected');
+                        this.updateConnectionStatus('Disconnected - attempting to reconnect...');
+                        
+                        if (this.reconnectAttempts < this.maxReconnectAttempts) {
+                            this.reconnectAttempts++;
+                            setTimeout(() => {
+                                this.peer.reconnect();
+                            }, 2000);
+                        }
+                    });
+
+                    this.peer.on('close', () => {
+                        this.log('Peer connection closed');
+                        this.updateConnectionStatus('Connection closed');
+                    });
+
+                } catch (error) {
+                    this.log(`Error initializing peer: ${error.message}`);
+                    this.updateConnectionStatus('Failed to connect');
+                }
+            }
+
+            onPeerOpen(id) {
+                this.reconnectAttempts = 0;
+                this.isConnected = true;
+                
+                // Update UI
+                this.loginSection.style.display = 'none';
+                this.leaveBtn.style.display = 'inline-block';
+                this.messageInput.disabled = false;
+                this.sendBtn.disabled = false;
+                this.usersOnline.style.display = 'block';
+
+                this.updateConnectionStatus(`Connected as ${this.username}`);
+                this.addSystemMessage(`✅ Successfully joined room "${this.room}"`);
+                this.addSystemMessage(`Your ID: ${id.slice(-8)}`);
+                
+                // Start looking for other peers
+                this.discoverPeers();
+                
+                // Update user count
+                this.updateUserCount(this.connections.size + 1);
+            }
+
+            handlePeerError(err) {
+                console.error('PeerJS Error:', err);
+                
+                switch(err.type) {
+                    case 'peer-unavailable':
+                        this.log('Attempted to connect to unavailable peer (normal)');
+                        break;
+                    case 'network':
+                        this.log('Network error - check internet connection');
+                        this.updateConnectionStatus('Network error');
+                        break;
+                    case 'server-error':
+                        this.log('Server error - retrying...');
+                        this.updateConnectionStatus('Server error - retrying...');
+                        break;
+                    default:
+                        this.log(`Unknown error: ${err.type}`);
+                        this.updateConnectionStatus(`Error: ${err.type}`);
+                }
+            }
+
+            discoverPeers() {
+                this.log('Starting peer discovery...');
+                
+                // Use localStorage as a simple peer registry for the room
+                const roomKey = `chatroom_peers_${this.room}`;
+                let peers = JSON.parse(localStorage.getItem(roomKey) || '[]');
+                
+                // Clean old peers (older than 2 minutes)
+                const now = Date.now();
+                peers = peers.filter(peer => now - peer.timestamp < 120000);
+                
+                // Add ourselves
+                const myPeerInfo = {
+                    id: this.peer.id,
+                    username: this.username,
+                    timestamp: now
+                };
+                
+                // Remove any old entries for this peer
+                peers = peers.filter(peer => peer.id !== this.peer.id);
+                peers.push(myPeerInfo);
+                
+                // Save back to localStorage
+                localStorage.setItem(roomKey, JSON.stringify(peers));
+                
+                this.log(`Found ${peers.length - 1} other peers in room`);
+                
+                // Try to connect to other peers
+                peers.forEach(peerInfo => {
+                    if (peerInfo.id !== this.peer.id && !this.connections.has(peerInfo.id)) {
+                        this.connectToPeer(peerInfo.id, peerInfo.username);
+                    }
+                });
+                
+                // Set up periodic peer discovery
+                this.peerDiscoveryInterval = setInterval(() => {
+                    if (this.isConnected) {
+                        this.discoverPeers();
+                    }
+                }, 15000);
+            }
+
+            connectToPeer(peerId, username) {
+                this.log(`Attempting to connect to peer: ${peerId} (${username})`);
+                
+                try {
+                    const conn = this.peer.connect(peerId);
+                    
+                    conn.on('open', () => {
+                        this.log(`✅ Connected to ${username || peerId}`);
+                        this.connections.set(peerId, conn);
+                        this.addSystemMessage(`🟢 ${username || 'User'} joined the chat`);
+                        this.updateUserCount(this.connections.size + 1);
+                        
+                        // Send introduction
+                        conn.send({
+                            type: 'intro',
+                            username: this.username,
+                            message: `Hello! I'm ${this.username}`
+                        });
+                    });
+
+                    conn.on('data', (data) => {
+                        this.handleMessage(data, peerId);
+                    });
+
+                    conn.on('close', () => {
+                        this.log(`Connection closed with ${peerId}`);
+                        this.connections.delete(peerId);
+                        this.addSystemMessage(`🔴 User disconnected`);
+                        this.updateUserCount(this.connections.size + 1);
+                    });
+
+                    conn.on('error', (err) => {
+                        this.log(`Connection error with ${peerId}: ${err.type}`);
+                    });
+
+                } catch (error) {
+                    this.log(`Error connecting to ${peerId}: ${error.message}`);
+                }
+            }
+
+            handleConnection(conn) {
+                this.log(`📞 Handling incoming connection from: ${conn.peer}`);
+                
+                conn.on('open', () => {
+                    this.log(`✅ Incoming connection opened with: ${conn.peer}`);
+                    this.connections.set(conn.peer, conn);
+                    this.addSystemMessage(`🟢 New user joined the chat`);
+                    this.updateUserCount(this.connections.size + 1);
+                });
+
+                conn.on('data', (data) => {
+                    this.handleMessage(data, conn.peer);
+                });
+
+                conn.on('close', () => {
+                    this.log(`❌ Incoming connection closed with: ${conn.peer}`);
+                    this.connections.delete(conn.peer);
+                    this.addSystemMessage(`🔴 User disconnected`);
+                    this.updateUserCount(this.connections.size + 1);
+                });
+
+                conn.on('error', (err) => {
+                    this.log(`❌ Incoming connection error: ${err.type}`);
+                });
+            }
+
+            handleMessage(data, peerId) {
+                this.log(`📨 Received message from ${peerId}: ${JSON.stringify(data)}`);
+                
+                switch(data.type) {
+                    case 'chat':
+                        this.displayMessage(data.username, data.message, false);
+                        break;
+                    case 'intro':
+                        this.log(`👋 Introduction from ${data.username}: ${data.message}`);
+                        break;
+                    default:
+                        this.log(`Unknown message type: ${data.type}`);
+                }
+            }
+
+            sendMessage() {
+                const message = this.messageInput.value.trim();
+                if (!message || !this.isConnected) return;
+
+                this.log(`📤 Sending message: ${message}`);
+
+                // Display own message
+                this.displayMessage(this.username, message, true);
+
+                // Send to all connected peers
+                const messageData = {
+                    type: 'chat',
+                    username: this.username,
+                    message: message,
+                    timestamp: Date.now()
+                };
+
+                let sentCount = 0;
+                this.connections.forEach((conn, peerId) => {
+                    if (conn.open) {
+                        try {
+                            conn.send(messageData);
+                            sentCount++;
+                        } catch (error) {
+                            this.log(`❌ Failed to send message to ${peerId}: ${error.message}`);
+                        }
+                    }
+                });
+
+                this.log(`📤 Message sent to ${sentCount} peers`);
+                this.messageInput.value = '';
+            }
+
+            displayMessage(username, message, isOwn) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${isOwn ? 'own' : 'other'}`;
+                
+                if (isOwn) {
+                    messageDiv.textContent = message;
+                } else {
+                    messageDiv.innerHTML = `<strong>${username}:</strong> ${message}`;
+                }
+
+                this.messagesContainer.appendChild(messageDiv);
+                this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
+            }
+
+            addSystemMessage(text) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message system';
+                messageDiv.textContent = text;
+                this.messagesContainer.appendChild(messageDiv);
+                this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
+                this.log(`System: ${text}`);
+            }
+
+            updateConnectionStatus(status) {
+                this.connectionStatus.textContent = status;
+            }
+
+            updateUserCount(count) {
+                this.userCount.textContent = count;
             }
 
             showXConnectionModal() {
@@ -531,267 +855,107 @@
                             </a>
                             <p class="instruction">After visiting, come back and enter your X username below:</p>
                             <input type="text" class="x-username-input" placeholder="Enter your X username (without @)" maxlength="15">
-                            <button class="btn btn-primary verify-btn" onclick="this.closest('.modal-overlay').querySelector('.chat-container').chatRoom.verifyXUser(this.previousElementSibling.value)">
+                            <button class="btn btn-primary verify-btn" onclick="window.chatRoom.verifyXUser(this.previousElementSibling.value, this.closest('.modal-overlay'))">
                                 Continue to Chat
                             </button>
                         </div>
                     </div>
                 `;
                 
-                // Add modal to page
                 document.body.appendChild(modal);
-                
-                // Store reference to chat room instance
-                modal.querySelector('.chat-container').chatRoom = this;
                 
                 // Focus on input
                 setTimeout(() => {
                     modal.querySelector('.x-username-input').focus();
                 }, 100);
             }
-                const username = this.usernameInput.value.trim();
-                const room = this.roomInput.value.trim() || 'default';
 
-                if (!username) {
-                    alert('Please enter a username');
+            verifyXUser(xUsername, modal) {
+                if (!xUsername || xUsername.trim().length === 0) {
+                    alert('Please enter your X username');
                     return;
                 }
 
-                this.username = username;
-                this.room = room;
-                this.isConnected = true;
+                // Clean username
+                xUsername = xUsername.replace('@', '').trim();
+                
+                // Validate X username format
+                if (!/^[A-Za-z0-9_]{1,15}$/.test(xUsername)) {
+                    alert('Please enter a valid X username (letters, numbers, and underscores only, max 15 characters)');
+                    return;
+                }
 
-                this.joinBtn.style.display = 'none';
-                this.leaveBtn.style.display = 'inline-block';
-                this.messageInput.disabled = false;
-                this.sendBtn.disabled = false;
-                this.usernameInput.disabled = true;
-                this.roomInput.disabled = true;
+                // Set username and room
+                this.username = `@${xUsername}`;
+                this.room = 'x-community';
 
-                this.updateConnectionStatus('Connected to room: ' + room);
-                this.addSystemMessage(`Joined room "${room}" as ${username}`);
-                this.showUsersOnline();
+                // Close modal
+                modal.remove();
 
-                // Simulate peer discovery and connection
-                this.simulatePeerDiscovery();
+                // Join room
+                this.log(`X user ${xUsername} joining room`);
+                this.updateConnectionStatus('Connecting via X...');
+                this.addSystemMessage(`Welcome @${xUsername}! Thanks for visiting our X profile! 🐦`);
+                
+                this.initializePeer();
             }
 
             leaveRoom() {
-                // Clean up localStorage entry
-                const roomKey = `chatroom_${this.room}`;
-                const roomData = JSON.parse(localStorage.getItem(roomKey) || '[]');
-                const filteredData = roomData.filter(entry => entry.peerId !== this.peerId);
-                localStorage.setItem(roomKey, JSON.stringify(filteredData));
+                this.log('Leaving room...');
+                
+                // Clear peer discovery interval
+                if (this.peerDiscoveryInterval) {
+                    clearInterval(this.peerDiscoveryInterval);
+                }
 
-                // Notify peers we're leaving
+                // Clean up localStorage entry
+                const roomKey = `chatroom_peers_${this.room}`;
+                let peers = JSON.parse(localStorage.getItem(roomKey) || '[]');
+                peers = peers.filter(peer => peer.id !== (this.peer ? this.peer.id : ''));
+                localStorage.setItem(roomKey, JSON.stringify(peers));
+
+                // Close all connections
                 this.connections.forEach((conn) => {
                     if (conn.open) {
                         try {
                             conn.send({
-                                type: 'user_left',
+                                type: 'goodbye',
                                 username: this.username,
-                                timestamp: Date.now()
+                                message: `${this.username} left the room`
                             });
                         } catch (error) {
-                            console.error('Error sending leave message:', error);
+                            this.log(`Error sending goodbye: ${error.message}`);
                         }
                     }
                     conn.close();
                 });
 
-                // Close PeerJS connection
+                // Close peer connection
                 if (this.peer && !this.peer.destroyed) {
                     this.peer.destroy();
                 }
 
-                // Clear intervals
-                if (this.heartbeatInterval) {
-                    clearInterval(this.heartbeatInterval);
-                    this.heartbeatInterval = null;
-                }
-                if (this.discoveryInterval) {
-                    clearInterval(this.discoveryInterval);
-                    this.discoveryInterval = null;
-                }
-
                 // Reset state
                 this.connections.clear();
-                this.roomPeers.clear();
                 this.isConnected = false;
-                this.twitterUser = null;
                 this.peer = null;
-                this.peerId = null;
+                this.reconnectAttempts = 0;
 
                 // Reset UI
                 this.loginSection.style.display = 'flex';
                 this.leaveBtn.style.display = 'none';
                 this.messageInput.disabled = true;
                 this.sendBtn.disabled = true;
-                this.hideUsersOnline();
+                this.usersOnline.style.display = 'none';
 
                 this.updateConnectionStatus('Disconnected');
                 this.addSystemMessage('Left the room');
-            }
-
-            // Simulate peer discovery for demo purposes
-            simulatePeerDiscovery() {
-                // In a real implementation, this would connect to other peers
-                // For demo, we'll simulate some activity
-                setTimeout(() => {
-                    this.addSystemMessage('Looking for other users in the room...');
-                    this.updateUserCount(1); // Just showing current user
-                }, 1000);
-
-                // Simulate occasional peer connections/disconnections
-                setInterval(() => {
-                    if (this.isConnected && Math.random() > 0.7) {
-                        const userCount = Math.floor(Math.random() * 5) + 1;
-                        this.updateUserCount(userCount);
-                    }
-                }, 10000);
-            }
-
-            async createPeerConnection(peerId) {
-                const config = {
-                    iceServers: [
-                        { urls: 'stun:stun.l.google.com:19302' },
-                        { urls: 'stun:stun1.l.google.com:19302' }
-                    ]
-                };
-
-                const peerConnection = new RTCPeerConnection(config);
-
-                // Create data channel
-                const dataChannel = peerConnection.createDataChannel('messages', {
-                    ordered: true
-                });
-
-                dataChannel.onopen = () => {
-                    console.log('Data channel opened with', peerId);
-                    this.dataChannels.set(peerId, dataChannel);
-                };
-
-                dataChannel.onmessage = (event) => {
-                    const message = JSON.parse(event.data);
-                    this.displayMessage(message.username, message.text, false);
-                };
-
-                // Handle incoming data channels
-                peerConnection.ondatachannel = (event) => {
-                    const channel = event.channel;
-                    channel.onmessage = (event) => {
-                        const message = JSON.parse(event.data);
-                        this.displayMessage(message.username, message.text, false);
-                    };
-                };
-
-                peerConnection.onicecandidate = (event) => {
-                    if (event.candidate) {
-                        // In a real implementation, send this to signaling server
-                        console.log('ICE candidate:', event.candidate);
-                    }
-                };
-
-                peerConnection.onconnectionstatechange = () => {
-                    console.log('Connection state:', peerConnection.connectionState);
-                };
-
-                this.peers.set(peerId, peerConnection);
-                return peerConnection;
-            }
-
-            sendMessage() {
-                const message = this.messageInput.value.trim();
-                if (!message || !this.isConnected) return;
-
-                // Display own message
-                this.displayMessage(this.username, message, true);
-
-                // Send to all connected peers via PeerJS
-                const messageData = {
-                    type: 'message',
-                    username: this.username,
-                    text: message,
-                    timestamp: Date.now()
-                };
-
-                this.connections.forEach((conn) => {
-                    if (conn.open) {
-                        try {
-                            conn.send(messageData);
-                        } catch (error) {
-                            console.error('Error sending message to peer:', error);
-                        }
-                    }
-                });
-
-                this.messageInput.value = '';
-            }
-
-            displayMessage(username, text, isOwn) {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${isOwn ? 'own' : 'other'}`;
-                
-                if (isOwn) {
-                    messageDiv.textContent = text;
-                } else {
-                    messageDiv.innerHTML = `<strong>${username}:</strong> ${text}`;
-                }
-
-                this.messagesContainer.appendChild(messageDiv);
-                this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
-            }
-
-            addSystemMessage(text) {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = 'message system';
-                messageDiv.textContent = text;
-                this.messagesContainer.appendChild(messageDiv);
-                this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
-            }
-
-            updateConnectionStatus(status) {
-                this.connectionStatus.textContent = status;
-            }
-
-            showUsersOnline() {
-                this.usersOnline.style.display = 'block';
-            }
-
-            hideUsersOnline() {
-                this.usersOnline.style.display = 'none';
-            }
-
-            updateUserCount(count) {
-                this.userCount.textContent = count;
-            }
-
-            startHeartbeat() {
-                this.heartbeatInterval = setInterval(() => {
-                    if (this.isConnected && this.connections.size > 0) {
-                        // Send heartbeat to maintain connections
-                        this.connections.forEach((conn) => {
-                            if (conn.open) {
-                                try {
-                                    conn.send({
-                                        type: 'heartbeat',
-                                        timestamp: Date.now(),
-                                        username: this.username
-                                    });
-                                } catch (error) {
-                                    console.error('Error sending heartbeat:', error);
-                                }
-                            }
-                        });
-                    }
-                }, 30000); // Every 30 seconds
             }
         }
 
         // Initialize the chat room when the page loads
         document.addEventListener('DOMContentLoaded', () => {
-            const chatRoom = new ChatRoom();
-            chatRoom.startHeartbeat(); // Start heartbeat system
+            window.chatRoom = new SimpleChatRoom();
         });
     </script>
 </body>
