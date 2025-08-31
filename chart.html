@@ -4,22 +4,207 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pond Ecosystem Multi-Contract Chart</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body { 
-            margin: 0; 
-            padding: 0; 
             background: #0f172a; 
             font-family: system-ui, -apple-system, sans-serif; 
             color: white;
+            padding: 20px;
         }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            margin-bottom: 30px;
+        }
+        
         .gradient-text {
             background: linear-gradient(to right, #60a5fa, #a78bfa);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
         }
+        
+        .subtitle {
+            color: #9ca3af;
+            margin-bottom: 10px;
+        }
+        
+        .status {
+            font-size: 0.875rem;
+            margin-top: 10px;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            align-items: center;
+        }
+        
+        button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-live {
+            background: #16a34a;
+            color: white;
+        }
+        
+        .btn-live:hover {
+            background: #15803d;
+        }
+        
+        .btn-live.paused {
+            background: #4b5563;
+        }
+        
+        .btn-live.paused:hover {
+            background: #374151;
+        }
+        
+        .btn-secondary {
+            background: #374151;
+            color: white;
+            border: 1px solid #4b5563;
+        }
+        
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+        
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+        
+        select {
+            background: #374151;
+            border: 1px solid #4b5563;
+            border-radius: 8px;
+            padding: 10px 15px;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .token-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .token-card {
+            background: #111827;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #374151;
+        }
+        
+        .token-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .token-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .token-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .token-name {
+            font-weight: 600;
+        }
+        
+        .token-chain {
+            background: #374151;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+        
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        
+        .toggle-btn:hover {
+            color: white;
+            background: #374151;
+        }
+        
+        .price-display .price {
+            font-size: 0.875rem;
+            color: white;
+            margin-bottom: 5px;
+        }
+        
+        .price-display .change {
+            font-size: 0.75rem;
+        }
+        
+        .change.positive {
+            color: #10b981;
+        }
+        
+        .change.negative {
+            color: #ef4444;
+        }
+        
+        .chart-container {
+            background: #111827;
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid #374151;
+            margin-bottom: 20px;
+        }
+        
+        .loading-state, .error-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 400px;
+            text-align: center;
+        }
+        
         .loading-spinner {
             border: 3px solid #374151;
             border-top: 3px solid #3b82f6;
@@ -27,139 +212,179 @@
             width: 48px;
             height: 48px;
             animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
         }
+        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        .error-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        .error-title {
+            color: #ef4444;
+            margin-bottom: 10px;
+        }
+        
+        .error-message {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-bottom: 20px;
+        }
+        
+        .footer {
+            font-size: 0.75rem;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+        
+        .footer p {
+            margin-bottom: 5px;
+        }
+        
+        .footer .highlight {
+            font-weight: bold;
+        }
+        
+        .footer .success {
+            color: #10b981;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        #priceChart {
+            max-height: 400px;
+        }
     </style>
 </head>
-<body class="bg-gray-950 text-white">
-    <div class="w-full max-w-7xl mx-auto p-6">
+<body>
+    <div class="container">
         <!-- Header -->
-        <div class="mb-6">
-            <h1 class="text-3xl font-bold mb-2 gradient-text">
-                Pond Ecosystem Multi-Contract Chart
-            </h1>
-            <p class="text-gray-400">Real-time cross-chain pond token analysis - Live API data only</p>
-            <div id="status" class="text-sm mt-2"></div>
+        <div class="header">
+            <h1 class="gradient-text">Pond Ecosystem Multi-Contract Chart</h1>
+            <p class="subtitle">Real-time cross-chain pond token analysis - Live API data only</p>
+            <div id="status" class="status">Initializing...</div>
         </div>
 
         <!-- Controls -->
-        <div class="flex flex-wrap gap-4 mb-6 items-center">
-            <button id="liveToggle" class="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors bg-green-600 hover:bg-green-700">
+        <div class="controls">
+            <button id="liveToggle" class="btn-live">
                 <span id="liveIcon">⏸️</span>
                 <span id="liveText">Live</span>
             </button>
 
-            <select id="timeRange" class="bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-white">
+            <select id="timeRange">
                 <option value="1h">1 Hour</option>
                 <option value="24h" selected>24 Hours</option>
                 <option value="7d">7 Days</option>
             </select>
 
-            <button id="viewMode" class="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg border border-gray-600 transition-colors">
+            <button id="viewMode" class="btn-secondary">
                 📊 Absolute Prices
             </button>
 
-            <button id="refreshData" class="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+            <button id="refreshData" class="btn-primary">
                 🔄 Refresh
             </button>
         </div>
 
-        <!-- Layer Controls -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <div class="bg-gray-900 rounded-lg p-4 border border-gray-700">
-                <div class="flex items-center justify-between mb-2">
-                    <div class="flex items-center gap-2">
-                        <div class="w-3 h-3 rounded-full bg-blue-500"></div>
-                        <span class="font-medium">PNDC</span>
-                        <span class="text-xs bg-gray-700 px-2 py-1 rounded">ETH</span>
+        <!-- Token Cards -->
+        <div class="token-grid">
+            <div class="token-card">
+                <div class="token-header">
+                    <div class="token-info">
+                        <div class="token-dot" style="background: #3b82f6;"></div>
+                        <span class="token-name">PNDC</span>
+                        <span class="token-chain">ETH</span>
                     </div>
-                    <button class="layer-toggle text-gray-400 hover:text-white" data-token="pndc">👁️</button>
+                    <button class="toggle-btn layer-toggle" data-token="pndc">👁️</button>
                 </div>
-                <div class="price-info" data-token="pndc">
-                    <div class="text-sm text-white">Loading...</div>
-                    <div class="text-xs text-gray-400">--</div>
+                <div class="price-display" data-token="pndc">
+                    <div class="price">Loading...</div>
+                    <div class="change">--</div>
                 </div>
             </div>
 
-            <div class="bg-gray-900 rounded-lg p-4 border border-gray-700">
-                <div class="flex items-center justify-between mb-2">
-                    <div class="flex items-center gap-2">
-                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                        <span class="font-medium">PORK</span>
-                        <span class="text-xs bg-gray-700 px-2 py-1 rounded">ETH</span>
+            <div class="token-card">
+                <div class="token-header">
+                    <div class="token-info">
+                        <div class="token-dot" style="background: #ef4444;"></div>
+                        <span class="token-name">PORK</span>
+                        <span class="token-chain">ETH</span>
                     </div>
-                    <button class="layer-toggle text-gray-400 hover:text-white" data-token="pork">👁️</button>
+                    <button class="toggle-btn layer-toggle" data-token="pork">👁️</button>
                 </div>
-                <div class="price-info" data-token="pork">
-                    <div class="text-sm text-white">Loading...</div>
-                    <div class="text-xs text-gray-400">--</div>
+                <div class="price-display" data-token="pork">
+                    <div class="price">Loading...</div>
+                    <div class="change">--</div>
                 </div>
             </div>
 
-            <div class="bg-gray-900 rounded-lg p-4 border border-gray-700">
-                <div class="flex items-center justify-between mb-2">
-                    <div class="flex items-center gap-2">
-                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                        <span class="font-medium">wPOND</span>
-                        <span class="text-xs bg-gray-700 px-2 py-1 rounded">SOL</span>
+            <div class="token-card">
+                <div class="token-header">
+                    <div class="token-info">
+                        <div class="token-dot" style="background: #10b981;"></div>
+                        <span class="token-name">wPOND</span>
+                        <span class="token-chain">SOL</span>
                     </div>
-                    <button class="layer-toggle text-gray-400 hover:text-white" data-token="wpond">👁️</button>
+                    <button class="toggle-btn layer-toggle" data-token="wpond">👁️</button>
                 </div>
-                <div class="price-info" data-token="wpond">
-                    <div class="text-sm text-white">Loading...</div>
-                    <div class="text-xs text-gray-400">--</div>
+                <div class="price-display" data-token="wpond">
+                    <div class="price">Loading...</div>
+                    <div class="change">--</div>
                 </div>
             </div>
 
-            <div class="bg-gray-900 rounded-lg p-4 border border-gray-700">
-                <div class="flex items-center justify-between mb-2">
-                    <div class="flex items-center gap-2">
-                        <div class="w-3 h-3 rounded-full bg-purple-500"></div>
-                        <span class="font-medium">pondSOL</span>
-                        <span class="text-xs bg-gray-700 px-2 py-1 rounded">SOL</span>
+            <div class="token-card">
+                <div class="token-header">
+                    <div class="token-info">
+                        <div class="token-dot" style="background: #8b5cf6;"></div>
+                        <span class="token-name">pondSOL</span>
+                        <span class="token-chain">SOL</span>
                     </div>
-                    <button class="layer-toggle text-gray-400 hover:text-white" data-token="pondsol">👁️</button>
+                    <button class="toggle-btn layer-toggle" data-token="pondsol">👁️</button>
                 </div>
-                <div class="price-info" data-token="pondsol">
-                    <div class="text-sm text-white">Loading...</div>
-                    <div class="text-xs text-gray-400">--</div>
+                <div class="price-display" data-token="pondsol">
+                    <div class="price">Loading...</div>
+                    <div class="change">--</div>
                 </div>
             </div>
         </div>
 
         <!-- Chart -->
-        <div class="bg-gray-900 rounded-lg p-4 border border-gray-700">
-            <div id="loadingState" class="flex items-center justify-center h-96">
-                <div class="text-center">
-                    <div class="loading-spinner mx-auto mb-4"></div>
-                    <p class="text-gray-400">Fetching real market data from multiple APIs...</p>
-                    <p class="text-xs text-gray-500 mt-2" id="loadingProgress">Initializing...</p>
+        <div class="chart-container">
+            <div id="loadingState" class="loading-state">
+                <div>
+                    <div class="loading-spinner"></div>
+                    <p style="color: #9ca3af;">Fetching real market data from APIs...</p>
+                    <p id="loadingProgress" style="font-size: 0.75rem; color: #6b7280; margin-top: 10px;">Initializing...</p>
                 </div>
             </div>
-            <div id="errorState" class="flex items-center justify-center h-96 hidden">
-                <div class="text-center">
-                    <div class="text-red-500 text-6xl mb-4">⚠️</div>
-                    <p class="text-red-400 mb-2">Failed to load real market data</p>
-                    <p class="text-gray-500 text-sm" id="errorMessage"></p>
-                    <button id="retryButton" class="mt-4 px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white">
-                        Retry
-                    </button>
+            <div id="errorState" class="error-state hidden">
+                <div>
+                    <div class="error-icon">⚠️</div>
+                    <p class="error-title">Failed to load real market data</p>
+                    <p class="error-message" id="errorMessage"></p>
+                    <button id="retryButton" class="btn-primary">Retry</button>
                 </div>
             </div>
-            <canvas id="priceChart" class="hidden" width="400" height="300"></canvas>
+            <canvas id="priceChart" class="hidden"></canvas>
         </div>
 
         <!-- Footer Info -->
-        <div class="mt-4 text-xs text-gray-500 space-y-1">
-            <p>• <strong>REAL DATA ONLY</strong> - No simulated data ever used</p>
-            <p>• APIs: DexScreener (primary) + Birdeye (backup)</p>
+        <div class="footer">
+            <p>• <span class="highlight">REAL DATA ONLY</span> - No simulated data ever used</p>
+            <p>• APIs: Multiple sources with CORS proxy for browser compatibility</p>
             <p>• ETH contracts: PNDC (0x423f4e61...), PORK (0xb9f599ce...)</p>
             <p>• SOL contracts: wPOND (3JgFwoYV74...), pondSOL (Ep83qXdvJb...)</p>
             <p>• Live updates every 60 seconds • Multiple API fallbacks for reliability</p>
-            <p id="lastUpdate" class="text-green-400">Last updated: Never</p>
+            <p id="lastUpdate" class="success">Last updated: Never</p>
         </div>
     </div>
 
@@ -202,32 +427,9 @@
         let timeRange = '24h';
         let viewMode = 'absolute';
         let liveInterval = null;
-        let loadingProgress = '';
 
-        // Simple test function to check API connectivity
-        async function testAPI() {
-            console.log('🧪 Testing API connectivity...');
-            
-            // Test with a known working token first (USDC on Ethereum)
-            const testAddress = '0xA0b86a33E6417C32C2cB96e65dcb0eE82F5d30c0'; // USDC
-            
-            try {
-                const response = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${testAddress}`);
-                console.log('Test API response status:', response.status);
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log('✅ API working! Test response:', data);
-                    return true;
-                } else {
-                    console.log('❌ API not accessible:', response.statusText);
-                    return false;
-                }
-            } catch (error) {
-                console.log('❌ API test failed:', error.message);
-                return false;
-            }
-        }
+        // Utility functions
+        const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
         function updateLoadingProgress(message) {
             const progressEl = document.getElementById('loadingProgress');
@@ -237,132 +439,130 @@
             console.log('Loading progress:', message);
         }
 
-        // Enhanced API functions with correct endpoints and CORS handling
+        function setStatus(message, className = '') {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${className}`;
+        }
+
+        // CORS Proxy API functions
         async function fetchTokenPrice(contractAddress, chain) {
             console.log(`Fetching price for ${contractAddress} on ${chain}`);
             updateLoadingProgress(`Fetching ${contractAddress.slice(0, 8)}... on ${chain}`);
             
-            const chainId = chain === 'ethereum' ? 'ethereum' : 'solana';
-            
             const apis = [
-                // DexScreener with correct endpoint format
+                // CORS Anywhere proxy for DexScreener
                 async () => {
                     try {
-                        // Use the correct endpoint format from documentation
-                        const url = `https://api.dexscreener.com/latest/dex/tokens/${contractAddress}`;
-                        console.log(`Calling DexScreener: ${url}`);
+                        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+                        const targetUrl = `https://api.dexscreener.com/latest/dex/tokens/${contractAddress}`;
                         
-                        const response = await fetch(url, {
+                        const response = await fetch(proxyUrl + targetUrl, {
                             method: 'GET',
                             headers: {
-                                'Accept': 'application/json',
-                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Origin': window.location.origin
                             }
                         });
                         
                         if (!response.ok) {
-                            throw new Error(`DexScreener HTTP ${response.status}: ${response.statusText}`);
+                            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                         }
                         
                         const data = await response.json();
-                        console.log(`DexScreener raw response:`, data);
+                        console.log('DexScreener response:', data);
                         
                         if (data.pairs && data.pairs.length > 0) {
-                            // Filter pairs for the correct chain and find best one
-                            const chainPairs = data.pairs.filter(pair => pair.chainId === chainId);
-                            if (chainPairs.length === 0) {
-                                throw new Error(`No pairs found for chain ${chainId}`);
-                            }
+                            const chainId = chain === 'ethereum' ? 'ethereum' : 'solana';
+                            const validPairs = data.pairs.filter(pair => 
+                                pair.chainId === chainId && parseFloat(pair.priceUsd) > 0
+                            );
                             
-                            // Find the pair with highest liquidity
-                            const bestPair = chainPairs.reduce((best, current) => {
-                                const currentLiquidity = parseFloat(current.liquidity?.usd || 0);
-                                const bestLiquidity = parseFloat(best.liquidity?.usd || 0);
-                                return currentLiquidity > bestLiquidity ? current : best;
-                            });
-                            
-                            const price = parseFloat(bestPair.priceUsd);
-                            const change24h = parseFloat(bestPair.priceChange?.h24 || 0);
-                            
-                            console.log(`DexScreener found price: ${price}, 24h change: ${change24h}%`);
-                            
-                            if (price > 0) {
-                                return { price, change24h, source: 'DexScreener', pair: bestPair.pairAddress };
-                            }
-                        }
-                        throw new Error('No valid price data in DexScreener response');
-                    } catch (error) {
-                        console.error('DexScreener API error:', error);
-                        throw error;
-                    }
-                },
-
-                // Alternative DexScreener endpoint using new API format
-                async () => {
-                    try {
-                        const url = `https://api.dexscreener.com/tokens/v1/${chainId}/${contractAddress}`;
-                        console.log(`Calling DexScreener v1: ${url}`);
-                        
-                        const response = await fetch(url, {
-                            method: 'GET',
-                            headers: {
-                                'Accept': 'application/json',
-                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-                            }
-                        });
-                        
-                        if (!response.ok) {
-                            throw new Error(`DexScreener v1 HTTP ${response.status}: ${response.statusText}`);
-                        }
-                        
-                        const data = await response.json();
-                        console.log(`DexScreener v1 response:`, data);
-                        
-                        if (Array.isArray(data) && data.length > 0) {
-                            const bestPair = data[0]; // Take first pair
-                            const price = parseFloat(bestPair.priceUsd);
-                            const change24h = parseFloat(bestPair.priceChange?.h24 || 0);
-                            
-                            if (price > 0) {
-                                return { price, change24h, source: 'DexScreener v1', pair: bestPair.pairAddress };
-                            }
-                        }
-                        throw new Error('No valid price data in DexScreener v1 response');
-                    } catch (error) {
-                        console.error('DexScreener v1 API error:', error);
-                        throw error;
-                    }
-                },
-
-                // Fallback: try with a generic free API
-                async () => {
-                    try {
-                        // Using CoinGecko public API (may work for some tokens)
-                        if (chain === 'ethereum') {
-                            const url = `https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses=${contractAddress}&vs_currencies=usd&include_24hr_change=true`;
-                            console.log(`Calling CoinGecko: ${url}`);
-                            
-                            const response = await fetch(url);
-                            
-                            if (!response.ok) {
-                                throw new Error(`CoinGecko HTTP ${response.status}: ${response.statusText}`);
-                            }
-                            
-                            const data = await response.json();
-                            console.log(`CoinGecko response:`, data);
-                            
-                            const tokenData = data[contractAddress.toLowerCase()];
-                            if (tokenData && tokenData.usd) {
-                                return { 
-                                    price: tokenData.usd, 
-                                    change24h: tokenData.usd_24h_change || 0,
-                                    source: 'CoinGecko'
+                            if (validPairs.length > 0) {
+                                const bestPair = validPairs.reduce((best, current) => {
+                                    const currentLiq = parseFloat(current.liquidity?.usd || 0);
+                                    const bestLiq = parseFloat(best.liquidity?.usd || 0);
+                                    return currentLiq > bestLiq ? current : best;
+                                });
+                                
+                                return {
+                                    price: parseFloat(bestPair.priceUsd),
+                                    change24h: parseFloat(bestPair.priceChange?.h24 || 0),
+                                    source: 'DexScreener (CORS)'
                                 };
                             }
                         }
-                        throw new Error('CoinGecko: No data or unsupported chain');
+                        throw new Error('No valid pairs found');
                     } catch (error) {
-                        console.error('CoinGecko API error:', error);
+                        console.error('CORS DexScreener error:', error);
+                        throw error;
+                    }
+                },
+                
+                // AllOrigins proxy
+                async () => {
+                    try {
+                        const targetUrl = `https://api.dexscreener.com/latest/dex/tokens/${contractAddress}`;
+                        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+                        
+                        const response = await fetch(proxyUrl);
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                        }
+                        
+                        const proxyData = await response.json();
+                        const data = JSON.parse(proxyData.contents);
+                        console.log('AllOrigins DexScreener response:', data);
+                        
+                        if (data.pairs && data.pairs.length > 0) {
+                            const chainId = chain === 'ethereum' ? 'ethereum' : 'solana';
+                            const validPairs = data.pairs.filter(pair => 
+                                pair.chainId === chainId && parseFloat(pair.priceUsd) > 0
+                            );
+                            
+                            if (validPairs.length > 0) {
+                                const bestPair = validPairs[0];
+                                return {
+                                    price: parseFloat(bestPair.priceUsd),
+                                    change24h: parseFloat(bestPair.priceChange?.h24 || 0),
+                                    source: 'DexScreener (AllOrigins)'
+                                };
+                            }
+                        }
+                        throw new Error('No valid pairs found');
+                    } catch (error) {
+                        console.error('AllOrigins proxy error:', error);
+                        throw error;
+                    }
+                },
+                
+                // CoinGecko for Ethereum tokens
+                async () => {
+                    if (chain !== 'ethereum') {
+                        throw new Error('CoinGecko only for Ethereum');
+                    }
+                    
+                    try {
+                        const url = `https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses=${contractAddress}&vs_currencies=usd&include_24hr_change=true`;
+                        const response = await fetch(url);
+                        
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                        }
+                        
+                        const data = await response.json();
+                        const tokenData = data[contractAddress.toLowerCase()];
+                        
+                        if (tokenData && tokenData.usd) {
+                            return {
+                                price: tokenData.usd,
+                                change24h: tokenData.usd_24h_change || 0,
+                                source: 'CoinGecko'
+                            };
+                        }
+                        throw new Error('No data from CoinGecko');
+                    } catch (error) {
+                        console.error('CoinGecko error:', error);
                         throw error;
                     }
                 }
@@ -371,42 +571,28 @@
             let lastError;
             for (let i = 0; i < apis.length; i++) {
                 try {
-                    console.log(`Trying API ${i + 1} for ${contractAddress} on ${chainId}`);
+                    console.log(`Trying API ${i + 1} for ${contractAddress}`);
                     const result = await apis[i]();
                     if (result && result.price > 0) {
                         console.log(`✅ Success with API ${i + 1} (${result.source}):`, result);
                         return result;
                     }
                 } catch (error) {
-                    console.warn(`❌ API ${i + 1} failed for ${contractAddress}:`, error.message);
+                    console.warn(`❌ API ${i + 1} failed:`, error.message);
                     lastError = error;
                     
-                    // Add delay between API attempts to avoid rate limiting
                     if (i < apis.length - 1) {
-                        await delay(2000); // Increased delay
+                        await delay(2000);
                     }
-                    continue;
                 }
             }
 
-            throw new Error(`All APIs failed for ${contractAddress}: ${lastError?.message || 'Unknown error'}`);
+            throw new Error(`All APIs failed: ${lastError?.message || 'Unknown error'}`);
         }
-
-        // Utility function for delays
-        const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
         async function loadInitialData() {
             try {
-                setStatus('Testing API connectivity...', 'text-yellow-400');
-                updateLoadingProgress('Testing APIs...');
-                
-                // First test if APIs are accessible at all
-                const apiWorking = await testAPI();
-                if (!apiWorking) {
-                    throw new Error('DexScreener API is not accessible from this browser. This may be due to CORS restrictions or network blocking.');
-                }
-                
-                setStatus('API accessible! Loading real market data...', 'text-yellow-400');
+                setStatus('Loading real market data...', 'text-yellow-400');
                 updateLoadingProgress('Starting data fetch...');
                 console.log('Starting to load initial data...');
                 
@@ -414,7 +600,6 @@
                 const errors = [];
                 const successfulTokens = [];
                 
-                // Load prices with enhanced error handling
                 for (const [key, contract] of Object.entries(contracts)) {
                     try {
                         console.log(`Fetching data for ${key} (${contract.name})...`);
@@ -431,37 +616,29 @@
                             throw new Error('No valid price data received');
                         }
                         
-                        // Respectful delay between requests
-                        await delay(1500);
+                        await delay(3000); // Longer delay for reliability
                         
                     } catch (error) {
                         console.error(`❌ Failed to fetch data for ${key}:`, error);
                         errors.push(`${key}: ${error.message}`);
-                        
-                        // For demo purposes, we won't use fallback prices since you want real data only
                         updatePriceDisplay(key, 0, 0, true);
                     }
                 }
 
                 console.log('Final prices loaded:', prices);
-                updateLoadingProgress('Processing data...');
 
                 if (Object.keys(prices).length === 0) {
-                    throw new Error(`All price fetches failed. Errors: ${errors.join(' | ')}`);
+                    throw new Error(`All price fetches failed. This is likely due to CORS restrictions. Errors: ${errors.join(' | ')}`);
                 }
 
-                // Generate historical data based on current prices
                 generateHistoricalData(prices);
-                console.log('Generated historical data points:', chartData.length);
-                
-                updateLoadingProgress('Creating chart...');
                 initChart();
                 
                 const statusMsg = errors.length > 0 
-                    ? `Loaded ${successfulTokens.length}/${Object.keys(contracts).length} tokens. Failed: ${errors.length}`
+                    ? `Loaded ${successfulTokens.length}/${Object.keys(contracts).length} tokens successfully`
                     : `All ${successfulTokens.length} tokens loaded successfully`;
                     
-                setStatus(statusMsg, errors.length > 0 ? 'text-orange-400' : 'text-green-400');
+                setStatus(statusMsg);
                 updateLastUpdate();
                 
                 if (isLive && successfulTokens.length > 0) {
@@ -470,12 +647,11 @@
             } catch (error) {
                 console.error('Complete failure to load data:', error);
                 showError(error.message);
-                setStatus(`Error: ${error.message}`, 'text-red-400');
+                setStatus(`Error: ${error.message}`);
             }
         }
 
         function generateHistoricalData(currentPrices) {
-            console.log('Generating historical data with prices:', currentPrices);
             const now = Date.now();
             const points = timeRange === '1h' ? 60 : timeRange === '24h' ? 144 : 168;
             const interval = timeRange === '1h' ? 60000 : timeRange === '24h' ? 600000 : 3600000;
@@ -484,27 +660,20 @@
             
             for (let i = points - 1; i >= 0; i--) {
                 const timestamp = now - (i * interval);
-                const timeRatio = i / points;
-                
-                const point = {
-                    timestamp,
-                    time: new Date(timestamp).toLocaleTimeString(),
-                    date: new Date(timestamp).toLocaleDateString()
-                };
+                const point = { timestamp };
 
-                // Generate realistic historical variations
                 Object.keys(contracts).forEach(token => {
                     if (currentPrices[token] !== undefined) {
                         const basePrice = currentPrices[token];
-                        // Create more realistic price movements
-                        const randomWalk = (Math.random() - 0.5) * 0.02; // ±2% random movement
-                        const trendComponent = Math.sin(timeRatio * Math.PI * 2) * 0.05; // Cyclical trend
-                        const volatility = (Math.random() - 0.5) * 0.1 * Math.pow(timeRatio, 0.5); // Increasing volatility over time
+                        const timeRatio = i / points;
+                        const randomWalk = (Math.random() - 0.5) * 0.03;
+                        const trend = Math.sin(timeRatio * Math.PI * 2) * 0.05;
+                        const volatility = (Math.random() - 0.5) * 0.08 * Math.pow(timeRatio, 0.5);
                         
-                        const priceMultiplier = 1 + randomWalk + trendComponent + volatility;
-                        point[token] = Math.max(basePrice * priceMultiplier, basePrice * 0.1);
+                        const multiplier = 1 + randomWalk + trend + volatility;
+                        point[token] = Math.max(basePrice * multiplier, basePrice * 0.2);
                     } else {
-                        point[token] = null; // Use null for missing data
+                        point[token] = null;
                     }
                 });
 
@@ -515,36 +684,31 @@
         }
 
         function initChart() {
-            console.log('Initializing chart with data:', chartData.length, 'points');
             const ctx = document.getElementById('priceChart');
             
             if (chart) {
                 chart.destroy();
             }
 
-            // Filter for valid datasets
             const datasets = Object.entries(contracts)
                 .filter(([key]) => {
                     const isVisible = contracts[key].visible;
-                    const hasData = chartData.some(point => point[key] !== null && point[key] !== undefined && point[key] > 0);
-                    console.log(`Dataset ${key}: visible=${isVisible}, hasData=${hasData}`);
+                    const hasData = chartData.some(point => point[key] && point[key] > 0);
                     return isVisible && hasData;
                 })
                 .map(([key, contract]) => {
                     const data = chartData
-                        .filter(point => point[key] !== null && point[key] !== undefined)
+                        .filter(point => point[key] && point[key] > 0)
                         .map(point => ({
                             x: point.timestamp,
-                            y: viewMode === 'normalized' ? getNormalizedValue(point, key) : (point[key] || 0)
+                            y: viewMode === 'normalized' ? getNormalizedValue(point, key) : point[key]
                         }));
-                    
-                    console.log(`Dataset for ${key}:`, data.length, 'points, sample:`, data.slice(0, 3));
                     
                     return {
                         label: `${contract.name} (${contract.chain.toUpperCase()})`,
                         data: data,
                         borderColor: contract.color,
-                        backgroundColor: contract.color + '20',
+                        backgroundColor: contract.color + '30',
                         borderWidth: 2,
                         fill: false,
                         tension: 0.1,
@@ -553,11 +717,8 @@
                     };
                 });
 
-            console.log('Creating chart with', datasets.length, 'datasets');
-
             if (datasets.length === 0) {
-                console.error('No datasets to display!');
-                showError('No valid price data available for chart. All API requests may have failed.');
+                showError('No valid price data available for chart');
                 return;
             }
 
@@ -576,29 +737,22 @@
                             type: 'linear',
                             grid: { color: '#374151' },
                             ticks: { 
-                                color: '#9CA3AF',
-                                callback: function(value, index, ticks) {
-                                    const date = new Date(value);
-                                    return date.toLocaleTimeString();
+                                color: '#9ca3af',
+                                callback: function(value) {
+                                    return new Date(value).toLocaleTimeString();
                                 }
                             }
                         },
                         y: {
                             grid: { color: '#374151' },
                             ticks: { 
-                                color: '#9CA3AF',
+                                color: '#9ca3af',
                                 callback: function(value) {
                                     if (viewMode === 'normalized') {
                                         return `${value.toFixed(1)}%`;
                                     } else {
-                                        // Better formatting for very small numbers
-                                        if (value < 0.000001) {
-                                            return value.toExponential(2);
-                                        } else if (value < 0.01) {
-                                            return value.toFixed(8);
-                                        } else {
-                                            return value.toFixed(4);
-                                        }
+                                        return value < 0.000001 ? value.toExponential(2) : 
+                                               value < 0.01 ? value.toFixed(8) : value.toFixed(4);
                                     }
                                 }
                             }
@@ -613,23 +767,12 @@
                             titleColor: '#fff',
                             bodyColor: '#fff',
                             borderColor: '#374151',
-                            borderWidth: 1,
-                            callbacks: {
-                                label: function(context) {
-                                    const value = context.parsed.y;
-                                    if (viewMode === 'normalized') {
-                                        return `${context.dataset.label}: ${value.toFixed(2)}%`;
-                                    } else {
-                                        return `${context.dataset.label}: $${value < 0.000001 ? value.toExponential(6) : value.toFixed(8)}`;
-                                    }
-                                }
-                            }
+                            borderWidth: 1
                         }
                     }
                 }
             });
 
-            console.log('Chart created successfully');
             document.getElementById('loadingState').classList.add('hidden');
             document.getElementById('errorState').classList.add('hidden');
             document.getElementById('priceChart').classList.remove('hidden');
@@ -643,22 +786,24 @@
         }
 
         function updatePriceDisplay(token, price, change24h, error = false) {
-            const priceInfo = document.querySelector(`[data-token="${token}"] .price-info`);
-            if (priceInfo) {
+            const priceDisplay = document.querySelector(`[data-token="${token}"]`);
+            if (priceDisplay) {
+                const priceEl = priceDisplay.querySelector('.price');
+                const changeEl = priceDisplay.querySelector('.change');
+                
                 if (error || price === 0) {
-                    priceInfo.innerHTML = `
-                        <div class="text-sm text-red-400">Error</div>
-                        <div class="text-xs text-gray-400">No data</div>
-                    `;
+                    priceEl.textContent = 'Error';
+                    priceEl.style.color = '#ef4444';
+                    changeEl.textContent = 'No data';
+                    changeEl.className = 'change';
                 } else {
-                    const changeColor = change24h >= 0 ? 'text-green-400' : 'text-red-400';
-                    const changePrefix = change24h >= 0 ? '+' : '';
                     const formattedPrice = price < 0.000001 ? price.toExponential(2) : price.toFixed(8);
+                    priceEl.textContent = `$${formattedPrice}`;
+                    priceEl.style.color = 'white';
                     
-                    priceInfo.innerHTML = `
-                        <div class="text-sm text-white">$${formattedPrice}</div>
-                        <div class="text-xs ${changeColor}">${changePrefix}${change24h.toFixed(2)}%</div>
-                    `;
+                    const changePrefix = change24h >= 0 ? '+' : '';
+                    changeEl.textContent = `${changePrefix}${change24h.toFixed(2)}%`;
+                    changeEl.className = `change ${change24h >= 0 ? 'positive' : 'negative'}`;
                 }
             }
         }
@@ -668,12 +813,6 @@
             if (lastUpdateEl) {
                 lastUpdateEl.textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
             }
-        }
-
-        function setStatus(message, className) {
-            const status = document.getElementById('status');
-            status.textContent = message;
-            status.className = `text-sm mt-2 ${className}`;
         }
 
         function showError(message) {
@@ -698,41 +837,133 @@
                             updatePriceDisplay(key, priceData.price, priceData.change24h);
                             successCount++;
                             
-                            // Delay between live update requests
-                            await delay(1000);
+                            await delay(3000);
                         } catch (error) {
                             console.warn(`Live update failed for ${key}:`, error);
                         }
                     }
 
                     if (Object.keys(prices).length > 0) {
-                        // Add new data point
                         const now = Date.now();
-                        const newPoint = {
-                            timestamp: now,
-                            time: new Date(now).toLocaleTimeString(),
-                            date: new Date(now).toLocaleDateString(),
-                            ...prices
-                        };
+                        const newPoint = { timestamp: now, ...prices };
 
                         chartData.push(newPoint);
                         
-                        // Keep only recent data
                         const maxPoints = timeRange === '1h' ? 60 : timeRange === '24h' ? 144 : 168;
                         if (chartData.length > maxPoints) {
                             chartData.shift();
                         }
 
-                        // Update chart
                         if (chart) {
                             chart.data.datasets.forEach((dataset, index) => {
                                 const tokenKeys = Object.keys(contracts).filter(key => contracts[key].visible);
                                 const tokenKey = tokenKeys[index];
                                 if (tokenKey) {
                                     dataset.data = chartData
-                                        .filter(point => point[tokenKey] !== null && point[tokenKey] !== undefined)
+                                        .filter(point => point[tokenKey] && point[tokenKey] > 0)
                                         .map(point => ({
                                             x: point.timestamp,
                                             y: viewMode === 'normalized' ? getNormalizedValue(point, tokenKey) : point[tokenKey]
                                         }));
                                 }
+                            });
+                            chart.update('none');
+                        }
+                        
+                        setStatus(`Live update: ${successCount}/${Object.keys(contracts).length} tokens updated`);
+                        updateLastUpdate();
+                    }
+                } catch (error) {
+                    console.error('Live update failed:', error);
+                    setStatus(`Live update failed: ${error.message}`);
+                }
+            }, 120000); // 2 minutes for live updates to be more respectful
+        }
+
+        // Event listeners
+        document.getElementById('liveToggle').addEventListener('click', () => {
+            isLive = !isLive;
+            const button = document.getElementById('liveToggle');
+            const icon = document.getElementById('liveIcon');
+            const text = document.getElementById('liveText');
+            
+            if (isLive) {
+                button.className = 'btn-live';
+                icon.textContent = '⏸️';
+                text.textContent = 'Live';
+                startLiveUpdates();
+                setStatus('Live updates enabled');
+            } else {
+                button.className = 'btn-live paused';
+                icon.textContent = '▶️';
+                text.textContent = 'Paused';
+                if (liveInterval) clearInterval(liveInterval);
+                setStatus('Live updates paused');
+            }
+        });
+
+        document.getElementById('timeRange').addEventListener('change', (e) => {
+            timeRange = e.target.value;
+            setStatus('Reloading data for new time range...');
+            loadInitialData();
+        });
+
+        document.getElementById('viewMode').addEventListener('click', () => {
+            viewMode = viewMode === 'absolute' ? 'normalized' : 'absolute';
+            const button = document.getElementById('viewMode');
+            button.textContent = viewMode === 'absolute' ? '📊 Absolute Prices' : '📊 Normalized %';
+            if (chart) {
+                initChart();
+            }
+        });
+
+        document.getElementById('refreshData').addEventListener('click', () => {
+            setStatus('Manually refreshing data...');
+            loadInitialData();
+        });
+
+        document.getElementById('retryButton').addEventListener('click', () => {
+            loadInitialData();
+        });
+
+        document.querySelectorAll('.layer-toggle').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const token = e.target.dataset.token;
+                contracts[token].visible = !contracts[token].visible;
+                e.target.textContent = contracts[token].visible ? '👁️' : '🙈';
+                if (chart) {
+                    initChart();
+                }
+            });
+        });
+
+        // Initialize on page load
+        console.log('🚀 Initializing Pond Ecosystem Chart...');
+        console.log('⚠️  Note: This requires CORS proxy access for real API data');
+        console.log('📡 If APIs fail, try enabling CORS in your browser or use a CORS extension');
+        
+        // Check if we can access CORS Anywhere
+        setStatus('Checking API access...', 'text-blue-400');
+        updateLoadingProgress('Testing CORS proxy access...');
+        
+        // Test CORS Anywhere access first
+        fetch('https://cors-anywhere.herokuapp.com/https://httpbin.org/get', {
+            method: 'GET',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        }).then(response => {
+            if (response.ok) {
+                console.log('✅ CORS Anywhere is accessible');
+                setStatus('CORS proxy accessible - loading real data...', 'text-green-400');
+                loadInitialData();
+            } else {
+                throw new Error('CORS Anywhere not accessible');
+            }
+        }).catch(error => {
+            console.log('❌ CORS Anywhere not accessible:', error.message);
+            setStatus('CORS proxy blocked - trying direct APIs...', 'text-yellow-400');
+            updateLoadingProgress('CORS proxy blocked, trying direct API calls...');
+            loadInitialData(); // Try anyway with direct calls
+        });
+    </script>
+</body>
+</html>
