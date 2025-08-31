@@ -458,20 +458,22 @@
         </div>
     </div>
 
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script>
         class ChatRoom {
             constructor() {
                 this.username = '';
                 this.room = 'default';
-                this.peers = new Map();
-                this.dataChannels = new Map();
+                this.peer = null;
+                this.peerId = null;
+                this.connections = new Map();
+                this.roomPeers = new Set();
                 this.isConnected = false;
-                this.signalingData = new Map();
                 this.heartbeatInterval = null;
+                this.discoveryInterval = null;
                 
                 this.initializeElements();
                 this.bindEvents();
-                this.startHeartbeat();
             }
 
             initializeElements() {
@@ -575,15 +577,42 @@
             }
 
             leaveRoom() {
-                // Close all peer connections
-                this.peers.forEach((peer, peerId) => {
-                    peer.close();
-                });
-                this.peers.clear();
-                this.dataChannels.clear();
+                // Close PeerJS connections
+                if (this.peer && !this.peer.destroyed) {
+                    // Notify peers we're leaving
+                    this.connections.forEach((conn) => {
+                        if (conn.open) {
+                            conn.send({
+                                type: 'user_left',
+                                username: this.username,
+                                timestamp: Date.now()
+                            });
+                        }
+                        conn.close();
+                    });
+                    
+                    this.peer.destroy();
+                }
 
+                // Clear intervals
+                if (this.heartbeatInterval) {
+                    clearInterval(this.heartbeatInterval);
+                    this.heartbeatInterval = null;
+                }
+                if (this.discoveryInterval) {
+                    clearInterval(this.discoveryInterval);
+                    this.discoveryInterval = null;
+                }
+
+                // Reset state
+                this.connections.clear();
+                this.roomPeers.clear();
                 this.isConnected = false;
                 this.twitterUser = null;
+                this.peer = null;
+                this.peerId = null;
+
+                // Reset UI
                 this.loginSection.style.display = 'flex';
                 this.leaveBtn.style.display = 'none';
                 this.messageInput.disabled = true;
@@ -668,37 +697,25 @@
                 // Display own message
                 this.displayMessage(this.username, message, true);
 
-                // Send to peers via data channels
+                // Send to all connected peers via PeerJS
                 const messageData = {
+                    type: 'message',
                     username: this.username,
                     text: message,
                     timestamp: Date.now()
                 };
 
-                this.dataChannels.forEach((channel) => {
-                    if (channel.readyState === 'open') {
-                        channel.send(JSON.stringify(messageData));
+                this.connections.forEach((conn) => {
+                    if (conn.open) {
+                        try {
+                            conn.send(messageData);
+                        } catch (error) {
+                            console.error('Error sending message to peer:', error);
+                        }
                     }
                 });
 
                 this.messageInput.value = '';
-
-                // For demo purposes, simulate receiving messages occasionally
-                if (Math.random() > 0.7) {
-                    setTimeout(() => {
-                        const demoUsers = ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve'];
-                        const demoMessages = [
-                            'Hello everyone!',
-                            'How is everyone doing?',
-                            'Great to be here!',
-                            'Nice chatroom!',
-                            'Anyone else new here?'
-                        ];
-                        const randomUser = demoUsers[Math.floor(Math.random() * demoUsers.length)];
-                        const randomMessage = demoMessages[Math.floor(Math.random() * demoMessages.length)];
-                        this.displayMessage(randomUser, randomMessage, false);
-                    }, Math.random() * 3000 + 1000);
-                }
             }
 
             displayMessage(username, text, isOwn) {
@@ -741,14 +758,19 @@
 
             startHeartbeat() {
                 this.heartbeatInterval = setInterval(() => {
-                    if (this.isConnected) {
+                    if (this.isConnected && this.connections.size > 0) {
                         // Send heartbeat to maintain connections
-                        this.dataChannels.forEach((channel) => {
-                            if (channel.readyState === 'open') {
-                                channel.send(JSON.stringify({
-                                    type: 'heartbeat',
-                                    timestamp: Date.now()
-                                }));
+                        this.connections.forEach((conn) => {
+                            if (conn.open) {
+                                try {
+                                    conn.send({
+                                        type: 'heartbeat',
+                                        timestamp: Date.now(),
+                                        username: this.username
+                                    });
+                                } catch (error) {
+                                    console.error('Error sending heartbeat:', error);
+                                }
                             }
                         });
                     }
@@ -758,7 +780,8 @@
 
         // Initialize the chat room when the page loads
         document.addEventListener('DOMContentLoaded', () => {
-            new ChatRoom();
+            const chatRoom = new ChatRoom();
+            chatRoom.startHeartbeat(); // Start heartbeat system
         });
     </script>
 </body>
