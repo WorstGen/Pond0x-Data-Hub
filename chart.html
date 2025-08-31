@@ -787,24 +787,34 @@
 
         function updatePriceDisplay(token, price, change24h, error = false) {
             const priceDisplay = document.querySelector(`[data-token="${token}"]`);
-            if (priceDisplay) {
-                const priceEl = priceDisplay.querySelector('.price');
-                const changeEl = priceDisplay.querySelector('.change');
+            if (!priceDisplay) {
+                console.error(`Price display element not found for token: ${token}`);
+                return;
+            }
+            
+            const priceEl = priceDisplay.querySelector('.price');
+            const changeEl = priceDisplay.querySelector('.change');
+            
+            if (!priceEl || !changeEl) {
+                console.error(`Price or change element not found for token: ${token}`, { priceEl, changeEl });
+                return;
+            }
+            
+            if (error || price === 0) {
+                priceEl.textContent = 'Error';
+                priceEl.style.color = '#ef4444';
+                changeEl.textContent = 'No data';
+                changeEl.className = 'change';
+            } else {
+                const formattedPrice = price < 0.000001 ? price.toExponential(2) : price.toFixed(8);
+                priceEl.textContent = `${formattedPrice}`;
+                priceEl.style.color = 'white';
                 
-                if (error || price === 0) {
-                    priceEl.textContent = 'Error';
-                    priceEl.style.color = '#ef4444';
-                    changeEl.textContent = 'No data';
-                    changeEl.className = 'change';
-                } else {
-                    const formattedPrice = price < 0.000001 ? price.toExponential(2) : price.toFixed(8);
-                    priceEl.textContent = `$${formattedPrice}`;
-                    priceEl.style.color = 'white';
-                    
-                    const changePrefix = change24h >= 0 ? '+' : '';
-                    changeEl.textContent = `${changePrefix}${change24h.toFixed(2)}%`;
-                    changeEl.className = `change ${change24h >= 0 ? 'positive' : 'negative'}`;
-                }
+                const changePrefix = change24h >= 0 ? '+' : '';
+                changeEl.textContent = `${changePrefix}${change24h.toFixed(2)}%`;
+                changeEl.className = `change ${change24h >= 0 ? 'positive' : 'negative'}`;
+                
+                console.log(`✅ Updated price display for ${token}: ${formattedPrice} (${changePrefix}${change24h.toFixed(2)}%)`);
             }
         }
 
