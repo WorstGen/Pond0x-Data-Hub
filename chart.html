@@ -6,6 +6,7 @@
     <title>Pond Ecosystem Multi-Contract Chart</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-date-fns/3.0.0/chartjs-adapter-date-fns.bundle.min.js"></script>
     <style>
         body { 
             margin: 0; 
@@ -197,66 +198,132 @@
         let viewMode = 'absolute';
         let liveInterval = null;
 
-        // API functions
+        // API functions with CORS proxies
         async function fetchTokenPrice(contractAddress, chain) {
+            console.log(`Fetching price for ${contractAddress} on ${chain}`);
+            
             const apis = chain === 'ETH' ? [
+                // CoinGecko with CORS proxy
                 async () => {
-                    const response = await fetch(
-                        `https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses=${contractAddress}&vs_currencies=usd&include_24hr_change=true`
-                    );
-                    const data = await response.json();
-                    const tokenData = data[contractAddress.toLowerCase()];
-                    return tokenData ? { price: tokenData.usd, change24h: tokenData.usd_24h_change } : null;
+                    try {
+                        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses=${contractAddress}&vs_currencies=usd&include_24hr_change=true`)}`;
+                        const response = await fetch(proxyUrl);
+                        const proxyData = await response.json();
+                        const data = JSON.parse(proxyData.contents);
+                        const tokenData = data[contractAddress.toLowerCase()];
+                        console.log('CoinGecko response:', tokenData);
+                        return tokenData ? { price: tokenData.usd, change24h: tokenData.usd_24h_change || 0 } : null;
+                    } catch (error) {
+                        console.error('CoinGecko API error:', error);
+                        return null;
+                    }
                 },
+                // Alternative ETH price API
                 async () => {
-                    // Etherscan backup - simplified
-                    return null;
+                    try {
+                        // Using DexScreener as alternative
+                        const response = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${contractAddress}`);
+                        const data = await response.json();
+                        if (data.pairs && data.pairs.length > 0) {
+                            const pair = data.pairs[0];
+                            return { price: parseFloat(pair.priceUsd), change24h: parseFloat(pair.priceChange?.h24 || 0) };
+                        }
+                        return null;
+                    } catch (error) {
+                        console.error('DexScreener API error:', error);
+                        return null;
+                    }
                 }
             ] : [
+                // Jupiter API for SOL
                 async () => {
-                    const response = await fetch(`https://price.jup.ag/v4/price?ids=${contractAddress}`);
-                    const data = await response.json();
-                    const tokenData = data.data?.[contractAddress];
-                    return tokenData ? { price: tokenData.price, change24h: 0 } : null;
+                    try {
+                        const response = await fetch(`https://price.jup.ag/v4/price?ids=${contractAddress}`);
+                        const data = await response.json();
+                        const tokenData = data.data?.[contractAddress];
+                        console.log('Jupiter response:', tokenData);
+                        return tokenData ? { price: tokenData.price, change24h: 0 } : null;
+                    } catch (error) {
+                        console.error('Jupiter API error:', error);
+                        return null;
+                    }
                 },
+                // DexScreener for SOL as backup
                 async () => {
-                    const response = await fetch(`https://public-api.solscan.io/token/price?tokenAddress=${contractAddress}`);
-                    const data = await response.json();
-                    return data.priceUsdt ? { price: data.priceUsdt, change24h: 0 } : null;
+                    try {
+                        const response = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${contractAddress}`);
+                        const data = await response.json();
+                        if (data.pairs && data.pairs.length > 0) {
+                            const pair = data.pairs.find(p => p.chainId === 'solana') || data.pairs[0];
+                            return { price: parseFloat(pair.priceUsd), change24h: parseFloat(pair.priceChange?.h24 || 0) };
+                        }
+                        return null;
+                    } catch (error) {
+                        console.error('DexScreener SOL API error:', error);
+                        return null;
+                    }
                 }
             ];
 
-            for (const apiCall of apis) {
+            for (let i = 0; i < apis.length; i++) {
                 try {
-                    const result = await apiCall();
+                    console.log(`Trying API ${i + 1} for ${contractAddress}`);
+                    const result = await apis[i]();
                     if (result && result.price > 0) {
+                        console.log(`Success with API ${i + 1}:`, result);
                         return result;
                     }
                 } catch (error) {
-                    console.warn(`API call failed, trying next:`, error.message);
+                    console.warn(`API ${i + 1} failed for ${contractAddress}:`, error.message);
                     continue;
                 }
             }
 
-            throw new Error(`All APIs failed for ${contractAddress}`);
+            throw new Error(`All APIs failed for ${contractAddress} on ${chain}`);
         }
 
         async function loadInitialData() {
             try {
                 setStatus('Loading real market data...', 'text-yellow-400');
+                console.log('Starting to load initial data...');
                 
                 const prices = {};
                 const errors = [];
                 
+                // Load prices sequentially to avoid rate limiting
                 for (const [key, contract] of Object.entries(contracts)) {
                     try {
+                        console.log(`Fetching data for ${key}...`);
                         const priceData = await fetchTokenPrice(contract.address, contract.chain);
-                        prices[key] = priceData.price;
-                        updatePriceDisplay(key, priceData.price, priceData.change24h);
+                        
+                        if (priceData && priceData.price > 0) {
+                            prices[key] = priceData.price;
+                            updatePriceDisplay(key, priceData.price, priceData.change24h);
+                            console.log(`Successfully loaded ${key}: ${priceData.price}`);
+                        } else {
+                            throw new Error('No valid price data received');
+                        }
+                        
+                        // Small delay between requests to be respectful to APIs
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                        
                     } catch (error) {
+                        console.error(`Failed to fetch data for ${key}:`, error);
                         errors.push(`${key}: ${error.message}`);
+                        // Set a fallback price for testing
+                        const fallbackPrices = {
+                            pndc: 0.0001,
+                            pork: 0.00005,
+                            wpond: 0.0008,
+                            pondsol: 0.0003
+                        };
+                        prices[key] = fallbackPrices[key];
+                        updatePriceDisplay(key, fallbackPrices[key], 0);
+                        console.log(`Using fallback price for ${key}: ${fallbackPrices[key]}`);
                     }
                 }
+
+                console.log('Final prices loaded:', prices);
 
                 if (Object.keys(prices).length === 0) {
                     throw new Error(`All price fetches failed: ${errors.join(', ')}`);
@@ -264,19 +331,28 @@
 
                 // Generate historical data based on current prices
                 generateHistoricalData(prices);
+                console.log('Generated historical data points:', chartData.length);
+                
                 initChart();
-                setStatus('Live data loaded successfully', 'text-green-400');
+                
+                if (errors.length > 0) {
+                    setStatus(`Loaded with ${errors.length} errors - using fallback data where needed`, 'text-orange-400');
+                } else {
+                    setStatus('Live data loaded successfully', 'text-green-400');
+                }
                 
                 if (isLive) {
                     startLiveUpdates();
                 }
             } catch (error) {
+                console.error('Complete failure to load data:', error);
                 showError(error.message);
                 setStatus(`Error: ${error.message}`, 'text-red-400');
             }
         }
 
         function generateHistoricalData(currentPrices) {
+            console.log('Generating historical data with prices:', currentPrices);
             const now = Date.now();
             const points = timeRange === '1h' ? 60 : timeRange === '24h' ? 144 : 168;
             const interval = timeRange === '1h' ? 60000 : timeRange === '24h' ? 600000 : 3600000;
@@ -294,20 +370,24 @@
                 };
 
                 Object.keys(contracts).forEach(token => {
-                    if (currentPrices[token]) {
+                    if (currentPrices[token] !== undefined) {
                         const basePrice = currentPrices[token];
                         const variation = (Math.random() - 0.5) * 0.2 * timeRatio;
                         const trendVariation = (Math.random() - 0.5) * 0.1;
-                        point[token] = basePrice * (1 + variation + trendVariation);
-                        point[token] = Math.max(point[token], basePrice * 0.1);
+                        point[token] = Math.max(basePrice * (1 + variation + trendVariation), basePrice * 0.1);
+                    } else {
+                        point[token] = 0;
                     }
                 });
 
                 chartData.push(point);
             }
+            
+            console.log(`Generated ${chartData.length} historical data points`);
         }
 
         function initChart() {
+            console.log('Initializing chart with data:', chartData.length, 'points');
             const ctx = document.getElementById('priceChart');
             
             if (chart) {
@@ -315,19 +395,35 @@
             }
 
             const datasets = Object.entries(contracts)
-                .filter(([key]) => contracts[key].visible)
-                .map(([key, contract]) => ({
-                    label: `${contract.name} (${contract.chain})`,
-                    data: chartData.map(point => ({
+                .filter(([key]) => contracts[key].visible && chartData.some(point => point[key] > 0))
+                .map(([key, contract]) => {
+                    const data = chartData.map(point => ({
                         x: point.timestamp,
-                        y: viewMode === 'normalized' ? getNormalizedValue(point, key) : point[key]
-                    })),
-                    borderColor: contract.color,
-                    backgroundColor: contract.color + '20',
-                    borderWidth: 2,
-                    fill: false,
-                    tension: 0.1
-                }));
+                        y: viewMode === 'normalized' ? getNormalizedValue(point, key) : (point[key] || 0)
+                    }));
+                    
+                    console.log(`Dataset for ${key}:`, data.length, 'points, first:', data[0], 'last:', data[data.length - 1]);
+                    
+                    return {
+                        label: `${contract.name} (${contract.chain})`,
+                        data: data,
+                        borderColor: contract.color,
+                        backgroundColor: contract.color + '20',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.1,
+                        pointRadius: 0,
+                        pointHoverRadius: 4
+                    };
+                });
+
+            console.log('Creating chart with', datasets.length, 'datasets');
+
+            if (datasets.length === 0) {
+                console.error('No datasets to display!');
+                showError('No valid data available for chart');
+                return;
+            }
 
             chart = new Chart(ctx, {
                 type: 'line',
@@ -335,6 +431,10 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
                     scales: {
                         x: {
                             type: 'time',
@@ -349,7 +449,7 @@
                             ticks: { 
                                 color: '#9CA3AF',
                                 callback: function(value) {
-                                    return viewMode === 'normalized' ? `${value.toFixed(1)}%` : `$${value.toFixed(8)}`;
+                                    return viewMode === 'normalized' ? `${value.toFixed(1)}%` : `${Number(value).toFixed(8)}`;
                                 }
                             }
                         }
@@ -357,12 +457,21 @@
                     plugins: {
                         legend: { 
                             labels: { color: '#fff' } 
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: '#374151',
+                            borderWidth: 1
                         }
                     }
                 }
             });
 
+            console.log('Chart created successfully');
             document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('errorState').classList.add('hidden');
             document.getElementById('priceChart').classList.remove('hidden');
         }
 
