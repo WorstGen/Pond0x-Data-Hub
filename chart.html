@@ -1499,6 +1499,9 @@
                 setStatus('Loading comprehensive market data...', 'text-blue-400');
                 updateLoadingProgress('Initializing enhanced data fetch...');
                 
+                // Wait for DOM to be fully ready
+                await delay(100);
+                
                 const prices = {};
                 const enhancedData = {};
                 const errors = [];
@@ -1513,6 +1516,9 @@
                         if (priceData && priceData.price > 0) {
                             prices[key] = priceData.price;
                             enhancedData[key] = priceData;
+                            
+                            // Add delay before updating display to ensure DOM is ready
+                            await delay(100);
                             updatePriceDisplay(key, priceData);
                             successfulTokens.push(`${key} (${priceData.source})`);
                         } else {
@@ -1524,6 +1530,9 @@
                     } catch (error) {
                         console.error(`❌ Failed to fetch data for ${key}:`, error);
                         errors.push(`${key}: ${error.message}`);
+                        
+                        // Add delay before updating error display
+                        await delay(100);
                         updatePriceDisplay(key, null, true);
                     }
                 }
