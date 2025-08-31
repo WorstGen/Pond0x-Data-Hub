@@ -577,20 +577,30 @@
             }
 
             leaveRoom() {
-                // Close PeerJS connections
-                if (this.peer && !this.peer.destroyed) {
-                    // Notify peers we're leaving
-                    this.connections.forEach((conn) => {
-                        if (conn.open) {
+                // Clean up localStorage entry
+                const roomKey = `chatroom_${this.room}`;
+                const roomData = JSON.parse(localStorage.getItem(roomKey) || '[]');
+                const filteredData = roomData.filter(entry => entry.peerId !== this.peerId);
+                localStorage.setItem(roomKey, JSON.stringify(filteredData));
+
+                // Notify peers we're leaving
+                this.connections.forEach((conn) => {
+                    if (conn.open) {
+                        try {
                             conn.send({
                                 type: 'user_left',
                                 username: this.username,
                                 timestamp: Date.now()
                             });
+                        } catch (error) {
+                            console.error('Error sending leave message:', error);
                         }
-                        conn.close();
-                    });
-                    
+                    }
+                    conn.close();
+                });
+
+                // Close PeerJS connection
+                if (this.peer && !this.peer.destroyed) {
                     this.peer.destroy();
                 }
 
