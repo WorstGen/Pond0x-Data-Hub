@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pond Ecosystem Multi-Contract Chart</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-date-fns/3.0.0/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
         body { 
             margin: 0; 
@@ -205,8 +204,30 @@
         let liveInterval = null;
         let loadingProgress = '';
 
-        // Utility function for delays
-        const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+        // Simple test function to check API connectivity
+        async function testAPI() {
+            console.log('🧪 Testing API connectivity...');
+            
+            // Test with a known working token first (USDC on Ethereum)
+            const testAddress = '0xA0b86a33E6417C32C2cB96e65dcb0eE82F5d30c0'; // USDC
+            
+            try {
+                const response = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${testAddress}`);
+                console.log('Test API response status:', response.status);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('✅ API working! Test response:', data);
+                    return true;
+                } else {
+                    console.log('❌ API not accessible:', response.statusText);
+                    return false;
+                }
+            } catch (error) {
+                console.log('❌ API test failed:', error.message);
+                return false;
+            }
+        }
 
         function updateLoadingProgress(message) {
             const progressEl = document.getElementById('loadingProgress');
@@ -371,9 +392,21 @@
             throw new Error(`All APIs failed for ${contractAddress}: ${lastError?.message || 'Unknown error'}`);
         }
 
+        // Utility function for delays
+        const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
         async function loadInitialData() {
             try {
-                setStatus('Loading real market data...', 'text-yellow-400');
+                setStatus('Testing API connectivity...', 'text-yellow-400');
+                updateLoadingProgress('Testing APIs...');
+                
+                // First test if APIs are accessible at all
+                const apiWorking = await testAPI();
+                if (!apiWorking) {
+                    throw new Error('DexScreener API is not accessible from this browser. This may be due to CORS restrictions or network blocking.');
+                }
+                
+                setStatus('API accessible! Loading real market data...', 'text-yellow-400');
                 updateLoadingProgress('Starting data fetch...');
                 console.log('Starting to load initial data...');
                 
@@ -540,12 +573,15 @@
                     },
                     scales: {
                         x: {
-                            type: 'time',
-                            time: {
-                                unit: timeRange === '1h' ? 'minute' : timeRange === '24h' ? 'hour' : 'day'
-                            },
+                            type: 'linear',
                             grid: { color: '#374151' },
-                            ticks: { color: '#9CA3AF' }
+                            ticks: { 
+                                color: '#9CA3AF',
+                                callback: function(value, index, ticks) {
+                                    const date = new Date(value);
+                                    return date.toLocaleTimeString();
+                                }
+                            }
                         },
                         y: {
                             grid: { color: '#374151' },
