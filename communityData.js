@@ -1002,3 +1002,4 @@ const communityData = [
 
 // Make it available globally
 window.communityData = communityData;
+console.log('✅ communityData variable set:', communityData.length, 'communities');
