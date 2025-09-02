@@ -26,7 +26,7 @@ const communityData = [
       {"emoji": "📊", "title": "Referral Link Spreadsheet", "url": "https://docs.google.com/spreadsheets/d/1xtdg3Bcamtu3Rf1eYcv7Kmlu14rjDJu2ZTA7J_n-eb4/edit?usp=drivesdk"},
       {"emoji": "🤝", "title": "Referral Link", "url": "https://www.pond0x.com/swap/solana?ref=Jy9TwxBp5WeYeoCJMBaBMX5NfsBqdxnL2jwRJgskscZaSa8EeUgLN5HA5KAv"}
     ]
-  }
+  },
   {
     "name": "Chef Winters [$BTC]",
     "description": "Design, memer",
