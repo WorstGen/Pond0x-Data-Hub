@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memeorabilia - Trading Card Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .logo {
+            font-size: 3.5em;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ff4757, #ff6b9d, #5352ed, #3742fa);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 4s ease-in-out infinite;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .tagline {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.4em;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .upload-section {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 40px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .upload-area {
+            border: 3px dashed rgba(255,255,255,0.3);
+            border-radius: 20px;
+            padding: 50px;
+            text-align: center;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            background: linear-gradient(135deg, rgba(255,71,87,0.1), rgba(83,82,237,0.1));
+        }
+
+        .upload-area:hover {
+            border-color: #ff6b9d;
+            background: linear-gradient(135deg, rgba(255,107,157,0.2), rgba(83,82,237,0.2));
+            transform: translateY(-5px);
+        }
+
+        .upload-area.dragover {
+            border-color: #5352ed;
+            background: linear-gradient(135deg, rgba(255,107,157,0.3), rgba(83,82,237,0.3));
+            transform: scale(1.02);
+        }
+
+        .upload-text {
+            color: white;
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .upload-btn {
+            background: linear-gradient(45deg, #ff4757, #ff6b9d);
+            border: none;
+            color: white;
+            padding: 15px 35px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(255,71,87,0.4);
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255,71,87,0.6);
+        }
+
+        .options-section {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .option-group {
+            margin-bottom: 20px;
+        }
+
+        .option-label {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+            font-size: 1.1em;
+        }
+
+        .option-input {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.9);
+            font-size: 1.1em;
+            backdrop-filter: blur(10px);
+        }
+
+        .card-preview {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+            perspective: 1000px;
+        }
+
+        .trading-card {
+            width: 350px;
+            height: 490px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.6s ease;
+            cursor: pointer;
+        }
+
+        .trading-card:hover {
+            transform: rotateY(10deg) rotateX(5deg) scale(1.05);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 25px;
+            backface-visibility: hidden;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+
+        .card-front {
+            background: linear-gradient(145deg, #1e3c72, #2a5298);
+            overflow: hidden;
+            border: 3px solid transparent;
+            background-clip: padding-box;
+        }
+
+        .card-border {
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            background: linear-gradient(45deg, #ff4757, #ff6b9d, #5352ed, #3742fa);
+            background-size: 400% 400%;
+            animation: borderGlow 3s ease-in-out infinite;
+            border-radius: 28px;
+            z-index: -1;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .card-header {
+            background: linear-gradient(90deg, rgba(0,0,0,0.8), rgba(0,0,0,0.4), rgba(0,0,0,0.8));
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            font-weight: 900;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .card-image-container {
+            height: 280px;
+            margin: 20px;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.3);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .card-image:hover {
+            transform: scale(1.05);
+        }
+
+        .placeholder-text {
+            color: rgba(255,255,255,0.7);
+            font-style: italic;
+            font-size: 1.1em;
+            text-align: center;
+        }
+
+        .card-info {
+            padding: 20px;
+            color: white;
+        }
+
+        .card-title {
+            font-size: 1.4em;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 15px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .card-type {
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 1.1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .type-viral { 
+            background: linear-gradient(45deg, #ff4757, #ff3742);
+            box-shadow: 0 10px 30px rgba(255,71,87,0.4);
+        }
+        .type-slam { 
+            background: linear-gradient(45deg, #5352ed, #3742fa);
+            box-shadow: 0 10px 30px rgba(83,82,237,0.4);
+        }
+        .type-dig { 
+            background: linear-gradient(45deg, #2ed573, #1dd1a1);
+            box-shadow: 0 10px 30px rgba(46,213,115,0.4);
+        }
+        .type-classic { 
+            background: linear-gradient(45deg, #ffa502, #ff6348);
+            box-shadow: 0 10px 30px rgba(255,165,2,0.4);
+        }
+        .type-cursed { 
+            background: linear-gradient(45deg, #a55eea, #8b4d8f);
+            box-shadow: 0 10px 30px rgba(165,94,234,0.4);
+        }
+        .type-dank { 
+            background: linear-gradient(45deg, #26de81, #20bf6b);
+            box-shadow: 0 10px 30px rgba(38,222,129,0.4);
+        }
+
+        .card-flavor {
+            text-align: center;
+            font-style: italic;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.95em;
+            line-height: 1.4;
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 15px;
+            border-left: 4px solid #ff6b9d;
+        }
+
+        .holographic {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, 
+                rgba(255,20,147,0.4) 0%, 
+                rgba(0,255,255,0.4) 25%, 
+                rgba(255,215,0,0.4) 50%, 
+                rgba(148,0,211,0.4) 75%, 
+                rgba(255,20,147,0.4) 100%);
+            background-size: 300% 300%;
+            animation: holoShift 3s ease-in-out infinite;
+            border-radius: 25px;
+            pointer-events: none;
+            mix-blend-mode: overlay;
+        }
+
+        @keyframes holoShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .rainbow-text {
+            background: linear-gradient(45deg, #ff4757, #ff6b9d, #5352ed, #3742fa, #2ed573);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: rainbowShift 2s ease-in-out infinite;
+        }
+
+        @keyframes rainbowShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .generate-btn, .download-btn {
+            background: linear-gradient(45deg, #5352ed, #3742fa);
+            border: none;
+            color: white;
+            padding: 18px 40px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 15px 35px rgba(83,82,237,0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .generate-btn:hover, .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 45px rgba(83,82,237,0.6);
+        }
+
+        .download-btn {
+            background: linear-gradient(45deg, #2ed573, #1dd1a1);
+            box-shadow: 0 15px 35px rgba(46,213,115,0.4);
+        }
+
+        .download-btn:hover {
+            box-shadow: 0 20px 45px rgba(46,213,115,0.6);
+        }
+
+        .buttons-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .preview-media {
+            max-width: 100%;
+            max-height: 120px;
+            margin: 15px 0;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .trading-card {
+                width: 300px;
+                height: 420px;
+            }
+            
+            .logo {
+                font-size: 2.5em;
+            }
+            
+            .card-image-container {
+                height: 200px;
+                margin: 15px;
+            }
+        }
+
+        .sparkles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">Memeorabilia</div>
+            <div class="tagline">Premium Meme Trading Cards</div>
+        </div>
+
+        <div class="upload-section">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-text">Drop Your Legendary Meme Here</div>
+                <div style="color: rgba(255,255,255,0.7); margin-bottom: 20px; font-size: 1.1em;">
+                    Images • Videos • GIFs • All Formats Welcome
+                </div>
+                <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                    Choose Your Meme
+                </button>
+                <input type="file" id="fileInput" class="file-input" accept="image/*,video/*,.gif">
+            </div>
+            <div id="filePreview"></div>
+        </div>
+
+        <div class="options-section">
+            <div class="option-group">
+                <label class="option-label">Card Name</label>
+                <input type="text" id="cardName" class="option-input" placeholder="Enter your meme's legendary name...">
+            </div>
+        </div>
+
+        <div class="card-preview">
+            <div class="trading-card" id="tradingCard">
+                <div class="card-border"></div>
+                <div class="card-face card-front">
+                    <div class="card-header">
+                        <span id="headerText">MEMEORABILIA • SERIES 1</span>
+                    </div>
+                    <div class="card-image-container" id="cardImageContainer">
+                        <div class="placeholder-text">Your meme will appear here in all its glory!</div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title" id="cardTitle">Legendary Meme</div>
+                        <div class="card-type" id="cardType">
+                            <span>CLASSIC MEME</span>
+                        </div>
+                        <div class="card-flavor" id="cardFlavor">
+                            "A timeless piece of internet culture that transcends generations."
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="buttons-container">
+            <button class="generate-btn" onclick="generateCard()">Generate Random Card</button>
+            <button class="download-btn" onclick="downloadCard()" style="display: none;" id="downloadBtn">Download Masterpiece</button>
+        </div>
+    </div>
+
+    <script>
+        let uploadedFile = null;
+        let currentCardType = 'classic';
+        let isHolographic = false;
+
+        const cardTypes = {
+            viral: {
+                name: 'VIRAL VIDEO',
+                flavor: '"This meme broke the internet and your recommended feed will never be the same."',
+                class: 'type-viral'
+            },
+            slam: {
+                name: 'SICK SLAM',
+                flavor: '"A devastating blow to boring content. Critics rate it 10/10 would meme again."',
+                class: 'type-slam'
+            },
+            dig: {
+                name: 'DEEP DIG',
+                flavor: '"Excavated from the deepest corners of the web. Archaeological meme significance confirmed."',
+                class: 'type-dig'
+            },
+            classic: {
+                name: 'CLASSIC MEME',
+                flavor: '"A timeless piece of internet culture that transcends generations of scrollers."',
+                class: 'type-classic'
+            },
+            cursed: {
+                name: 'CURSED CONTENT',
+                flavor: '"Warning: May cause uncontrollable laughter and existential questions about humor."',
+                class: 'type-cursed'
+            },
+            dank: {
+                name: 'DANK MEME',
+                flavor: '"Certified fresh by the Meme Review Board. Dankness level: Maximum."',
+                class: 'type-dank'
+            }
+        };
+
+        // File upload handling
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const filePreview = document.getElementById('filePreview');
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            uploadedFile = file;
+            displayFilePreview(file);
+            updateCardImage(file);
+            generateCard(); // Auto-generate card properties
+            document.getElementById('downloadBtn').style.display = 'inline-block';
+        }
+
+        function displayFilePreview(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const isVideo = file.type.startsWith('video/');
+                
+                let previewHTML = `<div style="color: white; margin: 15px 0; font-weight: bold; font-size: 1.2em;">✨ ${file.name} Ready for Card Creation!</div>`;
+                
+                if (isVideo) {
+                    previewHTML += `<video class="preview-media" controls muted><source src="${e.target.result}" type="${file.type}"></video>`;
+                } else {
+                    previewHTML += `<img class="preview-media" src="${e.target.result}" alt="Preview">`;
+                }
+                
+                filePreview.innerHTML = previewHTML;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function updateCardImage(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const container = document.getElementById('cardImageContainer');
+                const isVideo = file.type.startsWith('video/');
+                
+                if (isVideo) {
+                    container.innerHTML = `<video class="card-image" muted loop autoplay><source src="${e.target.result}" type="${file.type}"></video>`;
+                } else {
+                    container.innerHTML = `<img class="card-image" src="${e.target.result}" alt="Meme">`;
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        document.getElementById('cardName').addEventListener('input', (e) => {
+            const title = e.target.value || 'Legendary Meme';
+            document.getElementById('cardTitle').textContent = title;
+        });
+
+        function generateCard() {
+            // Random card type
+            const typeKeys = Object.keys(cardTypes);
+            const randomType = typeKeys[Math.floor(Math.random() * typeKeys.length)];
+            currentCardType = randomType;
+            
+            const cardType = cardTypes[randomType];
+            const typeElement = document.getElementById('cardType');
+            const flavorElement = document.getElementById('cardFlavor');
+            
+            typeElement.className = `card-type ${cardType.class}`;
+            typeElement.innerHTML = `<span>${cardType.name}</span>`;
+            flavorElement.textContent = cardType.flavor;
+            
+            // Remove existing holographic effect
+            const existingHolo = document.querySelector('.holographic');
+            if (existingHolo) {
+                existingHolo.remove();
+            }
+            
+            // 15% chance for holographic effect
+            isHolographic = Math.random() < 0.15;
+            if (isHolographic) {
+                addHolographicEffect();
+                // Make it extra special
+                const title = document.getElementById('cardTitle');
+                title.classList.add('rainbow-text');
+                document.getElementById('headerText').innerHTML = '✨ MEMEORABILIA • HOLOGRAPHIC EDITION ✨';
+                addSparkles();
+            } else {
+                // Reset to normal
+                const title = document.getElementById('cardTitle');
+                title.classList.remove('rainbow-text');
+                document.getElementById('headerText').textContent = 'MEMEORABILIA • SERIES 1';
+                removeSparkles();
+            }
+
+            // Generate a random name if none exists
+            if (!document.getElementById('cardName').value) {
+                const memeNames = [
+                    'Epic Fail Chronicles', 'Legendary LOL Moment', 'Viral Sensation Supreme',
+                    'Dank Dreams Reality', 'Meme Lord Special', 'Internet Hall of Fame',
+                    'Scroll Stopper Elite', 'Comedy Gold Standard', 'Cringe Crusher Deluxe',
+                    'Gigachad Energy', 'Based and Memed', 'Touch Grass Reminder',
+                    'NPC Behavior Alert', 'Main Character Syndrome', 'Big Mood Energy'
+                ];
+                const randomName = memeNames[Math.floor(Math.random() * memeNames.length)];
+                document.getElementById('cardName').value = randomName;
+                document.getElementById('cardTitle').textContent = randomName;
+            }
+        }
+
+        function addHolographicEffect() {
+            const cardFront = document.querySelector('.card-front');
+            const holoDiv = document.createElement('div');
+            holoDiv.className = 'holographic';
+            cardFront.appendChild(holoDiv);
+        }
+
+        function addSparkles() {
+            const card = document.getElementById('tradingCard');
+            const sparklesContainer = document.createElement('div');
+            sparklesContainer.className = 'sparkles';
+            
+            for (let i = 0; i < 8; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = Math.random() * 100 + '%';
+                sparkle.style.top = Math.random() * 100 + '%';
+                sparkle.style.animationDelay = Math.random() * 2 + 's';
+                sparklesContainer.appendChild(sparkle);
+            }
+            
+            card.appendChild(sparklesContainer);
+        }
+
+        function removeSparkles() {
+            const sparkles = document.querySelector('.sparkles');
+            if (sparkles) {
+                sparkles.remove();
+            }
+        }
+
+        function downloadCard() {
+            if (!uploadedFile) {
+                alert('Please upload a meme first to create your masterpiece!');
+                return;
+            }
+
+            // Create a higher quality canvas
+            const card = document.getElementById('tradingCard');
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // High resolution canvas
+            canvas.width = 700;
+            canvas.height = 980;
+            
+            // Create gradient background
+            const bgGradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            bgGradient.addColorStop(0, '#1e3c72');
+            bgGradient.addColorStop(1, '#2a5298');
+            ctx.fillStyle = bgGradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Add glowing border effect
+            const borderGradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            borderGradient.addColorStop(0, '#ff4757');
+            borderGradient.addColorStop(0.25, '#ff6b9d');
+            borderGradient.addColorStop(0.5, '#5352ed');
+            borderGradient.addColorStop(0.75, '#3742fa');
+            borderGradient.addColorStop(1, '#ff4757');
+            
+            ctx.strokeStyle = borderGradient;
+            ctx.lineWidth = 6;
+            ctx.strokeRect(3, 3, canvas.width - 6, canvas.height - 6);
+            
+            // Header background
+            const headerGradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+            headerGradient.addColorStop(0, 'rgba(0,0,0,0.8)');
+            headerGradient.addColorStop(0.5, 'rgba(0,0,0,0.4)');
+            headerGradient.addColorStop(1, 'rgba(0,0,0,0.8)');
+            ctx.fillStyle = headerGradient;
+            ctx.fillRect(0, 0, canvas.width, 80);
+            
+            // Header text
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 24px Arial';
+            ctx.textAlign = 'center';
+            const headerText = isHolographic ? '✨ MEMEORABILIA • HOLOGRAPHIC EDITION ✨' : 'MEMEORABILIA • SERIES 1';
+            ctx.fillText(headerText, canvas.width / 2, 50);
+            
+            // Card title
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 32px Arial';
+            ctx.shadowColor = 'rgba(0,0,0,0.5)';
+            ctx.shadowBlur = 4;
+            ctx.shadowOffsetX = 2;
+            ctx.shadowOffsetY = 2;
+            const title = document.getElementById('cardTitle').textContent;
+            ctx.fillText(title.toUpperCase(), canvas.width / 2, 780);
+            ctx.shadowBlur = 0;
+            
+            // Card type
+            const typeInfo = cardTypes[currentCardType];
+            const typeGradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+            
+            // Set colors based on type
+            switch(currentCardType) {
+                case 'viral':
+                    typeGradient.addColorStop(0, '#ff4757');
+                    typeGradient.addColorStop(1, '#ff3742');
+                    break;
+                case 'slam':
+                    typeGradient.addColorStop(0, '#5352ed');
+                    typeGradient.addColorStop(1, '#3742fa');
+                    break;
+                case 'dig':
+                    typeGradient.addColorStop(0, '#2ed573');
+                    typeGradient.addColorStop(1, '#1dd1a1');
+                    break;
+                case 'classic':
+                    typeGradient.addColorStop(0, '#ffa502');
+                    typeGradient.addColorStop(1, '#ff6348');
+                    break;
+                case 'cursed':
+                    typeGradient.addColorStop(0, '#a55eea');
+                    typeGradient.addColorStop(1, '#8b4d8f');
+                    break;
+                case 'dank':
+                    typeGradient.addColorStop(0, '#26de81');
+                    typeGradient.addColorStop(1, '#20bf6b');
+                    break;
+            }
+            
+            ctx.fillStyle = typeGradient;
+            ctx.fillRect(50, 820, canvas.width - 100, 50);
+            
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 22px Arial';
+            ctx.fillText(typeInfo.name, canvas.width / 2, 850);
+            
+            // Flavor text
+            ctx.fillStyle = 'rgba(255,255,255,0.9)';
+            ctx.font = 'italic 18px Arial';
+            const flavorText = typeInfo.flavor;
+            
+            // Word wrap for flavor text
+            const words = flavorText.split(' ');
+            let line = '';
+            const lines = [];
+            const maxWidth = canvas.width - 100;
+            
+            words.forEach(word => {
+                const testLine = line + word + ' ';
+                const metrics = ctx.measureText(testLine);
+                if (metrics.width > maxWidth && line !== '') {
+                    lines.push(line.trim());
+                    line = word + ' ';
+                } else {
+                    line = testLine;
+                }
+            });
+            lines.push(line.trim());
+            
+            lines.forEach((line, index) => {
+                ctx.fillText(line, canvas.width / 2, 890 + (index * 25));
+            });
+            
+            // Holographic effect indication
+            if (isHolographic) {
+                ctx.fillStyle = 'rgba(255,215,0,0.3)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Add "HOLOGRAPHIC" text
+                ctx.fillStyle = '#ffd700';
+                ctx.font = 'bold 20px Arial';
+                ctx.fillText('HOLOGRAPHIC EDITION', canvas.width / 2, 750);
+            }
+            
+            // Download
+            const cardName = document.getElementById('cardName').value || 'legendary-meme';
+            const filename = `memeorabilia-${cardName.toLowerCase().replace(/[^a-z0-9]/g, '-')}.png`;
+            
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png', 1.0);
+            link.click();
+        }
+
+        // Initialize with a random card
+        generateCard();
+    </script>
+</body>
+</html>
