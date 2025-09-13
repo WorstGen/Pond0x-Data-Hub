@@ -14,6 +14,10 @@
   <meta name="twitter:title" content="DATA🤝HUB">
   <meta name="twitter:description" content="The destination for POND🤝X related data">
   <meta name="twitter:image" content="https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/refs/heads/main/hubcard.png">
+  
+  <!-- NAKAMA Login Widget -->
+  <script src="assets/js/nakama-login-widget.js"></script>
+  
   <style>
     * {
       margin: 0;
@@ -1222,6 +1226,18 @@ body {
       justify-content: space-between;
       padding: 0 1.5rem;
       position: relative;
+      gap: 1rem; /* Add gap for NAKAMA widget spacing */
+    }
+
+    /* NAKAMA Widget Integration Styles */
+    .nakama-login-widget {
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    /* Adjust desktop menu to accommodate NAKAMA widget */
+    .topbar-menu {
+      margin-right: auto;
     }
 
     /* Logo/Brand Section */
@@ -1422,6 +1438,15 @@ body {
       .topbar-wrapper {
         padding: 0 1rem;
       }
+      
+      /* NAKAMA widget mobile adjustments */
+      .nakama-login-widget {
+        order: 2; /* Place after hamburger menu */
+      }
+      
+      .menu-hamburger {
+        order: 3; /* Place hamburger menu last */
+      }
     }
 
     @media (max-width: 768px) {
@@ -1492,6 +1517,30 @@ body {
       .mobile-menu-items a {
         padding: 0.875rem 1rem;
         font-size: 0.85rem;
+      }
+      
+      /* NAKAMA widget mobile optimizations */
+      .nakama-connect-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+      
+      .nakama-profile-btn {
+        padding: 6px 8px;
+        gap: 8px;
+      }
+      
+      .nakama-avatar {
+        width: 28px;
+        height: 28px;
+      }
+      
+      .nakama-username {
+        font-size: 11px;
+      }
+      
+      .nakama-chain {
+        font-size: 9px;
       }
     }
 
