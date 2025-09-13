@@ -312,6 +312,7 @@
               </div>
               <div class="nakama-dropdown-section">
                 <div class="nakama-section-title">Quick Actions</div>
+                <button class="nakama-dropdown-btn" data-action="generate-passport">Generate Passport</button>
                 <button class="nakama-dropdown-btn" data-action="view-profile">View Profile</button>
                 <button class="nakama-dropdown-btn" data-action="disconnect">Disconnect</button>
               </div>
@@ -457,6 +458,11 @@
       if (user) {
         this.user = user;
         this.showSuccess('Connected successfully!');
+        
+        // Auto-populate wallet inputs for Pond0x Data Hub
+        setTimeout(() => {
+          this.populateInputs({ triggerPassportGeneration: true });
+        }, 500);
       } else {
         // Show profile creation modal
         this.showProfileCreationModal();
@@ -624,6 +630,9 @@
     // Handle dropdown actions
     handleDropdownAction(action, element) {
       switch (action) {
+        case 'generate-passport':
+          this.generatePassportFromNAKAMA();
+          break;
         case 'view-profile':
           window.open(`${NAKAMA_API_BASE}/profile/${this.user.username}`, '_blank');
           break;
@@ -708,12 +717,19 @@
       const {
         selectors = {},
         autoDetect = true,
-        chainPriority = ['solana', 'ethereum', 'polygon', 'arbitrum', 'optimism', 'base', 'bsc']
+        chainPriority = ['solana', 'ethereum', 'polygon', 'arbitrum', 'optimism', 'base', 'bsc'],
+        triggerPassportGeneration = true // New option for passport integration
       } = options;
 
       // Default selectors for common wallet input patterns
       const defaultSelectors = {
         solana: [
+          // Pond0x Data Hub specific selectors
+          '#wallet-input',
+          '#modalWalletInput',
+          'input[id="wallet-input"]',
+          'input[id="modalWalletInput"]',
+          // Generic selectors
           'input[name*="solana"]',
           'input[name*="sol"]',
           'input[placeholder*="solana"]',
@@ -829,6 +845,11 @@
             
             // Auto-trigger form submission or button clicks
             this.autoTriggerActions(input);
+            
+            // Special handling for Pond0x Data Hub passport generation
+            if (triggerPassportGeneration && (input.id === 'wallet-input' || input.id === 'modalWalletInput')) {
+              this.triggerPassportGeneration(input);
+            }
             
             populatedCount++;
           }
@@ -1010,6 +1031,96 @@
           button.click();
           return;
         }
+      }
+    }
+
+    // Special method for triggering Pond0x Data Hub passport generation
+    triggerPassportGeneration(input) {
+      console.log('NAKAMA: Triggering Pond0x passport generation for input:', input.id);
+      
+      // Wait a bit for the input to be processed
+      setTimeout(() => {
+        try {
+          // Check if we're on the main wallet input
+          if (input.id === 'wallet-input') {
+            // Trigger the dashboard initialization
+            if (typeof initDashboard === 'function') {
+              console.log('NAKAMA: Calling initDashboard()');
+              initDashboard();
+            } else {
+              console.log('NAKAMA: initDashboard function not found, trying alternative methods');
+              // Try to trigger the arrow button click
+              const arrowBtn = document.getElementById('arrowBtn');
+              if (arrowBtn) {
+                console.log('NAKAMA: Clicking arrow button');
+                arrowBtn.click();
+              }
+            }
+          }
+          
+          // Check if we're on the modal wallet input
+          if (input.id === 'modalWalletInput') {
+            // Enable the generate button and trigger it
+            const generateBtn = document.getElementById('generateBtn');
+            if (generateBtn && !generateBtn.disabled) {
+              console.log('NAKAMA: Clicking generate button in modal');
+              generateBtn.click();
+            } else {
+              // Try to enable the button first
+              const saveBtn = document.getElementById('saveWalletBtn');
+              if (saveBtn && !saveBtn.disabled) {
+                console.log('NAKAMA: Clicking save & generate button');
+                saveBtn.click();
+              }
+            }
+          }
+          
+          // Show success notification
+          this.showSuccess('NAKAMA: Auto-generated passport data from connected wallet!');
+          
+        } catch (error) {
+          console.error('NAKAMA: Error triggering passport generation:', error);
+        }
+      }, 1000); // Wait 1 second for the input to be fully processed
+    }
+
+    // Generate passport directly from NAKAMA profile
+    generatePassportFromNAKAMA() {
+      if (!this.user || !this.connectedWallets.solana) {
+        this.showError('No wallet connected. Please connect your wallet first.');
+        return;
+      }
+
+      const solanaAddress = this.connectedWallets.solana.address;
+      console.log('NAKAMA: Generating passport for address:', solanaAddress);
+
+      try {
+        // Find the main wallet input and populate it
+        const walletInput = document.getElementById('wallet-input');
+        if (walletInput) {
+          walletInput.value = solanaAddress;
+          
+          // Trigger wallet type detection
+          if (typeof detectWalletType === 'function') {
+            detectWalletType();
+          }
+          
+          // Trigger dashboard initialization
+          setTimeout(() => {
+            if (typeof initDashboard === 'function') {
+              console.log('NAKAMA: Calling initDashboard() for passport generation');
+              initDashboard();
+              this.showSuccess('NAKAMA: Generated passport data from your connected wallet!');
+            } else {
+              this.showError('NAKAMA: Unable to generate passport. Please try manually.');
+            }
+          }, 500);
+        } else {
+          this.showError('NAKAMA: Wallet input not found. Please refresh the page.');
+        }
+      } catch (error) {
+        console.error('NAKAMA: Error generating passport:', error);
+        this.showError('NAKAMA: Failed to generate passport. Please try again.');
       }
     }
   }
