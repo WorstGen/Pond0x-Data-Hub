@@ -3532,7 +3532,7 @@ const formatNumber = (num) => {
 };
 
 // Helper function to convert UNIX timestamp to user-friendly format
-const formatTimestamp = (timestamp, options = {}) => {
+function formatTimestamp(timestamp, options = {}) {
   if (!timestamp || timestamp === 'N/A' || timestamp === 'Never') {
     return timestamp;
   }
@@ -3597,7 +3597,7 @@ const formatTimestamp = (timestamp, options = {}) => {
     console.warn('Error formatting timestamp:', timestamp, error);
     return timestamp; // Return original on error
   }
-};
+}
 
 // Boost breakdown with centered content
 const boostBreakdown = `
