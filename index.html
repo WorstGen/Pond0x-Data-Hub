@@ -2452,9 +2452,6 @@ function displayWalletManifest(data) {
     border: 1px solid var(--card-border);
   `;
 
-  // Format timestamps before using them in template literal
-  const formattedProAgo = formatTimestamp(data.proAgo, { format: 'relative' });
-  const formattedProExpiry = formatTimestamp(data.proExpiry, { includeTime: true });
 
   const badges = Array.isArray(data.badges) ? data.badges.join(', ') : (data.badges || 'None');
 
@@ -2526,8 +2523,8 @@ manifestSection.innerHTML = `
   ">
 
   <div><strong>Pro User:</strong> ${data.isPro ? '✅' : '❌'}</div>
-  <div><strong>Pro Since:</strong> ${formattedProAgo}</div>
-  <div><strong>Pro Expiry:</strong> ${formattedProExpiry}</div>
+  <div><strong>Pro Since:</strong> ${data.proAgo ?? 'N/A'}</div>
+  <div><strong>Pro Expiry:</strong> ${data.proExpiry ?? 'N/A'}</div>
   
   <hr style="width:100%; border:0; border-top:1px solid rgba(0,0,0,0.2);">
   
@@ -3050,13 +3047,10 @@ async function generatePassportCard(manifestData, healthStats = null, aiInsights
       }
 
       // PASSPORT STATUS Section (Column 1)
-      const formattedProAgoCard = formatTimestamp(manifestData.proAgo, { format: 'relative' });
-      const formattedProExpiryCard = formatTimestamp(manifestData.proExpiry, { includeTime: true });
-      
       const passportContent = [
         `Pro Status: ${manifestData.isPro ? '✅ Active' : '❌ Inactive'}`,
-        `Member Since: ${formattedProAgoCard}`,
-        `Expires: ${formattedProExpiryCard}`,
+        `Member Since: ${manifestData.proAgo || 'N/A'}`,
+        `Expires: ${manifestData.proExpiry || 'Never'}`,
         `Total Swaps: ${Number(manifestData.proSwapsBx || 0).toLocaleString()}`,
         `SOL Swaps: ${Number(manifestData.proSwapsSol || 0).toLocaleString()}`
       ];
@@ -3538,79 +3532,6 @@ const formatNumber = (num) => {
   return Math.round(num).toLocaleString();
 };
 
-// Helper function to convert UNIX timestamp to user-friendly format
-function formatTimestamp(timestamp, options = {}) {
-  // Handle null, undefined, or empty values
-  if (timestamp === null || timestamp === undefined || timestamp === '') {
-    return 'N/A';
-  }
-  
-  // Handle string values that should be returned as-is
-  if (timestamp === 'N/A' || timestamp === 'Never') {
-    return timestamp;
-  }
-  
-  try {
-    // Handle both string and number timestamps
-    const timestampValue = typeof timestamp === 'string' ? parseInt(timestamp) : timestamp;
-    
-    // Check if it's a valid timestamp (not NaN and reasonable range)
-    if (isNaN(timestampValue) || timestampValue < 0 || timestampValue > 4102444800) { // Year 2100
-      return 'N/A'; // Return N/A for invalid timestamps
-    }
-    
-    const date = new Date(timestampValue * 1000); // Convert to milliseconds
-    
-    // Check if date is valid
-    if (isNaN(date.getTime())) {
-      return 'N/A';
-    }
-    
-    const {
-      format = 'local', // 'local', 'utc', 'relative'
-      includeTime = false,
-      includeDate = true
-    } = options;
-    
-    if (format === 'relative') {
-      const now = new Date();
-      const diffMs = now - date;
-      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-      const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-      const diffMinutes = Math.floor(diffMs / (1000 * 60));
-      
-      if (diffDays > 0) {
-        return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-      } else if (diffHours > 0) {
-        return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
-      } else if (diffMinutes > 0) {
-        return `${diffMinutes} minute${diffMinutes > 1 ? 's' : ''} ago`;
-      } else {
-        return 'Just now';
-      }
-    }
-    
-    // Format based on user's locale
-    const localeOptions = {
-      timeZone: format === 'utc' ? 'UTC' : undefined,
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    };
-    
-    if (includeTime) {
-      localeOptions.hour = '2-digit';
-      localeOptions.minute = '2-digit';
-      localeOptions.hour12 = true;
-    }
-    
-    return date.toLocaleDateString(undefined, localeOptions);
-    
-  } catch (error) {
-    console.warn('Error formatting timestamp:', timestamp, error);
-    return 'N/A'; // Return N/A on error instead of original timestamp
-  }
-}
 
 // Boost breakdown with centered content
 const boostBreakdown = `
