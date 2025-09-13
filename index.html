@@ -2452,6 +2452,10 @@ function displayWalletManifest(data) {
     border: 1px solid var(--card-border);
   `;
 
+  // Format timestamps before using them in template literal
+  const formattedProAgo = formatTimestamp(data.proAgo, { format: 'relative' });
+  const formattedProExpiry = formatTimestamp(data.proExpiry, { includeTime: true });
+
   const badges = Array.isArray(data.badges) ? data.badges.join(', ') : (data.badges || 'None');
 
   // Map badges to emojis
@@ -2522,8 +2526,8 @@ manifestSection.innerHTML = `
   ">
 
   <div><strong>Pro User:</strong> ${data.isPro ? '✅' : '❌'}</div>
-  <div><strong>Pro Since:</strong> ${formatTimestamp(data.proAgo, { format: 'relative' })}</div>
-  <div><strong>Pro Expiry:</strong> ${formatTimestamp(data.proExpiry, { includeTime: true })}</div>
+  <div><strong>Pro Since:</strong> ${formattedProAgo}</div>
+  <div><strong>Pro Expiry:</strong> ${formattedProExpiry}</div>
   
   <hr style="width:100%; border:0; border-top:1px solid rgba(0,0,0,0.2);">
   
@@ -3046,10 +3050,13 @@ async function generatePassportCard(manifestData, healthStats = null, aiInsights
       }
 
       // PASSPORT STATUS Section (Column 1)
+      const formattedProAgoCard = formatTimestamp(manifestData.proAgo, { format: 'relative' });
+      const formattedProExpiryCard = formatTimestamp(manifestData.proExpiry, { includeTime: true });
+      
       const passportContent = [
         `Pro Status: ${manifestData.isPro ? '✅ Active' : '❌ Inactive'}`,
-        `Member Since: ${formatTimestamp(manifestData.proAgo, { format: 'relative' })}`,
-        `Expires: ${formatTimestamp(manifestData.proExpiry, { includeTime: true })}`,
+        `Member Since: ${formattedProAgoCard}`,
+        `Expires: ${formattedProExpiryCard}`,
         `Total Swaps: ${Number(manifestData.proSwapsBx || 0).toLocaleString()}`,
         `SOL Swaps: ${Number(manifestData.proSwapsSol || 0).toLocaleString()}`
       ];
