@@ -290,7 +290,7 @@
 
       return `
         <div class="nakama-user-profile">
-          <button class="nakama-profile-btn" data-action="toggle-menu">
+          <button class="nakama-profile-btn" data-action="toggle-combined-menu">
             ${profilePicture}
             <div class="nakama-user-info">
               <div class="nakama-username">@${this.user.displayName || this.user.username}</div>
@@ -302,22 +302,6 @@
               <div class="nakama-hamburger-line"></div>
             </div>
           </button>
-          
-          <!-- Dropdown Menu -->
-          <div class="nakama-dropdown" style="display: none;">
-            <div class="nakama-dropdown-content">
-              <div class="nakama-dropdown-section">
-                <div class="nakama-section-title">Active Chains</div>
-                ${this.renderActiveChains()}
-              </div>
-              <div class="nakama-dropdown-section">
-                <div class="nakama-section-title">Quick Actions</div>
-                <button class="nakama-dropdown-btn" data-action="generate-passport">Generate Passport</button>
-                <button class="nakama-dropdown-btn" data-action="view-profile">View Profile</button>
-                <button class="nakama-dropdown-btn" data-action="disconnect">Disconnect</button>
-              </div>
-            </div>
-          </div>
         </div>
       `;
     }
@@ -468,10 +452,10 @@
           }
         }));
         
-        // Auto-populate wallet inputs for Pond0x Data Hub
-        setTimeout(() => {
-          this.populateInputs({ triggerPassportGeneration: true });
-        }, 500);
+        // Auto-populate wallet inputs for Pond0x Data Hub (disabled to prevent double population)
+        // setTimeout(() => {
+        //   this.populateInputs({ triggerPassportGeneration: true });
+        // }, 500);
       } else {
         // Show profile creation modal
         this.showProfileCreationModal();
@@ -653,6 +637,9 @@
     // Handle dropdown actions
     handleDropdownAction(action, element) {
       switch (action) {
+        case 'toggle-combined-menu':
+          this.toggleCombinedMenu();
+          break;
         case 'generate-passport':
           this.generatePassportFromNAKAMA();
           break;
@@ -667,6 +654,66 @@
           break;
       }
       this.closeDropdown();
+    }
+
+    // Toggle combined menu (integrate with page's mobile menu)
+    toggleCombinedMenu() {
+      const mobileDropdown = document.getElementById('mobileDropdown');
+      const hamburgerIcon = document.getElementById('hamburger-icon');
+      
+      if (mobileDropdown && hamburgerIcon) {
+        if (mobileDropdown.classList.contains('show')) {
+          mobileDropdown.classList.remove('show');
+          hamburgerIcon.textContent = '☰';
+        } else {
+          mobileDropdown.classList.add('show');
+          hamburgerIcon.textContent = '✕';
+          
+          // Add NAKAMA-specific menu items to the mobile menu
+          this.addNakamaMenuItems();
+        }
+      }
+    }
+
+    // Add NAKAMA menu items to the existing mobile menu
+    addNakamaMenuItems() {
+      const mobileMenuItems = document.querySelector('.mobile-menu-items');
+      if (!mobileMenuItems) return;
+
+      // Remove existing NAKAMA items to avoid duplicates
+      const existingNakamaItems = mobileMenuItems.querySelectorAll('.nakama-menu-item');
+      existingNakamaItems.forEach(item => item.remove());
+
+      // Add separator
+      const separator = document.createElement('div');
+      separator.className = 'nakama-menu-item nakama-menu-separator';
+      separator.innerHTML = '<hr style="margin: 1rem 0; border: none; border-top: 1px solid rgba(255,255,255,0.2);">';
+      mobileMenuItems.appendChild(separator);
+
+      // Add NAKAMA menu items
+      const nakamaItems = [
+        { text: 'Generate Passport', action: 'generate-passport' },
+        { text: 'View Profile', action: 'view-profile' },
+        { text: 'Disconnect', action: 'disconnect' }
+      ];
+
+      nakamaItems.forEach(item => {
+        const menuItem = document.createElement('a');
+        menuItem.className = 'nakama-menu-item';
+        menuItem.href = '#';
+        menuItem.textContent = item.text;
+        menuItem.setAttribute('data-nakama-action', item.action);
+        menuItem.addEventListener('click', (e) => {
+          e.preventDefault();
+          this.handleDropdownAction(item.action);
+          // Close the mobile menu
+          const mobileDropdown = document.getElementById('mobileDropdown');
+          const hamburgerIcon = document.getElementById('hamburger-icon');
+          if (mobileDropdown) mobileDropdown.classList.remove('show');
+          if (hamburgerIcon) hamburgerIcon.textContent = '☰';
+        });
+        mobileMenuItems.appendChild(menuItem);
+      });
     }
 
     // Switch chain
@@ -866,13 +913,13 @@
             input.dispatchEvent(new Event('change', { bubbles: true }));
             input.dispatchEvent(new Event('input', { bubbles: true }));
             
-            // Auto-trigger form submission or button clicks
-            this.autoTriggerActions(input);
+            // Auto-trigger form submission or button clicks (disabled to prevent double submission)
+            // this.autoTriggerActions(input);
             
-            // Special handling for Pond0x Data Hub passport generation
-            if (triggerPassportGeneration && (input.id === 'wallet-input' || input.id === 'modalWalletInput')) {
-              this.triggerPassportGeneration(input);
-            }
+            // Special handling for Pond0x Data Hub passport generation (disabled to prevent double submission)
+            // if (triggerPassportGeneration && (input.id === 'wallet-input' || input.id === 'modalWalletInput')) {
+            //   this.triggerPassportGeneration(input);
+            // }
             
             populatedCount++;
           }
@@ -1253,7 +1300,7 @@
 
       .nakama-chain {
         font-size: var(--nakama-chain-size, 10px);
-        color: var(--nakama-chain-color, #9ca3af);
+        color: white !important;
         line-height: 1.2;
       }
 
@@ -1268,6 +1315,19 @@
         height: 2px;
         background: white !important;
         border-radius: 1px;
+      }
+
+      /* Light mode support */
+      [data-theme="light"] .nakama-username {
+        color: #1f2937 !important;
+      }
+
+      [data-theme="light"] .nakama-chain {
+        color: #6b7280 !important;
+      }
+
+      [data-theme="light"] .nakama-hamburger-line {
+        background: #1f2937 !important;
       }
 
       .nakama-dropdown {
