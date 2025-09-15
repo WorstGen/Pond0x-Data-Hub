@@ -1253,7 +1253,7 @@
         display: flex;
         align-items: center;
         gap: 12px;
-        padding: var(--nakama-profile-padding, 8px 12px);
+        padding: var(--nakama-profile-padding, 10px 15px); /* Increased from 8px 12px to 10px 15px (25% taller) */
         background: var(--nakama-profile-bg, rgba(31, 41, 55, 0.8));
         border: var(--nakama-profile-border, 1px solid rgba(55, 65, 81, 0.5));
         border-radius: var(--nakama-profile-radius, 12px);
@@ -1304,29 +1304,28 @@
         line-height: 1.2;
       }
 
+      .nakama-login-widget .nakama-chain {
+        color: white !important;
+      }
+
       .nakama-hamburger {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
+        display: none; /* Hide hamburger lines */
       }
 
       .nakama-hamburger-line {
-        width: 16px;
-        height: 2px;
-        background: white !important;
-        border-radius: 1px;
+        display: none; /* Hide hamburger lines */
       }
 
       /* Light mode support */
-      [data-theme="light"] .nakama-username {
+      [data-theme="light"] .nakama-login-widget .nakama-username {
         color: #1f2937 !important;
       }
 
-      [data-theme="light"] .nakama-chain {
+      [data-theme="light"] .nakama-login-widget .nakama-chain {
         color: #6b7280 !important;
       }
 
-      [data-theme="light"] .nakama-hamburger-line {
+      [data-theme="light"] .nakama-login-widget .nakama-hamburger-line {
         background: #1f2937 !important;
       }
 
