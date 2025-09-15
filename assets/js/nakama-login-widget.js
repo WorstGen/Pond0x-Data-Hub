@@ -1247,7 +1247,7 @@
       .nakama-username {
         font-size: var(--nakama-username-size, 12px);
         font-weight: var(--nakama-username-weight, 600);
-        color: var(--nakama-username-color, white);
+        color: white !important;
         line-height: 1.2;
       }
 
@@ -1266,7 +1266,7 @@
       .nakama-hamburger-line {
         width: 16px;
         height: 2px;
-        background: var(--nakama-accent, #f97316);
+        background: white !important;
         border-radius: 1px;
       }
 
