@@ -290,7 +290,7 @@
 
       return `
         <div class="nakama-user-profile">
-          <button class="nakama-profile-btn" data-action="toggle-combined-menu">
+          <button class="nakama-profile-btn" data-action="toggle-menu">
             ${profilePicture}
             <div class="nakama-user-info">
               <div class="nakama-username">@${this.user.displayName || this.user.username}</div>
@@ -302,6 +302,22 @@
               <div class="nakama-hamburger-line"></div>
             </div>
           </button>
+          
+          <!-- Dropdown Menu -->
+          <div class="nakama-dropdown" style="display: none;">
+            <div class="nakama-dropdown-content">
+              <div class="nakama-dropdown-section">
+                <div class="nakama-section-title">Active Chains</div>
+                ${this.renderActiveChains()}
+              </div>
+              <div class="nakama-dropdown-section">
+                <div class="nakama-section-title">Quick Actions</div>
+                <button class="nakama-dropdown-btn" data-action="generate-passport">Generate Passport</button>
+                <button class="nakama-dropdown-btn" data-action="view-profile">View Profile</button>
+                <button class="nakama-dropdown-btn" data-action="disconnect">Disconnect</button>
+              </div>
+            </div>
+          </div>
         </div>
       `;
     }
@@ -637,8 +653,8 @@
     // Handle dropdown actions
     handleDropdownAction(action, element) {
       switch (action) {
-        case 'toggle-combined-menu':
-          this.toggleCombinedMenu();
+        case 'toggle-menu':
+          this.toggleDropdown();
           break;
         case 'generate-passport':
           this.generatePassportFromNAKAMA();
@@ -1327,6 +1343,17 @@
 
       [data-theme="light"] .nakama-login-widget .nakama-hamburger-line {
         background: #1f2937 !important;
+      }
+
+      /* Light mode widget background */
+      [data-theme="light"] .nakama-profile-btn {
+        background: rgba(255, 255, 255, 0.9) !important;
+        border: 1px solid rgba(209, 213, 219, 0.5) !important;
+      }
+
+      [data-theme="light"] .nakama-profile-btn:hover {
+        background: rgba(255, 255, 255, 0.95) !important;
+        border-color: rgba(209, 213, 219, 0.7) !important;
       }
 
       .nakama-dropdown {
