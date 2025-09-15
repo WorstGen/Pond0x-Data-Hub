@@ -4453,31 +4453,30 @@ document.addEventListener('DOMContentLoaded', function() {
     if (window.NAKAMA && window.NAKAMA.loginWidget) {
       console.log('NAKAMA Login Widget found, configuring auto-populate features');
       
-      // Start watching for wallet inputs
-      window.NAKAMA.watchInputs({
-        interval: 1000, // Check every second
-        maxAttempts: 60, // Stop after 60 attempts
-        triggerPassportGeneration: true // Enable passport generation
-      });
-      
-      // Add custom event listener for wallet connection
+      // Add custom event listener for wallet connection (only populate once)
       window.addEventListener('nakama-wallet-connected', (event) => {
         console.log('NAKAMA: Wallet connected event received', event.detail);
         const walletAddress = event.detail.address;
         
-        // Ensure the main wallet input is populated
+        // Only populate if inputs are empty
         const mainInput = document.getElementById('wallet-input');
+        const modalInput = document.getElementById('modalWalletInput');
+        
         if (mainInput && !mainInput.value) {
           mainInput.value = walletAddress;
           detectWalletType();
+          
+          // Trigger dashboard initialization only once
+          setTimeout(() => {
+            if (typeof initDashboard === 'function') {
+              initDashboard();
+            }
+          }, 1000);
         }
         
-        // Trigger dashboard initialization
-        setTimeout(() => {
-          if (typeof initDashboard === 'function') {
-            initDashboard();
-          }
-        }, 1000);
+        if (modalInput && !modalInput.value) {
+          modalInput.value = walletAddress;
+        }
       });
     } else {
       console.log('NAKAMA Login Widget not found, retrying...');
@@ -4485,11 +4484,6 @@ document.addEventListener('DOMContentLoaded', function() {
       setTimeout(() => {
         if (window.NAKAMA && window.NAKAMA.loginWidget) {
           console.log('NAKAMA Login Widget found on retry, configuring...');
-          window.NAKAMA.watchInputs({
-            interval: 1000,
-            maxAttempts: 60,
-            triggerPassportGeneration: true
-          });
         }
       }, 1000);
     }
