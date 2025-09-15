@@ -4447,6 +4447,54 @@ const CommunityLoader = {
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', function() {
   CommunityLoader.renderPeopleLike();
+  
+  // Initialize NAKAMA Login Widget with auto-populate functionality
+  if (window.NAKAMA && window.NAKAMA.loginWidget) {
+    console.log('NAKAMA Login Widget already initialized');
+  } else {
+    // Initialize with custom options for Pond0x Data Hub
+    const nakamaWidget = new NakamaLoginWidget({
+      position: 'header-right',
+      showLogo: true,
+      showChainIndicator: true,
+      adaptiveStyling: true,
+      autoTrigger: true, // Enable auto-trigger form submissions
+      autoTriggerDelay: 500, // Delay before triggering (ms)
+    });
+    
+    console.log('NAKAMA Login Widget initialized with auto-populate features');
+    
+    // Start watching for wallet inputs immediately
+    setTimeout(() => {
+      if (window.NAKAMA) {
+        window.NAKAMA.watchInputs({
+          interval: 1000, // Check every second
+          maxAttempts: 60, // Stop after 60 attempts
+          triggerPassportGeneration: true // Enable passport generation
+        });
+        
+        // Add custom event listener for wallet connection
+        window.addEventListener('nakama-wallet-connected', (event) => {
+          console.log('NAKAMA: Wallet connected event received', event.detail);
+          const walletAddress = event.detail.address;
+          
+          // Ensure the main wallet input is populated
+          const mainInput = document.getElementById('wallet-input');
+          if (mainInput && !mainInput.value) {
+            mainInput.value = walletAddress;
+            detectWalletType();
+          }
+          
+          // Trigger dashboard initialization
+          setTimeout(() => {
+            if (typeof initDashboard === 'function') {
+              initDashboard();
+            }
+          }, 1000);
+        });
+      }
+    }, 2000); // Wait 2 seconds for page to fully load
+  }
 });
 </script>
 
