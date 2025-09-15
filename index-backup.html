@@ -1323,7 +1323,7 @@ body {
       display: none;
       background: none;
       border: none;
-      color: var(--topbar-text);
+      color: white !important;
       font-size: 1.5rem;
       cursor: pointer;
       padding: 0.5rem;
@@ -4448,53 +4448,52 @@ const CommunityLoader = {
 document.addEventListener('DOMContentLoaded', function() {
   CommunityLoader.renderPeopleLike();
   
-  // Initialize NAKAMA Login Widget with auto-populate functionality
-  if (window.NAKAMA && window.NAKAMA.loginWidget) {
-    console.log('NAKAMA Login Widget already initialized');
-  } else {
-    // Initialize with custom options for Pond0x Data Hub
-    const nakamaWidget = new NakamaLoginWidget({
-      position: 'header-right',
-      showLogo: true,
-      showChainIndicator: true,
-      adaptiveStyling: true,
-      autoTrigger: true, // Enable auto-trigger form submissions
-      autoTriggerDelay: 500, // Delay before triggering (ms)
-    });
-    
-    console.log('NAKAMA Login Widget initialized with auto-populate features');
-    
-    // Start watching for wallet inputs immediately
-    setTimeout(() => {
-      if (window.NAKAMA) {
-        window.NAKAMA.watchInputs({
-          interval: 1000, // Check every second
-          maxAttempts: 60, // Stop after 60 attempts
-          triggerPassportGeneration: true // Enable passport generation
-        });
+  // Wait for NAKAMA widget to initialize, then configure it
+  setTimeout(() => {
+    if (window.NAKAMA && window.NAKAMA.loginWidget) {
+      console.log('NAKAMA Login Widget found, configuring auto-populate features');
+      
+      // Start watching for wallet inputs
+      window.NAKAMA.watchInputs({
+        interval: 1000, // Check every second
+        maxAttempts: 60, // Stop after 60 attempts
+        triggerPassportGeneration: true // Enable passport generation
+      });
+      
+      // Add custom event listener for wallet connection
+      window.addEventListener('nakama-wallet-connected', (event) => {
+        console.log('NAKAMA: Wallet connected event received', event.detail);
+        const walletAddress = event.detail.address;
         
-        // Add custom event listener for wallet connection
-        window.addEventListener('nakama-wallet-connected', (event) => {
-          console.log('NAKAMA: Wallet connected event received', event.detail);
-          const walletAddress = event.detail.address;
-          
-          // Ensure the main wallet input is populated
-          const mainInput = document.getElementById('wallet-input');
-          if (mainInput && !mainInput.value) {
-            mainInput.value = walletAddress;
-            detectWalletType();
+        // Ensure the main wallet input is populated
+        const mainInput = document.getElementById('wallet-input');
+        if (mainInput && !mainInput.value) {
+          mainInput.value = walletAddress;
+          detectWalletType();
+        }
+        
+        // Trigger dashboard initialization
+        setTimeout(() => {
+          if (typeof initDashboard === 'function') {
+            initDashboard();
           }
-          
-          // Trigger dashboard initialization
-          setTimeout(() => {
-            if (typeof initDashboard === 'function') {
-              initDashboard();
-            }
-          }, 1000);
-        });
-      }
-    }, 2000); // Wait 2 seconds for page to fully load
-  }
+        }, 1000);
+      });
+    } else {
+      console.log('NAKAMA Login Widget not found, retrying...');
+      // Retry after another second
+      setTimeout(() => {
+        if (window.NAKAMA && window.NAKAMA.loginWidget) {
+          console.log('NAKAMA Login Widget found on retry, configuring...');
+          window.NAKAMA.watchInputs({
+            interval: 1000,
+            maxAttempts: 60,
+            triggerPassportGeneration: true
+          });
+        }
+      }, 1000);
+    }
+  }, 1000); // Wait 1 second for widget to initialize
 });
 </script>
 
