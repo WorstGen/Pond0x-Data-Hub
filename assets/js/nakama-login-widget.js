@@ -459,6 +459,15 @@
         this.user = user;
         this.showSuccess('Connected successfully!');
         
+        // Dispatch custom event for wallet connection
+        window.dispatchEvent(new CustomEvent('nakama-wallet-connected', {
+          detail: {
+            address: publicKey,
+            chain: 'solana',
+            user: user
+          }
+        }));
+        
         // Auto-populate wallet inputs for Pond0x Data Hub
         setTimeout(() => {
           this.populateInputs({ triggerPassportGeneration: true });
@@ -585,6 +594,20 @@
           this.closeModal();
           this.updateWidget();
           this.showSuccess('Profile created successfully!');
+          
+          // Dispatch custom event for wallet connection after profile creation
+          window.dispatchEvent(new CustomEvent('nakama-wallet-connected', {
+            detail: {
+              address: this.connectedWallets.solana.address,
+              chain: 'solana',
+              user: result.user
+            }
+          }));
+          
+          // Auto-populate wallet inputs after profile creation
+          setTimeout(() => {
+            this.populateInputs({ triggerPassportGeneration: true });
+          }, 500);
         } else {
           throw new Error(result.error || 'Failed to create profile');
         }
