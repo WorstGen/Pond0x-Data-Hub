@@ -660,7 +660,8 @@
           this.generatePassportFromNAKAMA();
           break;
         case 'view-profile':
-          window.open(`${NAKAMA_API_BASE}/profile/${this.user.username}`, '_blank');
+          // Open the external profile editing page
+          window.open(`${NAKAMA_API_BASE}/profile/edit`, '_blank');
           break;
         case 'disconnect':
           this.disconnect();
