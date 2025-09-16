@@ -633,6 +633,193 @@
       this.modalOpen = false;
     }
 
+    // Show profile modal
+    showProfileModal() {
+      this.modalOpen = true;
+      this.createProfileModal();
+    }
+
+    // Create profile viewing modal
+    createProfileModal() {
+      const modal = document.createElement('div');
+      modal.className = 'nakama-modal-overlay';
+      modal.innerHTML = `
+        <div class="nakama-modal">
+          <div class="nakama-modal-header">
+            <h2>NAKAMA Profile</h2>
+            <button class="nakama-modal-close" data-action="close-modal">&times;</button>
+          </div>
+          <div class="nakama-modal-body">
+            <div class="nakama-profile-display">
+              <div class="nakama-profile-avatar">
+                ${this.user.profilePicture ? 
+                  `<img src="${this.user.profilePicture}" alt="${this.user.displayName || this.user.username}" class="nakama-profile-avatar-img" />` :
+                  this.generateAvatar(this.user.displayName || this.user.username)
+                }
+              </div>
+              <div class="nakama-profile-info">
+                <h3>@${this.user.displayName || this.user.username}</h3>
+                ${this.user.bio ? `<p class="nakama-profile-bio">${this.user.bio}</p>` : ''}
+                <div class="nakama-profile-stats">
+                  <div class="nakama-stat-item">
+                    <span class="nakama-stat-label">Username:</span>
+                    <span class="nakama-stat-value">${this.user.username}</span>
+                  </div>
+                  <div class="nakama-stat-item">
+                    <span class="nakama-stat-label">Display Name:</span>
+                    <span class="nakama-stat-value">${this.user.displayName || 'Not set'}</span>
+                  </div>
+                  <div class="nakama-stat-item">
+                    <span class="nakama-stat-label">Profile Created:</span>
+                    <span class="nakama-stat-value">${new Date(this.user.createdAt).toLocaleDateString()}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="nakama-wallet-section">
+              <h4>Connected Wallets</h4>
+              <div class="nakama-wallet-list">
+                ${this.renderWalletList()}
+              </div>
+            </div>
+            
+            <div class="nakama-modal-actions">
+              <button class="nakama-btn nakama-btn-secondary" data-action="close-modal">Close</button>
+              <button class="nakama-btn nakama-btn-primary" data-action="edit-profile">Edit Profile</button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+      this.attachModalListeners(modal);
+    }
+
+    // Show edit profile modal
+    showEditProfileModal() {
+      this.modalOpen = true;
+      this.createEditProfileModal();
+    }
+
+    // Create edit profile modal
+    createEditProfileModal() {
+      const modal = document.createElement('div');
+      modal.className = 'nakama-modal-overlay';
+      modal.innerHTML = `
+        <div class="nakama-modal">
+          <div class="nakama-modal-header">
+            <h2>Edit NAKAMA Profile</h2>
+            <button class="nakama-modal-close" data-action="close-modal">&times;</button>
+          </div>
+          <div class="nakama-modal-body">
+            <form class="nakama-edit-profile-form">
+              <div class="nakama-form-group">
+                <label>Username</label>
+                <input type="text" name="username" value="${this.user.username}" readonly>
+                <small class="nakama-form-help">Username cannot be changed</small>
+              </div>
+              <div class="nakama-form-group">
+                <label>Display Name</label>
+                <input type="text" name="displayName" value="${this.user.displayName || ''}" placeholder="Enter your display name">
+              </div>
+              <div class="nakama-form-group">
+                <label>Bio</label>
+                <textarea name="bio" placeholder="Tell us about yourself" rows="4">${this.user.bio || ''}</textarea>
+              </div>
+              <div class="nakama-form-group">
+                <label>Profile Picture URL (Optional)</label>
+                <input type="url" name="profilePicture" value="${this.user.profilePicture || ''}" placeholder="https://example.com/your-image.jpg">
+              </div>
+              
+              <div class="nakama-wallet-section">
+                <h4>Connected Wallets</h4>
+                <div class="nakama-wallet-list">
+                  ${this.renderWalletList()}
+                </div>
+              </div>
+              
+              <div class="nakama-modal-actions">
+                <button type="button" class="nakama-btn nakama-btn-secondary" data-action="close-modal">Cancel</button>
+                <button type="button" class="nakama-btn nakama-btn-secondary" data-action="view-profile">View Profile</button>
+                <button type="submit" class="nakama-btn nakama-btn-primary">Save Changes</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+      this.attachEditModalListeners(modal);
+    }
+
+    // Attach edit modal event listeners
+    attachEditModalListeners(modal) {
+      // Close modal
+      modal.addEventListener('click', (e) => {
+        if (e.target.classList.contains('nakama-modal-overlay') || 
+            e.target.classList.contains('nakama-modal-close') ||
+            e.target.getAttribute('data-action') === 'close-modal') {
+          this.closeModal();
+        }
+      });
+
+      // View profile action
+      modal.addEventListener('click', (e) => {
+        if (e.target.getAttribute('data-action') === 'view-profile') {
+          this.closeModal();
+          setTimeout(() => this.showProfileModal(), 100);
+        }
+      });
+
+      // Form submission
+      const form = modal.querySelector('.nakama-edit-profile-form');
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        this.handleProfileUpdate(form);
+      });
+    }
+
+    // Handle profile update
+    async handleProfileUpdate(form) {
+      const formData = new FormData(form);
+      const profileData = {
+        displayName: formData.get('displayName') || '',
+        bio: formData.get('bio') || '',
+        profilePicture: formData.get('profilePicture') || ''
+      };
+
+      try {
+        // Update profile via API
+        const response = await fetch(`${NAKAMA_API_BASE}/api/profile`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Public-Key': this.connectedWallets.solana.publicKey.toString(),
+            'X-Signature': await this.signMessage(`Update NAKAMA profile: ${Date.now()}`)
+          },
+          body: JSON.stringify(profileData)
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+          this.user = result.user;
+          this.updateWidget();
+          this.closeModal();
+          this.showSuccess('Profile updated successfully!');
+          
+          // Show updated profile
+          setTimeout(() => this.showProfileModal(), 500);
+        } else {
+          throw new Error(result.error || 'Failed to update profile');
+        }
+      } catch (error) {
+        console.error('Profile update failed:', error);
+        this.showError('Failed to update profile. Please try again.');
+      }
+    }
+
     // Toggle dropdown
     toggleDropdown() {
       const dropdown = document.querySelector('.nakama-dropdown');
@@ -660,8 +847,10 @@
           this.generatePassportFromNAKAMA();
           break;
         case 'view-profile':
-          // Open the external profile editing page
-          window.open(`${NAKAMA_API_BASE}/profile/edit`, '_blank');
+          this.showProfileModal();
+          break;
+        case 'edit-profile':
+          this.showEditProfileModal();
           break;
         case 'disconnect':
           this.disconnect();
@@ -1644,6 +1833,150 @@
 
       .nakama-btn-secondary:hover {
         background: rgba(55, 65, 81, 0.7);
+      }
+
+      /* Profile Modal Styles */
+      .nakama-profile-display {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 24px;
+      }
+
+      .nakama-profile-avatar {
+        flex-shrink: 0;
+      }
+
+      .nakama-profile-avatar-img {
+        width: 80px;
+        height: 80px;
+        border-radius: 12px;
+        object-fit: cover;
+      }
+
+      .nakama-profile-info {
+        flex: 1;
+      }
+
+      .nakama-profile-info h3 {
+        margin: 0 0 8px 0;
+        color: white;
+        font-size: 20px;
+        font-weight: 600;
+      }
+
+      .nakama-profile-bio {
+        color: #9ca3af;
+        margin: 0 0 16px 0;
+        line-height: 1.5;
+      }
+
+      .nakama-profile-stats {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .nakama-stat-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(55, 65, 81, 0.3);
+      }
+
+      .nakama-stat-item:last-child {
+        border-bottom: none;
+      }
+
+      .nakama-stat-label {
+        color: #9ca3af;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .nakama-stat-value {
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .nakama-wallet-section {
+        margin-bottom: 24px;
+      }
+
+      .nakama-wallet-section h4 {
+        margin: 0 0 12px 0;
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .nakama-modal-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(55, 65, 81, 0.3);
+      }
+
+      /* Light mode profile modal */
+      [data-theme="light"] .nakama-profile-info h3 {
+        color: #1f2937 !important;
+      }
+
+      [data-theme="light"] .nakama-profile-bio {
+        color: #6b7280 !important;
+      }
+
+      [data-theme="light"] .nakama-stat-label {
+        color: #6b7280 !important;
+      }
+
+      [data-theme="light"] .nakama-stat-value {
+        color: #1f2937 !important;
+      }
+
+      [data-theme="light"] .nakama-wallet-section h4 {
+        color: #1f2937 !important;
+      }
+
+      [data-theme="light"] .nakama-stat-item {
+        border-bottom-color: rgba(209, 213, 219, 0.3) !important;
+      }
+
+      [data-theme="light"] .nakama-modal-actions {
+        border-top-color: rgba(209, 213, 219, 0.3) !important;
+      }
+
+      /* Edit Profile Form Styles */
+      .nakama-edit-profile-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .nakama-form-help {
+        color: #9ca3af;
+        font-size: 12px;
+        margin-top: 4px;
+        display: block;
+      }
+
+      .nakama-form-group input[readonly] {
+        background: rgba(55, 65, 81, 0.3);
+        color: #9ca3af;
+        cursor: not-allowed;
+      }
+
+      /* Light mode edit form */
+      [data-theme="light"] .nakama-form-help {
+        color: #6b7280 !important;
+      }
+
+      [data-theme="light"] .nakama-form-group input[readonly] {
+        background: rgba(209, 213, 219, 0.3) !important;
+        color: #6b7280 !important;
       }
 
       /* Notification Styles */
