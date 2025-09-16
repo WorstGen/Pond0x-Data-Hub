@@ -671,7 +671,7 @@
                   </div>
                   <div class="nakama-stat-item">
                     <span class="nakama-stat-label">Profile Created:</span>
-                    <span class="nakama-stat-value">${new Date(this.user.createdAt).toLocaleDateString()}</span>
+                    <span class="nakama-stat-value">${this.user.createdAt ? new Date(this.user.createdAt).toLocaleDateString() : 'Unknown'}</span>
                   </div>
                 </div>
               </div>
@@ -693,7 +693,27 @@
       `;
 
       document.body.appendChild(modal);
-      this.attachModalListeners(modal);
+      this.attachProfileModalListeners(modal);
+    }
+
+    // Attach profile modal event listeners
+    attachProfileModalListeners(modal) {
+      // Close modal
+      modal.addEventListener('click', (e) => {
+        if (e.target.classList.contains('nakama-modal-overlay') || 
+            e.target.classList.contains('nakama-modal-close') ||
+            e.target.getAttribute('data-action') === 'close-modal') {
+          this.closeModal();
+        }
+      });
+
+      // Edit profile action
+      modal.addEventListener('click', (e) => {
+        if (e.target.getAttribute('data-action') === 'edit-profile') {
+          this.closeModal();
+          setTimeout(() => this.showEditProfileModal(), 100);
+        }
+      });
     }
 
     // Show edit profile modal
