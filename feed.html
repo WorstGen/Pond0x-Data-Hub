@@ -86,6 +86,163 @@
       z-index: 1001;
       padding: 5px;
       filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.2);
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+    }
+
+    [data-theme="dark"] .theme-toggle {
+      filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.2));
+    }
+
+    [data-theme="dark"] .theme-toggle:hover {
+      transform: scale(1.2);
+      filter: drop-shadow(0 4px 8px rgba(255, 255, 255, 0.3));
+    }
+
+    .bubble-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+      transition: opacity 0.3s ease;
+    }
+
+    .bubble-container.hidden {
+      opacity: 0;
+    }
+
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      animation: bubble-rise linear infinite;
+      opacity: 0;
+      background: 
+        radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.3) 30%, transparent 70%),
+        radial-gradient(circle at 80% 80%, rgba(0, 0, 0, 0.1) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 
+        0 0 20px rgba(255, 255, 255, 0.2),
+        inset 3px 3px 15px rgba(255, 255, 255, 0.4),
+        inset -3px -3px 15px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(1px);
+    }
+
+    [data-theme="dark"] .bubble {
+      background: 
+        radial-gradient(circle at 25% 25%, rgba(189, 124, 253, 0.6) 0%, rgba(255, 61, 240, 0.3) 30%, transparent 70%),
+        radial-gradient(circle at 80% 80%, rgba(26, 26, 46, 0.3) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(189, 124, 253, 0.2), rgba(255, 61, 240, 0.1));
+      border: 1px solid rgba(189, 124, 253, 0.4);
+      box-shadow: 
+        0 0 25px rgba(189, 124, 253, 0.3),
+        inset 3px 3px 15px rgba(189, 124, 253, 0.2),
+        inset -3px -3px 15px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(189, 124, 253, 0.2);
+    }
+
+    @keyframes bubble-rise {
+      0% {
+        opacity: 0;
+        transform: translateY(100vh) translateX(0px) scale(0.3);
+      }
+      10% {
+        opacity: 0.8;
+        transform: translateY(90vh) translateX(15px) scale(0.5);
+      }
+      20% {
+        opacity: 0.9;
+        transform: translateY(80vh) translateX(-10px) scale(0.6);
+      }
+      30% {
+        opacity: 0.9;
+        transform: translateY(70vh) translateX(20px) scale(0.7);
+      }
+      40% {
+        opacity: 0.9;
+        transform: translateY(60vh) translateX(-5px) scale(0.8);
+      }
+      50% {
+        opacity: 0.9;
+        transform: translateY(50vh) translateX(12px) scale(0.9);
+      }
+      60% {
+        opacity: 0.9;
+        transform: translateY(40vh) translateX(-15px) scale(0.95);
+      }
+      70% {
+        opacity: 0.9;
+        transform: translateY(30vh) translateX(8px) scale(1);
+      }
+      80% {
+        opacity: 0.8;
+        transform: translateY(20vh) translateX(-12px) scale(1);
+      }
+      90% {
+        opacity: 0.7;
+        transform: translateY(10vh) translateX(6px) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-10vh) translateX(0px) scale(1);
+      }
+    }
+
+    .cook-button {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: linear-gradient(135deg, var(--secondary-accent) 0%, var(--accent-color) 100%);
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 
+        0 6px 20px rgba(255, 61, 240, 0.25),
+        inset 2px 2px 10px rgba(255, 255, 255, 0.2),
+        inset -2px -2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1002;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .cook-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 
+        0 10px 30px rgba(255, 61, 240, 0.25),
+        inset 2px 2px 10px rgba(255, 255, 255, 0.3),
+        inset -2px -2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .cook-button.bubbles-off {
+      background: linear-gradient(135deg, #666 0%, #999 100%);
+      box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.3),
+        inset 2px 2px 10px rgba(255, 255, 255, 0.1),
+        inset -2px -2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .cook-button.bubbles-off:hover {
+      box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.4),
+        inset 2px 2px 10px rgba(255, 255, 255, 0.2),
+        inset -2px -2px 10px rgba(0, 0, 0, 0.2);
     }
 
     .navbar {
@@ -138,6 +295,183 @@
     .nav-links a:hover {
       background: rgba(255, 255, 255, 0.15);
       transform: translateY(-2px);
+      box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      color: white;
+    }
+
+    [data-theme="dark"] .nav-links a:hover {
+      background: rgba(189, 124, 253, 0.2);
+      box-shadow: 
+        0 6px 20px rgba(189, 124, 253, 0.3),
+        inset 0 1px 0 rgba(189, 124, 253, 0.2);
+      color: #e0b3ff;
+    }
+
+    .nav-links a::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.2), 
+        transparent
+      );
+      transition: left 0.5s ease;
+    }
+
+    .nav-links a:hover::before {
+      left: 100%;
+    }
+
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-toggle:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: scale(1.1);
+    }
+
+    .nav-mobile {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      right: 0;
+      background: var(--navbar-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      transform: translateY(-100%);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 999;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    [data-theme="dark"] .nav-mobile {
+      background: rgba(26, 26, 46, 0.98);
+      border-bottom: 1px solid rgba(189, 124, 253, 0.2);
+      box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.3),
+        0 0 20px rgba(189, 124, 253, 0.1);
+    }
+
+    .nav-mobile.active {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .nav-mobile-links {
+      display: flex;
+      flex-direction: column;
+      padding: 1rem 1.5rem 2rem 1.5rem;
+      gap: 0.25rem;
+    }
+
+    .nav-mobile-links a {
+      color: var(--nav-text);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 1rem;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: 1px solid transparent;
+    }
+
+    .nav-mobile-links a:hover,
+    .nav-mobile-links a:active {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      transform: scale(1.02);
+      box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    [data-theme="dark"] .nav-mobile-links a:hover,
+    [data-theme="dark"] .nav-mobile-links a:active {
+      background: rgba(189, 124, 253, 0.2);
+      border-color: rgba(189, 124, 253, 0.3);
+      color: #e0b3ff;
+      box-shadow: 
+        0 4px 15px rgba(189, 124, 253, 0.2),
+        inset 0 1px 0 rgba(189, 124, 253, 0.1);
+    }
+
+    @media (max-width: 1125px) {
+      .nav-links a {
+        padding: 0.65rem 1rem;
+        font-size: 0.7rem;
+      }
+      
+      .nav-container {
+        padding: 0 1rem;
+      }
+    }
+
+    @media (max-width: 1045px) {
+      .nav-toggle {
+        display: block;
+      }
+      
+      .nav-links {
+        display: none;
+      }
+      
+      .nav-brand {
+        font-size: 1.1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .nav-container {
+        padding: 0 0.75rem;
+      }
+      
+      .nav-brand {
+        font-size: 1rem;
+      }
+      
+      .nav-mobile-links {
+        padding: 1rem;
+      }
+      
+      .nav-mobile-links a {
+        padding: 0.875rem 1rem;
+        font-size: 0.85rem;
+      }
+
+      .cook-button {
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        font-size: 1rem;
+      }
+      
+      .theme-toggle {
+        top: 75px;
+        right: 15px;
+        font-size: 1.3rem;
+      }
     }
 
     .container {
@@ -319,11 +653,18 @@
   </style>
 </head>
 <body>
-  <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode">☀️</button>
+  <button class="theme-toggle" id="themeToggle" onclick="window.toggleTheme()" title="Toggle dark mode">☀️</button>
+  
+  <button class="cook-button" id="cookButton" onclick="window.toggleBubbles()">
+    👨‍🍳 Cook
+  </button>
+
+  <div class="bubble-container" id="bubbleContainer"></div>
 
   <nav class="navbar">
     <div class="nav-container">
       <a href="https://worstgen.github.io/Pond0x-Data-Hub/" class="nav-brand">DATA🤝HUB</a>
+      
       <div class="nav-links">
         <a href="https://worstgen.github.io/Pond0x-Data-Hub/">PASSPORT</a>
         <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigMetrics.html">RIG METRICS</a>
@@ -331,6 +672,23 @@
         <a href="https://worstgen.github.io/Pond0x-Data-Hub/HashBoosts.html">HASH BOOSTS</a>
         <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigActivations.html">RIG ACTIVATIONS</a>
         <a href="https://worstgen.github.io/Pond0x-Data-Hub/Calculator.html">CALCULATOR</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/genLinks">GENERATE LINKS</a>
+      </div>
+      
+      <button class="nav-toggle" onclick="window.toggleMobileNav()">
+        <span id="nav-toggle-icon">☰</span>
+      </button>
+    </div>
+    
+    <div class="nav-mobile" id="mobileNav">
+      <div class="nav-mobile-links">
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/">PASSPORT</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigMetrics.html">RIG METRICS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/MiningClaims.html">LATEST CLAIMS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/HashBoosts.html">HASH BOOSTS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigActivations.html">RIG ACTIVATIONS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/Calculator.html">CALCULATOR</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/genLinks">GENERATE LINKS</a>
       </div>
     </div>
   </nav>
@@ -361,8 +719,217 @@
     </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/solana-web3.js/1.87.6/solana-web3.min.js"></script>
   <script>
+    // Theme and bubble management - MUST BE OUTSIDE MODULE
+    window.toggleTheme = function() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const newTheme = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      document.getElementById('themeToggle').textContent = newTheme === 'dark' ? '🌙' : '☀️';
+      localStorage.setItem('pond0x_theme_preference', newTheme);
+    };
+
+    function initTheme() {
+      const saved = localStorage.getItem('pond0x_theme_preference');
+      const theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+      document.getElementById('themeToggle').textContent = theme === 'dark' ? '🌙' : '☀️';
+    }
+
+    // Bubble system
+    const bubbleSystem = {
+      container: null,
+      bubbles: [],
+      maxBubbles: 25,
+      initialized: false,
+      animationRunning: true,
+      animationInterval: null,
+      
+      init() {
+        if (this.initialized) return;
+        this.container = document.getElementById('bubbleContainer');
+        this.createBubblePool();
+        
+        const shouldRun = this.loadBubbleState();
+        if (shouldRun) {
+          this.startAnimation();
+        } else {
+          this.animationRunning = false;
+          this.container.classList.add('hidden');
+          document.getElementById('cookButton').classList.add('bubbles-off');
+        }
+        
+        this.initialized = true;
+      },
+
+      loadBubbleState() {
+        try {
+          const stored = localStorage.getItem('pond0x_bubble_state');
+          if (stored) {
+            const state = JSON.parse(stored);
+            return state.enabled;
+          }
+        } catch (e) {
+          console.warn('Could not load bubble state:', e);
+        }
+        return true;
+      },
+
+      saveBubbleState(enabled) {
+        try {
+          localStorage.setItem('pond0x_bubble_state', JSON.stringify({
+            enabled: enabled,
+            timestamp: Date.now()
+          }));
+        } catch (e) {
+          console.warn('Could not save bubble state:', e);
+        }
+      },
+
+      stop() {
+        this.animationRunning = false;
+        if (this.animationInterval) {
+          clearInterval(this.animationInterval);
+        }
+        this.bubbles.forEach(bubble => {
+          if (bubble.timer) {
+            clearTimeout(bubble.timer);
+          }
+          bubble.element.style.display = 'none';
+          bubble.active = false;
+        });
+      },
+
+      start() {
+        if (!this.animationRunning) {
+          this.animationRunning = true;
+          this.startAnimation();
+        }
+      },
+      
+      createBubblePool() {
+        for (let i = 0; i < this.maxBubbles; i++) {
+          const bubble = document.createElement('div');
+          bubble.className = 'bubble';
+          bubble.style.display = 'none';
+          this.container.appendChild(bubble);
+          this.bubbles.push({
+            element: bubble,
+            active: false,
+            timer: 0
+          });
+        }
+      },
+      
+      getRandomBubble() {
+        return this.bubbles.find(b => !b.active) || this.bubbles[0];
+      },
+      
+      createBubble() {
+        const bubble = this.getRandomBubble();
+        if (!bubble || bubble.active) return;
+        
+        const size = Math.random() * 40 + 10;
+        const left = Math.random() * 100;
+        const duration = Math.random() * 4 + 6;
+        const delay = Math.random() * 2;
+        
+        const element = bubble.element;
+        element.style.cssText = `
+          width: ${size}px;
+          height: ${size}px;
+          left: ${left}%;
+          animation: bubble-rise ${duration}s linear ${delay}s forwards;
+          display: block;
+        `;
+        
+        bubble.active = true;
+        bubble.timer = setTimeout(() => {
+          element.style.display = 'none';
+          bubble.active = false;
+        }, (duration + delay) * 1000);
+      },
+      
+      startAnimation() {
+        if (!this.animationRunning) return;
+        
+        for (let i = 0; i < 8; i++) {
+          setTimeout(() => {
+            if (this.animationRunning) this.createBubble();
+          }, i * 600);
+        }
+        
+        this.animationInterval = setInterval(() => {
+          if (this.animationRunning && Math.random() < 0.8) {
+            this.createBubble();
+          }
+        }, 900);
+      }
+    };
+
+    window.toggleBubbles = function() {
+      const container = document.getElementById('bubbleContainer');
+      const button = document.getElementById('cookButton');
+      
+      if (bubbleSystem.animationRunning) {
+        bubbleSystem.stop();
+        container.classList.add('hidden');
+        button.classList.add('bubbles-off');
+        bubbleSystem.saveBubbleState(false);
+      } else {
+        bubbleSystem.start();
+        container.classList.remove('hidden');
+        button.classList.remove('bubbles-off');
+        bubbleSystem.saveBubbleState(true);
+      }
+    };
+
+    // Initialize theme and bubbles
+    initTheme();
+    bubbleSystem.init();
+
+    // Mobile navigation
+    window.toggleMobileNav = function() {
+      const mobileNav = document.getElementById('mobileNav');
+      const toggleIcon = document.getElementById('nav-toggle-icon');
+      
+      if (mobileNav.classList.contains('active')) {
+        mobileNav.classList.remove('active');
+        toggleIcon.textContent = '☰';
+      } else {
+        mobileNav.classList.add('active');
+        toggleIcon.textContent = '✕';
+      }
+    };
+
+    // Close mobile nav when clicking on a link
+    document.addEventListener('DOMContentLoaded', function() {
+      const mobileLinks = document.querySelectorAll('.nav-mobile-links a');
+      mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          const mobileNav = document.getElementById('mobileNav');
+          const toggleIcon = document.getElementById('nav-toggle-icon');
+          mobileNav.classList.remove('active');
+          toggleIcon.textContent = '☰';
+        });
+      });
+      
+      // Close mobile nav when clicking outside
+      document.addEventListener('click', (e) => {
+        const navbar = document.querySelector('.navbar');
+        const mobileNav = document.getElementById('mobileNav');
+        
+        if (!navbar.contains(e.target) && mobileNav.classList.contains('active')) {
+          mobileNav.classList.remove('active');
+          document.getElementById('nav-toggle-icon').textContent = '☰';
+        }
+      });
+    });
+  </script>
+
+  <script type="module">
+    import { Connection, PublicKey } from 'https://cdnjs.cloudflare.com/ajax/libs/solana-web3.js/1.95.0/index.browser.esm.min.js';
+
     const TOKEN_ADDRESS = '3JgFwoYV74f6LwWjQWnr3YDPFnmBdwQfNyubv99jqUoq';
     const SOURCE_ADDRESS = 'AYg4dKoZJudVkD7Eu3ZaJjkzfoaATUqfiv8w8pS53opT';
     const EXCLUSION_ADDRESS = '1orFCnFfgwPzSgUaoK6Wr3MjgXZ7mtk8NGz9Hh4iWWL';
@@ -372,21 +939,6 @@
     let lastSignature = null;
     let totalClaims = 0;
     let processedSignatures = new Set();
-
-    function toggleTheme() {
-      const current = document.documentElement.getAttribute('data-theme');
-      const newTheme = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', newTheme);
-      document.querySelector('.theme-toggle').textContent = newTheme === 'dark' ? '🌙' : '☀️';
-      localStorage.setItem('pond0x_theme_preference', newTheme);
-    }
-
-    function initTheme() {
-      const saved = localStorage.getItem('pond0x_theme_preference');
-      const theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-      document.documentElement.setAttribute('data-theme', theme);
-      document.querySelector('.theme-toggle').textContent = theme === 'dark' ? '🌙' : '☀️';
-    }
 
     function formatAmount(amount) {
       const tokens = parseFloat(amount) / 1e9;
@@ -454,7 +1006,7 @@
         document.getElementById('lastCheck').textContent = now.toLocaleTimeString();
         document.getElementById('status').textContent = '🟢 Active';
 
-        const sourceKey = new solanaWeb3.PublicKey(SOURCE_ADDRESS);
+        const sourceKey = new PublicKey(SOURCE_ADDRESS);
         const options = { limit: 25 };
         if (lastSignature) options.until = lastSignature;
 
@@ -491,7 +1043,7 @@
               if (info.destination === EXCLUSION_ADDRESS) continue;
 
               const tokenAccountInfo = await connection.getParsedAccountInfo(
-                new solanaWeb3.PublicKey(info.source || info.authority)
+                new PublicKey(info.source || info.authority)
               );
 
               const mint = tokenAccountInfo.value?.data?.parsed?.info?.mint;
@@ -533,10 +1085,8 @@
     }
 
     async function init() {
-      initTheme();
-      
       try {
-        connection = new solanaWeb3.Connection(
+        connection = new Connection(
           'https://api.mainnet-beta.solana.com',
           'confirmed'
         );
