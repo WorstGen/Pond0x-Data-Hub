@@ -1243,21 +1243,19 @@
     }
 
     function formatAmount(amount) {
-      // The amount from blockchain is in base units
-      // wPOND uses 6 decimals (1 wPOND = 1e6 base units)
-      // So 221550000000 base units = 221.55M wPOND
+      // Raw amount 221550000000 should display as 221.55M wPOND
+      // This means 1M wPOND = 1e9 base units
+      // So 1B wPOND = 1e12 base units
       
       const rawAmount = parseFloat(amount);
       
-      // Don't convert - the raw amount already represents millions
-      // 221550000000 = 221.55 * 1e9 = 221.55M in base units where M = 1e9 base units
+      // Format based on base units where:
+      // 1M wPOND = 1e9 base units
+      // 1B wPOND = 1e12 base units
       
-      // Format directly from raw amount
-      if (rawAmount >= 1e15) return (rawAmount / 1e15).toFixed(2) + 'B wPOND';
-      if (rawAmount >= 1e12) return (rawAmount / 1e12).toFixed(2) + 'M wPOND';
-      if (rawAmount >= 1e9) return (rawAmount / 1e9).toFixed(2) + 'K wPOND';
-      if (rawAmount >= 1e6) return (rawAmount / 1e6).toFixed(2) + ' wPOND';
-      return (rawAmount / 1e3).toFixed(2) + ' milli-wPOND';
+      if (rawAmount >= 1e15) return (rawAmount / 1e12).toFixed(2) + 'B wPOND';
+      if (rawAmount >= 1e9) return (rawAmount / 1e9).toFixed(2) + 'M wPOND';
+      return (rawAmount / 1e6).toFixed(2) + 'K wPOND';
     }
 
     function shortenAddress(addr) {
@@ -1412,7 +1410,11 @@
         const { PublicKey } = window.solanaWeb3;
         const sourceKey = new PublicKey(SOURCE_ADDRESS);
         const options = { limit: 25 };
-        if (lastSignature) options.until = lastSignature;
+        // Don't use 'until' - we want to get all new transactions since last check
+        // Instead, we'll filter by what we've already processed
+        if (lastSignature) {
+          options.before = lastSignature;
+        }
 
         const signatures = await connection.getSignaturesForAddress(sourceKey, options);
 
@@ -1420,6 +1422,9 @@
           console.log('No new transactions');
           return;
         }
+
+        // Update lastSignature to the most recent one
+        const mostRecentSig = signatures[0].signature;
 
         for (let i = signatures.length - 1; i >= 0; i--) {
           const sig = signatures[i];
@@ -1466,24 +1471,29 @@
             }
           } catch (err) {
             console.error('Error processing transaction:', err);
+            // Continue processing other transactions even if one fails
           }
 
-          await new Promise(r => setTimeout(r, 500));
+          await new Promise(r => setTimeout(r, 300));
         }
 
-        lastSignature = signatures[0].signature;
+        // Update lastSignature after processing all
+        lastSignature = mostRecentSig;
 
       } catch (error) {
         console.error('Error checking transactions:', error);
-        document.getElementById('status').textContent = '🟡 Error';
+        document.getElementById('status').textContent = '🟡 Retrying';
         
-        const feed = document.getElementById('claimsFeed');
-        if (!feed.querySelector('.error')) {
-          const errorDiv = document.createElement('div');
-          errorDiv.className = 'error';
-          errorDiv.textContent = `Error: ${error.message}. Retrying...`;
-          feed.insertBefore(errorDiv, feed.firstChild);
-          setTimeout(() => errorDiv.remove(), 5000);
+        // Don't show error banner for common network issues
+        if (error.message && !error.message.includes('Load failed')) {
+          const feed = document.getElementById('claimsFeed');
+          if (!feed.querySelector('.error')) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+            errorDiv.textContent = `Error: ${error.message}. Retrying...`;
+            feed.insertBefore(errorDiv, feed.firstChild);
+            setTimeout(() => errorDiv.remove(), 5000);
+          }
         }
       }
     }
