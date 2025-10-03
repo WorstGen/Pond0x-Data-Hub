@@ -494,10 +494,11 @@
     .info-banner {
       background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(99, 102, 241, 0.1));
       border: 2px solid rgba(59, 130, 246, 0.3);
-      border-radius: 15px;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
       backdrop-filter: blur(15px);
+      font-size: 0.9rem;
     }
 
     [data-theme="dark"] .info-banner {
@@ -506,30 +507,33 @@
     }
 
     .info-banner-title {
-      font-size: 1.3rem;
+      font-size: 1rem;
       font-weight: 700;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
       color: var(--text-primary);
     }
 
     .info-banner p {
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
       opacity: 0.9;
+      font-size: 0.85rem;
     }
 
     .bot-links {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: 0.4rem;
+      font-size: 0.85rem;
     }
 
     .bot-section {
-      line-height: 1.6;
+      line-height: 1.5;
     }
 
     .bot-section strong {
       color: var(--accent-color);
-      margin-right: 0.5rem;
+      margin-right: 0.35rem;
+      font-size: 0.85rem;
     }
 
     .info-banner a {
@@ -1239,10 +1243,30 @@
     }
 
     function formatAmount(amount) {
-      // Convert from base units to tokens (1 wPOND = 1e9 base units)
-      const tokens = parseFloat(amount) / 1e9;
+      // Debug: log the raw amount to see what we're working with
+      console.log('Raw amount from blockchain:', amount);
       
-      // Format the token amount - note that most claims are in millions
+      // The amount from the blockchain is in the smallest unit
+      // For SPL tokens, this is typically the raw value without decimals applied
+      // wPOND has 9 decimals, but the API might return it differently
+      
+      // First, let's NOT divide and see if the numbers make sense
+      let tokens = parseFloat(amount);
+      console.log('Tokens without division:', tokens);
+      
+      // If the number is extremely large (like 238450000000), it needs conversion
+      // Try dividing by 1e6 instead of 1e9 to see if that gives us millions
+      if (tokens > 1e12) {
+        // Very large number, likely needs full 1e9 conversion
+        tokens = tokens / 1e9;
+        console.log('After 1e9 division:', tokens);
+      } else if (tokens > 1e9) {
+        // Large but not huge - might need 1e6 conversion
+        tokens = tokens / 1e6;
+        console.log('After 1e6 division:', tokens);
+      }
+      
+      // Format the token amount
       if (tokens >= 1e9) return (tokens / 1e9).toFixed(2) + 'B wPOND';
       if (tokens >= 1e6) return (tokens / 1e6).toFixed(2) + 'M wPOND';
       if (tokens >= 1e3) return (tokens / 1e3).toFixed(2) + 'K wPOND';
