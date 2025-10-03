@@ -1281,7 +1281,7 @@
         document.getElementById('lastCheck').textContent = now.toLocaleTimeString();
         document.getElementById('status').textContent = '🟢 Active';
 
-        const sourceKey = new PublicKey(SOURCE_ADDRESS);
+        const sourceKey = new solana.PublicKey(SOURCE_ADDRESS);
         const options = { limit: 25 };
         if (lastSignature) options.until = lastSignature;
 
@@ -1368,8 +1368,14 @@
           throw new Error('Solana Web3.js library failed to load');
         }
 
+        // ============================================
+        // CLOUDFLARE WORKER PROXY
+        // ============================================
+        // Using Cloudflare Worker to hide the QuickNode API key
+        const CLOUDFLARE_WORKER_URL = 'https://odd-dream-1ad2.worstgenstrawhat.workers.dev';
+        
         connection = new solana.Connection(
-          'https://api.mainnet-beta.solana.com',
+          CLOUDFLARE_WORKER_URL,
           'confirmed'
         );
 
