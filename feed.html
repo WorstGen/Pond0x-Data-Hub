@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mining Claims Live Feed - DATA🤝HUB</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-gradient: linear-gradient(135deg, #f9f5ff 0%, #f6edff 35%, #f3e8ff 65%, #f9f5ff 100%);
+      --primary-color: #9b5de5;
+      --accent-color: #ff3df0;
+      --secondary-accent: #bd7cfd;
+      --navbar-bg: #FF13F0;
+      --nav-text: #f6edff;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(155, 93, 229, 0.2);
+      --text-primary: #5b2a86;
+      --text-secondary: #7b3aad;
+      --success-color: #22c55e;
+    }
+
+    [data-theme="dark"] {
+      --bg-gradient: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 20%, #16213e 40%, #1a1a2e 60%, #0f0f0f 80%, #0a0a0a 100%);
+      --primary-color: #e0b3ff;
+      --accent-color: #ff3df0;
+      --secondary-accent: #bd7cfd;
+      --navbar-bg: #1a1a2e;
+      --nav-text: #e5ddfb;
+      --card-bg: rgba(26, 26, 46, 0.8);
+      --card-border: rgba(189, 124, 253, 0.4);
+      --text-primary: #e0b3ff;
+      --text-secondary: #c9a3ff;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding-top: 70px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+      background: 
+        linear-gradient(0deg, rgba(189, 124, 253, 0.35) 0%, rgba(224, 179, 255, 0.25) 50%, rgba(255, 61, 240, 0.25) 100%),
+        linear-gradient(180deg, rgba(224, 179, 255, 0.2) 0%, rgba(189, 124, 253, 0.15) 100%),
+        linear-gradient(135deg, #f9f5ff 0%, #f6edff 25%, #f3e8ff 50%, #f6edff 75%, #f9f5ff 100%);
+      background-size: 100% 200%, 100% 150%, 100% 100%;
+      animation: smoothLiquidFlow 6s ease-in-out infinite;
+    }
+
+    [data-theme="dark"] body {
+      background: 
+        linear-gradient(0deg, rgba(189, 124, 253, 0.15) 0%, rgba(255, 61, 240, 0.1) 50%, rgba(26, 26, 46, 0.2) 100%),
+        linear-gradient(180deg, rgba(26, 26, 46, 0.15) 0%, rgba(189, 124, 253, 0.08) 100%),
+        linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #1a1a2e 75%, #0f0f0f 100%);
+      background-size: 100% 180%, 100% 140%, 100% 100%;
+      animation: smoothLiquidFlowDark 8s ease-in-out infinite;
+    }
+
+    @keyframes smoothLiquidFlow {
+      0%, 100% { background-position: 0% 100%, 0% 0%, 0% 0%; }
+      50% { background-position: 0% 0%, 0% 100%, 0% 0%; }
+    }
+
+    @keyframes smoothLiquidFlowDark {
+      0%, 100% { background-position: 0% 100%, 0% 0%, 0% 0%; }
+      50% { background-position: 0% 0%, 0% 100%, 0% 0%; }
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1.5rem;
+      z-index: 1001;
+      padding: 5px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      background: var(--navbar-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+    }
+
+    .nav-brand {
+      font-size: 1rem;
+      font-weight: 800;
+      color: white;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--nav-text);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.65rem;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+    }
+
+    .nav-links a:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .status-bar {
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border-radius: 15px;
+      padding: 1.5rem;
+      border: 2px solid var(--card-border);
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent-color);
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-top: 0.25rem;
+    }
+
+    .claims-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .claim-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border-radius: 15px;
+      padding: 1.5rem;
+      border: 2px solid var(--card-border);
+      box-shadow: 0 8px 30px rgba(155, 93, 229, 0.15);
+      transition: all 0.3s ease;
+      animation: slideIn 0.5s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .claim-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(155, 93, 229, 0.25);
+    }
+
+    .claim-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .claim-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--success-color);
+    }
+
+    .claim-time {
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+
+    .claim-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .detail-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .detail-label {
+      font-size: 0.85rem;
+      opacity: 0.7;
+      margin-bottom: 0.25rem;
+    }
+
+    .detail-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+      word-break: break-all;
+    }
+
+    .claim-link {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background: linear-gradient(135deg, var(--secondary-accent), var(--accent-color));
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .claim-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(255, 61, 240, 0.4);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      font-size: 1.2rem;
+      opacity: 0.7;
+    }
+
+    .error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 2px solid #ef4444;
+      border-radius: 10px;
+      padding: 1rem;
+      margin: 1rem 0;
+      color: #ef4444;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      
+      .header h1 {
+        font-size: 2rem;
+      }
+      
+      .status-bar {
+        padding: 1rem;
+      }
+      
+      .stat-value {
+        font-size: 1.5rem;
+      }
+      
+      .claim-card {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode">☀️</button>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="https://worstgen.github.io/Pond0x-Data-Hub/" class="nav-brand">DATA🤝HUB</a>
+      <div class="nav-links">
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/">PASSPORT</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigMetrics.html">RIG METRICS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/MiningClaims.html">LATEST CLAIMS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/HashBoosts.html">HASH BOOSTS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigActivations.html">RIG ACTIVATIONS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/Calculator.html">CALCULATOR</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="header">
+      <h1>⛏️ Live Mining Claims Feed ⛏️</h1>
+      <p>Real-time wPOND mining claim monitoring</p>
+    </div>
+
+    <div class="status-bar">
+      <div class="stat">
+        <div class="stat-value" id="totalClaims">0</div>
+        <div class="stat-label">Total Claims</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="lastCheck">--:--</div>
+        <div class="stat-label">Last Check</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="status">🟢 Active</div>
+        <div class="stat-label">Status</div>
+      </div>
+    </div>
+
+    <div class="claims-feed" id="claimsFeed">
+      <div class="loading">Connecting to Solana blockchain...</div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/solana-web3.js/1.87.6/solana-web3.min.js"></script>
+  <script>
+    const TOKEN_ADDRESS = '3JgFwoYV74f6LwWjQWnr3YDPFnmBdwQfNyubv99jqUoq';
+    const SOURCE_ADDRESS = 'AYg4dKoZJudVkD7Eu3ZaJjkzfoaATUqfiv8w8pS53opT';
+    const EXCLUSION_ADDRESS = '1orFCnFfgwPzSgUaoK6Wr3MjgXZ7mtk8NGz9Hh4iWWL';
+    const CHECK_INTERVAL = 45000;
+
+    let connection;
+    let lastSignature = null;
+    let totalClaims = 0;
+    let processedSignatures = new Set();
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const newTheme = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      document.querySelector('.theme-toggle').textContent = newTheme === 'dark' ? '🌙' : '☀️';
+      localStorage.setItem('pond0x_theme_preference', newTheme);
+    }
+
+    function initTheme() {
+      const saved = localStorage.getItem('pond0x_theme_preference');
+      const theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+      document.querySelector('.theme-toggle').textContent = theme === 'dark' ? '🌙' : '☀️';
+    }
+
+    function formatAmount(amount) {
+      const tokens = parseFloat(amount) / 1e9;
+      if (tokens >= 1e9) return (tokens / 1e9).toFixed(2) + 'B';
+      if (tokens >= 1e6) return (tokens / 1e6).toFixed(2) + 'M';
+      if (tokens >= 1e3) return (tokens / 1e3).toFixed(2) + 'K';
+      return tokens.toFixed(2);
+    }
+
+    function shortenAddress(addr) {
+      return `${addr.slice(0, 4)}...${addr.slice(-4)}`;
+    }
+
+    function formatTime(timestamp) {
+      return new Date(timestamp * 1000).toLocaleString('en-US', {
+        timeZone: 'UTC',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      }) + ' UTC';
+    }
+
+    function addClaimCard(claim) {
+      const feed = document.getElementById('claimsFeed');
+      const loading = feed.querySelector('.loading');
+      if (loading) loading.remove();
+
+      const card = document.createElement('div');
+      card.className = 'claim-card';
+      card.innerHTML = `
+        <div class="claim-header">
+          <div class="claim-title">⛏️ Mining Claim #${++totalClaims}</div>
+          <div class="claim-time">${formatTime(claim.timestamp)}</div>
+        </div>
+        <div class="claim-details">
+          <div class="detail-item">
+            <div class="detail-label">💰 Amount</div>
+            <div class="detail-value">${formatAmount(claim.amount)} wPOND</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">📍 Destination</div>
+            <div class="detail-value">${shortenAddress(claim.destination)}</div>
+          </div>
+        </div>
+        <a href="https://solscan.io/tx/${claim.signature}" target="_blank" class="claim-link">
+          View on Solscan →
+        </a>
+      `;
+      
+      feed.insertBefore(card, feed.firstChild);
+      
+      if (feed.children.length > 20) {
+        feed.removeChild(feed.lastChild);
+      }
+
+      document.getElementById('totalClaims').textContent = totalClaims;
+    }
+
+    async function checkTransactions() {
+      try {
+        const now = new Date();
+        document.getElementById('lastCheck').textContent = now.toLocaleTimeString();
+        document.getElementById('status').textContent = '🟢 Active';
+
+        const sourceKey = new solanaWeb3.PublicKey(SOURCE_ADDRESS);
+        const options = { limit: 25 };
+        if (lastSignature) options.until = lastSignature;
+
+        const signatures = await connection.getSignaturesForAddress(sourceKey, options);
+
+        if (signatures.length === 0) {
+          console.log('No new transactions');
+          return;
+        }
+
+        for (let i = signatures.length - 1; i >= 0; i--) {
+          const sig = signatures[i];
+          
+          if (processedSignatures.has(sig.signature)) continue;
+          if (sig.err) continue;
+
+          try {
+            const tx = await connection.getParsedTransaction(sig.signature, {
+              maxSupportedTransactionVersion: 0
+            });
+
+            if (!tx || tx.meta?.err) continue;
+
+            const instructions = tx.transaction.message.instructions;
+            
+            for (const instruction of instructions) {
+              if (instruction.program !== 'spl-token') continue;
+              if (instruction.parsed?.type !== 'transfer') continue;
+
+              const info = instruction.parsed.info;
+              const isFromSource = info.source === SOURCE_ADDRESS || info.authority === SOURCE_ADDRESS;
+              
+              if (!isFromSource) continue;
+              if (info.destination === EXCLUSION_ADDRESS) continue;
+
+              const tokenAccountInfo = await connection.getParsedAccountInfo(
+                new solanaWeb3.PublicKey(info.source || info.authority)
+              );
+
+              const mint = tokenAccountInfo.value?.data?.parsed?.info?.mint;
+              
+              if (mint === TOKEN_ADDRESS) {
+                addClaimCard({
+                  signature: sig.signature,
+                  amount: info.amount,
+                  destination: info.destination,
+                  timestamp: sig.blockTime || Date.now() / 1000
+                });
+                
+                processedSignatures.add(sig.signature);
+                break;
+              }
+            }
+          } catch (err) {
+            console.error('Error processing transaction:', err);
+          }
+
+          await new Promise(r => setTimeout(r, 500));
+        }
+
+        lastSignature = signatures[0].signature;
+
+      } catch (error) {
+        console.error('Error checking transactions:', error);
+        document.getElementById('status').textContent = '🟡 Error';
+        
+        const feed = document.getElementById('claimsFeed');
+        if (!feed.querySelector('.error')) {
+          const errorDiv = document.createElement('div');
+          errorDiv.className = 'error';
+          errorDiv.textContent = `Error: ${error.message}. Retrying...`;
+          feed.insertBefore(errorDiv, feed.firstChild);
+          setTimeout(() => errorDiv.remove(), 5000);
+        }
+      }
+    }
+
+    async function init() {
+      initTheme();
+      
+      try {
+        connection = new solanaWeb3.Connection(
+          'https://api.mainnet-beta.solana.com',
+          'confirmed'
+        );
+
+        await checkTransactions();
+        
+        setInterval(checkTransactions, CHECK_INTERVAL);
+        
+      } catch (error) {
+        console.error('Initialization error:', error);
+        const feed = document.getElementById('claimsFeed');
+        feed.innerHTML = `<div class="error">Failed to connect to Solana blockchain: ${error.message}</div>`;
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
