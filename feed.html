@@ -793,14 +793,20 @@
       const newTheme = current === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', newTheme);
       document.getElementById('themeToggle').textContent = newTheme === 'dark' ? '🌙' : '☀️';
-      localStorage.setItem('pond0x_theme_preference', newTheme);
+      try {
+        localStorage.setItem('pond0x_theme_preference', newTheme);
+      } catch(e) {}
     };
 
     function initTheme() {
-      const saved = localStorage.getItem('pond0x_theme_preference');
-      const theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-      document.documentElement.setAttribute('data-theme', theme);
-      document.getElementById('themeToggle').textContent = theme === 'dark' ? '🌙' : '☀️';
+      try {
+        const saved = localStorage.getItem('pond0x_theme_preference');
+        const theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+        document.getElementById('themeToggle').textContent = theme === 'dark' ? '🌙' : '☀️';
+      } catch(e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
     }
 
     // Bubble system
@@ -996,8 +1002,6 @@
 
   <script>
     // Solana blockchain monitoring
-    const solana = window.solanaWeb3;
-
     const TOKEN_ADDRESS = '3JgFwoYV74f6LwWjQWnr3YDPFnmBdwQfNyubv99jqUoq';
     const SOURCE_ADDRESS = 'AYg4dKoZJudVkD7Eu3ZaJjkzfoaATUqfiv8w8pS53opT';
     const EXCLUSION_ADDRESS = '1orFCnFfgwPzSgUaoK6Wr3MjgXZ7mtk8NGz9Hh4iWWL';
@@ -1013,7 +1017,7 @@
     let currentPage = 1;
     let isLoadingHistory = false;
 
-    // Load persisted claims from localStorage
+    // Load persisted claims from memory
     function loadPersistedClaims() {
       try {
         const stored = localStorage.getItem(STORAGE_KEY);
@@ -1031,7 +1035,7 @@
       return false;
     }
 
-    // Save claims to localStorage
+    // Save claims to memory
     function persistClaims() {
       try {
         // Keep only the last 1000 claims to avoid storage limits
@@ -1152,7 +1156,7 @@
       allClaims.unshift(claim);
       totalClaims = allClaims.length;
       
-      // Persist to localStorage
+      // Persist to memory
       persistClaims();
       
       // Update the display
@@ -1173,11 +1177,12 @@
 
       try {
         console.log('Loading last 50 historical mining claims...');
-        const sourceKey = new solana.PublicKey(SOURCE_ADDRESS);
+        const { PublicKey } = window.solanaWeb3;
+        const sourceKey = new PublicKey(SOURCE_ADDRESS);
         
         let foundClaims = 0;
         let before = null;
-        const maxToCheck = 200; // Check up to 200 transactions
+        const maxToCheck = 200;
         let checked = 0;
 
         while (foundClaims < 50 && checked < maxToCheck) {
@@ -1213,7 +1218,7 @@
                 if (info.destination === EXCLUSION_ADDRESS) continue;
 
                 const tokenAccountInfo = await connection.getParsedAccountInfo(
-                  new solana.PublicKey(info.source || info.authority)
+                  new PublicKey(info.source || info.authority)
                 );
 
                 const mint = tokenAccountInfo.value?.data?.parsed?.info?.mint;
@@ -1240,7 +1245,7 @@
             }
 
             if (foundClaims >= 50) break;
-            await new Promise(r => setTimeout(r, 300)); // Rate limiting
+            await new Promise(r => setTimeout(r, 300));
           }
 
           before = signatures[signatures.length - 1].signature;
@@ -1279,7 +1284,8 @@
         document.getElementById('lastCheck').textContent = now.toLocaleTimeString();
         document.getElementById('status').textContent = '🟢 Active';
 
-        const sourceKey = new solana.PublicKey(SOURCE_ADDRESS);
+        const { PublicKey } = window.solanaWeb3;
+        const sourceKey = new PublicKey(SOURCE_ADDRESS);
         const options = { limit: 25 };
         if (lastSignature) options.until = lastSignature;
 
@@ -1316,7 +1322,7 @@
               if (info.destination === EXCLUSION_ADDRESS) continue;
 
               const tokenAccountInfo = await connection.getParsedAccountInfo(
-                new solana.PublicKey(info.source || info.authority)
+                new PublicKey(info.source || info.authority)
               );
 
               const mint = tokenAccountInfo.value?.data?.parsed?.info?.mint;
@@ -1366,13 +1372,12 @@
           throw new Error('Solana Web3.js library failed to load');
         }
 
-        // ============================================
+        const { Connection } = window.solanaWeb3;
+        
         // CLOUDFLARE WORKER PROXY
-        // ============================================
-        // Using Cloudflare Worker to hide the QuickNode API key
         const CLOUDFLARE_WORKER_URL = 'https://odd-dream-1ad2.worstgenstrawhat.workers.dev';
         
-        connection = new solana.Connection(
+        connection = new Connection(
           CLOUDFLARE_WORKER_URL,
           'confirmed'
         );
