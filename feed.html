@@ -526,6 +526,43 @@
       gap: 1rem;
     }
 
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      margin: 2rem 0;
+      flex-wrap: wrap;
+    }
+
+    .pagination button {
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, var(--secondary-accent), var(--accent-color));
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(189, 124, 253, 0.3);
+    }
+
+    .pagination button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(189, 124, 253, 0.4);
+    }
+
+    .pagination button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: linear-gradient(135deg, #666, #999);
+    }
+
+    .pagination span {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
     .claim-card {
       background: var(--card-bg);
       backdrop-filter: blur(15px);
@@ -715,7 +752,13 @@
     </div>
 
     <div class="claims-feed" id="claimsFeed">
-      <div class="loading">Connecting to Solana blockchain...</div>
+      <div class="loading">Loading historical claims...</div>
+    </div>
+
+    <div class="pagination" id="pagination" style="display: none;">
+      <button id="prevBtn" onclick="window.changePage(-1)">← Previous</button>
+      <span id="pageInfo">Page 1</span>
+      <button id="nextBtn" onclick="window.changePage(1)">Next →</button>
     </div>
   </div>
 
@@ -934,11 +977,128 @@
     const SOURCE_ADDRESS = 'AYg4dKoZJudVkD7Eu3ZaJjkzfoaATUqfiv8w8pS53opT';
     const EXCLUSION_ADDRESS = '1orFCnFfgwPzSgUaoK6Wr3MjgXZ7mtk8NGz9Hh4iWWL';
     const CHECK_INTERVAL = 45000;
+    const CLAIMS_PER_PAGE = 50;
+    const STORAGE_KEY = 'pond0x_mining_claims';
 
     let connection;
     let lastSignature = null;
     let totalClaims = 0;
     let processedSignatures = new Set();
+    let allClaims = [];
+    let currentPage = 1;
+    let isLoadingHistory = false;
+
+    // Load persisted claims from localStorage
+    function loadPersistedClaims() {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          const data = JSON.parse(stored);
+          allClaims = data.claims || [];
+          totalClaims = allClaims.length;
+          processedSignatures = new Set(allClaims.map(c => c.signature));
+          console.log(`Loaded ${allClaims.length} persisted claims`);
+          return true;
+        }
+      } catch (e) {
+        console.error('Error loading persisted claims:', e);
+      }
+      return false;
+    }
+
+    // Save claims to localStorage
+    function persistClaims() {
+      try {
+        // Keep only the last 1000 claims to avoid storage limits
+        const claimsToStore = allClaims.slice(0, 1000);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          claims: claimsToStore,
+          lastUpdated: Date.now()
+        }));
+      } catch (e) {
+        console.error('Error persisting claims:', e);
+        // If storage is full, try removing old claims
+        if (e.name === 'QuotaExceededError') {
+          allClaims = allClaims.slice(0, 500);
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({
+              claims: allClaims,
+              lastUpdated: Date.now()
+            }));
+          } catch (e2) {
+            console.error('Still cannot save after reducing claims:', e2);
+          }
+        }
+      }
+    }
+
+    window.changePage = function(direction) {
+      const totalPages = Math.ceil(allClaims.length / CLAIMS_PER_PAGE);
+      currentPage = Math.max(1, Math.min(currentPage + direction, totalPages));
+      renderCurrentPage();
+      updatePaginationControls();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    function updatePaginationControls() {
+      const totalPages = Math.ceil(allClaims.length / CLAIMS_PER_PAGE);
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const pageInfo = document.getElementById('pageInfo');
+      const pagination = document.getElementById('pagination');
+
+      if (allClaims.length > 0) {
+        pagination.style.display = 'flex';
+        prevBtn.disabled = currentPage === 1;
+        nextBtn.disabled = currentPage === totalPages;
+        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+      } else {
+        pagination.style.display = 'none';
+      }
+    }
+
+    function renderCurrentPage() {
+      const feed = document.getElementById('claimsFeed');
+      const loading = feed.querySelector('.loading');
+      if (loading) loading.remove();
+
+      const startIdx = (currentPage - 1) * CLAIMS_PER_PAGE;
+      const endIdx = startIdx + CLAIMS_PER_PAGE;
+      const claimsToShow = allClaims.slice(startIdx, endIdx);
+
+      feed.innerHTML = '';
+
+      if (claimsToShow.length === 0) {
+        feed.innerHTML = '<div class="loading">No claims found yet. Monitoring for new claims...</div>';
+        return;
+      }
+
+      claimsToShow.forEach((claim, index) => {
+        const card = document.createElement('div');
+        card.className = 'claim-card';
+        const claimNumber = startIdx + index + 1;
+        card.innerHTML = `
+          <div class="claim-header">
+            <div class="claim-title">⛏️ Mining Claim #${claimNumber}</div>
+            <div class="claim-time">${formatTime(claim.timestamp)}</div>
+          </div>
+          <div class="claim-details">
+            <div class="detail-item">
+              <div class="detail-label">💰 Amount</div>
+              <div class="detail-value">${formatAmount(claim.amount)} wPOND</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">📍 Destination</div>
+              <div class="detail-value">${shortenAddress(claim.destination)}</div>
+            </div>
+          </div>
+          <a href="https://solscan.io/tx/${claim.signature}" target="_blank" class="claim-link">
+            View on Solscan →
+          </a>
+        `;
+        feed.appendChild(card);
+      });
+    }
 
     function formatAmount(amount) {
       const tokens = parseFloat(amount) / 1e9;
@@ -965,39 +1125,129 @@
     }
 
     function addClaimCard(claim) {
-      const feed = document.getElementById('claimsFeed');
-      const loading = feed.querySelector('.loading');
-      if (loading) loading.remove();
-
-      const card = document.createElement('div');
-      card.className = 'claim-card';
-      card.innerHTML = `
-        <div class="claim-header">
-          <div class="claim-title">⛏️ Mining Claim #${++totalClaims}</div>
-          <div class="claim-time">${formatTime(claim.timestamp)}</div>
-        </div>
-        <div class="claim-details">
-          <div class="detail-item">
-            <div class="detail-label">💰 Amount</div>
-            <div class="detail-value">${formatAmount(claim.amount)} wPOND</div>
-          </div>
-          <div class="detail-item">
-            <div class="detail-label">📍 Destination</div>
-            <div class="detail-value">${shortenAddress(claim.destination)}</div>
-          </div>
-        </div>
-        <a href="https://solscan.io/tx/${claim.signature}" target="_blank" class="claim-link">
-          View on Solscan →
-        </a>
-      `;
+      // Add to the beginning of the array (newest first)
+      allClaims.unshift(claim);
+      totalClaims = allClaims.length;
       
-      feed.insertBefore(card, feed.firstChild);
+      // Persist to localStorage
+      persistClaims();
       
-      if (feed.children.length > 20) {
-        feed.removeChild(feed.lastChild);
-      }
-
+      // Update the display
       document.getElementById('totalClaims').textContent = totalClaims;
+      
+      // If we're on page 1, re-render to show the new claim
+      if (currentPage === 1) {
+        renderCurrentPage();
+      }
+      
+      updatePaginationControls();
+    }
+
+    // Load historical claims on first page load
+    async function loadHistoricalClaims() {
+      if (isLoadingHistory) return;
+      isLoadingHistory = true;
+
+      try {
+        console.log('Loading last 50 historical mining claims...');
+        const sourceKey = new PublicKey(SOURCE_ADDRESS);
+        
+        let foundClaims = 0;
+        let before = null;
+        const maxToCheck = 200; // Check up to 200 transactions
+        let checked = 0;
+
+        while (foundClaims < 50 && checked < maxToCheck) {
+          const options = { limit: 50 };
+          if (before) options.before = before;
+
+          const signatures = await connection.getSignaturesForAddress(sourceKey, options);
+          
+          if (signatures.length === 0) break;
+
+          for (const sig of signatures) {
+            checked++;
+            if (sig.err) continue;
+            if (processedSignatures.has(sig.signature)) continue;
+
+            try {
+              const tx = await connection.getParsedTransaction(sig.signature, {
+                maxSupportedTransactionVersion: 0
+              });
+
+              if (!tx || tx.meta?.err) continue;
+
+              const instructions = tx.transaction.message.instructions;
+              
+              for (const instruction of instructions) {
+                if (instruction.program !== 'spl-token') continue;
+                if (instruction.parsed?.type !== 'transfer') continue;
+
+                const info = instruction.parsed.info;
+                const isFromSource = info.source === SOURCE_ADDRESS || info.authority === SOURCE_ADDRESS;
+                
+                if (!isFromSource) continue;
+                if (info.destination === EXCLUSION_ADDRESS) continue;
+
+                const tokenAccountInfo = await connection.getParsedAccountInfo(
+                  new PublicKey(info.source || info.authority)
+                );
+
+                const mint = tokenAccountInfo.value?.data?.parsed?.info?.mint;
+                
+                if (mint === TOKEN_ADDRESS) {
+                  const claim = {
+                    signature: sig.signature,
+                    amount: info.amount,
+                    destination: info.destination,
+                    timestamp: sig.blockTime || Date.now() / 1000
+                  };
+                  
+                  allClaims.push(claim);
+                  processedSignatures.add(sig.signature);
+                  foundClaims++;
+                  
+                  console.log(`Found historical claim ${foundClaims}/50`);
+                  
+                  if (foundClaims >= 50) break;
+                }
+              }
+            } catch (err) {
+              console.error('Error processing historical transaction:', err);
+            }
+
+            if (foundClaims >= 50) break;
+            await new Promise(r => setTimeout(r, 300)); // Rate limiting
+          }
+
+          before = signatures[signatures.length - 1].signature;
+          if (!lastSignature) lastSignature = signatures[0].signature;
+
+          if (foundClaims >= 50) break;
+          await new Promise(r => setTimeout(r, 500));
+        }
+
+        totalClaims = allClaims.length;
+        console.log(`Loaded ${foundClaims} historical claims`);
+        
+        // Sort by timestamp (newest first)
+        allClaims.sort((a, b) => b.timestamp - a.timestamp);
+        
+        // Persist the loaded claims
+        persistClaims();
+        
+        // Render the first page
+        renderCurrentPage();
+        updatePaginationControls();
+        document.getElementById('totalClaims').textContent = totalClaims;
+
+      } catch (error) {
+        console.error('Error loading historical claims:', error);
+        const feed = document.getElementById('claimsFeed');
+        feed.innerHTML = `<div class="error">Error loading historical claims: ${error.message}</div>`;
+      } finally {
+        isLoadingHistory = false;
+      }
     }
 
     async function checkTransactions() {
@@ -1091,8 +1341,26 @@
           'confirmed'
         );
 
-        await checkTransactions();
+        // Load persisted claims first
+        const hasPersistedClaims = loadPersistedClaims();
         
+        if (hasPersistedClaims) {
+          console.log('Displaying persisted claims');
+          renderCurrentPage();
+          updatePaginationControls();
+          document.getElementById('totalClaims').textContent = totalClaims;
+          
+          // Set lastSignature to the most recent one
+          if (allClaims.length > 0) {
+            lastSignature = allClaims[0].signature;
+          }
+        } else {
+          // No persisted claims, load historical data
+          await loadHistoricalClaims();
+        }
+        
+        // Start monitoring for new claims
+        await checkTransactions();
         setInterval(checkTransactions, CHECK_INTERVAL);
         
       } catch (error) {
