@@ -1243,28 +1243,14 @@
     }
 
     function formatAmount(amount) {
-      // Debug: log the raw amount to see what we're working with
-      console.log('Raw amount from blockchain:', amount);
+      // The amount from blockchain is in base units
+      // wPOND uses 6 decimals (1 wPOND = 1e6 base units)
+      // So 221550000000 base units = 221550 wPOND = 221.55M wPOND
       
-      // The amount from the blockchain is in the smallest unit
-      // For SPL tokens, this is typically the raw value without decimals applied
-      // wPOND has 9 decimals, but the API might return it differently
+      const rawAmount = parseFloat(amount);
       
-      // First, let's NOT divide and see if the numbers make sense
-      let tokens = parseFloat(amount);
-      console.log('Tokens without division:', tokens);
-      
-      // If the number is extremely large (like 238450000000), it needs conversion
-      // Try dividing by 1e6 instead of 1e9 to see if that gives us millions
-      if (tokens > 1e12) {
-        // Very large number, likely needs full 1e9 conversion
-        tokens = tokens / 1e9;
-        console.log('After 1e9 division:', tokens);
-      } else if (tokens > 1e9) {
-        // Large but not huge - might need 1e6 conversion
-        tokens = tokens / 1e6;
-        console.log('After 1e6 division:', tokens);
-      }
+      // Convert from base units (divide by 1e6 for wPOND's 6 decimals)
+      const tokens = rawAmount / 1e6;
       
       // Format the token amount
       if (tokens >= 1e9) return (tokens / 1e9).toFixed(2) + 'B wPOND';
