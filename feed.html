@@ -996,7 +996,7 @@
 
   <script>
     // Solana blockchain monitoring
-    const solanaWeb3 = window.solanaWeb3;
+    const solana = window.solanaWeb3;
 
     const TOKEN_ADDRESS = '3JgFwoYV74f6LwWjQWnr3YDPFnmBdwQfNyubv99jqUoq';
     const SOURCE_ADDRESS = 'AYg4dKoZJudVkD7Eu3ZaJjkzfoaATUqfiv8w8pS53opT';
@@ -1175,7 +1175,7 @@
 
       try {
         console.log('Loading last 50 historical mining claims...');
-        const sourceKey = new solanaWeb3.PublicKey(SOURCE_ADDRESS);
+        const sourceKey = new solana.PublicKey(SOURCE_ADDRESS);
         
         let foundClaims = 0;
         let before = null;
@@ -1215,7 +1215,7 @@
                 if (info.destination === EXCLUSION_ADDRESS) continue;
 
                 const tokenAccountInfo = await connection.getParsedAccountInfo(
-                  new solanaWeb3.PublicKey(info.source || info.authority)
+                  new solana.PublicKey(info.source || info.authority)
                 );
 
                 const mint = tokenAccountInfo.value?.data?.parsed?.info?.mint;
@@ -1318,7 +1318,7 @@
               if (info.destination === EXCLUSION_ADDRESS) continue;
 
               const tokenAccountInfo = await connection.getParsedAccountInfo(
-                new solanaWeb3.PublicKey(info.source || info.authority)
+                new solana.PublicKey(info.source || info.authority)
               );
 
               const mint = tokenAccountInfo.value?.data?.parsed?.info?.mint;
@@ -1368,7 +1368,7 @@
           throw new Error('Solana Web3.js library failed to load');
         }
 
-        connection = new solanaWeb3.Connection(
+        connection = new solana.Connection(
           'https://api.mainnet-beta.solana.com',
           'confirmed'
         );
