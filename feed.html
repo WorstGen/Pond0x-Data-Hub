@@ -599,6 +599,42 @@
       gap: 0.5rem;
     }
 
+    .claim-amount-highlight {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(16, 185, 129, 0.15));
+      border: 2px solid rgba(34, 197, 94, 0.3);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+
+    [data-theme="dark"] .claim-amount-highlight {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(16, 185, 129, 0.2));
+      border-color: rgba(34, 197, 94, 0.4);
+    }
+
+    .amount-label {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    .amount-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--success-color);
+      text-shadow: 0 2px 10px rgba(34, 197, 94, 0.3);
+    }
+
+    [data-theme="dark"] .amount-value {
+      color: #4ade80;
+      text-shadow: 0 2px 15px rgba(74, 222, 128, 0.4);
+    }
+
     .claim-title {
       font-size: 1.3rem;
       font-weight: 700;
@@ -1107,20 +1143,24 @@
         card.className = 'claim-card';
         card.innerHTML = `
           <div class="claim-header">
-            <div class="claim-time">${formatTime(claim.timestamp)}</div>
+            <div class="claim-time">⏰ ${formatTime(claim.timestamp)}</div>
+          </div>
+          <div class="claim-amount-highlight">
+            <div class="amount-label">Amount Claimed</div>
+            <div class="amount-value">${formatAmount(claim.amount)}</div>
           </div>
           <div class="claim-details">
             <div class="detail-item">
-              <div class="detail-label">💰 Amount</div>
-              <div class="detail-value">${formatAmount(claim.amount)}</div>
+              <div class="detail-label">📍 Destination Address</div>
+              <div class="detail-value">${shortenAddress(claim.destination)}</div>
             </div>
             <div class="detail-item">
-              <div class="detail-label">📍 Destination</div>
-              <div class="detail-value">${shortenAddress(claim.destination)}</div>
+              <div class="detail-label">🔗 Transaction</div>
+              <div class="detail-value">${shortenAddress(claim.signature)}</div>
             </div>
           </div>
           <a href="https://solscan.io/tx/${claim.signature}" target="_blank" class="claim-link">
-            View on Solscan →
+            View Full Transaction on Solscan →
           </a>
         `;
         feed.appendChild(card);
@@ -1128,7 +1168,9 @@
     }
 
     function formatAmount(amount) {
-      const tokens = parseFloat(amount) / 1e9;
+      // Amount is already in base units (1e9 base units = 1 token)
+      // So we need to keep it as-is and format in millions/billions
+      const tokens = parseFloat(amount);
       if (tokens >= 1e9) return (tokens / 1e9).toFixed(2) + 'B wPOND';
       if (tokens >= 1e6) return (tokens / 1e6).toFixed(2) + 'M wPOND';
       if (tokens >= 1e3) return (tokens / 1e3).toFixed(2) + 'K wPOND';
