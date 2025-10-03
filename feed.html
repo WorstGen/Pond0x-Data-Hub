@@ -491,6 +491,60 @@
       margin-bottom: 0.5rem;
     }
 
+    .info-banner {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(99, 102, 241, 0.1));
+      border: 2px solid rgba(59, 130, 246, 0.3);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      backdrop-filter: blur(15px);
+    }
+
+    [data-theme="dark"] .info-banner {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(99, 102, 241, 0.15));
+      border-color: rgba(59, 130, 246, 0.4);
+    }
+
+    .info-banner-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: var(--text-primary);
+    }
+
+    .info-banner p {
+      margin-bottom: 1rem;
+      opacity: 0.9;
+    }
+
+    .bot-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .bot-section {
+      line-height: 1.6;
+    }
+
+    .bot-section strong {
+      color: var(--accent-color);
+      margin-right: 0.5rem;
+    }
+
+    .info-banner a {
+      color: var(--accent-color);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      border-bottom: 1px solid transparent;
+    }
+
+    .info-banner a:hover {
+      border-bottom-color: var(--accent-color);
+      opacity: 0.8;
+    }
+
     .status-bar {
       background: var(--card-bg);
       backdrop-filter: blur(15px);
@@ -770,6 +824,23 @@
     <div class="header">
       <h1>⛏️ Live Mining Claims Feed ⛏️</h1>
       <p>Real-time wPOND mining claim monitoring</p>
+    </div>
+
+    <div class="info-banner">
+      <div class="info-banner-title">🤖 Get Real-Time Notifications</div>
+      <p>Want instant alerts when claims happen? Check out these bots:</p>
+      <div class="bot-links">
+        <div class="bot-section">
+          <strong>Telegram:</strong>
+          <a href="https://t.me/S53opTbot" target="_blank">Claimsbot</a> • 
+          <a href="https://t.me/Pond0xUserisKingbot" target="_blank">Pond0x User is King bot</a>
+        </div>
+        <div class="bot-section">
+          <strong>Discord:</strong>
+          <a href="https://discord.com/oauth2/authorize?client_id=1409886705758109827&permissions=2147600384&integration_type=0&scope=bot+applications.commands" target="_blank">Claimsbot</a> which can be found in the 
+          <a href="https://discord.com/channels/1335026643214929952/1421212822720872459" target="_blank">Pond Unhinged</a> (if you haven't joined yet join <a href="https://t.co/aDcQh1apZV" target="_blank">here</a>)
+        </div>
+      </div>
     </div>
 
     <div class="status-bar">
@@ -1171,11 +1242,12 @@
       // Convert from base units to tokens (1 wPOND = 1e9 base units)
       const tokens = parseFloat(amount) / 1e9;
       
-      // Now format the token amount
+      // Format the token amount - note that most claims are in millions
       if (tokens >= 1e9) return (tokens / 1e9).toFixed(2) + 'B wPOND';
       if (tokens >= 1e6) return (tokens / 1e6).toFixed(2) + 'M wPOND';
       if (tokens >= 1e3) return (tokens / 1e3).toFixed(2) + 'K wPOND';
-      return tokens.toFixed(2) + ' wPOND';
+      if (tokens >= 1) return tokens.toFixed(2) + ' wPOND';
+      return (tokens * 1000).toFixed(2) + ' milli-wPOND';
     }
 
     function shortenAddress(addr) {
