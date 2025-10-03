@@ -1415,22 +1415,30 @@
         // We want the most recent transactions, and we filter by processedSignatures
         // This way we always get new transactions as they happen
 
+        console.log('Checking for new transactions...');
         const signatures = await connection.getSignaturesForAddress(sourceKey, options);
+        console.log(`Fetched ${signatures.length} recent signatures`);
 
         if (signatures.length === 0) {
-          console.log('No new transactions');
+          console.log('No transactions found');
           return;
         }
 
         let foundNewClaim = false;
+        let skippedCount = 0;
 
         // Process from oldest to newest in the batch
         for (let i = signatures.length - 1; i >= 0; i--) {
           const sig = signatures[i];
           
           // Skip if we've already processed this signature
-          if (processedSignatures.has(sig.signature)) continue;
+          if (processedSignatures.has(sig.signature)) {
+            skippedCount++;
+            continue;
+          }
           if (sig.err) continue;
+
+          console.log(`Processing new signature: ${sig.signature.substring(0, 8)}...`);
 
           try {
             const tx = await connection.getParsedTransaction(sig.signature, {
@@ -1458,7 +1466,8 @@
               const mint = tokenAccountInfo.value?.data?.parsed?.info?.mint;
               
               if (mint === TOKEN_ADDRESS) {
-                console.log('🎉 New claim detected!', sig.signature);
+                console.log('🎉 NEW CLAIM DETECTED!', sig.signature);
+                console.log('Amount:', info.amount, 'Destination:', info.destination);
                 addClaimCard({
                   signature: sig.signature,
                   amount: info.amount,
@@ -1479,12 +1488,10 @@
           await new Promise(r => setTimeout(r, 300));
         }
 
+        console.log(`Check complete. Skipped ${skippedCount} already processed. Found ${foundNewClaim ? 'NEW' : 'no new'} claims.`);
+
         // Always update lastSignature to the most recent one we checked
         lastSignature = signatures[0].signature;
-
-        if (foundNewClaim) {
-          console.log('New claims added to feed');
-        }
 
       } catch (error) {
         console.error('Error checking transactions:', error);
@@ -1532,16 +1539,16 @@
           updatePaginationControls();
           document.getElementById('totalClaims').textContent = totalClaims;
           
-          // Set lastSignature to the most recent one
-          if (allClaims.length > 0) {
-            lastSignature = allClaims[0].signature;
-          }
+          // IMPORTANT: Do NOT set lastSignature here
+          // We want to check for ALL recent transactions, not skip to after the persisted ones
+          // The processedSignatures Set will prevent duplicates
         } else {
           // No persisted claims, load historical data
           await loadHistoricalClaims();
         }
         
-        // Start monitoring for new claims
+        // Start monitoring for new claims immediately
+        console.log('Starting live transaction monitoring...');
         await checkTransactions();
         setInterval(checkTransactions, CHECK_INTERVAL);
         
