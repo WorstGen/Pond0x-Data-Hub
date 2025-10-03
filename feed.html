@@ -1410,11 +1410,10 @@
         const { PublicKey } = window.solanaWeb3;
         const sourceKey = new PublicKey(SOURCE_ADDRESS);
         const options = { limit: 25 };
-        // Don't use 'until' - we want to get all new transactions since last check
-        // Instead, we'll filter by what we've already processed
-        if (lastSignature) {
-          options.before = lastSignature;
-        }
+        
+        // For live monitoring, we DON'T use before or until
+        // We want the most recent transactions, and we filter by processedSignatures
+        // This way we always get new transactions as they happen
 
         const signatures = await connection.getSignaturesForAddress(sourceKey, options);
 
@@ -1423,12 +1422,13 @@
           return;
         }
 
-        // Update lastSignature to the most recent one
-        const mostRecentSig = signatures[0].signature;
+        let foundNewClaim = false;
 
+        // Process from oldest to newest in the batch
         for (let i = signatures.length - 1; i >= 0; i--) {
           const sig = signatures[i];
           
+          // Skip if we've already processed this signature
           if (processedSignatures.has(sig.signature)) continue;
           if (sig.err) continue;
 
@@ -1458,6 +1458,7 @@
               const mint = tokenAccountInfo.value?.data?.parsed?.info?.mint;
               
               if (mint === TOKEN_ADDRESS) {
+                console.log('🎉 New claim detected!', sig.signature);
                 addClaimCard({
                   signature: sig.signature,
                   amount: info.amount,
@@ -1466,6 +1467,7 @@
                 });
                 
                 processedSignatures.add(sig.signature);
+                foundNewClaim = true;
                 break;
               }
             }
@@ -1477,8 +1479,12 @@
           await new Promise(r => setTimeout(r, 300));
         }
 
-        // Update lastSignature after processing all
-        lastSignature = mostRecentSig;
+        // Always update lastSignature to the most recent one we checked
+        lastSignature = signatures[0].signature;
+
+        if (foundNewClaim) {
+          console.log('New claims added to feed');
+        }
 
       } catch (error) {
         console.error('Error checking transactions:', error);
