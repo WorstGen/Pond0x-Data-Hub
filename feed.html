@@ -1115,7 +1115,8 @@
     // Solana blockchain monitoring
     const TOKEN_ADDRESS = '3JgFwoYV74f6LwWjQWnr3YDPFnmBdwQfNyubv99jqUoq';
     const SOURCE_ADDRESS = 'AYg4dKoZJudVkD7Eu3ZaJjkzfoaATUqfiv8w8pS53opT';
-    const EXCLUSION_ADDRESS = '1orFCnFfgwPzSgUaoK6Wr3MjgXZ7mtk8NGz9Hh4iWWL';
+    const EXCLUSION_ADDRESS_1 = '1orFCnFfgwPzSgUaoK6Wr3MjgXZ7mtk8NGz9Hh4iWWL';
+    const EXCLUSION_ADDRESS_2 = 'HwyJtiPXQ5ZosJQRpUmcmV6E2J9ffKfhqjNcY1R8Gt29';
     const CHECK_INTERVAL = 45000;
     const CLAIMS_PER_PAGE = 50;
     const STORAGE_KEY = 'pond0x_mining_claims';
@@ -1338,7 +1339,8 @@
                 const isFromSource = info.source === SOURCE_ADDRESS || info.authority === SOURCE_ADDRESS;
                 
                 if (!isFromSource) continue;
-                if (info.destination === EXCLUSION_ADDRESS) continue;
+                if (info.destination === EXCLUSION_ADDRESS_1) continue;
+                if (info.destination === EXCLUSION_ADDRESS_2) continue;
 
                 const tokenAccountInfo = await connection.getParsedAccountInfo(
                   new PublicKey(info.source || info.authority)
@@ -1347,10 +1349,23 @@
                 const mint = tokenAccountInfo.value?.data?.parsed?.info?.mint;
                 
                 if (mint === TOKEN_ADDRESS) {
+                  // Get the owner of the destination token account
+                  let ownerAddress = info.destination;
+                  try {
+                    const destAccountInfo = await connection.getParsedAccountInfo(
+                      new PublicKey(info.destination)
+                    );
+                    if (destAccountInfo.value?.data?.parsed?.info?.owner) {
+                      ownerAddress = destAccountInfo.value.data.parsed.info.owner;
+                    }
+                  } catch (err) {
+                    console.warn('Could not fetch owner for destination, using ATA address');
+                  }
+
                   const claim = {
                     signature: sig.signature,
                     amount: info.amount,
-                    destination: info.destination,
+                    destination: ownerAddress,
                     timestamp: sig.blockTime || Date.now() / 1000
                   };
                   
@@ -1457,7 +1472,8 @@
               const isFromSource = info.source === SOURCE_ADDRESS || info.authority === SOURCE_ADDRESS;
               
               if (!isFromSource) continue;
-              if (info.destination === EXCLUSION_ADDRESS) continue;
+              if (info.destination === EXCLUSION_ADDRESS_1) continue;
+              if (info.destination === EXCLUSION_ADDRESS_2) continue;
 
               const tokenAccountInfo = await connection.getParsedAccountInfo(
                 new PublicKey(info.source || info.authority)
@@ -1466,12 +1482,26 @@
               const mint = tokenAccountInfo.value?.data?.parsed?.info?.mint;
               
               if (mint === TOKEN_ADDRESS) {
+                // Get the owner of the destination token account
+                let ownerAddress = info.destination;
+                try {
+                  const destAccountInfo = await connection.getParsedAccountInfo(
+                    new PublicKey(info.destination)
+                  );
+                  if (destAccountInfo.value?.data?.parsed?.info?.owner) {
+                    ownerAddress = destAccountInfo.value.data.parsed.info.owner;
+                    console.log('Found owner:', ownerAddress, 'for ATA:', info.destination);
+                  }
+                } catch (err) {
+                  console.warn('Could not fetch owner for destination, using ATA address:', err);
+                }
+
                 console.log('🎉 NEW CLAIM DETECTED!', sig.signature);
-                console.log('Amount:', info.amount, 'Destination:', info.destination);
+                console.log('Amount:', info.amount, 'Owner:', ownerAddress);
                 addClaimCard({
                   signature: sig.signature,
                   amount: info.amount,
-                  destination: info.destination,
+                  destination: ownerAddress,
                   timestamp: sig.blockTime || Date.now() / 1000
                 });
                 
