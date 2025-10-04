@@ -1680,11 +1680,15 @@ body {
   </div>
 
   <!-- Modern Responsive Navigation -->
-  <nav class="navbar">
-    <div class="nav-container">
-      <a href="https://worstgen.github.io/Pond0x-Data-Hub/" class="nav-brand">DATA🤝HUB</a>
+  <nav class="topbar-main">
+    <div class="topbar-wrapper">
+      <!-- Brand/Logo -->
+      <a href="https://worstgen.github.io/Pond0x-Data-Hub/" class="topbar-logo">
+        DATA🤝HUB
+      </a>
       
-      <div class="nav-links">
+      <!-- Desktop Navigation -->
+      <div class="topbar-menu">
         <a href="https://worstgen.github.io/Pond0x-Data-Hub/">PASSPORT</a>
         <a href="https://worstgen.github.io/Pond0x-Data-Hub/feed.html">CLAIMS FEED</a>
         <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigMetrics.html">RIG METRICS</a>
@@ -1695,13 +1699,15 @@ body {
         <a href="https://worstgen.github.io/Pond0x-Data-Hub/genLinks">GENERATE LINKS</a>
       </div>
       
-      <button class="nav-toggle" onclick="window.toggleMobileNav()">
-        <span id="nav-toggle-icon">☰</span>
+      <!-- Mobile Menu Toggle -->
+      <button class="menu-hamburger" onclick="toggleMobileMenu()">
+        <span id="hamburger-icon">☰</span>
       </button>
     </div>
     
-    <div class="nav-mobile" id="mobileNav">
-      <div class="nav-mobile-links">
+    <!-- Mobile Navigation Menu -->
+    <div class="mobile-dropdown" id="mobileDropdown">
+      <div class="mobile-menu-items">
         <a href="https://worstgen.github.io/Pond0x-Data-Hub/">PASSPORT</a>
         <a href="https://worstgen.github.io/Pond0x-Data-Hub/feed.html">CLAIMS FEED</a>
         <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigMetrics.html">RIG METRICS</a>
