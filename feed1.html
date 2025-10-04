@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mining Claims Live Feed - DATA🤝HUB</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-gradient: linear-gradient(135deg, #f9f5ff 0%, #f6edff 35%, #f3e8ff 65%, #f9f5ff 100%);
+      --primary-color: #9b5de5;
+      --accent-color: #ff3df0;
+      --secondary-accent: #bd7cfd;
+      --navbar-bg: #FF13F0;
+      --nav-text: #f6edff;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(155, 93, 229, 0.2);
+      --text-primary: #5b2a86;
+      --text-secondary: #7b3aad;
+      --success-color: #22c55e;
+    }
+
+    [data-theme="dark"] {
+      --bg-gradient: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 20%, #16213e 40%, #1a1a2e 60%, #0f0f0f 80%, #0a0a0a 100%);
+      --primary-color: #e0b3ff;
+      --accent-color: #ff3df0;
+      --secondary-accent: #bd7cfd;
+      --navbar-bg: #1a1a2e;
+      --nav-text: #e5ddfb;
+      --card-bg: rgba(26, 26, 46, 0.8);
+      --card-border: rgba(189, 124, 253, 0.4);
+      --text-primary: #e0b3ff;
+      --text-secondary: #c9a3ff;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding-top: 70px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+      background: 
+        linear-gradient(0deg, rgba(189, 124, 253, 0.35) 0%, rgba(224, 179, 255, 0.25) 50%, rgba(255, 61, 240, 0.25) 100%),
+        linear-gradient(180deg, rgba(224, 179, 255, 0.2) 0%, rgba(189, 124, 253, 0.15) 100%),
+        linear-gradient(135deg, #f9f5ff 0%, #f6edff 25%, #f3e8ff 50%, #f6edff 75%, #f9f5ff 100%);
+      background-size: 100% 200%, 100% 150%, 100% 100%;
+      animation: smoothLiquidFlow 6s ease-in-out infinite;
+    }
+
+    [data-theme="dark"] body {
+      background: 
+        linear-gradient(0deg, rgba(189, 124, 253, 0.15) 0%, rgba(255, 61, 240, 0.1) 50%, rgba(26, 26, 46, 0.2) 100%),
+        linear-gradient(180deg, rgba(26, 26, 46, 0.15) 0%, rgba(189, 124, 253, 0.08) 100%),
+        linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #1a1a2e 75%, #0f0f0f 100%);
+      background-size: 100% 180%, 100% 140%, 100% 100%;
+      animation: smoothLiquidFlowDark 8s ease-in-out infinite;
+    }
+
+    @keyframes smoothLiquidFlow {
+      0%, 100% { background-position: 0% 100%, 0% 0%, 0% 0%; }
+      50% { background-position: 0% 0%, 0% 100%, 0% 0%; }
+    }
+
+    @keyframes smoothLiquidFlowDark {
+      0%, 100% { background-position: 0% 100%, 0% 0%, 0% 0%; }
+      50% { background-position: 0% 0%, 0% 100%, 0% 0%; }
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1.5rem;
+      z-index: 1001;
+      padding: 5px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.2);
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+    }
+
+    [data-theme="dark"] .theme-toggle {
+      filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.2));
+    }
+
+    [data-theme="dark"] .theme-toggle:hover {
+      transform: scale(1.2);
+      filter: drop-shadow(0 4px 8px rgba(255, 255, 255, 0.3));
+    }
+
+    .bubble-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+      transition: opacity 0.3s ease;
+    }
+
+    .bubble-container.hidden {
+      opacity: 0;
+    }
+
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      animation: bubble-rise linear infinite;
+      opacity: 0;
+      background: 
+        radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.3) 30%, transparent 70%),
+        radial-gradient(circle at 80% 80%, rgba(0, 0, 0, 0.1) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 
+        0 0 20px rgba(255, 255, 255, 0.2),
+        inset 3px 3px 15px rgba(255, 255, 255, 0.4),
+        inset -3px -3px 15px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(1px);
+    }
+
+    [data-theme="dark"] .bubble {
+      background: 
+        radial-gradient(circle at 25% 25%, rgba(189, 124, 253, 0.6) 0%, rgba(255, 61, 240, 0.3) 30%, transparent 70%),
+        radial-gradient(circle at 80% 80%, rgba(26, 26, 46, 0.3) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(189, 124, 253, 0.2), rgba(255, 61, 240, 0.1));
+      border: 1px solid rgba(189, 124, 253, 0.4);
+      box-shadow: 
+        0 0 25px rgba(189, 124, 253, 0.3),
+        inset 3px 3px 15px rgba(189, 124, 253, 0.2),
+        inset -3px -3px 15px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(189, 124, 253, 0.2);
+    }
+
+    @keyframes bubble-rise {
+      0% {
+        opacity: 0;
+        transform: translateY(100vh) translateX(0px) scale(0.3);
+      }
+      10% {
+        opacity: 0.8;
+        transform: translateY(90vh) translateX(15px) scale(0.5);
+      }
+      20% {
+        opacity: 0.9;
+        transform: translateY(80vh) translateX(-10px) scale(0.6);
+      }
+      30% {
+        opacity: 0.9;
+        transform: translateY(70vh) translateX(20px) scale(0.7);
+      }
+      40% {
+        opacity: 0.9;
+        transform: translateY(60vh) translateX(-5px) scale(0.8);
+      }
+      50% {
+        opacity: 0.9;
+        transform: translateY(50vh) translateX(12px) scale(0.9);
+      }
+      60% {
+        opacity: 0.9;
+        transform: translateY(40vh) translateX(-15px) scale(0.95);
+      }
+      70% {
+        opacity: 0.9;
+        transform: translateY(30vh) translateX(8px) scale(1);
+      }
+      80% {
+        opacity: 0.8;
+        transform: translateY(20vh) translateX(-12px) scale(1);
+      }
+      90% {
+        opacity: 0.7;
+        transform: translateY(10vh) translateX(6px) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-10vh) translateX(0px) scale(1);
+      }
+    }
+
+    .cook-button {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: linear-gradient(135deg, var(--secondary-accent) 0%, var(--accent-color) 100%);
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 
+        0 6px 20px rgba(255, 61, 240, 0.25),
+        inset 2px 2px 10px rgba(255, 255, 255, 0.2),
+        inset -2px -2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1002;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .cook-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 
+        0 10px 30px rgba(255, 61, 240, 0.25),
+        inset 2px 2px 10px rgba(255, 255, 255, 0.3),
+        inset -2px -2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .cook-button.bubbles-off {
+      background: linear-gradient(135deg, #666 0%, #999 100%);
+      box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.3),
+        inset 2px 2px 10px rgba(255, 255, 255, 0.1),
+        inset -2px -2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .cook-button.bubbles-off:hover {
+      box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.4),
+        inset 2px 2px 10px rgba(255, 255, 255, 0.2),
+        inset -2px -2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      background: var(--navbar-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+    }
+
+    .nav-brand {
+      font-size: 1rem;
+      font-weight: 800;
+      color: white;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--nav-text);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.65rem;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+    }
+
+    .nav-links a:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+      box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      color: white;
+    }
+
+    [data-theme="dark"] .nav-links a:hover {
+      background: rgba(189, 124, 253, 0.2);
+      box-shadow: 
+        0 6px 20px rgba(189, 124, 253, 0.3),
+        inset 0 1px 0 rgba(189, 124, 253, 0.2);
+      color: #e0b3ff;
+    }
+
+    .nav-links a::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.2), 
+        transparent
+      );
+      transition: left 0.5s ease;
+    }
+
+    .nav-links a:hover::before {
+      left: 100%;
+    }
+
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-toggle:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: scale(1.1);
+    }
+
+    .nav-mobile {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      right: 0;
+      background: var(--navbar-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      transform: translateY(-100%);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 999;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    [data-theme="dark"] .nav-mobile {
+      background: rgba(26, 26, 46, 0.98);
+      border-bottom: 1px solid rgba(189, 124, 253, 0.2);
+      box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.3),
+        0 0 20px rgba(189, 124, 253, 0.1);
+    }
+
+    .nav-mobile.active {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .nav-mobile-links {
+      display: flex;
+      flex-direction: column;
+      padding: 1rem 1.5rem 2rem 1.5rem;
+      gap: 0.25rem;
+    }
+
+    .nav-mobile-links a {
+      color: var(--nav-text);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 1rem;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: 1px solid transparent;
+    }
+
+    .nav-mobile-links a:hover,
+    .nav-mobile-links a:active {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      transform: scale(1.02);
+      box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    [data-theme="dark"] .nav-mobile-links a:hover,
+    [data-theme="dark"] .nav-mobile-links a:active {
+      background: rgba(189, 124, 253, 0.2);
+      border-color: rgba(189, 124, 253, 0.3);
+      color: #e0b3ff;
+      box-shadow: 
+        0 4px 15px rgba(189, 124, 253, 0.2),
+        inset 0 1px 0 rgba(189, 124, 253, 0.1);
+    }
+
+    @media (max-width: 1125px) {
+      .nav-links a {
+        padding: 0.65rem 1rem;
+        font-size: 0.7rem;
+      }
+      
+      .nav-container {
+        padding: 0 1rem;
+      }
+    }
+
+    @media (max-width: 1045px) {
+      .nav-toggle {
+        display: block;
+      }
+      
+      .nav-links {
+        display: none;
+      }
+      
+      .nav-brand {
+        font-size: 1.1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .nav-container {
+        padding: 0 0.75rem;
+      }
+      
+      .nav-brand {
+        font-size: 1rem;
+      }
+      
+      .nav-mobile-links {
+        padding: 1rem;
+      }
+      
+      .nav-mobile-links a {
+        padding: 0.875rem 1rem;
+        font-size: 0.85rem;
+      }
+
+      .cook-button {
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        font-size: 1rem;
+      }
+      
+      .theme-toggle {
+        top: 75px;
+        right: 15px;
+        font-size: 1.3rem;
+      }
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .info-banner {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(99, 102, 241, 0.1));
+      border: 2px solid rgba(59, 130, 246, 0.3);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      backdrop-filter: blur(15px);
+      font-size: 0.9rem;
+    }
+
+    [data-theme="dark"] .info-banner {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(99, 102, 241, 0.15));
+      border-color: rgba(59, 130, 246, 0.4);
+    }
+
+    .info-banner-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .info-banner p {
+      margin-bottom: 0.5rem;
+      opacity: 0.9;
+      font-size: 0.85rem;
+    }
+
+    .bot-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+    }
+
+    .bot-section {
+      line-height: 1.5;
+    }
+
+    .bot-section strong {
+      color: var(--accent-color);
+      margin-right: 0.35rem;
+      font-size: 0.85rem;
+    }
+
+    .info-banner a {
+      color: var(--accent-color);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      border-bottom: 1px solid transparent;
+    }
+
+    .info-banner a:hover {
+      border-bottom-color: var(--accent-color);
+      opacity: 0.8;
+    }
+
+    .status-bar {
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border-radius: 15px;
+      padding: 1.5rem;
+      border: 2px solid var(--card-border);
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent-color);
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-top: 0.25rem;
+    }
+
+    .claims-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      margin: 2rem 0;
+      flex-wrap: wrap;
+    }
+
+    .pagination button {
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, var(--secondary-accent), var(--accent-color));
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(189, 124, 253, 0.3);
+    }
+
+    .pagination button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(189, 124, 253, 0.4);
+    }
+
+    .pagination button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: linear-gradient(135deg, #666, #999);
+    }
+
+    .pagination span {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .claim-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border-radius: 15px;
+      padding: 1.5rem;
+      border: 2px solid var(--card-border);
+      box-shadow: 0 8px 30px rgba(155, 93, 229, 0.15);
+      transition: all 0.3s ease;
+      animation: slideIn 0.5s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .claim-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(155, 93, 229, 0.25);
+    }
+
+    .claim-header {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .claim-amount-highlight {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(16, 185, 129, 0.15));
+      border: 2px solid rgba(34, 197, 94, 0.3);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+
+    [data-theme="dark"] .claim-amount-highlight {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(16, 185, 129, 0.2));
+      border-color: rgba(34, 197, 94, 0.4);
+    }
+
+    .amount-label {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    .amount-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--success-color);
+      text-shadow: 0 2px 10px rgba(34, 197, 94, 0.3);
+    }
+
+    [data-theme="dark"] .amount-value {
+      color: #4ade80;
+      text-shadow: 0 2px 15px rgba(74, 222, 128, 0.4);
+    }
+
+    .claim-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--success-color);
+    }
+
+    .claim-time {
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+
+    .claim-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .detail-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .detail-label {
+      font-size: 0.85rem;
+      opacity: 0.7;
+      margin-bottom: 0.25rem;
+    }
+
+    .detail-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+      word-break: break-all;
+    }
+
+    .claim-link {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background: linear-gradient(135deg, var(--secondary-accent), var(--accent-color));
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .claim-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(255, 61, 240, 0.4);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      font-size: 1.2rem;
+      opacity: 0.7;
+    }
+
+    .error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 2px solid #ef4444;
+      border-radius: 10px;
+      padding: 1rem;
+      margin: 1rem 0;
+      color: #ef4444;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      
+      .header h1 {
+        font-size: 2rem;
+      }
+      
+      .status-bar {
+        padding: 1rem;
+      }
+      
+      .stat-value {
+        font-size: 1.5rem;
+      }
+      
+      .claim-card {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" id="themeToggle" onclick="window.toggleTheme()" title="Toggle dark mode">☀️</button>
+  
+  <button class="cook-button" id="cookButton" onclick="window.toggleBubbles()">
+    👨‍🍳 Cook
+  </button>
+
+  <div class="bubble-container" id="bubbleContainer"></div>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="https://worstgen.github.io/Pond0x-Data-Hub/" class="nav-brand">DATA🤝HUB</a>
+      
+      <div class="nav-links">
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/">PASSPORT</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigMetrics.html">RIG METRICS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/MiningClaims.html">LATEST CLAIMS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/HashBoosts.html">HASH BOOSTS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigActivations.html">RIG ACTIVATIONS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/Calculator.html">CALCULATOR</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/genLinks">GENERATE LINKS</a>
+      </div>
+      
+      <button class="nav-toggle" onclick="window.toggleMobileNav()">
+        <span id="nav-toggle-icon">☰</span>
+      </button>
+    </div>
+    
+    <div class="nav-mobile" id="mobileNav">
+      <div class="nav-mobile-links">
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/">PASSPORT</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigMetrics.html">RIG METRICS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/MiningClaims.html">LATEST CLAIMS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/HashBoosts.html">HASH BOOSTS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigActivations.html">RIG ACTIVATIONS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/Calculator.html">CALCULATOR</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/genLinks">GENERATE LINKS</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="header">
+      <h1>⛏️ Live Mining Claims Feed ⛏️</h1>
+      <p>Real-time wPOND mining claim monitoring</p>
+    </div>
+
+    <div class="info-banner">
+      <div class="info-banner-title">🤖 Get Real-Time Notifications</div>
+      <p>Want instant alerts when claims happen? Check out these bots:</p>
+      <div class="bot-links">
+        <div class="bot-section">
+          <strong>Telegram:</strong>
+          <a href="https://t.me/S53opTbot" target="_blank">Claimsbot</a> • 
+          <a href="https://t.me/Pond0xUserisKingbot" target="_blank">Pond0x User is King bot</a>
+        </div>
+        <div class="bot-section">
+          <strong>Discord:</strong>
+          <a href="https://discord.com/oauth2/authorize?client_id=1409886705758109827&permissions=2147600384&integration_type=0&scope=bot+applications.commands" target="_blank">Claimsbot</a> which can be found in the 
+          <a href="https://discord.com/channels/1335026643214929952/1421212822720872459" target="_blank">Pond Unhinged</a> (if you haven't joined yet join <a href="https://t.co/aDcQh1apZV" target="_blank">here</a>)
+        </div>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      <div class="stat">
+        <div class="stat-value" id="totalClaims">0</div>
+        <div class="stat-label">Total Claims</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="lastCheck">--:--</div>
+        <div class="stat-label">Last Check</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="status">🟢 Active</div>
+        <div class="stat-label">Status</div>
+      </div>
+    </div>
+
+    <div class="claims-feed" id="claimsFeed">
+      <div class="loading">Loading historical claims...</div>
+    </div>
+
+    <div class="pagination" id="pagination" style="display: none;">
+      <button id="prevBtn" onclick="window.changePage(-1)">← Previous</button>
+      <span id="pageInfo">Page 1</span>
+      <button id="nextBtn" onclick="window.changePage(1)">Next →</button>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/@solana/web3.js@1.87.6/lib/index.iife.js"></script>
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  
+  <script>
+    // Initialize Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBhSbb0LIsEYUqi9a2ZnplFmO-FcGq76Kc",
+      authDomain: "claimsfeed-759f8.firebaseapp.com",
+      projectId: "claimsfeed-759f8",
+      storageBucket: "claimsfeed-759f8.firebasestorage.app",
+      messagingSenderId: "77535798299",
+      appId: "1:77535798299:web:c5fc5bb4a0009f50f984be",
+      measurementId: "G-BNYN25L7FS"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    console.log('Firebase initialized');
+  </script>
+  <script>
+    // Wait for Solana library to load
+    function waitForSolana() {
+      return new Promise((resolve, reject) => {
+        if (window.solanaWeb3) {
+          console.log('Solana Web3.js loaded successfully');
+          resolve();
+        } else {
+          let attempts = 0;
+          const checkInterval = setInterval(() => {
+            attempts++;
+            if (window.solanaWeb3) {
+              clearInterval(checkInterval);
+              console.log('Solana Web3.js loaded successfully');
+              resolve();
+            } else if (attempts > 50) {
+              clearInterval(checkInterval);
+              reject(new Error('Solana Web3.js library failed to load after 5 seconds'));
+            }
+          }, 100);
+        }
+      });
+    }
+
+    // Theme and bubble management - MUST BE OUTSIDE MODULE
+    window.toggleTheme = function() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const newTheme = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      document.getElementById('themeToggle').textContent = newTheme === 'dark' ? '🌙' : '☀️';
+      try {
+        localStorage.setItem('pond0x_theme_preference', newTheme);
+      } catch(e) {}
+    };
+
+    function initTheme() {
+      try {
+        const saved = localStorage.getItem('pond0x_theme_preference');
+        const theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+        document.getElementById('themeToggle').textContent = theme === 'dark' ? '🌙' : '☀️';
+      } catch(e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    }
+
+    // Bubble system
+    const bubbleSystem = {
+      container: null,
+      bubbles: [],
+      maxBubbles: 25,
+      initialized: false,
+      animationRunning: true,
+      animationInterval: null,
+      
+      init() {
+        if (this.initialized) return;
+        this.container = document.getElementById('bubbleContainer');
+        this.createBubblePool();
+        
+        const shouldRun = this.loadBubbleState();
+        if (shouldRun) {
+          this.startAnimation();
+        } else {
+          this.animationRunning = false;
+          this.container.classList.add('hidden');
+          document.getElementById('cookButton').classList.add('bubbles-off');
+        }
+        
+        this.initialized = true;
+      },
+
+      loadBubbleState() {
+        try {
+          const stored = localStorage.getItem('pond0x_bubble_state');
+          if (stored) {
+            const state = JSON.parse(stored);
+            return state.enabled;
+          }
+        } catch (e) {
+          console.warn('Could not load bubble state:', e);
+        }
+        return true;
+      },
+
+      saveBubbleState(enabled) {
+        try {
+          localStorage.setItem('pond0x_bubble_state', JSON.stringify({
+            enabled: enabled,
+            timestamp: Date.now()
+          }));
+        } catch (e) {
+          console.warn('Could not save bubble state:', e);
+        }
+      },
+
+      stop() {
+        this.animationRunning = false;
+        if (this.animationInterval) {
+          clearInterval(this.animationInterval);
+        }
+        this.bubbles.forEach(bubble => {
+          if (bubble.timer) {
+            clearTimeout(bubble.timer);
+          }
+          bubble.element.style.display = 'none';
+          bubble.active = false;
+        });
+      },
+
+      start() {
+        if (!this.animationRunning) {
+          this.animationRunning = true;
+          this.startAnimation();
+        }
+      },
+      
+      createBubblePool() {
+        for (let i = 0; i < this.maxBubbles; i++) {
+          const bubble = document.createElement('div');
+          bubble.className = 'bubble';
+          bubble.style.display = 'none';
+          this.container.appendChild(bubble);
+          this.bubbles.push({
+            element: bubble,
+            active: false,
+            timer: 0
+          });
+        }
+      },
+      
+      getRandomBubble() {
+        return this.bubbles.find(b => !b.active) || this.bubbles[0];
+      },
+      
+      createBubble() {
+        const bubble = this.getRandomBubble();
+        if (!bubble || bubble.active) return;
+        
+        const size = Math.random() * 40 + 10;
+        const left = Math.random() * 100;
+        const duration = Math.random() * 4 + 6;
+        const delay = Math.random() * 2;
+        
+        const element = bubble.element;
+        element.style.cssText = `
+          width: ${size}px;
+          height: ${size}px;
+          left: ${left}%;
+          animation: bubble-rise ${duration}s linear ${delay}s forwards;
+          display: block;
+        `;
+        
+        bubble.active = true;
+        bubble.timer = setTimeout(() => {
+          element.style.display = 'none';
+          bubble.active = false;
+        }, (duration + delay) * 1000);
+      },
+      
+      startAnimation() {
+        if (!this.animationRunning) return;
+        
+        for (let i = 0; i < 8; i++) {
+          setTimeout(() => {
+            if (this.animationRunning) this.createBubble();
+          }, i * 600);
+        }
+        
+        this.animationInterval = setInterval(() => {
+          if (this.animationRunning && Math.random() < 0.8) {
+            this.createBubble();
+          }
+        }, 900);
+      }
+    };
+
+    window.toggleBubbles = function() {
+      const container = document.getElementById('bubbleContainer');
+      const button = document.getElementById('cookButton');
+      
+      if (bubbleSystem.animationRunning) {
+        bubbleSystem.stop();
+        container.classList.add('hidden');
+        button.classList.add('bubbles-off');
+        bubbleSystem.saveBubbleState(false);
+      } else {
+        bubbleSystem.start();
+        container.classList.remove('hidden');
+        button.classList.remove('bubbles-off');
+        bubbleSystem.saveBubbleState(true);
+      }
+    };
+
+    // Initialize theme and bubbles
+    initTheme();
+    bubbleSystem.init();
+
+    // Mobile navigation
+    window.toggleMobileNav = function() {
+      const mobileNav = document.getElementById('mobileNav');
+      const toggleIcon = document.getElementById('nav-toggle-icon');
+      
+      if (mobileNav.classList.contains('active')) {
+        mobileNav.classList.remove('active');
+        toggleIcon.textContent = '☰';
+      } else {
+        mobileNav.classList.add('active');
+        toggleIcon.textContent = '✕';
+      }
+    };
+
+    // Close mobile nav when clicking on a link
+    document.addEventListener('DOMContentLoaded', function() {
+      const mobileLinks = document.querySelectorAll('.nav-mobile-links a');
+      mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          const mobileNav = document.getElementById('mobileNav');
+          const toggleIcon = document.getElementById('nav-toggle-icon');
+          mobileNav.classList.remove('active');
+          toggleIcon.textContent = '☰';
+        });
+      });
+      
+      // Close mobile nav when clicking outside
+      document.addEventListener('click', (e) => {
+        const navbar = document.querySelector('.navbar');
+        const mobileNav = document.getElementById('mobileNav');
+        
+        if (!navbar.contains(e.target) && mobileNav.classList.contains('active')) {
+          mobileNav.classList.remove('active');
+          document.getElementById('nav-toggle-icon').textContent = '☰';
+        }
+      });
+    });
+  </script>
+
+  <script>
+    // Solana blockchain monitoring
+    const TOKEN_ADDRESS = '3JgFwoYV74f6LwWjQWnr3YDPFnmBdwQfNyubv99jqUoq';
+    const SOURCE_ADDRESS = 'AYg4dKoZJudVkD7Eu3ZaJjkzfoaATUqfiv8w8pS53opT';
+    const EXCLUSION_ADDRESS_1 = '1orFCnFfgwPzSgUaoK6Wr3MjgXZ7mtk8NGz9Hh4iWWL';
+    const EXCLUSION_ADDRESS_2 = 'HwyJtiPXQ5ZosJQRpUmcmV6E2J9ffKfhqjNcY1R8Gt29';
+    const CHECK_INTERVAL = 45000;
+    const CLAIMS_PER_PAGE = 50;
+
+    let connection;
+    let lastSignature = null;
+    let totalClaims = 0;
+    let processedSignatures = new Set();
+    let allClaims = [];
+    let currentPage = 1;
+    let isLoadingHistory = false;
+
+    // Load claims from Firestore
+    async function loadClaimsFromFirestore() {
+      try {
+        console.log('Loading claims from Firestore...');
+        const claimsRef = db.collection('claims');
+        const snapshot = await claimsRef.orderBy('timestamp', 'desc').limit(1000).get();
+        
+        allClaims = [];
+        processedSignatures = new Set();
+        
+        snapshot.forEach(doc => {
+          const claim = doc.data();
+          allClaims.push(claim);
+          processedSignatures.add(claim.signature);
+        });
+        
+        totalClaims = allClaims.length;
+        console.log(`Loaded ${totalClaims} claims from Firestore`);
+        return allClaims.length > 0;
+      } catch (error) {
+        console.error('Error loading claims from Firestore:', error);
+        return false;
+      }
+    }
+
+    // Save a new claim to Firestore
+    async function saveClaimToFirestore(claim) {
+      try {
+        // Use signature as document ID to prevent duplicates
+        await db.collection('claims').doc(claim.signature).set(claim);
+        console.log('Claim saved to Firestore:', claim.signature);
+      } catch (error) {
+        console.error('Error saving claim to Firestore:', error);
+      }
+    }
+
+    window.changePage = function(direction) {
+      const totalPages = Math.ceil(allClaims.length / CLAIMS_PER_PAGE);
+      currentPage = Math.max(1, Math.min(currentPage + direction, totalPages));
+      renderCurrentPage();
+      updatePaginationControls();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    function updatePaginationControls() {
+      const totalPages = Math.ceil(allClaims.length / CLAIMS_PER_PAGE);
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const pageInfo = document.getElementById('pageInfo');
+      const pagination = document.getElementById('pagination');
+
+      if (allClaims.length > 0) {
+        pagination.style.display = 'flex';
+        prevBtn.disabled = currentPage === 1;
+        nextBtn.disabled = currentPage === totalPages;
+        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+      } else {
+        pagination.style.display = 'none';
+      }
+    }
+
+    function renderCurrentPage() {
+      const feed = document.getElementById('claimsFeed');
+      const loading = feed.querySelector('.loading');
+      if (loading) loading.remove();
+
+      const startIdx = (currentPage - 1) * CLAIMS_PER_PAGE;
+      const endIdx = startIdx + CLAIMS_PER_PAGE;
+      const claimsToShow = allClaims.slice(startIdx, endIdx);
+
+      feed.innerHTML = '';
+
+      if (claimsToShow.length === 0) {
+        feed.innerHTML = '<div class="loading">No claims found yet. Monitoring for new claims...</div>';
+        return;
+      }
+
+      claimsToShow.forEach((claim, index) => {
+        const card = document.createElement('div');
+        card.className = 'claim-card';
+        card.innerHTML = `
+          <div class="claim-header">
+            <div class="claim-time">⏰ ${formatTime(claim.timestamp)}</div>
+          </div>
+          <div class="claim-amount-highlight">
+            <div class="amount-label">Amount Claimed</div>
+            <div class="amount-value">${formatAmount(claim.amount)}</div>
+          </div>
+          <div class="claim-details">
+            <div class="detail-item">
+              <div class="detail-label">📍 Destination Address</div>
+              <div class="detail-value">${shortenAddress(claim.destination)}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">🔗 Transaction</div>
+              <div class="detail-value">${shortenAddress(claim.signature)}</div>
+            </div>
+          </div>
+          <a href="https://solscan.io/tx/${claim.signature}" target="_blank" class="claim-link">
+            View Full Transaction on Solscan →
+          </a>
+        `;
+        feed.appendChild(card);
+      });
+    }
+
+    function formatAmount(amount) {
+      // Raw amount 221550000000 should display as 221.55M wPOND
+      // This means 1M wPOND = 1e9 base units
+      // So 1B wPOND = 1e12 base units
+      
+      const rawAmount = parseFloat(amount);
+      
+      // Format based on base units where:
+      // 1M wPOND = 1e9 base units
+      // 1B wPOND = 1e12 base units
+      
+      if (rawAmount >= 1e15) return (rawAmount / 1e12).toFixed(2) + 'B wPOND';
+      if (rawAmount >= 1e9) return (rawAmount / 1e9).toFixed(2) + 'M wPOND';
+      return (rawAmount / 1e6).toFixed(2) + 'K wPOND';
+    }
+
+    function shortenAddress(addr) {
+      return `${addr.slice(0, 4)}...${addr.slice(-4)}`;
+    }
+
+    function formatTime(timestamp) {
+      const date = new Date(timestamp * 1000);
+      return date.toLocaleString(undefined, {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+    }
+
+    function addClaimCard(claim) {
+      // Add to the beginning of the array (newest first)
+      allClaims.unshift(claim);
+      totalClaims = allClaims.length;
+      
+      // Save to Firestore (shared database)
+      saveClaimToFirestore(claim);
+      
+      // Update the display
+      document.getElementById('totalClaims').textContent = totalClaims;
+      
+      // If we're on page 1, re-render to show the new claim
+      if (currentPage === 1) {
+        renderCurrentPage();
+      }
+      
+      updatePaginationControls();
+    }
+
+    // Load historical claims on first page load
+    async function loadHistoricalClaims() {
+      if (isLoadingHistory) return;
+      isLoadingHistory = true;
+
+      try {
+        console.log('Loading last 50 historical mining claims from blockchain...');
+        const { PublicKey } = window.solanaWeb3;
+        const sourceKey = new PublicKey(SOURCE_ADDRESS);
+        
+        let foundClaims = 0;
+        let before = null;
+        const maxToCheck = 200;
+        let checked = 0;
+
+        while (foundClaims < 50 && checked < maxToCheck) {
+          const options = { limit: 50 };
+          if (before) options.before = before;
+
+          const signatures = await connection.getSignaturesForAddress(sourceKey, options);
+          
+          if (signatures.length === 0) break;
+
+          for (const sig of signatures) {
+            checked++;
+            if (sig.err) continue;
+            if (processedSignatures.has(sig.signature)) continue;
+
+            try {
+              const tx = await connection.getParsedTransaction(sig.signature, {
+                maxSupportedTransactionVersion: 0
+              });
+
+              if (!tx || tx.meta?.err) continue;
+
+              const instructions = tx.transaction.message.instructions;
+              
+              for (const instruction of instructions) {
+                if (instruction.program !== 'spl-token') continue;
+                if (instruction.parsed?.type !== 'transfer') continue;
+
+                const info = instruction.parsed.info;
+                const isFromSource = info.source === SOURCE_ADDRESS || info.authority === SOURCE_ADDRESS;
+                
+                if (!isFromSource) continue;
+                if (info.destination === EXCLUSION_ADDRESS_1) continue;
+                if (info.destination === EXCLUSION_ADDRESS_2) continue;
+
+                const tokenAccountInfo = await connection.getParsedAccountInfo(
+                  new PublicKey(info.source || info.authority)
+                );
+
+                const mint = tokenAccountInfo.value?.data?.parsed?.info?.mint;
+                
+                if (mint === TOKEN_ADDRESS) {
+                  // Get the owner of the destination token account
+                  let ownerAddress = info.destination;
+                  try {
+                    const destAccountInfo = await connection.getParsedAccountInfo(
+                      new PublicKey(info.destination)
+                    );
+                    if (destAccountInfo.value?.data?.parsed?.info?.owner) {
+                      ownerAddress = destAccountInfo.value.data.parsed.info.owner;
+                    }
+                  } catch (err) {
+                    console.warn('Could not fetch owner for destination, using ATA address');
+                  }
+
+                  const claim = {
+                    signature: sig.signature,
+                    amount: info.amount,
+                    destination: ownerAddress,
+                    timestamp: sig.blockTime || Date.now() / 1000
+                  };
+                  
+                  allClaims.push(claim);
+                  processedSignatures.add(sig.signature);
+                  foundClaims++;
+                  
+                  // Save to Firestore for future visitors
+                  await saveClaimToFirestore(claim);
+                  
+                  console.log(`Found and saved historical claim ${foundClaims}/50`);
+                  
+                  if (foundClaims >= 50) break;
+                }
+              }
+            } catch (err) {
+              console.error('Error processing historical transaction:', err);
+            }
+
+            if (foundClaims >= 50) break;
+            await new Promise(r => setTimeout(r, 300));
+          }
+
+          before = signatures[signatures.length - 1].signature;
+          if (!lastSignature) lastSignature = signatures[0].signature;
+
+          if (foundClaims >= 50) break;
+          await new Promise(r => setTimeout(r, 500));
+        }
+
+        totalClaims = allClaims.length;
+        console.log(`Loaded ${foundClaims} historical claims`);
+        
+        // Sort by timestamp (newest first)
+        allClaims.sort((a, b) => b.timestamp - a.timestamp);
+        
+        // Render the first page
+        renderCurrentPage();
+        updatePaginationControls();
+        document.getElementById('totalClaims').textContent = totalClaims;
+
+      } catch (error) {
+        console.error('Error loading historical claims:', error);
+        const feed = document.getElementById('claimsFeed');
+        feed.innerHTML = `<div class="error">Error loading historical claims: ${error.message}</div>`;
+      } finally {
+        isLoadingHistory = false;
+      }
+    }
+
+    async function checkTransactions() {
+      try {
+        const now = new Date();
+        document.getElementById('lastCheck').textContent = now.toLocaleTimeString();
+        document.getElementById('status').textContent = '🟢 Active';
+
+        const { PublicKey } = window.solanaWeb3;
+        const sourceKey = new PublicKey(SOURCE_ADDRESS);
+        const options = { limit: 25 };
+        
+        // For live monitoring, we DON'T use before or until
+        // We want the most recent transactions, and we filter by processedSignatures
+        // This way we always get new transactions as they happen
+
+        console.log('Checking for new transactions...');
+        const signatures = await connection.getSignaturesForAddress(sourceKey, options);
+        console.log(`Fetched ${signatures.length} recent signatures`);
+
+        if (signatures.length === 0) {
+          console.log('No transactions found');
+          return;
+        }
+
+        let foundNewClaim = false;
+        let skippedCount = 0;
+
+        // Process from oldest to newest in the batch
+        for (let i = signatures.length - 1; i >= 0; i--) {
+          const sig = signatures[i];
+          
+          // Skip if we've already processed this signature
+          if (processedSignatures.has(sig.signature)) {
+            skippedCount++;
+            continue;
+          }
+          if (sig.err) continue;
+
+          console.log(`Processing new signature: ${sig.signature.substring(0, 8)}...`);
+
+          try {
+            const tx = await connection.getParsedTransaction(sig.signature, {
+              maxSupportedTransactionVersion: 0
+            });
+
+            if (!tx || tx.meta?.err) continue;
+
+            const instructions = tx.transaction.message.instructions;
+            
+            for (const instruction of instructions) {
+              if (instruction.program !== 'spl-token') continue;
+              if (instruction.parsed?.type !== 'transfer') continue;
+
+              const info = instruction.parsed.info;
+              const isFromSource = info.source === SOURCE_ADDRESS || info.authority === SOURCE_ADDRESS;
+              
+              if (!isFromSource) continue;
+              if (info.destination === EXCLUSION_ADDRESS_1) continue;
+              if (info.destination === EXCLUSION_ADDRESS_2) continue;
+
+              const tokenAccountInfo = await connection.getParsedAccountInfo(
+                new PublicKey(info.source || info.authority)
+              );
+
+              const mint = tokenAccountInfo.value?.data?.parsed?.info?.mint;
+              
+              if (mint === TOKEN_ADDRESS) {
+                // Get the owner of the destination token account
+                let ownerAddress = info.destination;
+                try {
+                  const destAccountInfo = await connection.getParsedAccountInfo(
+                    new PublicKey(info.destination)
+                  );
+                  if (destAccountInfo.value?.data?.parsed?.info?.owner) {
+                    ownerAddress = destAccountInfo.value.data.parsed.info.owner;
+                    console.log('Found owner:', ownerAddress, 'for ATA:', info.destination);
+                  }
+                } catch (err) {
+                  console.warn('Could not fetch owner for destination, using ATA address:', err);
+                }
+
+                console.log('🎉 NEW CLAIM DETECTED!', sig.signature);
+                console.log('Amount:', info.amount, 'Owner:', ownerAddress);
+                addClaimCard({
+                  signature: sig.signature,
+                  amount: info.amount,
+                  destination: ownerAddress,
+                  timestamp: sig.blockTime || Date.now() / 1000
+                });
+                
+                processedSignatures.add(sig.signature);
+                foundNewClaim = true;
+                break;
+              }
+            }
+          } catch (err) {
+            console.error('Error processing transaction:', err);
+            // Continue processing other transactions even if one fails
+          }
+
+          await new Promise(r => setTimeout(r, 300));
+        }
+
+        console.log(`Check complete. Skipped ${skippedCount} already processed. Found ${foundNewClaim ? 'NEW' : 'no new'} claims.`);
+
+        // Always update lastSignature to the most recent one we checked
+        lastSignature = signatures[0].signature;
+
+      } catch (error) {
+        console.error('Error checking transactions:', error);
+        document.getElementById('status').textContent = '🟡 Retrying';
+        
+        // Don't show error banner for common network issues
+        if (error.message && !error.message.includes('Load failed')) {
+          const feed = document.getElementById('claimsFeed');
+          if (!feed.querySelector('.error')) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+            errorDiv.textContent = `Error: ${error.message}. Retrying...`;
+            feed.insertBefore(errorDiv, feed.firstChild);
+            setTimeout(() => errorDiv.remove(), 5000);
+          }
+        }
+      }
+    }
+
+    async function init() {
+      try {
+        // Wait for Solana library to load
+        await waitForSolana();
+        
+        if (!window.solanaWeb3) {
+          throw new Error('Solana Web3.js library failed to load');
+        }
+
+        const { Connection } = window.solanaWeb3;
+        
+        // CLOUDFLARE WORKER PROXY
+        const CLOUDFLARE_WORKER_URL = 'https://odd-dream-1ad2.worstgenstrawhat.workers.dev';
+        
+        connection = new Connection(
+          CLOUDFLARE_WORKER_URL,
+          'confirmed'
+        );
+
+        // Load claims from Firestore first
+        const hasFirestoreClaims = await loadClaimsFromFirestore();
+        
+        if (hasFirestoreClaims) {
+          console.log('Displaying Firestore claims');
+          renderCurrentPage();
+          updatePaginationControls();
+          document.getElementById('totalClaims').textContent = totalClaims;
+        } else {
+          // No Firestore claims, load historical data
+          console.log('No Firestore claims found, loading historical data...');
+          await loadHistoricalClaims();
+        }
+        
+        // Start monitoring for new claims immediately
+        console.log('Starting live transaction monitoring...');
+        await checkTransactions();
+        setInterval(checkTransactions, CHECK_INTERVAL);
+        
+      } catch (error) {
+        console.error('Initialization error:', error);
+        const feed = document.getElementById('claimsFeed');
+        feed.innerHTML = `<div class="error">Failed to connect to Solana blockchain: ${error.message}</div>`;
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
