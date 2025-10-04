@@ -549,35 +549,6 @@
       opacity: 0.8;
     }
 
-    .status-bar {
-      background: var(--card-bg);
-      backdrop-filter: blur(15px);
-      border-radius: 15px;
-      padding: 1.5rem;
-      border: 2px solid var(--card-border);
-      margin-bottom: 2rem;
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .stat {
-      text-align: center;
-    }
-
-    .stat-value {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: var(--accent-color);
-    }
-
-    .stat-label {
-      font-size: 0.9rem;
-      opacity: 0.8;
-      margin-top: 0.25rem;
-    }
-
     .claims-feed {
       display: flex;
       flex-direction: column;
@@ -769,14 +740,6 @@
         font-size: 2rem;
       }
       
-      .status-bar {
-        padding: 1rem;
-      }
-      
-      .stat-value {
-        font-size: 1.5rem;
-      }
-      
       .claim-card {
         padding: 1rem;
       }
@@ -828,7 +791,7 @@
 
   <div class="container">
     <div class="header">
-      <h1>⛏️ Live Mining Claims Feed ⛏️</h1>
+      <h1>⛏️ CLAIMS FEED ⛏️</h1>
       <p>Real-time wPOND mining claim monitoring</p>
     </div>
 
@@ -849,21 +812,6 @@
       </div>
     </div>
 
-    <div class="status-bar">
-      <div class="stat">
-        <div class="stat-value" id="totalClaims">0</div>
-        <div class="stat-label">Total Claims</div>
-      </div>
-      <div class="stat">
-        <div class="stat-value" id="lastCheck">--:--</div>
-        <div class="stat-label">Last Check</div>
-      </div>
-      <div class="stat">
-        <div class="stat-value" id="status">🟢 Active</div>
-        <div class="stat-label">Status</div>
-      </div>
-    </div>
-
     <div class="claims-feed" id="claimsFeed">
       <div class="loading">Loading historical claims...</div>
     </div>
@@ -877,12 +825,10 @@
 
   <script src="https://unpkg.com/@solana/web3.js@1.87.6/lib/index.iife.js"></script>
   
-  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
   
   <script>
-    // Initialize Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyBhSbb0LIsEYUqi9a2ZnplFmO-FcGq76Kc",
       authDomain: "claimsfeed-759f8.firebaseapp.com",
@@ -898,7 +844,6 @@
     console.log('Firebase initialized');
   </script>
   <script>
-    // Wait for Solana library to load
     function waitForSolana() {
       return new Promise((resolve, reject) => {
         if (window.solanaWeb3) {
@@ -921,7 +866,6 @@
       });
     }
 
-    // Theme and bubble management - MUST BE OUTSIDE MODULE
     window.toggleTheme = function() {
       const current = document.documentElement.getAttribute('data-theme');
       const newTheme = current === 'dark' ? 'light' : 'dark';
@@ -943,7 +887,6 @@
       }
     }
 
-    // Bubble system
     const bubbleSystem = {
       container: null,
       bubbles: [],
@@ -1091,11 +1034,9 @@
       }
     };
 
-    // Initialize theme and bubbles
     initTheme();
     bubbleSystem.init();
 
-    // Mobile navigation
     window.toggleMobileNav = function() {
       const mobileNav = document.getElementById('mobileNav');
       const toggleIcon = document.getElementById('nav-toggle-icon');
@@ -1109,7 +1050,6 @@
       }
     };
 
-    // Close mobile nav when clicking on a link
     document.addEventListener('DOMContentLoaded', function() {
       const mobileLinks = document.querySelectorAll('.nav-mobile-links a');
       mobileLinks.forEach(link => {
@@ -1121,7 +1061,6 @@
         });
       });
       
-      // Close mobile nav when clicking outside
       document.addEventListener('click', (e) => {
         const navbar = document.querySelector('.navbar');
         const mobileNav = document.getElementById('mobileNav');
@@ -1135,7 +1074,6 @@
   </script>
 
   <script>
-    // Solana blockchain monitoring
     const TOKEN_ADDRESS = '3JgFwoYV74f6LwWjQWnr3YDPFnmBdwQfNyubv99jqUoq';
     const SOURCE_ADDRESS = 'AYg4dKoZJudVkD7Eu3ZaJjkzfoaATUqfiv8w8pS53opT';
     const EXCLUSION_ADDRESS_1 = '1orFCnFfgwPzSgUaoK6Wr3MjgXZ7mtk8NGz9Hh4iWWL';
@@ -1151,7 +1089,6 @@
     let currentPage = 1;
     let isLoadingHistory = false;
 
-    // Load claims from Firestore
     async function loadClaimsFromFirestore() {
       try {
         console.log('Loading claims from Firestore...');
@@ -1176,10 +1113,8 @@
       }
     }
 
-    // Save a new claim to Firestore
     async function saveClaimToFirestore(claim) {
       try {
-        // Use signature as document ID to prevent duplicates
         await db.collection('claims').doc(claim.signature).set(claim);
         console.log('Claim saved to Firestore:', claim.signature);
       } catch (error) {
@@ -1258,15 +1193,7 @@
     }
 
     function formatAmount(amount) {
-      // Raw amount 221550000000 should display as 221.55M wPOND
-      // This means 1M wPOND = 1e9 base units
-      // So 1B wPOND = 1e12 base units
-      
       const rawAmount = parseFloat(amount);
-      
-      // Format based on base units where:
-      // 1M wPOND = 1e9 base units
-      // 1B wPOND = 1e12 base units
       
       if (rawAmount >= 1e15) return (rawAmount / 1e12).toFixed(2) + 'B wPOND';
       if (rawAmount >= 1e9) return (rawAmount / 1e9).toFixed(2) + 'M wPOND';
@@ -1290,17 +1217,11 @@
     }
 
     function addClaimCard(claim) {
-      // Add to the beginning of the array (newest first)
       allClaims.unshift(claim);
       totalClaims = allClaims.length;
       
-      // Save to Firestore (shared database)
       saveClaimToFirestore(claim);
       
-      // Update the display
-      document.getElementById('totalClaims').textContent = totalClaims;
-      
-      // If we're on page 1, re-render to show the new claim
       if (currentPage === 1) {
         renderCurrentPage();
       }
@@ -1308,7 +1229,6 @@
       updatePaginationControls();
     }
 
-    // Load historical claims on first page load
     async function loadHistoricalClaims() {
       if (isLoadingHistory) return;
       isLoadingHistory = true;
@@ -1363,7 +1283,6 @@
                 const mint = tokenAccountInfo.value?.data?.parsed?.info?.mint;
                 
                 if (mint === TOKEN_ADDRESS) {
-                  // Get the owner of the destination token account
                   let ownerAddress = info.destination;
                   try {
                     const destAccountInfo = await connection.getParsedAccountInfo(
@@ -1387,7 +1306,6 @@
                   processedSignatures.add(sig.signature);
                   foundClaims++;
                   
-                  // Save to Firestore for future visitors
                   await saveClaimToFirestore(claim);
                   
                   console.log(`Found and saved historical claim ${foundClaims}/50`);
@@ -1413,13 +1331,10 @@
         totalClaims = allClaims.length;
         console.log(`Loaded ${foundClaims} historical claims`);
         
-        // Sort by timestamp (newest first)
         allClaims.sort((a, b) => b.timestamp - a.timestamp);
         
-        // Render the first page
         renderCurrentPage();
         updatePaginationControls();
-        document.getElementById('totalClaims').textContent = totalClaims;
 
       } catch (error) {
         console.error('Error loading historical claims:', error);
@@ -1432,17 +1347,9 @@
 
     async function checkTransactions() {
       try {
-        const now = new Date();
-        document.getElementById('lastCheck').textContent = now.toLocaleTimeString();
-        document.getElementById('status').textContent = '🟢 Active';
-
         const { PublicKey } = window.solanaWeb3;
         const sourceKey = new PublicKey(SOURCE_ADDRESS);
         const options = { limit: 25 };
-        
-        // For live monitoring, we DON'T use before or until
-        // We want the most recent transactions, and we filter by processedSignatures
-        // This way we always get new transactions as they happen
 
         console.log('Checking for new transactions...');
         const signatures = await connection.getSignaturesForAddress(sourceKey, options);
@@ -1456,11 +1363,9 @@
         let foundNewClaim = false;
         let skippedCount = 0;
 
-        // Process from oldest to newest in the batch
         for (let i = signatures.length - 1; i >= 0; i--) {
           const sig = signatures[i];
           
-          // Skip if we've already processed this signature
           if (processedSignatures.has(sig.signature)) {
             skippedCount++;
             continue;
@@ -1496,7 +1401,6 @@
               const mint = tokenAccountInfo.value?.data?.parsed?.info?.mint;
               
               if (mint === TOKEN_ADDRESS) {
-                // Get the owner of the destination token account
                 let ownerAddress = info.destination;
                 try {
                   const destAccountInfo = await connection.getParsedAccountInfo(
@@ -1526,7 +1430,6 @@
             }
           } catch (err) {
             console.error('Error processing transaction:', err);
-            // Continue processing other transactions even if one fails
           }
 
           await new Promise(r => setTimeout(r, 300));
@@ -1534,14 +1437,11 @@
 
         console.log(`Check complete. Skipped ${skippedCount} already processed. Found ${foundNewClaim ? 'NEW' : 'no new'} claims.`);
 
-        // Always update lastSignature to the most recent one we checked
         lastSignature = signatures[0].signature;
 
       } catch (error) {
         console.error('Error checking transactions:', error);
-        document.getElementById('status').textContent = '🟡 Retrying';
         
-        // Don't show error banner for common network issues
         if (error.message && !error.message.includes('Load failed')) {
           const feed = document.getElementById('claimsFeed');
           if (!feed.querySelector('.error')) {
@@ -1557,7 +1457,6 @@
 
     async function init() {
       try {
-        // Wait for Solana library to load
         await waitForSolana();
         
         if (!window.solanaWeb3) {
@@ -1566,7 +1465,6 @@
 
         const { Connection } = window.solanaWeb3;
         
-        // CLOUDFLARE WORKER PROXY
         const CLOUDFLARE_WORKER_URL = 'https://odd-dream-1ad2.worstgenstrawhat.workers.dev';
         
         connection = new Connection(
@@ -1574,21 +1472,17 @@
           'confirmed'
         );
 
-        // Load claims from Firestore first
         const hasFirestoreClaims = await loadClaimsFromFirestore();
         
         if (hasFirestoreClaims) {
           console.log('Displaying Firestore claims');
           renderCurrentPage();
           updatePaginationControls();
-          document.getElementById('totalClaims').textContent = totalClaims;
         } else {
-          // No Firestore claims, load historical data
           console.log('No Firestore claims found, loading historical data...');
           await loadHistoricalClaims();
         }
         
-        // Start monitoring for new claims immediately
         console.log('Starting live transaction monitoring...');
         await checkTransactions();
         setInterval(checkTransactions, CHECK_INTERVAL);
