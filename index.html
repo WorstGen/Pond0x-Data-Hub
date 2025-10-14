@@ -3053,7 +3053,7 @@ async function generatePassportCard(manifestData, healthStats = null, aiInsights
         `Pro Status: ${manifestData.isPro ? '✅ Active' : '❌ Inactive'}`,
         `Member Since: ${manifestData.proAgo && manifestData.proAgo !== 'undefined' ? new Date(manifestData.proAgo * 1000).toLocaleString() : 'N/A'}`,
         `Expires: ${manifestData.proExpiry && manifestData.proExpiry !== 'undefined' ? new Date(manifestData.proExpiry * 1000).toLocaleString() : 'N/A'}`,
-        `Total Swaps: ${Number(manifestData.proSwapsBx || 0).toLocaleString()}`,
+        `BX Swaps: ${Number(manifestData.proSwapsBx || 0).toLocaleString()}`,
         `SOL Swaps: ${Number(manifestData.proSwapsSol || 0).toLocaleString()}`
       ];
       
