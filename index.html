@@ -1214,36 +1214,12 @@ async function fetchBubblesData(walletAddress) {
 }
 
 /**
- * Renders the raw bubble API response into the section element.
- * Handles both array-of-tokens and object-with-nested-tokens shapes.
+ * Renders the bubble API response as exactly two cards:
+ *   BUBBLES  → data.bubbles (plain number, comma-formatted)
+ *   BOOSTS   → data.boosts  (string label, with emoji mapping)
  */
 function renderBubblesData(section, data) {
-  // Normalise: the API may return an array directly, or an object
-  // with a `bubbles` / `tokens` key, or a flat key-value object.
-  let tokens = [];
-  let meta = {};
-
-  if (Array.isArray(data)) {
-    tokens = data;
-  } else if (data && typeof data === 'object') {
-    // Check common wrapper keys
-    if (Array.isArray(data.bubbles))      tokens = data.bubbles;
-    else if (Array.isArray(data.tokens))  tokens = data.tokens;
-    else if (Array.isArray(data.data))    tokens = data.data;
-    else {
-      // Treat the whole object as a flat map of key→value pairs
-      tokens = Object.entries(data).map(([k, v]) => ({ label: k, value: v }));
-      meta = {};
-    }
-
-    // Pull out any top-level scalar fields as meta
-    Object.entries(data).forEach(([k, v]) => {
-      if (!Array.isArray(v) && typeof v !== 'object') meta[k] = v;
-    });
-  }
-
-  // If still nothing useful, show a friendly message
-  if (!tokens || tokens.length === 0) {
+  if (!data || typeof data !== 'object') {
     const empty = document.createElement('div');
     empty.className = 'bubbles-error';
     empty.style.color = 'var(--text-secondary)';
@@ -1252,31 +1228,49 @@ function renderBubblesData(section, data) {
     return;
   }
 
-  // ── Summary bar (top-level scalars like total value, count etc.) ──
-  const summaryKeys = Object.keys(meta);
-  if (summaryKeys.length > 0) {
-    const summaryEl = document.createElement('div');
-    summaryEl.className = 'bubbles-summary';
-    summaryKeys.forEach(k => {
-      const item = document.createElement('div');
-      item.className = 'bubbles-summary-item';
-      item.innerHTML = `
-        <div class="bubbles-summary-label">${formatBubbleKey(k)}</div>
-        <div class="bubbles-summary-value">${formatBubbleValue(meta[k])}</div>
-      `;
-      summaryEl.appendChild(item);
-    });
-    section.appendChild(summaryEl);
+  // ── Boost label → emoji map ──
+  const boostEmojiMap = {
+    'diamond bubbles': '💎',
+    'gold bubbles':    '🥇',
+    'silver bubbles':  '🥈',
+    'bronze bubbles':  '🥉',
+    'platinum bubbles':'✨',
+    'void bubbles':    '🐇',
+    'pork bubbles':    '🐽',
+  };
+
+  const rawBubbles = data.bubbles ?? data.bubble_count ?? data.count ?? null;
+  const rawBoosts  = data.boosts  ?? data.boost       ?? data.tier  ?? null;
+
+  const bubbleCount = rawBubbles !== null
+    ? Number(rawBubbles).toLocaleString()
+    : '—';
+
+  let boostDisplay = '—';
+  if (rawBoosts !== null && rawBoosts !== '') {
+    const key = String(rawBoosts).toLowerCase().trim();
+    const emoji = Object.entries(boostEmojiMap).find(([k]) => key.includes(k.split(' ')[0]))?.[1] ?? '🫧';
+    boostDisplay = `${emoji} ${rawBoosts}`;
   }
 
-  // ── Token grid ──
+  // ── Two-card grid ──
   const grid = document.createElement('div');
   grid.className = 'bubbles-grid';
+  grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(200px, 1fr))';
 
-  tokens.forEach(token => {
-    const card = buildBubbleTokenCard(token);
-    grid.appendChild(card);
-  });
+  // Card builder
+  const makeCard = (label, value, isLarge = false) => {
+    const card = document.createElement('div');
+    card.className = 'bubble-token-card';
+    card.innerHTML = `
+      <div class="bubble-token-name" style="font-size:0.8rem; letter-spacing:1px; margin-bottom:0.75rem;">${label}</div>
+      <div class="bubble-token-value" style="font-size:${isLarge ? '2rem' : '1.4rem'}; word-break:break-word;">${value}</div>
+    `;
+    return card;
+  };
+
+  grid.appendChild(makeCard('BUBBLES', bubbleCount, true));
+  grid.appendChild(makeCard('BOOSTS', boostDisplay, false));
 
   section.appendChild(grid);
 
@@ -1295,143 +1289,6 @@ function renderBubblesData(section, data) {
   rawToggle.appendChild(rawBtn);
   rawToggle.appendChild(rawPre);
   section.appendChild(rawToggle);
-}
-
-/**
- * Builds a single token card. Works with generic objects —
- * tries common field names (symbol, name, balance, value, change, etc.)
- * and falls back to rendering all key-value pairs.
- */
-function buildBubbleTokenCard(token) {
-  const card = document.createElement('div');
-  card.className = 'bubble-token-card';
-
-  if (!token || typeof token !== 'object') {
-    card.innerHTML = `<div class="bubble-token-value" style="font-size:1rem;">${String(token)}</div>`;
-    return card;
-  }
-
-  // ── Extract well-known fields (case-insensitive key lookup) ──
-  const get = (...keys) => {
-    for (const k of keys) {
-      const found = Object.keys(token).find(kk => kk.toLowerCase() === k.toLowerCase());
-      if (found !== undefined && token[found] !== undefined && token[found] !== null) return token[found];
-    }
-    return null;
-  };
-
-  const name    = get('symbol', 'name', 'token', 'ticker', 'label', 'mint');
-  const balance = get('balance', 'amount', 'qty', 'quantity', 'holdings');
-  const usdVal  = get('value', 'usd', 'usd_value', 'value_usd', 'price_usd', 'total_usd', 'totalUsd');
-  const change  = get('change', 'change_24h', 'pct_change', 'percent_change', 'delta');
-  const price   = get('price', 'price_usd', 'token_price');
-
-  // ── Determine badge (positive / negative / neutral) ──
-  let badgeText = null;
-  let badgeClass = 'neutral';
-
-  if (change !== null) {
-    const num = parseFloat(change);
-    if (!isNaN(num)) {
-      badgeText = (num >= 0 ? '▲ +' : '▼ ') + Math.abs(num).toFixed(2) + '%';
-      badgeClass = num >= 0 ? 'positive' : 'negative';
-    }
-  }
-
-  // ── Header ──
-  const header = document.createElement('div');
-  header.className = 'bubble-token-header';
-
-  const nameEl = document.createElement('div');
-  nameEl.className = 'bubble-token-name';
-  nameEl.textContent = name ? String(name) : '—';
-  header.appendChild(nameEl);
-
-  if (badgeText) {
-    const badge = document.createElement('span');
-    badge.className = `bubble-token-badge ${badgeClass}`;
-    badge.textContent = badgeText;
-    header.appendChild(badge);
-  }
-
-  card.appendChild(header);
-
-  // ── Primary value (USD or balance) ──
-  const valueEl = document.createElement('div');
-  valueEl.className = 'bubble-token-value';
-  if (usdVal !== null) {
-    valueEl.textContent = formatCurrency(usdVal);
-  } else if (balance !== null) {
-    valueEl.textContent = formatNumber(balance);
-  } else {
-    // Fall back to first numeric value found
-    const firstNum = Object.values(token).find(v => typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v))));
-    valueEl.textContent = firstNum !== undefined ? formatBubbleValue(firstNum) : '—';
-  }
-  card.appendChild(valueEl);
-
-  // ── Sub-line (balance if we showed USD above, or price) ──
-  const subs = [];
-  if (usdVal !== null && balance !== null) subs.push(`Balance: ${formatNumber(balance)}`);
-  if (price !== null) subs.push(`Price: ${formatCurrency(price)}`);
-
-  // Any remaining fields not already shown
-  const shownKeys = new Set(['symbol','name','token','ticker','label','mint','balance','amount','qty','quantity','holdings','value','usd','usd_value','value_usd','price_usd','total_usd','totalUsd','change','change_24h','pct_change','percent_change','delta','price','token_price'].map(k => k.toLowerCase()));
-
-  Object.entries(token).forEach(([k, v]) => {
-    if (shownKeys.has(k.toLowerCase())) return;
-    if (v === null || v === undefined || v === '') return;
-    if (typeof v === 'object') return; // skip nested objects
-    subs.push(`${formatBubbleKey(k)}: ${formatBubbleValue(v)}`);
-  });
-
-  if (subs.length > 0) {
-    const subEl = document.createElement('div');
-    subEl.className = 'bubble-token-sub';
-    subEl.textContent = subs.slice(0, 3).join(' · ');
-    card.appendChild(subEl);
-  }
-
-  return card;
-}
-
-// ── Formatting helpers ──
-function formatBubbleKey(key) {
-  return String(key)
-    .replace(/_/g, ' ')
-    .replace(/([a-z])([A-Z])/g, '$1 $2')
-    .toLowerCase()
-    .replace(/\b\w/g, c => c.toUpperCase());
-}
-
-function formatBubbleValue(val) {
-  if (val === null || val === undefined) return '—';
-  if (typeof val === 'boolean') return val ? '✅' : '❌';
-  if (typeof val === 'number') {
-    if (Number.isInteger(val)) return val.toLocaleString();
-    return val.toFixed(val < 0.01 ? 8 : 2);
-  }
-  if (typeof val === 'string') {
-    const n = parseFloat(val);
-    if (!isNaN(n) && val.trim() !== '') return formatBubbleValue(n);
-    return val;
-  }
-  return String(val);
-}
-
-function formatCurrency(val) {
-  const n = parseFloat(val);
-  if (isNaN(n)) return String(val);
-  if (n >= 1000) return '$' + n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  if (n >= 0.01) return '$' + n.toFixed(2);
-  return '$' + n.toFixed(8);
-}
-
-function formatNumber(val) {
-  const n = parseFloat(val);
-  if (isNaN(n)) return String(val);
-  if (Number.isInteger(n)) return n.toLocaleString();
-  return n.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 6 });
 }
 
 // ===============================================
