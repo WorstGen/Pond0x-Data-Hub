@@ -1,0 +1,4409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DATA🤝HUB</title>
+  <!-- Open Graph (Facebook, LinkedIn, etc.) -->
+  <meta property="og:title" content="DATA🤝HUB">
+  <meta property="og:description" content="The destination for POND🤝X related data">
+  <meta property="og:image" content="https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/refs/heads/main/hubcard.png">
+  <meta property="og:url" content="https://worstgen.github.io/Pond0x-Data-Hub/"> <meta property="og:type" content="website">
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DATA🤝HUB">
+  <meta name="twitter:description" content="The destination for POND🤝X related data">
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/refs/heads/main/hubcard.png">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      /* Light mode variables */
+      --bg-gradient: linear-gradient(135deg, #f9f5ff 0%, #f6edff 35%, #f3e8ff 65%, #f9f5ff 100%);
+      --primary-color: #9b5de5;
+      --accent-color: #ff3df0;
+      --secondary-accent: #bd7cfd;
+      --topbar-bg: #FF13F0;
+      --topbar-text: #ffffff;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(155, 93, 229, 0.2);
+      --input-bg: rgba(255, 255, 255, 0.4);
+      --link-item-bg: rgba(155, 93, 229, 0.08);
+      --shadow-primary: rgba(155, 93, 229, 0.15);
+      --shadow-accent: rgba(255, 61, 240, 0.25);
+      --text-primary: #5b2a86;
+      --text-secondary: #7b3aad;
+      --success-color: #22c55e;
+      --warning-color: #d9d9d9;
+      --error-color: #ef4444;
+      --info-color: #3b82f6;
+}
+
+    [data-theme="dark"] {
+      /* Dark mode variables */
+      --bg-gradient: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 20%, #16213e 40%, #1a1a2e 60%, #0f0f0f 80%, #0a0a0a 100%);
+      --primary-color: #e0b3ff;
+      --accent-color: #ff3df0;
+      --secondary-accent: #bd7cfd;
+      --topbar-bg: #1a1a2e;
+      --topbar-text: #e5ddfb;
+      --card-bg: rgba(26, 26, 46, 0.15);
+      --card-border: rgba(189, 124, 253, 0.4);
+      --input-bg: rgba(26, 26, 46, 0.4);
+      --link-item-bg: rgba(26, 26, 46, 0.5);
+      --shadow-primary: rgba(189, 124, 253, 0.3);
+      --shadow-accent: rgba(255, 61, 240, 0.5);
+      --text-primary: #e0b3ff;
+      --text-secondary: #c9a3ff;
+      --success-color: #34d399;
+      --warning-color: #fbbf24;
+      --error-color: #f87171;
+      --info-color: #60a5fa;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding-top: 70px;
+      position: relative;
+      overflow-x: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Flowing wave animation for light mode */
+body {
+  background: 
+    linear-gradient(0deg, 
+      rgba(189, 124, 253, 0.35) 0%,   /* soft lavender shimmer */
+      rgba(224, 179, 255, 0.25) 50%,  /* light pastel purple */
+      rgba(255, 61, 240, 0.25) 100%), /* pink accent wash */
+    linear-gradient(180deg, 
+      rgba(224, 179, 255, 0.2) 0%, 
+      rgba(189, 124, 253, 0.15) 100%),
+    linear-gradient(135deg, 
+      #f9f5ff 0%, 
+      #f6edff 25%, 
+      #f3e8ff 50%, 
+      #f6edff 75%, 
+      #f9f5ff 100%);
+  background-size: 100% 200%, 100% 150%, 100% 100%;
+  animation: smoothLiquidFlow 6s ease-in-out infinite;
+}
+
+    @keyframes smoothLiquidFlow {
+      0%, 100% {
+        background-position: 0% 100%, 0% 0%, 0% 0%;
+      }
+      50% {
+        background-position: 0% 0%, 0% 100%, 0% 0%;
+      }
+    }
+
+    /* Flowing wave animation for dark mode */
+    [data-theme="dark"] body {
+      background: 
+        linear-gradient(0deg, 
+          rgba(189, 124, 253, 0.15) 0%, 
+          rgba(255, 61, 240, 0.1) 50%, 
+          rgba(26, 26, 46, 0.2) 100%),
+        linear-gradient(180deg, 
+          rgba(26, 26, 46, 0.15) 0%, 
+          rgba(189, 124, 253, 0.08) 100%),
+        linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #1a1a2e 75%, #0f0f0f 100%);
+      background-size: 100% 180%, 100% 140%, 100% 100%;
+      animation: smoothLiquidFlowDark 8s ease-in-out infinite;
+    }
+
+    @keyframes smoothLiquidFlowDark {
+      0%, 100% {
+        background-position: 0% 100%, 0% 0%, 0% 0%;
+      }
+      50% {
+        background-position: 0% 0%, 0% 100%, 0% 0%;
+      }
+    }
+
+    /* Bubble container - can be hidden */
+    .bubble-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+      transition: opacity 0.3s ease;
+    }
+
+    .bubble-container.hidden {
+      opacity: 0;
+    }
+
+    /* Cook button styling - bottom right position */
+    .cook-button {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: linear-gradient(135deg, var(--secondary-accent) 0%, var(--accent-color) 100%);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 
+        0 6px 20px var(--shadow-accent),
+        inset 2px 2px 10px rgba(255, 255, 255, 0.2),
+        inset -2px -2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1002;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .cook-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 
+        0 10px 30px var(--shadow-accent),
+        inset 2px 2px 10px rgba(255, 255, 255, 0.3),
+        inset -2px -2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .cook-button.bubbles-off {
+      background: linear-gradient(135deg, #666 0%, #999 100%);
+      box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.3),
+        inset 2px 2px 10px rgba(255, 255, 255, 0.1),
+        inset -2px -2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .cook-button.bubbles-off:hover {
+      box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.4),
+        inset 2px 2px 10px rgba(255, 255, 255, 0.2),
+        inset -2px -2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Dark mode toggle button */
+    .theme-toggle {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1.5rem;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1001;
+      padding: 5px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.2);
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+    }
+
+    [data-theme="dark"] .theme-toggle {
+      filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.2));
+    }
+
+    [data-theme="dark"] .theme-toggle:hover {
+      transform: scale(1.2);
+      filter: drop-shadow(0 4px 8px rgba(255, 255, 255, 0.3));
+    }
+
+    /* Enhanced dark mode bubbles */
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      animation: bubble-rise linear infinite;
+      opacity: 0;
+      background: 
+        radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.3) 30%, transparent 70%),
+        radial-gradient(circle at 80% 80%, rgba(0, 0, 0, 0.1) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 
+        0 0 20px rgba(255, 255, 255, 0.2),
+        inset 3px 3px 15px rgba(255, 255, 255, 0.4),
+        inset -3px -3px 15px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(1px);
+    }
+
+    [data-theme="dark"] .bubble {
+      background: 
+        radial-gradient(circle at 25% 25%, rgba(189, 124, 253, 0.6) 0%, rgba(255, 61, 240, 0.3) 30%, transparent 70%),
+        radial-gradient(circle at 80% 80%, rgba(26, 26, 46, 0.3) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(189, 124, 253, 0.2), rgba(255, 61, 240, 0.1));
+      border: 1px solid rgba(189, 124, 253, 0.4);
+      box-shadow: 
+        0 0 25px rgba(189, 124, 253, 0.3),
+        inset 3px 3px 15px rgba(189, 124, 253, 0.2),
+        inset -3px -3px 15px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(189, 124, 253, 0.2);
+    }
+
+    /* Bubble animations with smooth wobble/wave motion */
+    @keyframes bubble-rise {
+      0% {
+        opacity: 0;
+        transform: translateY(100vh) translateX(0px) scale(0.3);
+      }
+      10% {
+        opacity: 0.8;
+        transform: translateY(90vh) translateX(15px) scale(0.5);
+      }
+      20% {
+        opacity: 0.9;
+        transform: translateY(80vh) translateX(-10px) scale(0.6);
+      }
+      30% {
+        opacity: 0.9;
+        transform: translateY(70vh) translateX(20px) scale(0.7);
+      }
+      40% {
+        opacity: 0.9;
+        transform: translateY(60vh) translateX(-5px) scale(0.8);
+      }
+      50% {
+        opacity: 0.9;
+        transform: translateY(50vh) translateX(12px) scale(0.9);
+      }
+      60% {
+        opacity: 0.9;
+        transform: translateY(40vh) translateX(-15px) scale(0.95);
+      }
+      70% {
+        opacity: 0.9;
+        transform: translateY(30vh) translateX(8px) scale(1);
+      }
+      80% {
+        opacity: 0.8;
+        transform: translateY(20vh) translateX(-12px) scale(1);
+      }
+      90% {
+        opacity: 0.7;
+        transform: translateY(10vh) translateX(6px) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-10vh) translateX(0px) scale(1);
+      }
+    }
+
+    .container {
+      max-width: 1150px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .header h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 20px var(--shadow-primary);
+      color: var(--text-primary);
+    }
+
+    .header p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      color: var(--text-primary);
+    }
+
+    .card {
+      max-width: 1100px;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 1.5rem;
+      border: 2px solid var(--card-border);
+      box-shadow: 0 12px 40px var(--shadow-primary);
+      transition: all 0.3s ease;
+      margin: 0 auto;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 50px var(--shadow-primary);
+      border-color: var(--card-border);
+    }
+
+    [data-theme="dark"] .card:hover {
+      box-shadow: 
+        0 16px 50px var(--shadow-primary),
+        0 0 30px rgba(189, 124, 253, 0.2);
+    }
+
+    .card h2 {
+      font-size: 1.6rem;
+      margin-bottom: 2rem;
+      color: var(--text-primary);
+      font-weight: 700;
+      text-align: center;
+    }
+
+    /* Main Modal */
+    .main-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      backdrop-filter: blur(8px);
+      animation: modalFadeIn 0.3s ease;
+    }
+
+    .main-modal.show {
+      display: flex;
+    }
+
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .main-modal-content {
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 2px solid var(--card-border);
+      box-shadow: 0 20px 60px var(--shadow-primary);
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+      animation: modalSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="light"] .main-modal-content {
+      background: rgba(255, 255, 255, 0.85);
+      border-color: rgba(123, 58, 173, 0.3);
+      box-shadow: 0 20px 60px rgba(123, 58, 173, 0.2);
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .wallet-input-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .wallet-input-section label {
+      display: block;
+      color: var(--text-primary);
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      font-size: 0.9rem;
+    }
+
+    .modal-wallet-input {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 2px solid var(--card-border);
+      background: var(--input-bg);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      margin-bottom: 0.8rem;
+    }
+
+    .modal-wallet-input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 15px var(--shadow-accent);
+    }
+
+    .modal-wallet-input::placeholder {
+      color: var(--text-secondary);
+      opacity: 0.6;
+    }
+
+    .wallet-name-input {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 2px solid var(--card-border);
+      background: var(--input-bg);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .wallet-name-input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 15px var(--shadow-accent);
+    }
+
+    .wallet-name-input::placeholder {
+      color: var(--text-secondary);
+      opacity: 0.6;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 0.8rem;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .modal-btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-width: 80px;
+    }
+
+    .modal-btn-generate {
+      background: linear-gradient(135deg, var(--secondary-accent) 0%, var(--accent-color) 100%);
+      color: white;
+      box-shadow: 0 3px 12px var(--shadow-accent);
+    }
+
+    .modal-btn-generate:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 18px var(--shadow-accent);
+    }
+
+    .modal-btn-generate:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .modal-btn-save {
+      background: linear-gradient(135deg, #b813ff 0%, #6116a3 100%);
+      color: white;
+      box-shadow: 0 3px 12px rgba(135, 34, 197, 0.3);
+    }
+
+    .modal-btn-save:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 18px rgba(135, 34, 197, 0.4);
+    }
+
+    .modal-btn-save:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .modal-btn-cancel {
+      background: var(--link-item-bg);
+      color: var(--text-primary);
+      border: 1px solid var(--card-border);
+    }
+
+    .modal-btn-cancel:hover {
+      background: var(--card-bg);
+    }
+
+    .saved-wallets-section {
+      margin-bottom: 1rem;
+    }
+
+    .saved-wallets-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.8rem;
+    }
+
+    .saved-wallets-header h4 {
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .clear-all-btn {
+      background: none;
+      border: none;
+      color: var(--accent-color);
+      cursor: pointer;
+      font-size: 0.8rem;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+    }
+
+    .clear-all-btn:hover {
+      opacity: 1;
+    }
+
+    .saved-wallets-list {
+      max-height: 180px;
+      overflow-y: auto;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      background: var(--input-bg);
+    }
+
+    .saved-wallet-item {
+      padding: 10px 14px;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .saved-wallet-item:last-child {
+      border-bottom: none;
+    }
+
+    .saved-wallet-item:hover {
+      background: var(--card-bg);
+    }
+
+    .saved-wallet-item.selected {
+      background: var(--link-item-bg);
+      border-left: 3px solid var(--accent-color);
+    }
+
+    .saved-wallet-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .saved-wallet-address {
+      color: var(--text-primary);
+      font-size: 0.8rem;
+      font-family: monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .saved-wallet-label {
+      color: var(--text-secondary);
+      font-size: 0.7rem;
+      opacity: 0.8;
+      margin-top: 2px;
+    }
+
+    .saved-wallet-actions {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .saved-wallet-type {
+      background: linear-gradient(135deg, var(--secondary-accent), var(--accent-color));
+      color: white;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-right: 6px;
+    }
+
+    .saved-wallet-type.solana {
+      background: linear-gradient(135deg, #9945FF, #14F195);
+    }
+
+    .remove-wallet-btn {
+      background: none;
+      border: none;
+      color: var(--accent-color);
+      cursor: pointer;
+      font-size: 0.9rem;
+      opacity: 0.6;
+      padding: 2px;
+      border-radius: 3px;
+      transition: all 0.3s ease;
+    }
+
+    .remove-wallet-btn:hover {
+      opacity: 1;
+      background: rgba(255, 19, 240, 0.1);
+    }
+
+    .no-saved-wallets {
+      padding: 1.5rem;
+      text-align: center;
+      color: var(--text-secondary);
+      opacity: 0.6;
+      font-size: 0.8rem;
+    }
+
+    /* Input dropdown for saved wallets */
+    .input-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border: 2px solid var(--card-border);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px var(--shadow-primary);
+      z-index: 10;
+      max-height: 200px;
+      overflow-y: auto;
+      opacity: 0;
+      transform: translateY(-10px);
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="light"] .input-dropdown {
+      background: rgba(255, 255, 255, 0.95);
+      border-color: rgba(123, 58, 173, 0.3);
+      box-shadow: 0 8px 32px rgba(123, 58, 173, 0.15);
+    }
+
+    .input-dropdown.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+
+    .input-dropdown-item {
+      padding: 12px 16px;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .input-dropdown-item:last-child {
+      border-bottom: none;
+    }
+
+    .input-dropdown-item:hover {
+      background: var(--link-item-bg);
+    }
+
+    .input-dropdown-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .input-dropdown-address {
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      font-family: monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .input-dropdown-label {
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      opacity: 0.8;
+      margin-top: 2px;
+    }
+
+    .input-dropdown-type {
+      background: linear-gradient(135deg, var(--secondary-accent), var(--accent-color));
+      color: white;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .input-dropdown-type.solana {
+      background: linear-gradient(135deg, #9945FF, #14F195);
+    }
+
+    .input-dropdown-empty {
+      padding: 12px 16px;
+      color: var(--text-secondary);
+      opacity: 0.6;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    .input-section {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      align-items: center;
+    }
+
+    .wallet-input-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .wallet-input {
+      width: 100%;
+      padding: 15px 50px 15px 20px;
+      border-radius: 12px;
+      border: 2px solid var(--card-border);
+      background: var(--input-bg) !important;
+      color: var(--text-primary);
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    .wallet-input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 20px var(--shadow-accent);
+      background: var(--input-bg) !important;
+    }
+
+    .wallet-input::placeholder {
+      color: var(--text-secondary);
+      opacity: 0.6;
+    }
+
+    /* Arrow button */
+    .arrow-btn {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: linear-gradient(135deg, var(--secondary-accent) 0%, var(--accent-color) 100%);
+      border: none;
+      cursor: pointer;
+      padding: 8px 12px;
+      z-index: 2;
+      color: white;
+      font-size: 1.2rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .arrow-btn:hover {
+      transform: translateY(-50%) scale(1.1);
+      box-shadow: 0 4px 15px var(--shadow-accent);
+    }
+
+    /* Wallet type border indicators */
+    .wallet-input-wrapper.wallet-type-solana::before {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      right: -3px;
+      bottom: -3px;
+      background: linear-gradient(135deg, #9945FF 0%, #14F195 100%);
+      border-radius: 15px;
+      z-index: 0;
+    }
+
+    .wallet-input-wrapper.wallet-type-solana .wallet-input {
+      border: none;
+      background: var(--input-bg) !important;
+      box-shadow: 0 0 15px rgba(153, 69, 255, 0.2);
+    }
+
+    .wallet-input-wrapper.wallet-type-solana .wallet-input:focus {
+      box-shadow: 0 0 20px rgba(153, 69, 255, 0.3);
+      background: var(--input-bg) !important;
+    }
+
+    /* Loading and Error States */
+    .loading-section {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .loading-section.show {
+      display: block;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid var(--card-border);
+      border-top: 4px solid var(--accent-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .error-section {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .error-section.show {
+      display: block;
+    }
+
+    .error-icon {
+      font-size: 3rem;
+      color: var(--error-color);
+      margin-bottom: 1rem;
+    }
+
+    .error-message {
+      color: var(--error-color);
+      font-size: 1.1rem;
+      font-weight: 600;
+      white-space: pre-wrap;
+    }
+
+    /* Dashboard Section */
+.dashboard-section {
+  display: none;
+}
+.dashboard-section.show {
+  display: block;
+  animation: fadeIn 0.5s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.data-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.data-card {
+  background: var(--link-item-bg);
+  backdrop-filter: blur(15px);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid var(--card-border);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+.data-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px var(--shadow-primary);
+  border-color: var(--accent-color);
+}
+.data-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+.data-card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.data-card-icon {
+  font-size: 1.2rem;
+  opacity: 0.8;
+}
+.data-card-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent-color);
+  text-align: center;
+  margin: 1rem 0;
+  text-shadow: 0 0 10px var(--shadow-accent);
+}
+.data-card-description {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  opacity: 0.8;
+  text-align: center;
+  line-height: 1.4;
+}
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--card-border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 0.5rem 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-color), var(--secondary-accent));
+      border-radius: 4px;
+      transition: width 0.5s ease;
+      position: relative;
+    }
+
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    /* Share buttons styling */
+.share-passport-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.passport-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.download-btn {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.download-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+.share-btn {
+  background: linear-gradient(135deg, #000000 0%, #333333 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.share-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.passport-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.passport-btn .spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 2px solid white;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+    /* X Modal styling */
+.x-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.x-modal-content {
+   background: var(--card-bg);
+   backdrop-filter: blur(15px);
+   border-radius: 12px;
+   padding: 1.5rem;
+   border: 2px solid var(--card-border);
+   box-shadow: 0 20px 60px var(--shadow-primary);
+   max-width: 500px;
+   width: 90%;
+   max-height: 80vh;
+   overflow-y: auto;      
+   position: relative;
+   animation: modalSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.x-modal-image {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  border-radius: 8px;
+  margin: 0 auto 1rem auto;
+  display: block;
+}
+
+.x-modal-textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 0.75rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  resize: vertical;
+  margin-bottom: 1rem;
+}
+
+.x-modal-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.x-modal-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.x-modal-btn-cancel {
+  background: #6c757d;
+  color: white;
+}
+
+.x-modal-btn-share {
+  background: #1da1f2;
+  color: white;
+}
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .header img {
+      max-width: 69%;
+      height: auto;
+      transition: all 0.3s ease;
+      margin-top: 1.2em;
+    }
+
+    [data-theme="dark"] .header img {
+      filter: brightness(1.1) contrast(1.1) drop-shadow(0 0 20px rgba(189, 124, 253, 0.3));
+    }
+
+    .pro-notice {
+      background: var(--link-item-bg);
+      backdrop-filter: blur(15px);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid var(--warning-color);
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    /* ===============================================
+       MODERN TOPBAR STYLES - FIXED
+    =============================================== */
+    
+    .topbar-main {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      background: var(--topbar-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      z-index: 1000;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.15),
+        0 1px 0px rgba(255, 255, 255, 0.1) inset;
+    }
+
+    [data-theme="dark"] .topbar-main {
+      background: rgba(26, 26, 46, 0.95);
+      border-bottom: 1px solid rgba(189, 124, 253, 0.2);
+      box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.3),
+        0 1px 0px rgba(189, 124, 253, 0.1) inset,
+        0 0 30px rgba(189, 124, 253, 0.05);
+    }
+
+    .topbar-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      position: relative;
+    }
+
+    /* Logo/Brand Section */
+    .topbar-logo {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--topbar-text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+      letter-spacing: 0.5px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .topbar-logo:hover {
+      transform: scale(1.05);
+      text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Desktop Navigation Links */
+    .topbar-menu {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      list-style: none;
+    }
+
+    .topbar-menu a {
+      color: var(--topbar-text);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.7rem;
+      padding: 0.65rem 0.65rem;
+      border-radius: 12px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+    }
+
+    .topbar-menu a::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.2), 
+        transparent
+      );
+      transition: left 0.5s ease;
+    }
+
+    .topbar-menu a:hover::before {
+      left: 100%;
+    }
+
+    .topbar-menu a:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+      box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      color: var(--topbar-text);
+    }
+
+    [data-theme="dark"] .topbar-menu a:hover {
+      background: rgba(189, 124, 253, 0.2);
+      box-shadow: 
+        0 6px 20px rgba(189, 124, 253, 0.3),
+        inset 0 1px 0 rgba(189, 124, 253, 0.2);
+      color: var(--topbar-text);
+    }
+
+    /* Mobile Menu Toggle */
+    .menu-hamburger {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--topbar-text);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .menu-hamburger:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: scale(1.1);
+    }
+
+    /* Mobile Navigation */
+    .mobile-dropdown {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      right: 0;
+      background: var(--topbar-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      transform: translateY(-100%);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 999;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    [data-theme="dark"] .mobile-dropdown {
+      background: rgba(26, 26, 46, 0.98);
+      border-bottom: 1px solid rgba(189, 124, 253, 0.2);
+      box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.3),
+        0 0 20px rgba(189, 124, 253, 0.1);
+    }
+
+    .mobile-dropdown.show {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .mobile-menu-items {
+      display: flex;
+      flex-direction: column;
+      padding: 1rem 1.5rem 2rem 1.5rem;
+      gap: 0.25rem;
+    }
+
+    .mobile-menu-items a {
+      color: var(--topbar-text);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 1rem 1rem;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 0.9rem;
+      border: 1px solid transparent;
+    }
+
+    .mobile-menu-items a:hover,
+    .mobile-menu-items a:active {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: var(--topbar-text);
+      transform: scale(1.02);
+      box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    [data-theme="dark"] .mobile-menu-items a:hover,
+    [data-theme="dark"] .mobile-menu-items a:active {
+      background: rgba(189, 124, 253, 0.2);
+      border-color: rgba(189, 124, 253, 0.3);
+      color: var(--topbar-text);
+      box-shadow: 
+        0 4px 15px rgba(189, 124, 253, 0.2),
+        inset 0 1px 0 rgba(189, 124, 253, 0.1);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1125px) {
+      .topbar-menu a {
+        padding: 0.65rem 1rem;
+        font-size: 0.7rem;
+      }
+      
+      .topbar-wrapper {
+        padding: 0 1rem;
+      }
+    }
+
+    @media (max-width: 1045px) {
+      .menu-hamburger {
+        display: block;
+      }
+      
+      .topbar-menu {
+        display: none;
+      }
+      
+      .topbar-logo {
+        font-size: 1.1rem;
+      }
+      
+      .topbar-wrapper {
+        padding: 0 1rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .cook-button {
+        bottom: 20px;
+        right: 20px;
+        padding: 10px 18px;
+        font-size: 0.9rem;
+      }
+      
+      .theme-toggle {
+        top: 75px;
+        right: 15px;
+        font-size: 1.3rem;
+      }
+
+      .data-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .card {
+        padding: 1rem;
+        margin: 0 0.5rem;
+      }
+
+      .header h1 {
+        font-size: 2.2rem;
+      }
+
+      .data-card-value {
+        font-size: 1.5rem;
+      }
+
+      .main-modal-content {
+        padding: 1.2rem;
+        margin: 1rem;
+      }
+
+      .modal-buttons {
+        flex-direction: column;
+      }
+
+      .share-passport-container {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .passport-btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .topbar-wrapper {
+        padding: 0 0.75rem;
+      }
+      
+      .topbar-logo {
+        font-size: 1rem;
+      }
+      
+      .mobile-menu-items {
+        padding: 1rem;
+      }
+      
+      .mobile-menu-items a {
+        padding: 0.875rem 1rem;
+        font-size: 0.85rem;
+      }
+    }
+
+    /* Enhanced transitions for theme switching */
+    * {
+      transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                  background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                  border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                  box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .debug-info {
+      background: var(--link-item-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 2rem;
+      font-family: monospace;
+      font-size: 0.9rem;
+      white-space: pre-wrap;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .debug-info h3 {
+      margin-bottom: 0.5rem;
+      font-family: inherit;
+      color: var(--accent-color);
+    }
+
+    /* People Like Section Styles */
+  .people-like-section {
+  text-align: center;
+  margin-top: 2rem;
+  padding: 1rem;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.people-like-subtitle {
+  margin: 0.5rem 0 1rem 0; 
+  font-size: 0.9rem; 
+  color: var(--text-primary); 
+  opacity: 0.8;
+}
+
+#plw-content {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+@media (max-width: 768px) {
+  #plw-content {
+    gap: 1.5rem;
+  }
+}
+
+.people-like-section .link-url {
+  color: var(--accent-color);
+  text-decoration: none;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+.people-like-section .link-url:hover {
+  color: var(--text-primary);
+  opacity: 1;
+  text-shadow: 0 0 10px var(--shadow-accent);
+}
+
+.member-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 120px;
+  max-width: 150px;
+}
+
+.member-avatar-loading {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  margin-bottom: 0.75rem;
+  background: linear-gradient(135deg, #7b3aad, #FF13F0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.member-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  margin-bottom: 0.75rem;
+  object-fit: cover;
+}
+
+.member-profile-link {
+  font-size: 0.9rem;
+  color: #FF13F0;
+  text-decoration: none;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  word-break: break-word;
+  line-height: 1.2;
+}
+
+.member-referral-button {
+  padding: 0.4rem 0.8rem;
+  background: linear-gradient(135deg, #f19cfd 0%, #FF13F0 100%);
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 0.8rem;
+  text-align: center;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(241, 156, 253, 0.3);
+  transition: all 0.3s ease;
+}
+
+.member-referral-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(241, 156, 253, 0.4);
+}
+    
+  </style>
+</head>
+<body>
+  <!-- Dark mode toggle button -->
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle dark mode">
+    ☀️
+  </button>
+
+  <!-- Cook button for toggling bubbles -->
+  <button class="cook-button" id="cookButton" onclick="toggleBubbles()">
+    👨‍🍳 Cook
+  </button>
+
+  <!-- Bubble container for animation -->
+  <div class="bubble-container" id="bubbleContainer"></div>
+
+  <!-- Main Modal -->
+  <div class="main-modal" id="mainModal">
+    <div class="main-modal-content">
+      
+      <div class="wallet-input-section">
+        <label for="modalWalletInput">Solana Wallet Address</label>
+        <input
+          type="text"
+          id="modalWalletInput"
+          class="modal-wallet-input"
+          placeholder="Enter your Solana wallet address"
+        >
+        <label for="walletNameInput">Custom Name (Optional)</label>
+        <input
+          type="text"
+          id="walletNameInput"
+          class="wallet-name-input"
+          placeholder="Give this wallet a custom name"
+        >
+      </div>
+
+      <div class="modal-buttons">
+        <button class="modal-btn modal-btn-cancel" onclick="closeMainModal()">Cancel</button>
+        <button class="modal-btn modal-btn-save" id="saveWalletBtn" onclick="saveAndGenerate()" disabled>Save & Generate</button>
+        <button class="modal-btn modal-btn-generate" id="generateBtn" onclick="generateFromModal()" disabled>Generate Report</button>
+      </div>
+
+      <div class="saved-wallets-section">
+        <div class="saved-wallets-header">
+          <h4>💾 Saved Wallets</h4>
+          <button class="clear-all-btn" onclick="clearAllWallets()">Clear All</button>
+        </div>
+        <div class="saved-wallets-list" id="savedWalletsList">
+          <div class="no-saved-wallets">No saved wallets yet</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modern Responsive Navigation -->
+  <nav class="topbar-main">
+    <div class="topbar-wrapper">
+      <!-- Brand/Logo -->
+      <a href="https://worstgen.github.io/Pond0x-Data-Hub/" class="topbar-logo">
+        DATA🤝HUB
+      </a>
+      
+      <!-- Desktop Navigation -->
+      <div class="topbar-menu">
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/">PASSPORT</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/feed.html">CLAIMS FEED</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigMetrics.html">RIG METRICS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/MiningClaims.html">LATEST CLAIMS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/HashBoosts.html">HASH BOOSTS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigActivations.html">RIG ACTIVATIONS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/Calculator.html">CALCULATOR</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/genLinks">GENERATE LINKS</a>
+      </div>
+      
+      <!-- Mobile Menu Toggle -->
+      <button class="menu-hamburger" onclick="toggleMobileMenu()">
+        <span id="hamburger-icon">☰</span>
+      </button>
+    </div>
+    
+    <!-- Mobile Navigation Menu -->
+    <div class="mobile-dropdown" id="mobileDropdown">
+      <div class="mobile-menu-items">
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/">PASSPORT</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/feed.html">CLAIMS FEED</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigMetrics.html">RIG METRICS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/MiningClaims.html">LATEST CLAIMS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/HashBoosts.html">HASH BOOSTS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/RigActivations.html">RIG ACTIVATIONS</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/Calculator.html">CALCULATOR</a>
+        <a href="https://worstgen.github.io/Pond0x-Data-Hub/genLinks">GENERATE LINKS</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="header">
+      <img src="https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/refs/heads/main/pond0xdatahub.png" alt="POND0X Data Hub Logo">
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>POND🤝X MINING HEALTH DASHBOARD</h2>
+    
+    <div class="input-section">
+      <div class="wallet-input-wrapper" id="wallet-input-wrapper">
+        <input
+          type="text"
+          id="wallet-input"
+          class="wallet-input"
+          placeholder="Enter your Solana wallet address"
+          onclick="showInputDropdown()"
+        >
+        <button class="arrow-btn" id="arrowBtn" onclick="openMainModal()">
+          ▶
+        </button>
+        
+        <!-- Input dropdown for quick wallet selection -->
+        <div class="input-dropdown" id="inputDropdown">
+          <div id="inputDropdownContent">
+            <!-- Wallet options will be populated here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Section -->
+    <div id="loading-section" class="loading-section">
+      <div class="loading-spinner"></div>
+      <p style="color: var(--text-primary); font-size: 1.1rem;">Fetching your mining health data...</p>
+    </div>
+
+    <!-- Error Section -->
+    <div id="error-section" class="error-section">
+      <div class="error-icon">⚠️</div>
+      <div class="error-message" id="error-message">Error loading data</div>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div id="dashboard-section" class="dashboard-section">
+      <div class="section-title">
+        ⛏️ YOUR MINING HEALTH OVERVIEW
+      </div>
+      
+      <div class="data-grid" id="data-grid">
+        <!-- Data cards will be populated here -->
+      </div>
+
+      <div class="section-title" style="margin-top: 3rem;">
+        📈 CLAIM ESTIMATES
+      </div>
+      
+      <div class="data-grid" id="detailed-grid">
+        <!-- Detailed metrics will be populated here -->
+      </div>
+    </div>
+    
+      <div id="pro-notice" class="pro-notice" style="display: none;">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
+        <span style="font-size: 1.5rem;">⭐</span>
+        <p style="margin: 0; color: var(--text-primary); font-size: 1rem; font-weight: 500;">
+          Individual stats require signed request and PRO account
+        </p>
+      </div>
+    </div>
+
+    <!-- PEOPLE LIKE SECTION - START -->
+<div class="people-like-section">
+  <p><b>Built for <a href="https://worstgen.github.io/Pond0x-Data-Hub/Community.html" style="color: #FF13F0 !important;">the POND🤝X community</a> ❤️</b></p>
+  <p class="people-like-subtitle"><b>People like</b></p>
+  <div id="plw-content">Loading...</div>
+</div>
+<!-- PEOPLE LIKE SECTION - END -->
+    
+  </div>
+
+<script>
+// Global variables
+let isDebugging = false;
+
+// Enhanced Wallet Management System with localStorage persistence
+const walletManager = {
+  storageKey: 'pond0x_saved_wallets',
+  maxWallets: 10,
+  selectedWallet: null,
+  
+  // Load saved wallets from localStorage
+  loadWallets() {
+    try {
+      const stored = localStorage.getItem(this.storageKey);
+      return stored ? JSON.parse(stored) : [];
+    } catch (error) {
+      console.error('Error loading wallets from localStorage:', error);
+      return [];
+    }
+  },
+  
+  // Save wallets to localStorage
+  saveWallets(wallets) {
+    try {
+      localStorage.setItem(this.storageKey, JSON.stringify(wallets));
+      console.log('Wallets saved to localStorage:', wallets.length);
+    } catch (error) {
+      console.error('Error saving wallets to localStorage:', error);
+    }
+  },
+  
+  // Check if wallet already exists
+  walletExists(address) {
+    const wallets = this.loadWallets();
+    return wallets.some(w => w.address.toLowerCase() === address.toLowerCase());
+  },
+  
+  // Add a new wallet
+  addWallet(address, type, label = null) {
+    const wallets = this.loadWallets();
+    
+    // Check if wallet already exists
+    if (this.walletExists(address)) {
+      console.log('Wallet already saved');
+      return false;
+    }
+    
+    // Create wallet object
+    const wallet = {
+      address: address,
+      type: type,
+      label: label || this.generateLabel(address, type),
+      dateAdded: new Date().toISOString()
+    };
+    
+    // Add to beginning of array (most recent first)
+    wallets.unshift(wallet);
+    
+    // Limit to maxWallets
+    if (wallets.length > this.maxWallets) {
+      wallets.splice(this.maxWallets);
+    }
+    
+    this.saveWallets(wallets);
+    this.updateUI();
+    return true;
+  },
+  
+  // Generate a label for the wallet
+  generateLabel(address, type) {
+    const shortAddress = `${address.slice(0, 6)}...${address.slice(-4)}`;
+    const typeLabel = type === 'solana' ? 'SOL' : 'ETH';
+    return `${typeLabel} ${shortAddress}`;
+  },
+  
+  // Remove a wallet
+  removeWallet(address) {
+    const wallets = this.loadWallets();
+    const filtered = wallets.filter(w => w.address.toLowerCase() !== address.toLowerCase());
+    this.saveWallets(filtered);
+    this.updateUI();
+  },
+  
+  // Clear all wallets
+  clearAll() {
+    if (confirm('Are you sure you want to clear all saved wallets?')) {
+      this.saveWallets([]);
+      this.updateUI();
+      this.selectedWallet = null;
+      this.updateModalButtons();
+    }
+  },
+  
+  // Select a wallet
+  selectWallet(address) {
+    const wallets = this.loadWallets();
+    this.selectedWallet = wallets.find(w => w.address.toLowerCase() === address.toLowerCase());
+    
+    // Update modal input
+    const modalInput = document.getElementById('modalWalletInput');
+    if (modalInput) {
+      modalInput.value = address;
+      this.detectWalletType(modalInput);
+    }
+    
+    // Update main input
+    const mainInput = document.getElementById('wallet-input');
+    if (mainInput) {
+      mainInput.value = address;
+      detectWalletType();
+    }
+    
+    this.updateModalButtons();
+    this.updateSavedWalletsList();
+    
+    // Hide input dropdown
+    const dropdown = document.getElementById('inputDropdown');
+    dropdown.classList.remove('show');
+  },
+  
+  // Update all UI components
+  updateUI() {
+    this.updateSavedWalletsList();
+    this.updateInputDropdown();
+  },
+  
+  // Update the saved wallets list in modal
+  updateSavedWalletsList() {
+    const container = document.getElementById('savedWalletsList');
+    const wallets = this.loadWallets();
+const filteredWallets = wallets.filter(wallet => wallet.type === 'solana');
+
+if (filteredWallets.length === 0) {
+  container.innerHTML = '<div class="no-saved-wallets">No saved wallets yet</div>';
+  return;
+}
+
+      container.innerHTML = filteredWallets.map(wallet => {
+      const isSelected = this.selectedWallet && this.selectedWallet.address.toLowerCase() === wallet.address.toLowerCase();
+      const autoLabel = this.generateLabel(wallet.address, wallet.type);
+      const hasCustomName = wallet.label && wallet.label !== autoLabel;
+      
+      let displayText, displayLabel;
+      if (hasCustomName) {
+        const last5 = wallet.address.slice(-5);
+        displayText = `${wallet.label} (${last5})`;
+        displayLabel = '';
+      } else {
+        displayText = wallet.address;
+        displayLabel = wallet.label;
+      }
+      
+      return `
+        <div class="saved-wallet-item ${isSelected ? 'selected' : ''}" onclick="walletManager.selectWallet('${wallet.address}')">
+          <div class="saved-wallet-content">
+            <div class="saved-wallet-address">${displayText}</div>
+            ${displayLabel ? `<div class="saved-wallet-label">${displayLabel}</div>` : ''}
+          </div>
+          <div class="saved-wallet-actions">
+            <span class="saved-wallet-type ${wallet.type}">${wallet.type}</span>
+            <button class="remove-wallet-btn" onclick="event.stopPropagation(); walletManager.removeWallet('${wallet.address}')" title="Remove wallet">
+              ×
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  },
+  
+  // Update the input dropdown
+  updateInputDropdown() {
+    const content = document.getElementById('inputDropdownContent');
+    const wallets = this.loadWallets();
+    
+    const filteredWallets = wallets.filter(wallet => wallet.type === 'solana');
+    if (filteredWallets.length === 0) {
+    content.innerHTML = '<div class="input-dropdown-empty">No saved wallets</div>';
+    return;
+    }
+
+      content.innerHTML = filteredWallets.map(wallet => {
+      const autoLabel = this.generateLabel(wallet.address, wallet.type);
+      const hasCustomName = wallet.label && wallet.label !== autoLabel;
+      
+      let displayText, displayLabel;
+      if (hasCustomName) {
+        const last5 = wallet.address.slice(-5);
+        displayText = `${wallet.label} (${last5})`;
+        displayLabel = '';
+      } else {
+        displayText = wallet.address;
+        displayLabel = wallet.label;
+      }
+      
+      return `
+        <div class="input-dropdown-item" onclick="selectWalletFromDropdown('${wallet.address}')">
+          <div class="input-dropdown-content">
+            <div class="input-dropdown-address">${displayText}</div>
+            ${displayLabel ? `<div class="input-dropdown-label">${displayLabel}</div>` : ''}
+          </div>
+          <span class="input-dropdown-type ${wallet.type}">${wallet.type}</span>
+        </div>
+      `;
+    }).join('');
+  },
+  
+  // Detect wallet type in modal
+  detectWalletType(input) {
+    const walletAddress = input.value.trim();
+    
+    if (!walletAddress) {
+      return 'none';
+    }
+    
+    // Ethereum address detection
+    if (walletAddress.match(/^0x[a-fA-F0-9]{40}$/)) {
+      return 'ethereum';
+    }
+    
+    // Solana address detection
+    if (walletAddress.length >= 32 && walletAddress.length <= 44 && 
+        walletAddress.match(/^[1-9A-HJ-NP-Za-km-z]+$/) && 
+        !walletAddress.startsWith('0x')) {
+      return 'solana';
+    }
+    
+    return 'invalid';
+  },
+  
+  // Update modal buttons based on current state
+  updateModalButtons() {
+    const modalInput = document.getElementById('modalWalletInput');
+    const saveBtn = document.getElementById('saveWalletBtn');
+    const generateBtn = document.getElementById('generateBtn');
+    
+    const address = modalInput.value.trim();
+    const type = this.detectWalletType(modalInput);
+    const isValid = type === 'solana' || type === 'ethereum';
+    const alreadyExists = this.walletExists(address);
+    
+    // Enable/disable buttons
+    saveBtn.disabled = !isValid || alreadyExists;
+    generateBtn.disabled = !isValid;
+    
+    // Update save button text
+    if (alreadyExists && isValid) {
+      saveBtn.textContent = 'Already Saved';
+    } else {
+      saveBtn.textContent = 'Save & Generate';
+    }
+  },
+  
+  // Initialize the wallet manager
+  init() {
+    this.updateUI();
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      const dropdown = document.getElementById('inputDropdown');
+      const wrapper = document.getElementById('wallet-input-wrapper');
+      const modal = document.getElementById('mainModal');
+      
+      if (!wrapper.contains(e.target) && !modal.contains(e.target)) {
+        dropdown.classList.remove('show');
+      }
+    });
+    
+    // Modal input event listeners
+    const modalInput = document.getElementById('modalWalletInput');
+    modalInput.addEventListener('input', () => {
+      this.updateModalButtons();
+    });
+  }
+};
+
+// Theme management with cross-page persistence
+const themeManager = {
+  storageKey: 'pond0x_theme_preference',
+  
+  init() {
+    const savedTheme = this.loadTheme();
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+    
+    this.setTheme(initialTheme);
+    
+    // Listen for system theme changes only if no manual preference is set
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      if (!this.loadTheme()) { // Only auto-switch if user hasn't manually set preference
+        this.setTheme(e.matches ? 'dark' : 'light');
+      }
+    });
+
+    // Listen for storage changes from other tabs/pages
+    window.addEventListener('storage', (e) => {
+      if (e.key === this.storageKey && e.newValue) {
+        const newTheme = e.newValue;
+        if (newTheme && newTheme !== this.getCurrentTheme()) {
+          this.setTheme(newTheme);
+        }
+      }
+    });
+  },
+  
+  loadTheme() {
+    try {
+      return localStorage.getItem(this.storageKey);
+    } catch (e) {
+      console.warn('Could not load theme preference:', e);
+      return null;
+    }
+  },
+  
+  saveTheme(theme) {
+    try {
+      localStorage.setItem(this.storageKey, theme);
+      console.log('Theme saved:', theme);
+    } catch (e) {
+      console.warn('Could not save theme preference:', e);
+    }
+  },
+
+  getCurrentTheme() {
+    return document.documentElement.getAttribute('data-theme') || 'light';
+  },
+  
+  setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    const button = document.getElementById('themeToggle');
+    if (button) {
+      button.textContent = theme === 'dark' ? '🌙' : '☀️';
+      button.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+    }
+    this.saveTheme(theme);
+  },
+  
+  toggle() {
+    const currentTheme = this.getCurrentTheme();
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    this.setTheme(newTheme);
+  }
+};
+
+// Enhanced bubble state management system
+const bubbleStateManager = {
+  storageKey: 'pond0x_bubble_state',
+  currentState: true,
+  
+  saveState(isEnabled) {
+    this.currentState = isEnabled;
+    console.log('Bubble state saved:', isEnabled);
+  },
+  
+  loadState() {
+    return this.currentState;
+  },
+  
+  init() {
+    const savedState = this.loadState();
+    console.log('Initializing bubble state:', savedState);
+    
+    if (!savedState) {
+      bubbleSystem.animationRunning = false;
+      const container = document.getElementById('bubbleContainer');
+      const button = document.getElementById('cookButton');
+      const body = document.body;
+      
+      if (container) container.classList.add('hidden');
+      if (body) body.classList.add('glass-off');
+      if (button) {
+        button.classList.add('bubbles-off');
+        button.innerHTML = '👨‍🍳 Cook';
+      }
+    }
+    
+    return savedState;
+  }
+};
+
+// Optimized bubble animation system
+const bubbleSystem = {
+  container: null,
+  bubbles: [],
+  maxBubbles: 25,
+  initialized: false,
+  animationRunning: true,
+  animationInterval: null,
+  
+  init() {
+    if (this.initialized) return;
+    this.container = document.getElementById('bubbleContainer');
+    if (!this.container) return;
+    
+    this.createBubblePool();
+    
+    const shouldRun = bubbleStateManager.init();
+    if (shouldRun) {
+      this.startAnimation();
+    } else {
+      this.animationRunning = false;
+    }
+    
+    this.initialized = true;
+  },
+
+  stop() {
+    this.animationRunning = false;
+    if (this.animationInterval) {
+      clearInterval(this.animationInterval);
+      this.animationInterval = null;
+    }
+    this.bubbles.forEach(bubble => {
+      if (bubble.timer) {
+        clearTimeout(bubble.timer);
+      }
+      bubble.element.style.display = 'none';
+      bubble.active = false;
+    });
+  },
+
+  start() {
+    if (!this.animationRunning) {
+      this.animationRunning = true;
+      this.startAnimation();
+    }
+  },
+  
+  createBubblePool() {
+    for (let i = 0; i < this.maxBubbles; i++) {
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      bubble.style.display = 'none';
+      this.container.appendChild(bubble);
+      this.bubbles.push({
+        element: bubble,
+        active: false,
+        timer: 0
+      });
+    }
+  },
+  
+  getRandomBubble() {
+    return this.bubbles.find(b => !b.active) || this.bubbles[0];
+  },
+  
+  createBubble() {
+    if (!this.animationRunning) return;
+    
+    const bubble = this.getRandomBubble();
+    if (!bubble || bubble.active) return;
+    
+    const size = Math.random() * 40 + 10;
+    const left = Math.random() * 100;
+    const duration = Math.random() * 4 + 6;
+    const delay = Math.random() * 2;
+    
+    const element = bubble.element;
+    element.style.cssText = `
+      width: ${size}px;
+      height: ${size}px;
+      left: ${left}%;
+      animation: bubble-rise ${duration}s linear ${delay}s forwards;
+      display: block;
+    `;
+    
+    bubble.active = true;
+    bubble.timer = setTimeout(() => {
+      element.style.display = 'none';
+      bubble.active = false;
+    }, (duration + delay) * 1000);
+  },
+  
+  startAnimation() {
+    if (!this.animationRunning) return;
+    
+    for (let i = 0; i < 8; i++) {
+      setTimeout(() => {
+        if (this.animationRunning) this.createBubble();
+      }, i * 600);
+    }
+    
+    this.animationInterval = setInterval(() => {
+      if (this.animationRunning && Math.random() < 0.8) {
+        this.createBubble();
+      }
+    }, 900);
+  }
+};
+
+// Wallet validation - Solana only for this page
+function validateSolanaAddress(address) {
+  if (!address || address.trim().length === 0) return false;
+  
+  // Basic Solana address validation
+  const trimmed = address.trim();
+  return (
+    trimmed.length >= 32 && 
+    trimmed.length <= 44 && 
+    /^[1-9A-HJ-NP-Za-km-z]+$/.test(trimmed) && 
+    !trimmed.startsWith('0x')
+  );
+}
+
+function detectWalletType() {
+  const walletAddress = document.getElementById('wallet-input').value.trim();
+  const walletInputWrapper = document.getElementById('wallet-input-wrapper');
+  
+  if (!walletInputWrapper) return 'none';
+  
+  // Remove all wallet type classes first
+  walletInputWrapper.classList.remove('wallet-type-solana');
+  
+  // Don't add any classes if no input
+  if (!walletAddress) {
+    return 'none';
+  }
+  
+  // Solana address detection (base58, 32-44 characters, no 0x prefix)
+  if (validateSolanaAddress(walletAddress)) {
+    walletInputWrapper.classList.add('wallet-type-solana');
+    return 'solana';
+  }
+  
+  // Invalid addresses
+  return 'invalid';
+}
+
+// ──────────────────────────────────────────────────────────────
+// Loading + Error Helpers
+// ──────────────────────────────────────────────────────────────
+function showLoading() {
+  const loadingSection = document.getElementById('loading-section');
+  const errorSection = document.getElementById('error-section');
+  const dashboardSection = document.getElementById('dashboard-section');
+  const proNotice = document.getElementById('pro-notice');
+  
+  if (loadingSection) loadingSection.classList.add('show');
+  if (errorSection) errorSection.classList.remove('show');
+  if (dashboardSection) dashboardSection.classList.remove('show');
+  if (proNotice) proNotice.style.display = 'none';
+}
+
+function showError(message) {
+  const errorMessage = document.getElementById('error-message');
+  const loadingSection = document.getElementById('loading-section');
+  const errorSection = document.getElementById('error-section');
+  const dashboardSection = document.getElementById('dashboard-section');
+  const proNotice = document.getElementById('pro-notice');
+  
+  if (errorMessage) errorMessage.textContent = message;
+  if (loadingSection) loadingSection.classList.remove('show');
+  if (errorSection) errorSection.classList.add('show');
+  if (dashboardSection) dashboardSection.classList.remove('show');
+  if (proNotice) proNotice.style.display = 'none';
+}
+
+function showDashboard() {
+  const loadingSection = document.getElementById('loading-section');
+  const errorSection = document.getElementById('error-section');
+  const dashboardSection = document.getElementById('dashboard-section');
+  
+  if (loadingSection) loadingSection.classList.remove('show');
+  if (errorSection) errorSection.classList.remove('show');
+  if (dashboardSection) dashboardSection.classList.add('show');
+}
+
+// ──────────────────────────────────────────────────────────────
+// NEW: Clear All Dashboard Content Function
+// ──────────────────────────────────────────────────────────────
+function clearAllDashboardContent() {
+  const dashboardSection = document.getElementById('dashboard-section');
+  if (!dashboardSection) return;
+  
+  // Clear global data storage
+  window.currentManifestData = null;
+  window.currentHealthStats = null;
+  
+  // Clear the main data grids
+  const dataGrid = document.getElementById('data-grid');
+  const detailedGrid = document.getElementById('detailed-grid');
+  if (dataGrid) dataGrid.innerHTML = '';
+  if (detailedGrid) detailedGrid.innerHTML = '';
+  
+  // Remove all dynamically added sections
+  const dynamicSections = [
+    '.manifest-section',
+    '.ai-insights-section',
+    '.data-notice',
+    '.swap-boost-section',
+    '.additional-content'
+  ];
+  
+  dynamicSections.forEach(selector => {
+    const elements = dashboardSection.querySelectorAll(selector);
+    elements.forEach(element => element.remove());
+  });
+  
+  // Also remove any dynamically added divs that aren't part of the original structure
+  const allChildren = Array.from(dashboardSection.children);
+  allChildren.forEach(child => {
+    // Keep only the original structural elements
+    if (!child.classList.contains('section-title') && 
+        !child.classList.contains('data-grid') && 
+        child.id !== 'data-grid' && 
+        child.id !== 'detailed-grid') {
+      child.remove();
+    }
+  });
+  
+  console.log('All dashboard content cleared');
+}
+
+// ──────────────────────────────────────────────────────────────
+// NEW: Wallet Manifest Fetcher + Renderer
+// ──────────────────────────────────────────────────────────────
+async function fetchWalletManifest(walletAddress) {
+  try {
+    const apiUrl = `https://pond0x-proxy.wsfdxv2hjq.workers.dev/manifest?id=${encodeURIComponent(walletAddress)}`;
+
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+
+    const data = await response.json();
+    if (!data || typeof data !== 'object') throw new Error('Invalid manifest data');
+
+    displayWalletManifest(data);
+  } catch (error) {
+    console.error('Manifest Error:', error.message);
+    addDataNotice(`Wallet Manifest unavailable: ${error.message}`);
+  }
+}
+
+function displayWalletManifest(data) {
+  const dashboardSection = document.getElementById('dashboard-section');
+  if (!dashboardSection) return;
+
+  // Store manifest data globally for swap/boost calculation
+  window.currentManifestData = data;
+
+  const manifestSection = document.createElement('div');
+  manifestSection.className = 'manifest-section';
+  manifestSection.style.cssText = `
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--link-item-bg);
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+  `;
+
+
+  const badges = Array.isArray(data.badges) ? data.badges.join(', ') : (data.badges || 'None');
+
+  // Map badges to emojis
+const badgeMap = {
+  void: "🐇",
+  diamond: "💎",
+  pork: "🐽",
+  chef: "👨🏻‍🍳",
+  points: "✨",
+  swap: "🤝",
+  stand: "✊",
+  insider: "🥼",
+  water: "💧",
+  king: "👑",
+  unicorn: "🦄",
+  miner: "⛏️",
+  topswap: "🥇",
+  ygn: "🟪",
+  slashed: "🤕",
+  spawner: "🧪",
+  staker: "🪷",
+  covid: "💉",
+  wrapped: "🎁",
+  quest: "🧩",
+  recap: "🎁"
+};
+
+// Convert badges string to emoji list
+let badgeList = (badges || "")
+  .split(",")
+  .map(b => badgeMap[b.trim()] || "")
+  .filter(Boolean);
+
+// Add Twitter X in front if hasTwitter
+if (data.hasTwitter) {
+  badgeList.unshift("𝕏");
+}
+
+// Add 🤡 at the end if cope is true
+if (data.cope) {
+  badgeList.push("🤡");
+}
+
+manifestSection.innerHTML = `
+  <h2 style="margin:0 0 1rem 0; margin-bottom:1rem; font-size:clamp(1.5rem, 5vw, 2.5rem); color:var(--text-primary);">🪪 PASSPORT</h2>
+
+  <!-- Big Emoji Line -->
+  <div style="
+    text-align:center;
+    margin-bottom:1rem;
+    font-size:clamp(1.5rem, 5vw, 3rem);
+    line-height:1;
+  ">
+    ${badgeList.map(b => `<span style="margin:0 0.25rem;">${b}</span>`).join("")}
+  </div>
+
+  <!-- Passport/ID Styled Details -->
+  <div style="
+      display:flex; 
+      flex-wrap:wrap; 
+      gap:1rem; 
+      justify-content:center; 
+      font-size:clamp(1rem, 2.5vw, 1.2rem); 
+      padding:1rem; 
+      border-radius:12px; 
+      background-color:rgba(0,0,0,0.0); 
+      box-shadow:0 2px 8px rgba(0,0,0,0.02);
+  ">
+
+  <div><strong>Pro User:</strong> ${data.isPro ? '✅' : '❌'}</div>
+  <div><strong>Pro Since:</strong> ${data.proAgo && data.proAgo !== 'undefined' ? new Date(data.proAgo * 1000).toLocaleString() : 'N/A'}</div>
+  <div><strong>Pro Expiry:</strong> ${data.proExpiry && data.proExpiry !== 'undefined' ? new Date(data.proExpiry * 1000).toLocaleString() : 'N/A'}</div>
+  
+  <hr style="width:100%; border:0; border-top:1px solid rgba(0,0,0,0.2);">
+  
+  <div><strong>Swaps (BX):</strong> ${Number(data.proSwapsBx ?? 0).toLocaleString()}</div>
+  <div><strong>Swaps (SOL):</strong> ${Number(data.proSwapsSol ?? 0).toLocaleString()}</div>
+
+  <hr style="width:100%; border:0; border-top:1px solid rgba(0,0,0,0.2);">
+
+<!-- Share Button -->
+<div class="share-passport-container">
+  <button id="downloadPassportBtn" class="passport-btn download-btn" onclick="downloadPassportCard()">
+    <span>💾</span>
+    <span id="downloadButtonText">Download Image</span>
+  </button>
+  <button id="sharePassportBtn" class="passport-btn share-btn" onclick="shareToX()">
+    <span>𝕏</span>
+    <span id="shareButtonText">Share to X</span>
+  </button>
+</div>
+
+  </div>
+  `;
+
+  dashboardSection.prepend(manifestSection);
+
+  // NEW: If we already have health stats, add the swap/boost calculator
+  if (window.currentHealthStats) {
+    addSwapBoostCalculator(data, window.currentHealthStats);
+  }
+}
+
+  // Download passport card function
+function downloadPassportCard() {
+  if (!window.currentManifestData) {
+    alert('No passport data available to download');
+    return;
+  }
+
+  const button = document.getElementById('downloadPassportBtn');
+  const buttonText = document.getElementById('downloadButtonText');
+  
+  if (!button || !buttonText) return;
+
+  // Show loading state
+  button.disabled = true;
+  buttonText.innerHTML = '<span class="spinner"></span>Generating...';
+
+  // Generate the card
+  generatePassportCard(window.currentManifestData)
+    .then(blob => {
+      // Create download link
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'pond0x-passport.png';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    })
+    .catch(error => {
+      console.error('Error generating passport card:', error);
+      alert('Failed to generate passport card. Please try again.');
+    })
+    .finally(() => {
+      // Reset button state
+      button.disabled = false;
+      buttonText.textContent = 'Download Image';
+    });
+}
+
+// Share to X function with x-modal
+function shareToX() {
+  if (!window.currentManifestData) {
+    alert('No passport data available to share');
+    return;
+  }
+
+  const button = document.getElementById('sharePassportBtn');
+  const buttonText = document.getElementById('shareButtonText');
+  
+  if (!button || !buttonText) return;
+
+  // Show loading state
+  button.disabled = true;
+  buttonText.innerHTML = '<span class="spinner"></span>Generating...';
+
+  // Generate the card and show x-modal
+  generatePassportCard(window.currentManifestData)
+    .then(blob => {
+      // Create image URL for preview
+      const imageUrl = URL.createObjectURL(blob);
+      
+      // Show x-modal with image and tweet composer
+      showXShareModal(imageUrl, blob);
+    })
+    .catch(error => {
+      console.error('Error generating passport card:', error);
+      alert('Failed to generate passport card. Please try again.');
+    })
+    .finally(() => {
+      // Reset button state
+      button.disabled = false;
+      buttonText.textContent = 'Share to X';
+    });
+}
+
+// Show X share modal function
+function showXShareModal(imageUrl, imageBlob) {
+  // Default tweet text
+  const defaultTweet = 'Check out my POND🤝X passport! 🚀⛏️\n\nCheck your passport data at https://worstgen.github.io/Pond0x-Data-Hub/\n\n$wPOND $PORK $PNDC';
+  
+  // Create x-modal HTML
+  const xModalHtml = `
+    <div class="x-modal-overlay" id="xShareModal" onclick="closeXShareModal(event)">
+      <div class="x-modal-content" onclick="event.stopPropagation()">
+        <h3 style="margin-top: 0; text-align: center;">Share to X (Twitter)</h3>
+        <img src="${imageUrl}" alt="Passport Preview" class="x-modal-image">
+        <textarea 
+          class="x-modal-textarea" 
+          id="xTweetText" 
+          placeholder="Write your tweet..."
+          maxlength="280"
+        >${defaultTweet}</textarea>
+        <div style="text-align: right; font-size: 12px; color: #666; margin-bottom: 1rem;">
+          <span id="xCharCount">${defaultTweet.length}</span>/280 characters
+        </div>
+        <div class="x-modal-buttons">
+          <button class="x-modal-btn x-modal-btn-cancel" onclick="closeXShareModal()">Cancel</button>
+          <button class="x-modal-btn x-modal-btn-share" onclick="postToX()">Share to X</button>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // Add x-modal to page
+  document.body.insertAdjacentHTML('beforeend', xModalHtml);
+  
+  // Store image blob for later use
+  window.xShareImageBlob = imageBlob;
+  
+  // Add character counter
+  const textarea = document.getElementById('xTweetText');
+  const charCount = document.getElementById('xCharCount');
+  
+  textarea.addEventListener('input', function() {
+    charCount.textContent = this.value.length;
+    if (this.value.length > 280) {
+      charCount.style.color = 'red';
+    } else {
+      charCount.style.color = '#666';
+    }
+  });
+}
+
+// Close X modal function
+function closeXShareModal(event) {
+  if (event && event.target !== event.currentTarget) return;
+  
+  const xModal = document.getElementById('xShareModal');
+  if (xModal) {
+    // Clean up image URL
+    const img = xModal.querySelector('.x-modal-image');
+    if (img && img.src.startsWith('blob:')) {
+      URL.revokeObjectURL(img.src);
+    }
+    
+    // Clean up stored blob
+    if (window.xShareImageBlob) {
+      delete window.xShareImageBlob;
+    }
+    
+    xModal.remove();
+  }
+}
+
+// Post to X function
+function postToX() {
+  const tweetText = document.getElementById('xTweetText').value;
+  
+  if (tweetText.length > 280) {
+    alert('Tweet is too long! Please keep it under 280 characters.');
+    return;
+  }
+  
+  // Download the image first (so user can attach it manually)
+  if (window.xShareImageBlob) {
+    const url = URL.createObjectURL(window.xShareImageBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'pond0x-passport.png';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+  
+  // Open X with the custom tweet
+  const encodedTweet = encodeURIComponent(tweetText);
+  window.open(`https://twitter.com/intent/tweet?text=${encodedTweet}`, '_blank');
+  
+  // Close x-modal
+  closeXShareModal();
+}
+
+// Fixed generatePassportCard function with proper error handling and canvas utilities
+
+// Helper function for rounded rectangles
+function roundRect(ctx, x, y, width, height, radius) {
+  if (width < 2 * radius) radius = width / 2;
+  if (height < 2 * radius) radius = height / 2;
+  
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.arcTo(x + width, y, x + width, y + height, radius);
+  ctx.arcTo(x + width, y + height, x, y + height, radius);
+  ctx.arcTo(x, y + height, x, y, radius);
+  ctx.arcTo(x, y, x + width, y, radius);
+  ctx.closePath();
+}
+
+// Helper function for drawing professional gradients
+function createGradient(ctx, x1, y1, x2, y2, colors) {
+  const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
+  colors.forEach((color, index) => {
+    gradient.addColorStop(index / (colors.length - 1), color);
+  });
+  return gradient;
+}
+
+// Helper function for drawing glowing effects
+function drawGlow(ctx, x, y, width, height, radius, color, glowSize = 20) {
+  ctx.save();
+  ctx.shadowColor = color;
+  ctx.shadowBlur = glowSize;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+  
+  ctx.fillStyle = 'rgba(0, 0, 0, 0)';
+  roundRect(ctx, x, y, width, height, radius);
+  ctx.fill();
+  ctx.restore();
+}
+
+// Enhanced generatePassportCard function with premium design
+async function generatePassportCard(manifestData, healthStats = null, aiInsights = null) {
+  return new Promise((resolve, reject) => {
+    try {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      if (!ctx) {
+        throw new Error('Could not get canvas 2D context');
+      }
+      
+      // Set canvas size with better proportions - made more compact
+      canvas.width = 1400;
+      canvas.height = 900;
+      
+      // Get current theme
+      const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+      
+      // Enhanced color schemes with more sophisticated palettes
+      const colors = isDarkMode ? {
+        bg: ['#0a0a0f', '#1a1a2e', '#16213e', '#0a0a0f'],
+        cardBg: '#1e1e2e',
+        cardBorder: '#2a2a3e',
+        headerBg: ['#7b3aad', '#9b5de5', '#bd7cfd'],
+        primary: '#e0b3ff',
+        accent: '#ff3df0',
+        secondary: '#bd7cfd',
+        text: '#f8f8fc',
+        textSecondary: '#c9a3ff',
+        textMuted: '#9b9bab',
+        sectionBg: '#252545',
+        sectionBorder: '#3a3a5e',
+        highlight: '#ff3df0',
+        success: '#4ade80',
+        warning: '#fbbf24',
+        error: '#f87171'
+      } : {
+        bg: ['#faf7ff', '#f0ebff', '#e6d9ff', '#faf7ff'],
+        cardBg: '#ffffff',
+        cardBorder: '#e5d4ff',
+        headerBg: ['#7b3aad', '#9b5de5', '#bd7cfd'],
+        primary: '#5b2a86',
+        accent: '#ff3df0',
+        secondary: '#7b3aad',
+        text: '#2d1b42',
+        textSecondary: '#5b2a86',
+        textMuted: '#6b7280',
+        sectionBg: '#f9f7ff',
+        sectionBorder: '#e5d4ff',
+        highlight: '#ff3df0',
+        success: '#059669',
+        warning: '#d97706',
+        error: '#dc2626'
+      };
+
+      // Premium background with sophisticated gradient
+      const bgGradient = createGradient(ctx, 0, 0, canvas.width, canvas.height, colors.bg);
+      ctx.fillStyle = bgGradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Add subtle background pattern
+      ctx.save();
+      ctx.globalAlpha = isDarkMode ? 0.05 : 0.03;
+      ctx.fillStyle = colors.primary;
+      for (let i = 0; i < canvas.width; i += 100) {
+        for (let j = 0; j < canvas.height; j += 100) {
+          ctx.fillRect(i, j, 2, 2);
+        }
+      }
+      ctx.restore();
+
+      // Main card with enhanced shadows and borders
+      const cardPadding = 70;
+      const cardX = cardPadding;
+      const cardY = cardPadding;
+      const cardWidth = canvas.width - (cardPadding * 2);
+      const cardHeight = canvas.height - (cardPadding * 2);
+      
+      // Multi-layer shadow effect
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+      roundRect(ctx, cardX + 8, cardY + 8, cardWidth, cardHeight, 30);
+      ctx.fill();
+      
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+      roundRect(ctx, cardX + 4, cardY + 4, cardWidth, cardHeight, 30);
+      ctx.fill();
+      
+      // Main card background with gradient
+      const cardGradient = createGradient(ctx, cardX, cardY, cardX, cardY + cardHeight, 
+        [colors.cardBg, isDarkMode ? '#1a1a2e' : '#fefefe']);
+      ctx.fillStyle = cardGradient;
+      roundRect(ctx, cardX, cardY, cardWidth, cardHeight, 30);
+      ctx.fill();
+      
+      // Card border with glow effect
+      drawGlow(ctx, cardX, cardY, cardWidth, cardHeight, 30, colors.accent, 15);
+      ctx.strokeStyle = colors.cardBorder;
+      ctx.lineWidth = 3;
+      roundRect(ctx, cardX, cardY, cardWidth, cardHeight, 30);
+      ctx.stroke();
+
+      // Premium header section with gradient background
+      const headerHeight = 160;
+      const headerGradient = createGradient(ctx, cardX, cardY, cardX + cardWidth, cardY + headerHeight, colors.headerBg);
+      ctx.fillStyle = headerGradient;
+      roundRect(ctx, cardX, cardY, cardWidth, headerHeight, 30);
+      ctx.fill();
+      
+      // Mask the bottom of the header
+      ctx.fillStyle = colors.cardBg;
+      ctx.fillRect(cardX, cardY + headerHeight - 30, cardWidth, 30);
+
+      // Main title with better vertical centering
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 52px "Segoe UI", Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+      ctx.shadowBlur = 4;
+      ctx.shadowOffsetY = 2;
+      ctx.fillText('POND🤝X PASSPORT', canvas.width / 2, cardY + headerHeight / 2 - 10);
+      ctx.shadowColor = 'transparent';
+
+      // Subtitle with better positioning
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+      ctx.font = '20px "Segoe UI", Arial, sans-serif';
+      ctx.fillText('Mining Status & Performance Report', canvas.width / 2, cardY + headerHeight / 2 + 25);
+
+      // Get badges and convert to emojis with better spacing
+      const badgeMap = {
+        void: "🐇", diamond: "💎", pork: "🐽", chef: "👨‍🍳",
+        points: "✨", swap: "🤝", stand: "✊", insider: "🥼",
+        water: "💧", king: "👑", unicorn: "🦄", miner: "⛏️",
+        topswap: "🥇", ygn: "🟪", slashed: "🤕", spawner: "🧪",
+        staker: "🪷", covid: "💉", wrapped: "🎁", quest: "🧩",
+        recap: "🎁"
+      };
+
+      let badges = [];
+      if (manifestData.badges) {
+        if (Array.isArray(manifestData.badges)) {
+          badges = manifestData.badges;
+        } else if (typeof manifestData.badges === 'string') {
+          badges = manifestData.badges.split(',').map(b => b.trim());
+        }
+      }
+
+      let badgeEmojis = badges.map(b => badgeMap[b] || "").filter(Boolean);
+      if (manifestData.hasTwitter) badgeEmojis.unshift("𝕏");
+      if (manifestData.cope) badgeEmojis.push("🤡");
+
+      // Enhanced badge display with better vertical positioning
+      const badgeY = cardY + headerHeight + 60; // Better positioning relative to header
+      const badgeSize = 45;
+      const badgeSpacing = 60;
+      const startX = (canvas.width - (badgeEmojis.length - 1) * badgeSpacing) / 2;
+
+      badgeEmojis.forEach((emoji, index) => {
+        const x = startX + (index * badgeSpacing);
+        
+        // Badge background circle
+        ctx.fillStyle = colors.sectionBg;
+        ctx.strokeStyle = colors.accent;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(x, badgeY, badgeSize / 2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        
+        // Badge emoji with better vertical centering
+        ctx.font = '28px Arial, sans-serif';
+        ctx.fillStyle = colors.text;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle'; // This centers vertically
+        ctx.fillText(emoji, x, badgeY);
+      });
+
+      // Reset text baseline for other text
+      ctx.textBaseline = 'alphabetic';
+
+      // Enhanced three-column layout with better vertical centering
+      const columnPadding = 40;
+      const columnSpacing = 30;
+      const columnWidth = (cardWidth - (columnPadding * 2) - (columnSpacing * 2)) / 3;
+      
+      const col1X = cardX + columnPadding;
+      const col2X = col1X + columnWidth + columnSpacing;
+      const col3X = col2X + columnWidth + columnSpacing;
+      
+      // Calculate better starting Y position to center the content vertically
+      const contentStartY = badgeY + 80; // Start after badges with more space
+      const footerStartY = cardY + cardHeight - 90; // Footer position
+      const availableContentHeight = footerStartY - contentStartY;
+      
+      // Calculate total content height to center it
+      const estimatedSectionHeight = 200; // Approximate height per section
+      const totalContentHeight = estimatedSectionHeight * 3; // Assuming 3 sections max per column
+      const verticalOffset = Math.max(0, (availableContentHeight - totalContentHeight) / 4); // Distribute extra space
+      
+      let col1Y = contentStartY + verticalOffset;
+      let col2Y = contentStartY + verticalOffset;
+      let col3Y = contentStartY + verticalOffset;
+
+      // Enhanced section box with premium styling - made more compact
+      function createPremiumSection(x, y, width, title, content, iconColor = colors.accent) {
+        const padding = 20;
+        const titleHeight = 38;
+        const lineHeight = 28;
+        const contentHeight = content.length * lineHeight + padding;
+        const totalHeight = titleHeight + contentHeight + 20;
+
+        // Section shadow
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+        roundRect(ctx, x + 2, y + 2, width, totalHeight, 12);
+        ctx.fill();
+
+        // Section background with subtle gradient
+        const sectionGradient = createGradient(ctx, x, y, x, y + totalHeight, 
+          [colors.sectionBg, isDarkMode ? '#2a2a4a' : '#fafaff']);
+        ctx.fillStyle = sectionGradient;
+        roundRect(ctx, x, y, width, totalHeight, 12);
+        ctx.fill();
+
+        // Section border
+        ctx.strokeStyle = colors.sectionBorder;
+        ctx.lineWidth = 1.5;
+        roundRect(ctx, x, y, width, totalHeight, 12);
+        ctx.stroke();
+
+        // Title bar with accent color
+        ctx.fillStyle = iconColor;
+        roundRect(ctx, x, y, width, titleHeight, 12);
+        ctx.fill();
+        
+        // Mask bottom corners of title bar
+        ctx.fillRect(x, y + titleHeight - 12, width, 12);
+
+        // Section title with better typography
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 16px "Segoe UI", Arial, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+        ctx.shadowBlur = 2;
+        ctx.fillText(title, x + padding, y + 26);
+        ctx.shadowColor = 'transparent';
+
+        // Section content with improved readability
+        let contentY = y + titleHeight + 25;
+        
+        content.forEach((line, index) => {
+          const [label, value] = line.split(':');
+          const maxWidth = width - (padding * 2);
+          
+          // Label
+          ctx.fillStyle = colors.textMuted;
+          ctx.font = '12px "Segoe UI", Arial, sans-serif';
+          ctx.textAlign = 'left';
+          ctx.fillText(label + ':', x + padding, contentY);
+          
+          // Value with color coding
+          let valueColor = colors.text;
+          if (line.includes('✅')) valueColor = colors.success;
+          if (line.includes('❌')) valueColor = colors.error;
+          if (line.includes('$') && parseFloat(line.match(/\$([\d,.]+)/)?.[1]) > 0) valueColor = colors.success;
+          
+          ctx.fillStyle = valueColor;
+          ctx.font = 'bold 14px "Segoe UI", Arial, sans-serif';
+          ctx.textAlign = 'right';
+          
+          const valueText = value ? value.trim() : '';
+          ctx.fillText(valueText, x + width - padding, contentY);
+          
+          contentY += lineHeight;
+        });
+
+        return totalHeight + 20;
+      }
+
+      // PASSPORT STATUS Section (Column 1)
+      const passportContent = [
+        `Pro Status: ${manifestData.isPro ? '✅ Active' : '❌ Inactive'}`,
+        `Member Since: ${manifestData.proAgo && manifestData.proAgo !== 'undefined' ? new Date(manifestData.proAgo * 1000).toLocaleString() : 'N/A'}`,
+        `Expires: ${manifestData.proExpiry && manifestData.proExpiry !== 'undefined' ? new Date(manifestData.proExpiry * 1000).toLocaleString() : 'N/A'}`,
+        `BX Swaps: ${Number(manifestData.proSwapsBx || 0).toLocaleString()}`,
+        `SOL Swaps: ${Number(manifestData.proSwapsSol || 0).toLocaleString()}`
+      ];
+      
+      const passportHeight = createPremiumSection(col1X, col1Y, columnWidth, '📋 PASSPORT STATUS', passportContent, colors.accent);
+      col1Y += passportHeight;
+
+      // MINING HEALTH Section (Column 2)
+      if (healthStats && Object.keys(healthStats).length > 0) {
+        const healthScore = healthStats.health || 0;
+        let healthColor = colors.error;
+        if (healthScore >= 6) healthColor = colors.success;
+        else if (healthScore >= 4) healthColor = colors.warning;
+
+        const miningContent = [
+          `Health Score: ${healthScore}/7`,
+          `Mining Sessions: ${(healthStats.mining_sessions || 0).toLocaleString()}`,
+          `In Mempool: ${(healthStats.in_mempool || 0).toLocaleString()}`,
+          `Priority: ${healthStats.priority || 1}x`,
+          `Successful: ${(healthStats.sent || 0).toLocaleString()}`,
+          `Failed: ${(healthStats.failed || 0).toLocaleString()}`
+        ];
+        
+        const miningHeight = createPremiumSection(col2X, col2Y, columnWidth, '⛏️ MINING HEALTH', miningContent, healthColor);
+        col2Y += miningHeight;
+      }
+
+      // PERFORMANCE METRICS Section (Column 3)
+      if (healthStats && healthStats.estimates) {
+        const estimates = healthStats.estimates;
+        const performanceContent = [
+          `Max Claim: $${estimates.max_claim_estimate_usd ? estimates.max_claim_estimate_usd.toFixed(2) : '0.00'}`,
+          `Risk Value: $${estimates.drift_risk_usd ? estimates.drift_risk_usd.toFixed(2) : '0.00'}`,
+          `SOL Price: $${estimates.sol_usd ? estimates.sol_usd.toFixed(2) : 'N/A'}`,
+          `wPOND: $${estimates.wpond_usd ? estimates.wpond_usd.toFixed(8) : 'N/A'}`
+        ];
+        
+        const performanceHeight = createPremiumSection(col3X, col3Y, columnWidth, '📊 PERFORMANCE', performanceContent, colors.secondary);
+        col3Y += performanceHeight;
+      }
+
+      // AI INSIGHTS Section (Full width if available) - guaranteed to fit
+if (aiInsights && Array.isArray(aiInsights) && aiInsights.length > 0) {
+  const maxY = Math.max(col1Y, col2Y, col3Y);
+  const fullSectionWidth = cardWidth - (columnPadding * 2);
+  
+  // Calculate exact available space
+  const footerY = canvas.height - 90;
+  const availableHeight = footerY - maxY - 20;
+  const maxLines = Math.max(2, Math.floor((availableHeight - 58) / 28));
+  
+  // Fit insights aggressively
+  let displayInsights = [];
+  const maxCharsPerLine = Math.floor((fullSectionWidth - 40) / 7);
+  
+  for (let i = 0; i < aiInsights.length && displayInsights.length < maxLines; i++) {
+    const insight = aiInsights[i];
+    
+    if (displayInsights.length === maxLines - 1 && i < aiInsights.length - 1) {
+      const remaining = aiInsights.length - i;
+      const truncated = insight.substring(0, maxCharsPerLine - 15) + `... (+${remaining})`;
+      displayInsights.push(truncated);
+      break;
+    } else {
+      const truncated = insight.length > maxCharsPerLine ? 
+        insight.substring(0, maxCharsPerLine - 3) + '...' : insight;
+      displayInsights.push(truncated);
+    }
+  }
+  
+  createPremiumSection(col1X, maxY, fullSectionWidth, '🤖 AI INSIGHTS', 
+  displayInsights.map(insight => `Insight: ${insight}`), '#6366f1');
+}
+
+      // Premium footer with gradient background
+      // Premium footer with better positioning
+      const maxContentY = Math.max(col1Y, col2Y, col3Y);
+      const footerY = Math.max(maxContentY + 40, cardY + cardHeight - 90);
+      const footerHeight = 50;
+      
+      const footerGradient = createGradient(ctx, cardX, footerY, cardX + cardWidth, footerY + footerHeight,
+        [colors.sectionBg, colors.cardBg]);
+      ctx.fillStyle = footerGradient;
+      roundRect(ctx, cardX, footerY, cardWidth, footerHeight, 0);
+      ctx.fill();
+
+      // Footer content with better typography
+      ctx.fillStyle = colors.primary;
+      ctx.font = 'bold 20px "Segoe UI", Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Generated by DATA🤝HUB', canvas.width / 2, footerY + 25);
+      
+      ctx.font = '14px "Segoe UI", Arial, sans-serif';
+      ctx.fillStyle = colors.textSecondary;
+      const currentDate = new Date().toLocaleDateString();
+      ctx.fillText(`Visit pond0x.com today to begin your own mining journey! • Generated on ${currentDate}`, canvas.width / 2, footerY + 45);
+
+      // Premium corner decorations with animated feel
+      ctx.strokeStyle = colors.highlight;
+      ctx.lineWidth = 4;
+      const cornerLength = 60;
+      const cornerOffset = 50;
+      
+      // Animate corner lines with gradient effect
+      const cornerGradient = createGradient(ctx, 0, 0, cornerLength, cornerLength, 
+        [colors.highlight, colors.secondary]);
+      ctx.strokeStyle = cornerGradient;
+      
+      // Top corners with enhanced design
+      [
+        {x: cornerOffset, y: cornerOffset, dx: 1, dy: 0},
+        {x: cornerOffset, y: cornerOffset, dx: 0, dy: 1},
+        {x: canvas.width - cornerOffset, y: cornerOffset, dx: -1, dy: 0},
+        {x: canvas.width - cornerOffset, y: cornerOffset, dx: 0, dy: 1},
+        {x: cornerOffset, y: canvas.height - cornerOffset, dx: 1, dy: 0},
+        {x: cornerOffset, y: canvas.height - cornerOffset, dx: 0, dy: -1},
+        {x: canvas.width - cornerOffset, y: canvas.height - cornerOffset, dx: -1, dy: 0},
+        {x: canvas.width - cornerOffset, y: canvas.height - cornerOffset, dx: 0, dy: -1}
+      ].forEach(corner => {
+        ctx.beginPath();
+        ctx.moveTo(corner.x, corner.y);
+        ctx.lineTo(corner.x + corner.dx * cornerLength, corner.y + corner.dy * cornerLength);
+        ctx.stroke();
+      });
+
+      // Convert to blob with high quality
+      try {
+        canvas.toBlob((blob) => {
+          if (blob) {
+            resolve(blob);
+          } else {
+            reject(new Error('Failed to create blob from canvas'));
+          }
+        }, 'image/png', 1.0);
+      } catch (error) {
+        reject(new Error(`Canvas to blob conversion failed: ${error.message}`));
+      }
+      
+    } catch (error) {
+      console.error('Error in generatePassportCard:', error);
+      reject(new Error(`Passport card generation failed: ${error.message}`));
+    }
+  });
+}
+
+// Enhanced download function with better UX
+function downloadPassportCard() {
+  console.log('Download passport card called');
+  
+  if (!window.currentManifestData) {
+    console.error('No manifest data available');
+    alert('No passport data available to download');
+    return;
+  }
+
+  const button = document.getElementById('downloadPassportBtn');
+  const buttonText = document.getElementById('downloadButtonText');
+  
+  if (!button || !buttonText) {
+    console.error('Download button elements not found');
+    return;
+  }
+
+  // Show enhanced loading state
+  button.disabled = true;
+  button.style.opacity = '0.7';
+  buttonText.innerHTML = '<span class="spinner"></span>Creating premium passport...';
+
+  console.log('Starting premium passport card generation...');
+
+  // Get current data
+  const healthStats = window.currentHealthStats || null;
+  const aiInsights = window.currentAIInsights || null;
+
+  // Generate the premium card
+  generatePassportCard(window.currentManifestData, healthStats, aiInsights)
+    .then(blob => {
+      console.log('Premium passport card generated successfully, size:', blob.size);
+      
+      // Create download link with timestamp
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      
+      const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+      link.download = `pond0x-passport-${timestamp}.png`;
+      
+      // Add to DOM, click, and remove
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up
+      URL.revokeObjectURL(url);
+      
+      // Show success feedback
+      buttonText.textContent = '✓ Downloaded!';
+      setTimeout(() => {
+        buttonText.textContent = 'Download Premium Passport';
+      }, 2000);
+      
+      console.log('Premium passport download completed successfully');
+    })
+    .catch(error => {
+      console.error('Error generating premium passport card:', error);
+      alert(`Failed to generate premium passport: ${error.message}`);
+      buttonText.textContent = 'Download Premium Passport';
+    })
+    .finally(() => {
+      // Reset button state
+      button.disabled = false;
+      button.style.opacity = '1';
+    });
+}
+
+// Helper function to store AI insights globally when they're displayed
+function addAIInsightsSection(aiInsights) {
+  // Store AI insights globally for passport card generation
+  window.currentAIInsights = aiInsights;
+  
+  const dashboardSection = document.getElementById('dashboard-section');
+  if (!dashboardSection) return;
+  
+  const aiSection = document.createElement('div');
+  aiSection.className = 'ai-insights-section';
+  aiSection.style.marginTop = '3rem';
+  
+  const aiTitle = document.createElement('div');
+  aiTitle.className = 'section-title';
+  aiTitle.innerHTML = '🤖 AI INSIGHTS & RECOMMENDATIONS';
+  
+  const aiContainer = document.createElement('div');
+  aiContainer.className = 'ai-insights-container';
+  aiContainer.style.cssText = `display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1rem; margin-top: 1.5rem; width: 100%;`;
+  
+  aiInsights.forEach((insight) => {
+    const insightCard = document.createElement('div');
+    insightCard.className = 'ai-insight-card';
+    insightCard.style.cssText = `
+      background: var(--link-item-bg);
+      max-width: 100%;
+      backdrop-filter: blur(15px);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid var(--card-border);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    `;
+    insightCard.innerHTML = `
+      <div style="display: flex; align-items: flex-start; gap: 1rem;">
+        <div style="font-size: 1.5rem; opacity: 0.8; flex-shrink: 0;">
+          ✨
+        </div>
+        <div style="flex: 1;">
+          <p style="color: var(--text-primary); font-size: 1rem; line-height: 1.5; margin: 0;
+            font-weight: ${insight.includes('risk') || insight.includes('drift') ? '600' : '500'};">
+            ${insight}
+          </p>
+        </div>
+      </div>
+    `;
+    
+    // Add hover effect
+    insightCard.addEventListener('mouseenter', () => {
+      insightCard.style.transform = 'translateY(-2px)';
+      insightCard.style.boxShadow = '0 8px 25px var(--shadow-primary)';
+    });
+    
+    insightCard.addEventListener('mouseleave', () => {
+      insightCard.style.transform = 'translateY(0)';
+      insightCard.style.boxShadow = 'none';
+    });
+    
+    aiContainer.appendChild(insightCard);
+  });
+  
+  aiSection.appendChild(aiTitle);
+  aiSection.appendChild(aiContainer);
+  dashboardSection.appendChild(aiSection);
+  
+  // Check if last card is alone on its row and make it span full width
+  setTimeout(() => {
+    const cards = aiContainer.querySelectorAll('.ai-insight-card');
+    if (cards.length > 1) {
+      const lastCard = cards[cards.length - 1];
+      const secondLastCard = cards[cards.length - 2];
+      const lastCardTop = lastCard.getBoundingClientRect().top;
+      const secondLastCardTop = secondLastCard.getBoundingClientRect().top;
+      
+      if (Math.abs(lastCardTop - secondLastCardTop) > 10) {
+        lastCard.style.gridColumn = '1 / -1';
+      }
+    }
+  }, 0);
+}
+  
+// ──────────────────────────────────────────────────────────────
+// REPLACEMENT: Mining Data Fetcher (parallel-safe version)
+// ──────────────────────────────────────────────────────────────
+async function fetchMiningData(walletAddress) {
+  try {
+    const apiUrl = `https://pond0x-proxy.wsfdxv2hjq.workers.dev/health?id=${encodeURIComponent(walletAddress)}`;
+
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+
+    const data = await response.json();
+    if (!data || typeof data !== 'object') throw new Error('Invalid mining data');
+
+    displayMiningData(data); // existing renderer
+  } catch (error) {
+    showError(`Unable to fetch mining data: ${error.message}`);
+  }
+}
+
+// ──────────────────────────────────────────────────────────────
+// NEW: Parallel initializer – calls both manifest + mining
+// ──────────────────────────────────────────────────────────────
+async function initDashboard() {
+  const walletInput = document.getElementById('wallet-input');
+  if (!walletInput) return;
+  
+  const walletAddress = walletInput.value.trim();
+
+  if (!validateSolanaAddress(walletAddress)) {
+    showError('Please enter a valid Solana wallet address');
+    return;
+  }
+
+  showLoading();
+  
+  // CRITICAL FIX: Clear all previous dashboard content before loading new data
+  clearAllDashboardContent();
+
+  try {
+    await Promise.all([
+      fetchWalletManifest(walletAddress),
+      fetchMiningData(walletAddress)
+    ]);
+    // displayMiningData() calls showDashboard()
+  } catch (error) {
+    showError(`Unable to load dashboard: ${error.message}`);
+  }
+}
+
+// ──────────────────────────────────────────────────────────────
+// NEW: Swap/Boost Calculator Section
+// ──────────────────────────────────────────────────────────────
+function calculateSwapBoost(manifestData, healthStats) {
+  // Extract data from both sources
+  const proSwapsSol = manifestData?.proSwapsSol || 0;
+  const miningSessions = healthStats?.mining_sessions || 0;
+  
+  // Core calculation logic from the second paste
+  const totalSwapBoost = proSwapsSol / 6;
+  const totalSessionBoost = miningSessions * -3;
+  const currentBoost = totalSwapBoost + totalSessionBoost;
+  const targetBoost = 615;
+  const cappedBoost = Math.min(Math.max(currentBoost, 0), targetBoost);
+  
+  // Calculate recommendations
+  const swapsNeededFor615 = currentBoost >= targetBoost ? 0 : Math.max(0, Math.ceil((targetBoost - currentBoost) * 6));
+  const sessionsUntil615 = currentBoost <= targetBoost ? 0 : Math.max(0, Math.floor((currentBoost - targetBoost) / 3));
+  const sessionsUntil0 = Math.max(0, Math.ceil(currentBoost / 3));
+  
+  return {
+    proSwapsSol,
+    miningSessions,
+    totalSwapBoost,
+    totalSessionBoost,
+    currentBoost,
+    targetBoost,
+    cappedBoost: Math.round(cappedBoost),
+    swapsNeededFor615,
+    sessionsUntil615,
+    sessionsUntil0
+  };
+}
+
+function addSwapBoostCalculator(manifestData, healthStats) {
+  const dashboardSection = document.getElementById('dashboard-section');
+  if (!dashboardSection) return;
+
+  // Calculate all the boost metrics
+  const calculations = calculateSwapBoost(manifestData, healthStats);
+  
+  // Create the calculator section
+  const calculatorSection = document.createElement('div');
+  calculatorSection.className = 'swap-boost-section';
+  calculatorSection.style.cssText = `
+    margin-top: 3rem;
+    padding: 1.5rem;
+    background: var(--link-item-bg);
+    backdrop-filter: blur(15px);
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+    box-shadow: 0 8px 25px var(--shadow-primary);
+  `;
+
+  // Current stats grid with centered content
+const currentStatsGrid = `
+  <div style="
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+    gap: 1rem; 
+    margin-bottom: 1.5rem;
+  ">
+    <div style="
+      padding: 1rem; 
+      background: var(--card-bg); 
+      border: 1px solid var(--card-border); 
+      border-radius: 8px;
+      text-align: center;
+    ">
+      <div style="
+        display: flex; 
+        align-items: center; 
+        justify-content: center;
+        gap: 0.5rem; 
+        margin-bottom: 0.5rem; 
+        color: var(--text-primary); 
+        font-weight: 600;
+      ">
+        <span>⛏️</span>
+        <span>Mining Sessions</span>
+      </div>
+      <div style="
+        font-size: 1.5rem; 
+        font-weight: 700; 
+        color: var(--accent-color);
+      ">
+        ${calculations.miningSessions.toLocaleString()}
+      </div>
+      <div style="
+        font-size: 0.75rem; 
+        color: var(--text-secondary); 
+        opacity: 0.8;
+      ">
+      </div>
+    </div>
+    
+    <div style="
+      padding: 1rem; 
+      background: var(--card-bg); 
+      border: 1px solid var(--card-border); 
+      border-radius: 8px;
+      text-align: center;
+    ">
+      <div style="
+        display: flex; 
+        align-items: center; 
+        justify-content: center;
+        gap: 0.5rem; 
+        margin-bottom: 0.5rem; 
+        color: var(--text-primary); 
+        font-weight: 600;
+      ">
+        <span>🤝</span>
+        <span>Total Swaps</span>
+      </div>
+      <div style="
+        font-size: 1.5rem; 
+        font-weight: 700; 
+        color: var(--accent-color);
+      ">
+        ${calculations.proSwapsSol.toLocaleString()}
+      </div>
+    </div>
+  </div>
+`;
+
+  // Helper function to format numbers with commas
+const formatNumber = (num) => {
+  return Math.round(num).toLocaleString();
+};
+
+
+// Boost breakdown with centered content
+const boostBreakdown = `
+  <div style="
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+    gap: 0.5rem; 
+    margin-bottom: 1.5rem; 
+    font-size: 0.9rem;
+  ">
+    <div style="
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      padding: 0.75rem; 
+      background: var(--primary-bg); 
+      border: 1px solid var(--card-border); 
+      border-radius: 8px;
+    ">
+      <span style="color: var(--text-primary); font-weight: 600;">Total Swap Boost:</span>
+      <span style="font-weight: 700; color: var(--accent-color); margin-left: 0.5rem;">${formatNumber(calculations.totalSwapBoost)}</span>
+    </div>
+    <div style="
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      padding: 0.75rem; 
+      background: var(--primary-bg); 
+      border: 1px solid var(--card-border); 
+      border-radius: 8px;
+    ">
+      <span style="color: var(--text-primary); font-weight: 600;">Total Session Boost:</span>
+      <span style="font-weight: 700; color: var(--accent-color); margin-left: 0.5rem;">${formatNumber(calculations.totalSessionBoost)}</span>
+    </div>
+    <div style="
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      padding: 0.75rem; 
+      background: var(--primary-bg); 
+      border: 1px solid var(--card-border); 
+      border-radius: 8px;
+    ">
+      <span style="color: var(--text-primary); font-weight: 600;">Current Boost:</span>
+      <span style="font-weight: 700; color: var(--accent-color); margin-left: 0.5rem;">
+        ~${formatNumber(calculations.currentBoost)}
+        ${calculations.currentBoost > calculations.targetBoost ? `<span style="font-size: 0.75rem; color: var(--primary-color); margin-left: 0.25rem;">(capped at ${formatNumber(calculations.targetBoost)})</span>` : ''}
+      </span>
+    </div>
+  </div>
+`;
+
+// Results grid
+const resultsGrid = `
+  <div style="
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+    gap: 1rem;
+  ">
+    <div style="
+      padding: 1rem; 
+      background: var(--card-bg);
+      border-radius: 8px; 
+      text-align: center; 
+      border: 1px solid var(--card-border);
+    ">
+      <div style="
+        font-weight: 600; 
+        color: var(--text-accent-color); 
+        margin-bottom: 0.5rem; 
+        font-size: 0.9rem;
+      ">
+        Swaps for 615
+      </div>
+      <div style="
+        font-size: 1.25rem; 
+        font-weight: 700; 
+        color: var(--accent-color);
+      ">
+        ${formatNumber(calculations.swapsNeededFor615)}
+      </div>
+    </div>
+    
+    <div style="
+      padding: 1rem; 
+      background: var(--card-bg); 
+      border-radius: 8px; 
+      text-align: center; 
+      border: 1px solid var(--card-border);
+    ">
+      <div style="
+        font-weight: 600; 
+        color: var(--text-accent-color); 
+        margin-bottom: 0.5rem; 
+        font-size: 0.9rem;
+      ">
+        Sessions to 615
+      </div>
+      <div style="
+        font-size: 1.25rem; 
+        font-weight: 700; 
+        color: var(--accent-color);
+      ">
+        ${formatNumber(calculations.sessionsUntil615)}
+      </div>
+    </div>
+    
+    <div style="
+      padding: 1rem; 
+      background: var(--card-bg); 
+      border-radius: 8px; 
+      text-align: center; 
+      border: 1px solid var(--card-border);
+    ">
+      <div style="
+        font-weight: 600; 
+        color: var(--text-accent-color); 
+        margin-bottom: 0.5rem; 
+        font-size: 0.9rem;
+      ">
+        Sessions to 0
+      </div>
+      <div style="
+        font-size: 1.25rem; 
+        font-weight: 700; 
+        color: var(--accent-color);
+      ">
+        ${formatNumber(calculations.sessionsUntil0)}
+      </div>
+    </div>
+  </div>
+`;
+
+  calculatorSection.innerHTML = `
+    <div style="
+      display: flex; 
+      align-items: center; 
+      gap: 1rem; 
+      margin-bottom: 1.5rem; 
+      justify-content: center;
+    ">
+      <h2 style="
+        margin: 0; 
+        font-size: 1.5rem; 
+        font-weight: 700; 
+        color: var(--text-primary);
+      ">
+        🤝🚀 SWAP/BOOST DIFFERENTIAL ESTIMATE
+      </h2>
+    </div>
+    
+    ${currentStatsGrid}
+    ${boostBreakdown}
+    ${resultsGrid}
+  `;
+
+  // Insert the calculator section after the detailed grid
+  const detailedGrid = document.getElementById('detailed-grid');
+  if (detailedGrid && detailedGrid.parentNode) {
+    detailedGrid.parentNode.insertBefore(calculatorSection, detailedGrid.nextSibling);
+  } else {
+    dashboardSection.appendChild(calculatorSection);
+  }
+}
+
+// ──────────────────────────────────────────────────────────────
+// UPDATED: Display Mining Data (now includes swap/boost calculator)
+// ──────────────────────────────────────────────────────────────
+function displayMiningData(data) {
+  const dataGrid = document.getElementById('data-grid');
+  const detailedGrid = document.getElementById('detailed-grid');
+  const proNotice = document.getElementById('pro-notice');
+
+  if (!dataGrid || !detailedGrid || !proNotice) return;
+
+  // Clear existing data in the grids
+  dataGrid.innerHTML = '';
+  detailedGrid.innerHTML = '';
+
+  const stats = data.stats || {};
+  const estimates = stats.estimates || {};
+
+  // Overview cards
+  const overviewCards = [
+    {
+      title: 'Mining Sessions',
+      value: stats.mining_sessions?.toLocaleString() || '0',
+      description: 'Total number of mining sessions completed',
+      icon: '⛏️'
+    },
+    {
+      title: 'Health Score',
+      value: `${stats.health || 0}`,
+      description: 'Overall mining rig health rating',
+      icon: '❤️',
+      progress: Math.min((stats.health || 0) * (100 / 7), 100)
+    },
+    {
+      title: 'In Mempool',
+      value: stats.in_mempool?.toLocaleString() || '0',
+      description: 'Claims currently in the mempool queue',
+      icon: '⏳'
+    },
+    {
+      title: 'Priority Level',
+      value: `${stats.priority || 1}x`,
+      description: 'Your claim priority multiplier in the queue',
+      icon: '🌟'
+    }
+  ];
+  
+  overviewCards.forEach(card => {
+    const cardElement = createDataCard(card);
+    dataGrid.appendChild(cardElement);
+  });
+
+  // Detailed Metrics
+  const detailedMetrics = [
+    {
+      title: 'SOL Price (USD)',
+      value: `$${estimates.sol_usd ? estimates.sol_usd.toFixed(2) : '0.00'}`,
+      description: 'Current SOL price in USD',
+      icon: '◎'
+    },
+    {
+      title: 'wPOND Price (USD)',
+      value: `$${estimates.wpond_usd ? estimates.wpond_usd.toFixed(8) : '0.00000000'}`,
+      description: 'Current wPOND price in USD',
+      icon: '🪷'
+    },
+    {
+      title: 'Drift Risk Claims',
+      value: stats.drift_risk?.toLocaleString() || '0',
+      description: 'Number of claims at risk of drifting',
+      icon: '⚠️'
+    },
+    {
+      title: 'Drift Risk Value',
+      value: `$${estimates.drift_risk_usd ? estimates.drift_risk_usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}`,
+      description: 'USD value of claims at drift risk',
+      icon: '💸'
+    },
+    {
+      title: 'Successfully Sent',
+      value: stats.sent?.toLocaleString() || '0',
+      description: 'Claims successfully processed and sent',
+      icon: '✅'
+    },
+    {
+      title: 'Failed Claims',
+      value: stats.failed?.toLocaleString() || '0',
+      description: 'Claims that failed processing',
+      icon: '❌'
+    },
+    {
+      title: 'Drifted Claims',
+      value: stats.drifted?.toLocaleString() || '0',
+      description: 'Claims that have already drifted',
+      icon: '📉'
+    },
+    {
+      title: 'Max Claim Estimate',
+      value: `$${estimates.max_claim_estimate_usd ? estimates.max_claim_estimate_usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}`,
+      description: 'Maximum estimated claim value in USD',
+      icon: '🏆'
+    }
+  ];
+  
+  detailedMetrics.forEach(metric => {
+    const cardElement = createDataCard(metric);
+    detailedGrid.appendChild(cardElement);
+  });
+
+  // AI insights
+  const hasAIInsights = data.ai_beta && Array.isArray(data.ai_beta) && data.ai_beta.length > 0;
+  if (hasAIInsights) {
+    proNotice.style.display = 'none';
+    addAIInsightsSection(data.ai_beta);
+  } else {
+    proNotice.style.display = 'block';
+  }
+
+  if (data.data && data.data.msg) {
+    addDataNotice(data.data.msg);
+  }
+
+  // NEW: Add the swap/boost calculator at the bottom
+  // We need to wait for manifest data, so let's store the health stats globally
+  window.currentHealthStats = stats;
+  
+  // Check if we already have manifest data
+  if (window.currentManifestData) {
+    addSwapBoostCalculator(window.currentManifestData, stats);
+  }
+
+  showDashboard();
+}
+
+// ──────────────────────────────────────────────────────────────
+// UPDATED: Data Notice + AI Insights (with class names for clearing)
+// ──────────────────────────────────────────────────────────────
+function addDataNotice(message) {
+  const dashboardSection = document.getElementById('dashboard-section');
+  if (!dashboardSection) return;
+
+  const noticeDiv = document.createElement('div');
+  noticeDiv.className = 'data-notice'; // Added class for easier clearing
+  noticeDiv.style.cssText = `
+    background: var(--link-item-bg);
+    backdrop-filter: blur(15px);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid var(--warning-color);
+    margin-top: 2rem;
+    text-align: center;
+  `;
+
+  noticeDiv.innerHTML = `
+    <div style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
+      <span style="font-size: 1.5rem;">ℹ️</span>
+      <p style="margin: 0; color: var(--text-primary); font-size: 1rem; font-weight: 500;">
+        ${message}
+      </p>
+    </div>
+  `;
+
+  dashboardSection.appendChild(noticeDiv);
+}
+
+function addAIInsightsSection(aiInsights) {
+  const dashboardSection = document.getElementById('dashboard-section');
+  if (!dashboardSection) return;
+  
+  const aiSection = document.createElement('div');
+  aiSection.className = 'ai-insights-section'; // Class for easier clearing
+  aiSection.style.marginTop = '3rem';
+  const aiTitle = document.createElement('div');
+  aiTitle.className = 'section-title';
+  aiTitle.innerHTML = '🤖 AI INSIGHTS & RECOMMENDATIONS';
+  const aiContainer = document.createElement('div');
+  aiContainer.className = 'ai-insights-container';
+  aiContainer.style.cssText = `display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1rem; margin-top: 1.5rem; width: 100%;`;
+  aiInsights.forEach((insight) => {
+    const insightCard = document.createElement('div');
+    insightCard.className = 'ai-insight-card';
+    insightCard.style.cssText = `
+      background: var(--link-item-bg);
+      max-width: 100%;
+      backdrop-filter: blur(15px);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid var(--card-border);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    `;
+    insightCard.innerHTML = `
+      <div style="display: flex; align-items: flex-start; gap: 1rem;">
+        <div style="font-size: 1.5rem; opacity: 0.8; flex-shrink: 0;">
+          ${getInsightIcon(insight)}
+        </div>
+        <div style="flex: 1;">
+          <p style="color: var(--text-primary); font-size: 1rem; line-height: 1.5; margin: 0;
+            font-weight: ${insight.includes('risk') || insight.includes('drift') ? '600' : '500'};">
+            ${insight}
+          </p>
+        </div>
+      </div>
+    `;
+    
+    // Add hover effect
+    insightCard.addEventListener('mouseenter', () => {
+      insightCard.style.transform = 'translateY(-2px)';
+      insightCard.style.boxShadow = '0 8px 25px var(--shadow-primary)';
+    });
+    
+    insightCard.addEventListener('mouseleave', () => {
+      insightCard.style.transform = 'translateY(0)';
+      insightCard.style.boxShadow = 'none';
+    });
+    
+    aiContainer.appendChild(insightCard);
+  });
+  aiSection.appendChild(aiTitle);
+  aiSection.appendChild(aiContainer);
+  dashboardSection.appendChild(aiSection);
+  
+  // Check if last card is alone on its row and make it span full width
+  setTimeout(() => {
+    const cards = aiContainer.querySelectorAll('.ai-insight-card');
+    if (cards.length > 1) {
+      const lastCard = cards[cards.length - 1];
+      const secondLastCard = cards[cards.length - 2];
+      const lastCardTop = lastCard.getBoundingClientRect().top;
+      const secondLastCardTop = secondLastCard.getBoundingClientRect().top;
+      
+      if (Math.abs(lastCardTop - secondLastCardTop) > 10) {
+        lastCard.style.gridColumn = '1 / -1';
+      }
+    }
+  }, 0);
+}
+
+function getInsightIcon(insight) {
+  const text = insight.toLowerCase();
+  return '✨';
+}
+
+function createDataCard(data) {
+  const card = document.createElement('div');
+  card.className = 'data-card';
+  
+  const hasProgress = typeof data.progress === 'number';
+  
+  card.innerHTML = `
+    <div class="data-card-header">
+      <div class="data-card-title">
+        <span class="data-card-icon">${data.icon}</span>
+        ${data.title}
+      </div>
+    </div>
+    <div class="data-card-value">${data.value}</div>
+    ${hasProgress ? `
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: ${Math.min(data.progress, 100)}%"></div>
+      </div>
+    ` : ''}
+    <div class="data-card-description">${data.description}</div>
+  `;
+  
+  return card;
+}
+
+// Modal functions
+function openMainModal() {
+  const modal = document.getElementById('mainModal');
+  const modalInput = document.getElementById('modalWalletInput');
+  const mainInput = document.getElementById('wallet-input');
+  
+  if (!modal || !modalInput || !mainInput) return;
+  
+  // Copy main input value to modal
+  modalInput.value = mainInput.value;
+  
+  // Clear custom name input
+  const nameInput = document.getElementById('walletNameInput');
+  if (nameInput) nameInput.value = '';
+  
+  // Update button states
+  walletManager.updateModalButtons();
+  
+  // Update saved wallets list
+  walletManager.updateSavedWalletsList();
+  
+  // Show modal
+  modal.classList.add('show');
+  
+  // Focus modal input
+  setTimeout(() => modalInput.focus(), 150);
+}
+
+function closeMainModal() {
+  const modal = document.getElementById('mainModal');
+  if (modal) {
+    modal.classList.remove('show');
+    walletManager.selectedWallet = null;
+  }
+}
+
+function saveAndGenerate() {
+  const modalInput = document.getElementById('modalWalletInput');
+  const nameInput = document.getElementById('walletNameInput');
+  
+  if (!modalInput || !nameInput) return;
+  
+  const address = modalInput.value.trim();
+  const customName = nameInput.value.trim();
+  const type = walletManager.detectWalletType(modalInput);
+  
+  if (type !== 'solana' || !address) {
+    alert('Please enter a valid Solana wallet address');
+    return;
+  }
+  
+  // Save wallet
+  walletManager.addWallet(address, type, customName || null);
+  
+  // Generate mining report
+  generateMiningReport(address);
+  
+  // Close modal
+  closeMainModal();
+}
+
+function generateFromModal() {
+  const modalInput = document.getElementById('modalWalletInput');
+  if (!modalInput) return;
+  
+  const address = modalInput.value.trim();
+  const type = walletManager.detectWalletType(modalInput);
+  
+  if (type !== 'solana' || !address) {
+    alert('Please enter a valid Solana wallet address');
+    return;
+  }
+  
+  // Generate mining report without saving
+  generateMiningReport(address);
+  
+  // Close modal
+  closeMainModal();
+}
+
+function showInputDropdown() {
+  const dropdown = document.getElementById('inputDropdown');
+  if (!dropdown) return;
+  
+  const wallets = walletManager.loadWallets();
+  
+  if (wallets.length > 0) {
+    walletManager.updateInputDropdown();
+    dropdown.classList.add('show');
+  }
+}
+
+function selectWalletFromDropdown(address) {
+  const input = document.getElementById('wallet-input');
+  if (!input) return;
+  
+  input.value = address;
+  detectWalletType();
+  
+  const dropdown = document.getElementById('inputDropdown');
+  if (dropdown) dropdown.classList.remove('show');
+  
+  // Generate mining report immediately
+  generateMiningReport(address);
+}
+
+function clearAllWallets() {
+  walletManager.clearAll();
+}
+
+function generateMiningReport(address) {
+  // Update main input to show the address being used
+  const mainInput = document.getElementById('wallet-input');
+  if (mainInput) {
+    mainInput.value = address;
+    detectWalletType();
+  }
+  
+  // Fetch mining data
+  initDashboard();
+}
+
+function toggleBubbles() {
+  const container = document.getElementById('bubbleContainer');
+  const button = document.getElementById('cookButton');
+  const body = document.body;
+  
+  if (!container || !button || !body) return;
+  
+  if (bubbleSystem.animationRunning) {
+    bubbleSystem.stop();
+    container.classList.add('hidden');
+    body.classList.add('glass-off');
+    button.classList.add('bubbles-off');
+    button.innerHTML = '👨‍🍳 Cook';
+    bubbleStateManager.saveState(false);
+  } else {
+    bubbleSystem.start();
+    container.classList.remove('hidden');
+    body.classList.remove('glass-off');
+    button.classList.remove('bubbles-off');
+    button.innerHTML = '👨‍🍳 Cook';
+    bubbleStateManager.saveState(true);
+  }
+}
+
+// Modern mobile navigation toggle
+function toggleMobileMenu() {
+  const mobileDropdown = document.getElementById('mobileDropdown');
+  const hamburgerIcon = document.getElementById('hamburger-icon');
+  
+  if (mobileDropdown.classList.contains('show')) {
+    mobileDropdown.classList.remove('show');
+    hamburgerIcon.textContent = '☰';
+  } else {
+    mobileDropdown.classList.add('show');
+    hamburgerIcon.textContent = '✕';
+  }
+}
+
+// Close mobile nav when clicking on a link
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileMenuLinks = document.querySelectorAll('.mobile-menu-items a');
+  mobileMenuLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      const mobileDropdown = document.getElementById('mobileDropdown');
+      const hamburgerIcon = document.getElementById('hamburger-icon');
+      mobileDropdown.classList.remove('show');
+      hamburgerIcon.textContent = '☰';
+    });
+  });
+  
+  // Close mobile nav when clicking outside
+  document.addEventListener('click', (e) => {
+    const topbar = document.querySelector('.topbar-main');
+    const mobileDropdown = document.getElementById('mobileDropdown');
+    
+    if (!topbar.contains(e.target) && mobileDropdown.classList.contains('show')) {
+      mobileDropdown.classList.remove('show');
+      document.getElementById('hamburger-icon').textContent = '☰';
+    }
+  });
+});
+
+function toggleTheme() {
+  themeManager.toggle();
+}
+
+// Initialize everything when page loads
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOM Content Loaded - Initializing...');
+  
+  // Initialize theme first
+  themeManager.init();
+  
+  // Initialize wallet manager
+  walletManager.init();
+  
+  // Then initialize bubble system
+  bubbleSystem.init();
+  
+  const walletInput = document.getElementById('wallet-input');
+  
+  if (walletInput) {
+    // Add input event listener for wallet type detection
+    walletInput.addEventListener('input', detectWalletType);
+    
+    // Handle Enter key in wallet input
+    walletInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        initDashboard();
+      }
+    });
+  }
+  
+  // Modal event listeners
+  const modal = document.getElementById('mainModal');
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeMainModal();
+      }
+    });
+  }
+  
+  // Handle Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal && modal.classList.contains('show')) {
+      closeMainModal();
+    }
+  });
+  
+  // Handle Enter key in modal inputs
+  const modalInput = document.getElementById('modalWalletInput');
+  const nameInput = document.getElementById('walletNameInput');
+  
+  if (modalInput) {
+    modalInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        generateFromModal();
+      }
+    });
+  }
+  
+  if (nameInput) {
+    nameInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        saveAndGenerate();
+      }
+    });
+  }
+  
+  console.log('Initialization complete');
+});
+
+  // Community data loading system
+const CommunityLoader = {
+  mdxUrl: 'https://raw.githubusercontent.com/WorstGen/Pond0x-Data-Hub/main/src/community.mdx',
+  
+  async loadCommunityData() {
+    try {
+      const response = await fetch(this.mdxUrl);
+      const text = await response.text();
+      
+      let communityMembers = [];
+      
+      // First, try to find The Pond section with FallbackImageList
+      const pondSectionMatch = text.match(/## The Pond[\s\S]*?<FallbackImageList[^>]*data=\{(\[[\s\S]*?\])\}[^>]*\/>/);
+      
+      if (pondSectionMatch) {
+        try {
+          let dataArrayString = pondSectionMatch[1];
+          
+          // Clean up the data string for JSON parsing
+          dataArrayString = dataArrayString
+            .replace(/(\w+):/g, '"$1":')
+            .replace(/,\s*}/g, '}')
+            .replace(/,\s*]/g, ']');
+          
+          const membersArray = JSON.parse(dataArrayString);
+          communityMembers = membersArray;
+          console.log(`Found ${communityMembers.length} members from The Pond section`);
+        } catch (e) {
+          console.error('Error parsing The Pond FallbackImageList:', e);
+        }
+      }
+      
+      // Fallback: try Community Members section
+      if (communityMembers.length === 0) {
+        const communityMembersMatch = text.match(/## Community Members([\s\S]*?)(?=##|$)/);
+        if (communityMembersMatch) {
+          const fallbackImageMatches = [...communityMembersMatch[1].matchAll(/<FallbackImage[^>]*data="([^"]+)"[^>]*refc="([^"]+)"[^>]*\/>/g)];
+          communityMembers = fallbackImageMatches.map(match => ({
+            name: match[1],
+            ref: match[2]
+          }));
+          console.log(`Found ${communityMembers.length} members from Community Members section`);
+        }
+      }
+
+      return communityMembers;
+    } catch (error) {
+      console.error('Error loading community data:', error);
+      return [];
+    }
+  },
+
+  selectRandomMembers(members, count = 3) {
+    if (!members || members.length === 0) return [];
+    
+    const selectedMembers = [];
+    const totalMembers = members.length;
+    const usedIndices = new Set();
+    const seed = Date.now();
+    
+    while (selectedMembers.length < count && selectedMembers.length < totalMembers) {
+      const randomIndex = Math.floor((Math.random() + seed * selectedMembers.length) % 1 * totalMembers);
+      if (!usedIndices.has(randomIndex)) {
+        usedIndices.add(randomIndex);
+        selectedMembers.push(members[randomIndex]);
+      }
+    }
+    
+    return selectedMembers;
+  },
+
+  createMemberElement(member) {
+    const username = member.name;
+    const referral = member.ref;
+    const profile = `https://x.com/${username}`;
+    const referralLink = `https://pond0x.com/referral/${referral}`;
+
+    const memberContainer = document.createElement('div');
+    memberContainer.className = 'member-container';
+    
+    // Create loading placeholder
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'member-avatar-loading';
+    loadingDiv.textContent = username.substring(0, 2).toUpperCase();
+    
+    // Create avatar image
+    const avatar = document.createElement('img');
+    avatar.className = 'member-avatar';
+    avatar.alt = `@${username}`;
+    
+    // Avatar sources to try in order
+    const avatarSources = [
+      `https://unavatar.io/twitter/${username}?fallback=false`,
+      `https://github.com/${username}.png?size=64`,
+      `https://avatars.dicebear.com/api/initials/${username}.svg?background=%237b3aad&color=fff`,
+      `https://ui-avatars.com/api/?name=${username}&size=64&background=7b3aad&color=fff&rounded=true`
+    ];
+    
+    let currentSourceIndex = 0;
+    let avatarLoaded = false;
+    
+    const tryNextAvatar = () => {
+      if (currentSourceIndex < avatarSources.length && !avatarLoaded) {
+        avatar.src = avatarSources[currentSourceIndex];
+        currentSourceIndex++;
+      }
+    };
+    
+    avatar.onload = () => {
+      if (!avatarLoaded) {
+        avatarLoaded = true;
+        loadingDiv.replaceWith(avatar);
+      }
+    };
+    
+    avatar.onerror = tryNextAvatar;
+    
+    // Create profile link
+    const profileLink = document.createElement('a');
+    profileLink.href = profile;
+    profileLink.target = '_blank';
+    profileLink.rel = 'noopener noreferrer';
+    profileLink.className = 'member-profile-link';
+    profileLink.textContent = `@${username}`;
+
+    // Create referral button
+    const referralButton = document.createElement('a');
+    referralButton.href = referralLink;
+    referralButton.target = '_blank';
+    referralButton.rel = 'noopener noreferrer';
+    referralButton.className = 'member-referral-button';
+    referralButton.textContent = 'Referral';
+
+    // Assemble the member container
+    memberContainer.appendChild(loadingDiv);
+    memberContainer.appendChild(profileLink);
+    memberContainer.appendChild(referralButton);
+
+    // Start loading avatar
+    tryNextAvatar();
+
+    return memberContainer;
+  },
+
+  async renderPeopleLike() {
+    const container = document.getElementById('plw-content');
+    if (!container) {
+      console.error('plw-content container not found');
+      return;
+    }
+
+    try {
+      const communityMembers = await this.loadCommunityData();
+      
+      if (!communityMembers || communityMembers.length === 0) {
+        container.textContent = "No community members found.";
+        return;
+      }
+
+      const selectedMembers = this.selectRandomMembers(communityMembers, 3);
+      
+      // Clear loading text
+      container.innerHTML = '';
+      
+      // Add each selected member
+      selectedMembers.forEach(member => {
+        const memberElement = this.createMemberElement(member);
+        container.appendChild(memberElement);
+      });
+      
+    } catch (error) {
+      console.error('Error rendering People Like section:', error);
+      container.textContent = "Couldn't load community.";
+    }
+  }
+};
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', function() {
+  CommunityLoader.renderPeopleLike();
+});
+</script>
+
+</body>
+</html>
