@@ -1248,11 +1248,11 @@ function renderBubblesData(section, data) {
 
   let boostDisplay = '—';
   if (rawBoosts !== null && rawBoosts !== '') {
-    const key = String(rawBoosts).toLowerCase().trim();
-    const emoji = Object.entries(boostEmojiMap).find(([k]) => key.includes(k.split(' ')[0]))?.[1] ?? '🫧';
-    boostDisplay = `${emoji} ${rawBoosts}`;
+    const stripped = String(rawBoosts).replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}]/gu, "").trim();
+    const key = stripped.toLowerCase();
+    const emoji = Object.entries(boostEmojiMap).find(([k]) => key.includes(k.split(" ")[0]))?.[1] ?? "🫧";
+    boostDisplay = `${emoji} ${stripped}`;
   }
-
   // ── Two-card grid ──
   const grid = document.createElement('div');
   grid.className = 'bubbles-grid';
